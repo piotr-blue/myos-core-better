@@ -1,0 +1,138 @@
+{
+  "beforeSharedExport": {
+    "environment": "local in-memory durable-store model; no AWS or HTTP",
+    "results": [
+      {
+        "allReceiptsAndSnapshotEqual": true,
+        "documents": 3,
+        "inlineMillis": [
+          9.680209,
+          7.146333,
+          6.97575,
+          8.254833,
+          6.506958
+        ],
+        "orders": 1,
+        "samples": 5,
+        "storedMillis": [
+          16.471833,
+          14.064417,
+          15.030042,
+          15.239417,
+          13.594625
+        ],
+        "warmup": 1
+      },
+      {
+        "allReceiptsAndSnapshotEqual": true,
+        "documents": 17,
+        "inlineMillis": [
+          19.976584,
+          18.22025,
+          12.80075,
+          13.77475,
+          13.07275
+        ],
+        "orders": 8,
+        "samples": 5,
+        "storedMillis": [
+          51.057875,
+          45.413625,
+          40.283792,
+          40.024417,
+          38.383375
+        ],
+        "warmup": 1
+      },
+      {
+        "allReceiptsAndSnapshotEqual": true,
+        "documents": 65,
+        "inlineMillis": [
+          63.711833,
+          63.902584,
+          65.974208,
+          59.437416,
+          58.097916
+        ],
+        "orders": 32,
+        "samples": 5,
+        "storedMillis": [
+          145.075833,
+          148.415,
+          144.89425,
+          146.221667,
+          133.864334
+        ],
+        "warmup": 1
+      }
+    ]
+  },
+  "afterSharedExport": {
+    "environment": "local in-memory durable-store model; no AWS or HTTP",
+    "results": [
+      {
+        "allReceiptsAndSnapshotEqual": true,
+        "documents": 3,
+        "inlineMillis": [
+          8.378083,
+          6.245083,
+          6.07325,
+          7.0405,
+          6.301
+        ],
+        "orders": 1,
+        "samples": 5,
+        "storedMillis": [
+          14.118666,
+          12.580583,
+          11.5515,
+          10.521208,
+          9.816416
+        ],
+        "warmup": 1
+      },
+      {
+        "allReceiptsAndSnapshotEqual": true,
+        "documents": 17,
+        "inlineMillis": [
+          17.637167,
+          17.22975,
+          16.514834,
+          13.045209,
+          12.940875
+        ],
+        "orders": 8,
+        "samples": 5,
+        "storedMillis": [
+          31.303208,
+          30.210916,
+          31.418667,
+          22.481833,
+          21.657959
+        ],
+        "warmup": 1
+      },
+      {
+        "allReceiptsAndSnapshotEqual": true,
+        "documents": 65,
+        "inlineMillis": [
+          63.559459,
+          60.879792,
+          60.965625,
+          63.543375,
+          59.933458
+        ],
+        "orders": 32,
+        "samples": 5,
+        "storedMillis": [
+          113.1255,
+          85.632167,
+          85.481583,
+          86.328959,
+          79.9935
+        ],
+        "warmup": 1
+      }
+    ]
+  }
+}

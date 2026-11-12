@@ -1,0 +1,25 @@
+Calculating task graph as no cached configuration is available for tasks: format check installDist
+> Task :processResources
+> Task :processQualificationResources
+> Task :blue-java-better:processResources
+> Task :blue-java-better:compileJava FROM-CACHE
+> Task :blue-java-better:classes
+> Task :processTestResources
+> Task :blue-java-better:jar
+> Task :format
+> Task :compileJava
+> Task :classes
+> Task :checkFormat
+> Task :jar
+> Task :startScripts
+> Task :compileQualificationJava
+> Task :qualificationClasses
+> Task :installDist
+> Task :compileTestJava
+> Task :testClasses
+> Task :test
+> Task :check
+
+BUILD SUCCESSFUL in 2m 12s
+15 actionable tasks: 14 executed, 1 from cache
+Configuration cache entry stored.

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.ContentExportTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.438Z" hostname="MacBook-Pro-5.local" time="0.005">
+  <properties />
+  <testcase name="serializationNeverTurnsAnUnverifiedRecordIntoAuthority()" classname="blue.language.ContentExportTest" time="0.0" />
+  <testcase name="inheritedAppendOnlyListsRoundTripWithOnlyNewRecords()" classname="blue.language.ContentExportTest" time="0.001" />
+  <testcase name="incrementalExportDoesNotOpenAnAlreadyRetainedClosure()" classname="blue.language.ContentExportTest" time="0.001" />
+  <testcase name="[1] &quot;hello&quot;" classname="blue.language.ContentExportTest" time="0.0" />
+  <testcase name="[2] &quot;type: Integer\nvalue: '123456789012345678901234567890'&quot;" classname="blue.language.ContentExportTest" time="0.0" />
+  <testcase name="[3] &quot;type: Double\nvalue: 1.25&quot;" classname="blue.language.ContentExportTest" time="0.0" />
+  <testcase name="[4] &quot;name: Record\nmessage: Hello\nletters: [A, B, C]&quot;" classname="blue.language.ContentExportTest" time="0.001" />
+  <testcase name="[5] &quot;type: Dictionary\nvalueType: Integer\napples: 3\npears: 5&quot;" classname="blue.language.ContentExportTest" time="0.0" />
+  <testcase name="[6] &quot;name: Schema\nfield: {type: Text}&quot;" classname="blue.language.ContentExportTest" time="0.0" />
+  <testcase name="[7] &quot;type: List\nmergePolicy: append-only\nitems: [{$previousItems: false}, A, B]&quot;" classname="blue.language.ContentExportTest" time="0.001" />
+  <testcase name="cyclicProofsAndBodiesSurvivePortableRecordEnvelopes()" classname="blue.language.ContentExportTest" time="0.0" />
+  </testsuite>

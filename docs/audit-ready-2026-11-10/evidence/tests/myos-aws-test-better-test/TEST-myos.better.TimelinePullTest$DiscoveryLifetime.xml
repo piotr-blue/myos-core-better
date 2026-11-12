@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelinePullTest$DiscoveryLifetime" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:55.581Z" hostname="MacBook-Pro-5.local" time="0.07">
+  <properties />
+  <testcase name="expiryRefreshesThePageLimitAndRejectsAnInvalidDescriptorWithoutStaleFallback()" classname="myos.better.TimelinePullTest$DiscoveryLifetime" time="0.026" />
+  <testcase name="reuseRetainsNoReadResultAndEveryNewOccurrenceStillRequiresVerification()" classname="myos.better.TimelinePullTest$DiscoveryLifetime" time="0.025" />
+  <testcase name="aProviderLimitChangeRefreshesDiscoveryOnTheNextAttempt()" classname="myos.better.TimelinePullTest$DiscoveryLifetime" time="0.019" />
+  </testsuite>

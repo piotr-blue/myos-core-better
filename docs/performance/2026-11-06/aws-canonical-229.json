@@ -1,0 +1,715 @@
+{
+  "date": "2026-11-06",
+  "runtimeIteration": 229,
+  "qualificationIteration": 230,
+  "deployment": {
+    "artifactSha256": "61cb3a7bd9d7864bc50e4ccd2acc3e328f59b4298add1a75a4d21b0cefdcf7c6",
+    "commandId": "c6a8be1d-5720-450a-b571-2be4262f5348",
+    "region": "eu-west-1",
+    "instance": "i-0d892c8d2e30807a2",
+    "stack": "myos-better-20261105"
+  },
+  "qualification": {
+    "commandId": "a7740d16-631d-4607-bdc8-8b47b8c59a8b",
+    "account": "canonical-qa-d084b6c2814d48dd",
+    "artifactSha256": "61cb3a7bd9d7864bc50e4ccd2acc3e328f59b4298add1a75a4d21b0cefdcf7c6",
+    "qualificationSha256": "ecc872c3bcf44bb4b64f3e5af8ac944ce0f5fe904abb51c9e5eb4900ee5e9b50"
+  },
+  "environment": {
+    "instanceType": "c7i.large",
+    "vcpus": 2,
+    "memoryGiB": 4,
+    "serviceHeapGiB": 2,
+    "jdk": "Corretto 25.0.5",
+    "store": "DynamoDB"
+  },
+  "regression": {
+    "libraryTests": 2475,
+    "hostTests": 509,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "installedJarsVerified": 53
+  },
+  "signedNative": {
+    "fresh": {
+      "url": "https://d2ya9daeiur7nz.cloudfront.net",
+      "orders": 8,
+      "calls": [
+        {
+          "operation": "placeOrder",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+          "entry": "a6bPpyjZPXZx4o58dGiWH519DX9xwaFp79Zu1cAkNsn",
+          "version": 2,
+          "engineMillis": 849.485629,
+          "lookupMillis": 573.9817499999997,
+          "submitMillis": 1018.0366249999988,
+          "submitServerTiming": "app;dur=755.797",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 1037159703,
+            "engineNanos": 849485629,
+            "signedEntryThroughCommitMicros": 4766449
+          },
+          "observedWithLookupMillis": 6401.518999999998,
+          "observedTotalMillis": 5827.53825
+        },
+        {
+          "operation": "preparePayment",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.8413cf05876e815ace03474eedf75c88",
+          "entry": "GKWdJP1xK3sate7cu3ok9GrFfYdoPiuYZ9SXdRtkNksz",
+          "version": 3,
+          "engineMillis": 790.401468,
+          "lookupMillis": 473.98145800000077,
+          "submitMillis": 858.2670830000012,
+          "submitServerTiming": "app;dur=643.908",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 934519182,
+            "engineNanos": 790401468,
+            "signedEntryThroughCommitMicros": 3199631
+          },
+          "observedWithLookupMillis": 4775.956790999999,
+          "observedTotalMillis": 4301.977000000001
+        },
+        {
+          "operation": "acceptPaymentInstruction",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.17ff41b7ff00c2bc9c83844609985489",
+          "entry": "FYyrFeSbM2yBJqv37vRyjZY7rZHcg2PNrzDrnLKEqY8T",
+          "version": 4,
+          "engineMillis": 133.104824,
+          "lookupMillis": 448.9160000000005,
+          "submitMillis": 587.9107909999988,
+          "submitServerTiming": "app;dur=373.600",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 234092684,
+            "engineNanos": 133104824,
+            "signedEntryThroughCommitMicros": 2865391
+          },
+          "observedWithLookupMillis": 4061.1816659999995,
+          "observedTotalMillis": 3612.267790999997
+        },
+        {
+          "operation": "reportTransfer",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.17ff41b7ff00c2bc9c83844609985489",
+          "entry": "G1xWYuciK1MoCBkTKLFJTnWqkKnNLhcGF8TBdLQ2zJVK",
+          "version": 5,
+          "engineMillis": 223.389928,
+          "lookupMillis": 443.9448329999998,
+          "submitMillis": 386.88558300000153,
+          "submitServerTiming": "app;dur=172.765",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 332949978,
+            "engineNanos": 223389928,
+            "signedEntryThroughCommitMicros": 1735724
+          },
+          "observedWithLookupMillis": 2777.621958000001,
+          "observedTotalMillis": 2333.678958
+        },
+        {
+          "operation": "acknowledgeTransfer",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.17ff41b7ff00c2bc9c83844609985489",
+          "entry": "9n1xv8NxrpdBntm5vsMb6B939igNV8kGGL7GemB68u8w",
+          "version": 6,
+          "engineMillis": 269.587144,
+          "lookupMillis": 442.5987499999984,
+          "submitMillis": 353.23966600000034,
+          "submitServerTiming": "app;dur=138.470",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 377885950,
+            "engineNanos": 269587144,
+            "signedEntryThroughCommitMicros": 656439
+          },
+          "observedWithLookupMillis": 1740.4982079999982,
+          "observedTotalMillis": 1297.9000830000018
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+          "entry": "DTQ29SDBa6QKUdPMTxjg4BEc5V4CxD8RyPNNhp7wYg53",
+          "version": 7,
+          "engineMillis": 532.094313,
+          "lookupMillis": 445.4073749999985,
+          "submitMillis": 451.27279100000095,
+          "submitServerTiming": "app;dur=208.069",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 654115766,
+            "engineNanos": 532094313,
+            "signedEntryThroughCommitMicros": 997360
+          },
+          "observedWithLookupMillis": 2056.609999999999,
+          "observedTotalMillis": 1611.2031659999993
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+          "entry": "GxR4PkavpzDgNir431BpLAEjW2tYPeyxP6ydCb18fpMC",
+          "version": 8,
+          "engineMillis": 591.683452,
+          "lookupMillis": 438.9155419999966,
+          "submitMillis": 399.03416599999986,
+          "submitServerTiming": "app;dur=156.534",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 751115848,
+            "engineNanos": 591683452,
+            "signedEntryThroughCommitMicros": 1059567
+          },
+          "observedWithLookupMillis": 2265.6503329999964,
+          "observedTotalMillis": 1826.7371660000008
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+          "entry": "G8XuLppkD98UrqBvwLi8LaJm8YNSyPjS595whihe5yTR",
+          "version": 9,
+          "engineMillis": 391.617595,
+          "lookupMillis": 441.4545839999988,
+          "submitMillis": 397.4594160000038,
+          "submitServerTiming": "app;dur=155.115",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 511059526,
+            "engineNanos": 391617595,
+            "signedEntryThroughCommitMicros": 746035
+          },
+          "observedWithLookupMillis": 1813.8391250000013,
+          "observedTotalMillis": 1372.3849580000049
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+          "entry": "E643xpU5eve248Wyu7HRurogm6QFDRcpNWCqhomsPBNX",
+          "version": 10,
+          "engineMillis": 372.586915,
+          "lookupMillis": 441.4568750000001,
+          "submitMillis": 367.0649590000039,
+          "submitServerTiming": "app;dur=153.537",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 518478335,
+            "engineNanos": 372586915,
+            "signedEntryThroughCommitMicros": 731715
+          },
+          "observedWithLookupMillis": 1754.9285000000054,
+          "observedTotalMillis": 1313.4808340000036
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+          "entry": "BGcCUYBhsj3riaijvuYckDop8RoR1YKWhwbj1Vvsh7Vz",
+          "version": 11,
+          "engineMillis": 373.497089,
+          "lookupMillis": 444.2070829999949,
+          "submitMillis": 378.8783749999993,
+          "submitServerTiming": "app;dur=163.304",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 485120467,
+            "engineNanos": 373497089,
+            "signedEntryThroughCommitMicros": 769289
+          },
+          "observedWithLookupMillis": 1798.4492079999939,
+          "observedTotalMillis": 1354.2444590000002
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+          "entry": "5QTboewzkfHdQC3ZwYHqQqsYrzmgJFmHSDZYdhSrAwBR",
+          "version": 12,
+          "engineMillis": 382.564496,
+          "lookupMillis": 471.8044169999942,
+          "submitMillis": 377.31254200000564,
+          "submitServerTiming": "app;dur=161.417",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 487110209,
+            "engineNanos": 382564496,
+            "signedEntryThroughCommitMicros": 792968
+          },
+          "observedWithLookupMillis": 1829.0306669999977,
+          "observedTotalMillis": 1357.229000000004
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+          "entry": "CgRZy9Jq5X4cvGCd7EWhGLHtKBRch2wejG7JgR5Y1rGr",
+          "version": 13,
+          "engineMillis": 291.75032,
+          "lookupMillis": 447.47958300000334,
+          "submitMillis": 367.10779199999877,
+          "submitServerTiming": "app;dur=152.660",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 409264593,
+            "engineNanos": 291750320,
+            "signedEntryThroughCommitMicros": 705828
+          },
+          "observedWithLookupMillis": 1792.575499999998,
+          "observedTotalMillis": 1345.0984579999954
+        },
+        {
+          "operation": "preparePayment",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.1148d4b20a783fc34ae393a6126273d7",
+          "entry": "Hbovbadz9TR4n21TzS9WyBrW21YXMYwMFyUd5D6dJ48a",
+          "version": 14,
+          "engineMillis": 457.661541,
+          "lookupMillis": 467.4977089999999,
+          "submitMillis": 538.3610000000019,
+          "submitServerTiming": "app;dur=323.531",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 570827190,
+            "engineNanos": 457661541,
+            "signedEntryThroughCommitMicros": 1359898
+          },
+          "observedWithLookupMillis": 2739.642791999998,
+          "observedTotalMillis": 2272.1468330000007
+        },
+        {
+          "operation": "acceptPaymentInstruction",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.32f3e9632693f12040f46356b6a99fbe",
+          "entry": "AezbFPWwBNa9bsGanhffUqS7nP6AWQteqSQE2eXhn7ak",
+          "version": 15,
+          "engineMillis": 76.68533,
+          "lookupMillis": 443.4367080000001,
+          "submitMillis": 539.4713339999981,
+          "submitServerTiming": "app;dur=325.413",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 183407040,
+            "engineNanos": 76685330,
+            "signedEntryThroughCommitMicros": 852723
+          },
+          "observedWithLookupMillis": 2188.300667,
+          "observedTotalMillis": 1744.8655419999996
+        },
+        {
+          "operation": "reportTransfer",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.32f3e9632693f12040f46356b6a99fbe",
+          "entry": "BCaZMFFpu3pPHuFG4XLVNTtxHfL8BoEzEiBKqMGmVeC4",
+          "version": 16,
+          "engineMillis": 98.397873,
+          "lookupMillis": 472.003167000004,
+          "submitMillis": 354.59670799999543,
+          "submitServerTiming": "app;dur=140.790",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 201359360,
+            "engineNanos": 98397873,
+            "signedEntryThroughCommitMicros": 874072
+          },
+          "observedWithLookupMillis": 2015.745625000001,
+          "observedTotalMillis": 1543.7447079999984
+        },
+        {
+          "operation": "acknowledgeTransfer",
+          "document": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.32f3e9632693f12040f46356b6a99fbe",
+          "entry": "B88iqmB1uXhXMYStyKdZwdDUHYHA9Yknf8iNaiJ71Q3n",
+          "version": 17,
+          "engineMillis": 190.35982,
+          "lookupMillis": 445.8577919999982,
+          "submitMillis": 374.3351660000016,
+          "submitServerTiming": "app;dur=133.889",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 316776513,
+            "engineNanos": 190359820,
+            "signedEntryThroughCommitMicros": 549841
+          },
+          "observedWithLookupMillis": 1759.4512499999978,
+          "observedTotalMillis": 1313.5965410000026
+        }
+      ],
+      "agreement": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+      "bootstrapMillis": 6990.679209,
+      "agreementUrl": "https://d2ya9daeiur7nz.cloudfront.net/#documents/graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4",
+      "lastOrder": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.1148d4b20a783fc34ae393a6126273d7",
+      "lastPayment": "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.32f3e9632693f12040f46356b6a99fbe",
+      "paidTotal": 400,
+      "unrelatedIdentities": {
+        "before": {
+          "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.8413cf05876e815ace03474eedf75c88": "75sgsaVQmrpFNjauNdKNn2h673Af3TDzJMjpHfNkcTcT",
+          "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.17ff41b7ff00c2bc9c83844609985489": "4qnu46EPs7X5QZnfbtaW4CtKGPDeo8RTYVyC1eKgrwc8"
+        },
+        "after": {
+          "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.8413cf05876e815ace03474eedf75c88": "75sgsaVQmrpFNjauNdKNn2h673Af3TDzJMjpHfNkcTcT",
+          "graph-997572a05d273a2abcec083140f8dbeb775c00d01fe636c4.17ff41b7ff00c2bc9c83844609985489": "4qnu46EPs7X5QZnfbtaW4CtKGPDeo8RTYVyC1eKgrwc8"
+        },
+        "unchanged": true
+      },
+      "checks": [
+        "Payment, Order and Agreement totals agree",
+        "all three documents reuse the same two participant Timelines",
+        "every submitted entry has a committed APPLIED outcome"
+      ],
+      "medianEngineMillis": 373.042002
+    },
+    "large": {
+      "agreement": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+      "ordersBefore": 192,
+      "calls": [
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "B3HNC4F1uRMKRSRr8VpRwAug54kueEwrAQzFHYuSNyig",
+          "version": 226,
+          "engineMillis": 718.876084,
+          "lookupMillis": 514.903833,
+          "submitMillis": 680.7495839999999,
+          "submitServerTiming": "app;dur=424.611",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 893163354,
+            "engineNanos": 718876084,
+            "signedEntryThroughCommitMicros": 1839219
+          },
+          "observedWithLookupMillis": 3367.9890830000004,
+          "observedTotalMillis": 2853.086709
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "A75kpF36XuZGrtwZLfdpiDhJ1H5CjqGJdtfFu4VLGR1E",
+          "version": 227,
+          "engineMillis": 601.153097,
+          "lookupMillis": 469.08649999999955,
+          "submitMillis": 463.4852919999997,
+          "submitServerTiming": "app;dur=219.387",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 790050803,
+            "engineNanos": 601153097,
+            "signedEntryThroughCommitMicros": 1057457
+          },
+          "observedWithLookupMillis": 2157.318,
+          "observedTotalMillis": 1688.233125
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "A7ACdEHEF6fzQy5arRVdGfJamtJMia3cduEjJpGXaqLG",
+          "version": 228,
+          "engineMillis": 612.105442,
+          "lookupMillis": 444.70987499999916,
+          "submitMillis": 398.41441700000144,
+          "submitServerTiming": "app;dur=183.685",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 765916892,
+            "engineNanos": 612105442,
+            "signedEntryThroughCommitMicros": 1125157
+          },
+          "observedWithLookupMillis": 2326.196542,
+          "observedTotalMillis": 1881.4874580000005
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "EGBTTAsFb2oXcBX34xr7WQCGciXX8tRGbWmB3asjr8Pn",
+          "version": 229,
+          "engineMillis": 536.820922,
+          "lookupMillis": 440.84158400000103,
+          "submitMillis": 399.8359579999988,
+          "submitServerTiming": "app;dur=185.099",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 698409215,
+            "engineNanos": 536820922,
+            "signedEntryThroughCommitMicros": 1009788
+          },
+          "observedWithLookupMillis": 2055.159416999999,
+          "observedTotalMillis": 1614.320499999998
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "3Ri5Vqy9DiDb52bsCNK8AmQHwnNwmtdWU5xeVSwQKuAW",
+          "version": 230,
+          "engineMillis": 587.215287,
+          "lookupMillis": 441.6877919999997,
+          "submitMillis": 433.6734170000014,
+          "submitServerTiming": "app;dur=217.711",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 776334559,
+            "engineNanos": 587215287,
+            "signedEntryThroughCommitMicros": 1086174
+          },
+          "observedWithLookupMillis": 2346.612292,
+          "observedTotalMillis": 1904.9250829999985
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "BuktBmvaxUnUPwqF3Qzjw24RUHykKFuobVkq1nRPbmm2",
+          "version": 231,
+          "engineMillis": 563.069399,
+          "lookupMillis": 466.2400410000025,
+          "submitMillis": 397.56816699999933,
+          "submitServerTiming": "app;dur=156.020",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 715018494,
+            "engineNanos": 563069399,
+            "signedEntryThroughCommitMicros": 984949
+          },
+          "observedWithLookupMillis": 2080.0174580000003,
+          "observedTotalMillis": 1613.7790839999973
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "J4ugQDvRJD77GCrNu4dSNoUMJiEvt1DwypUEXQB2ZNu1",
+          "version": 232,
+          "engineMillis": 570.710035,
+          "lookupMillis": 468.3502920000002,
+          "submitMillis": 413.7111659999988,
+          "submitServerTiming": "app;dur=196.953",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 737341217,
+            "engineNanos": 570710035,
+            "signedEntryThroughCommitMicros": 999373
+          },
+          "observedWithLookupMillis": 2070.039083000001,
+          "observedTotalMillis": 1601.6901249999976
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "2rWP6VHABQw9wQ2iVvuhCsVXmrq7k5e1VvKEp6qZfnLo",
+          "version": 233,
+          "engineMillis": 564.895853,
+          "lookupMillis": 441.92516700000084,
+          "submitMillis": 427.05424999999764,
+          "submitServerTiming": "app;dur=211.731",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 724795632,
+            "engineNanos": 564895853,
+            "signedEntryThroughCommitMicros": 998865
+          },
+          "observedWithLookupMillis": 2087.9209170000017,
+          "observedTotalMillis": 1645.9975829999998
+        },
+        {
+          "operation": "preparePayment",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.75ce61fd1f7145284b4dce887e3bac3d",
+          "entry": "HPdLYsUPZRpsaEEmuaDyBspPVnUk6xeyuZHSh4Are1jT",
+          "version": 234,
+          "engineMillis": 732.472448,
+          "lookupMillis": 442.2950839999977,
+          "submitMillis": 695.6660830000026,
+          "submitServerTiming": "app;dur=452.956",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 885592894,
+            "engineNanos": 732472448,
+            "signedEntryThroughCommitMicros": 1916689
+          },
+          "observedWithLookupMillis": 3145.0289589999975,
+          "observedTotalMillis": 2702.736083000001
+        },
+        {
+          "operation": "acceptPaymentInstruction",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.6f41314b1a4004ed277dec1d9fd38f0e",
+          "entry": "B6bhAmHu8SCHvmDji8jkeWbJuPCe179t2agT7KUDnB43",
+          "version": 235,
+          "engineMillis": 228.658224,
+          "lookupMillis": 473.3294170000022,
+          "submitMillis": 609.6281660000002,
+          "submitServerTiming": "app;dur=391.487",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 394907564,
+            "engineNanos": 228658224,
+            "signedEntryThroughCommitMicros": 1296985
+          },
+          "observedWithLookupMillis": 2561.2474170000005,
+          "observedTotalMillis": 2087.9196659999975
+        },
+        {
+          "operation": "reportTransfer",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.6f41314b1a4004ed277dec1d9fd38f0e",
+          "entry": "2u86MG3Ccb2WdA6R4NzzpqNqDKR7iQD1d7pRg2dgxRii",
+          "version": 236,
+          "engineMillis": 251.14524,
+          "lookupMillis": 445.78445799999855,
+          "submitMillis": 441.8590839999972,
+          "submitServerTiming": "app;dur=200.013",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 393959709,
+            "engineNanos": 251145240,
+            "signedEntryThroughCommitMicros": 1158357
+          },
+          "observedWithLookupMillis": 2289.042999999996,
+          "observedTotalMillis": 1843.2605419999995
+        },
+        {
+          "operation": "acknowledgeTransfer",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.6f41314b1a4004ed277dec1d9fd38f0e",
+          "entry": "6C4kTxHik57pzuQqsXtM8k1ajT15cpiZYrdKeyes33Wa",
+          "version": 237,
+          "engineMillis": 426.841884,
+          "lookupMillis": 495.37604199999663,
+          "submitMillis": 400.2490000000023,
+          "submitServerTiming": "app;dur=187.125",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 604036026,
+            "engineNanos": 426841884,
+            "signedEntryThroughCommitMicros": 809106
+          },
+          "observedWithLookupMillis": 1841.6725000000015,
+          "observedTotalMillis": 1346.2982910000037
+        }
+      ],
+      "agreementUrl": "https://d2ya9daeiur7nz.cloudfront.net/#documents/graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+      "initialReadMillis": 233.56633299999973,
+      "unrelatedIdentities": {
+        "before": {
+          "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.a82d82bb83efa6693c57068f203ffdfc": "46YWQf6xrVbjuVMDAob24ipo4USboAnw5Vu1mqMoi5Vg",
+          "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.a7031e7aaa8bed8fd351907f280bb096": "DeBzKs81vXBWXHuSEzroUXywhjBXThRx7pxhZLq2GaxG"
+        },
+        "after": {
+          "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.a82d82bb83efa6693c57068f203ffdfc": "46YWQf6xrVbjuVMDAob24ipo4USboAnw5Vu1mqMoi5Vg",
+          "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.a7031e7aaa8bed8fd351907f280bb096": "DeBzKs81vXBWXHuSEzroUXywhjBXThRx7pxhZLq2GaxG"
+        },
+        "unchanged": true
+      },
+      "ordersAfter": 200,
+      "paidTotal": 1800,
+      "lastOrder": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.75ce61fd1f7145284b4dce887e3bac3d",
+      "lastPayment": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.6f41314b1a4004ed277dec1d9fd38f0e",
+      "checks": [
+        "all three totals agree",
+        "same two participant Timelines",
+        "each signed input committed APPLIED"
+      ]
+    }
+  },
+  "operatorScale": {
+    "input": "trusted operator qualification",
+    "results": [
+      {
+        "changedMembersPerCall": 3,
+        "documents": 3,
+        "durableMillis": [
+          102.670234,
+          74.653958,
+          74.827124,
+          84.954353,
+          73.554269
+        ],
+        "engineMillis": [
+          32.880847,
+          21.047233,
+          20.284927,
+          32.548594,
+          21.960333
+        ],
+        "inlineReceiptsAndSnapshotEqual": true,
+        "orders": 1,
+        "samples": 5,
+        "warmup": 2
+      },
+      {
+        "changedMembersPerCall": 3,
+        "documents": 257,
+        "durableMillis": [
+          110.632133,
+          110.17482,
+          129.694629,
+          119.938232,
+          119.404043
+        ],
+        "engineMillis": [
+          62.612959,
+          59.543174,
+          72.108971,
+          61.324836,
+          61.101191
+        ],
+        "inlineReceiptsAndSnapshotEqual": true,
+        "orders": 128,
+        "samples": 5,
+        "warmup": 2
+      },
+      {
+        "changedMembersPerCall": 3,
+        "documents": 2049,
+        "durableMillis": [
+          705.988272,
+          651.759331,
+          673.219549,
+          446.094818,
+          509.964079
+        ],
+        "engineMillis": [
+          598.287253,
+          463.899579,
+          555.638068,
+          349.341374,
+          353.21703
+        ],
+        "inlineReceiptsAndSnapshotEqual": true,
+        "orders": 1024,
+        "samples": 5,
+        "warmup": 2
+      }
+    ],
+    "store": "DynamoDB"
+  },
+  "operatorCycles": {
+    "cycles": [
+      {
+        "allReceiptsAndColdSnapshotEqual": true,
+        "calls": 7,
+        "durableMillis": [
+          81.727691,
+          70.436851,
+          82.121191,
+          82.4307,
+          74.364782
+        ],
+        "executionAfterRestartEqual": true,
+        "members": 2,
+        "warmup": 1
+      },
+      {
+        "allReceiptsAndColdSnapshotEqual": true,
+        "calls": 7,
+        "durableMillis": [
+          107.097763,
+          88.815642,
+          115.203367,
+          106.115162,
+          126.972565
+        ],
+        "executionAfterRestartEqual": true,
+        "members": 8,
+        "warmup": 1
+      }
+    ],
+    "feedbackCycles": [
+      {
+        "durableMillis": 65.460034,
+        "executionAfterRestartEqual": true,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "members": 1,
+        "rejectingPeer": false,
+        "status": "APPLIED"
+      },
+      {
+        "durableMillis": 90.732657,
+        "executionAfterRestartEqual": true,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "members": 2,
+        "rejectingPeer": false,
+        "status": "APPLIED"
+      },
+      {
+        "durableMillis": 286.370443,
+        "executionAfterRestartEqual": true,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "members": 8,
+        "rejectingPeer": false,
+        "status": "APPLIED"
+      },
+      {
+        "durableMillis": 37.387341,
+        "executionAfterRestartEqual": true,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "members": 2,
+        "rejectingPeer": true,
+        "status": "FAILED"
+      }
+    ],
+    "input": "trusted operator qualification",
+    "store": "DynamoDB"
+  },
+  "limitations": [
+    "Operator qualification uses simpler documents and trusted inputs; not a signed-console latency estimate.",
+    "Native client times exclude catalogue/head lookup unless observedWithLookupMillis is selected.",
+    "Five steady-state operator samples are not a tail-latency or throughput qualification.",
+    "No tens-of-thousands or long-history production qualification."
+  ]
+}

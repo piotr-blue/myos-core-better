@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.LanguageConcretenessTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:01.289Z" hostname="MacBook-Pro-5.local" time="0.008">
+  <properties />
+  <testcase name="capturedViewsRetainCompletedPresenceFactsWithoutSharingNewWrites()" classname="blue.LanguageConcretenessTest" time="0.0" />
+  <testcase name="incompleteTraversalDoesNotInstallNegativeFacts()" classname="blue.LanguageConcretenessTest" time="0.001" />
+  <testcase name="presenceCacheRemainsBoundedAndLiteralFastPathPreservesHostWork()" classname="blue.LanguageConcretenessTest" time="0.006" />
+  <testcase name="completedNegativeClosureMakesAllItsSubtreeQueriesConstantWork()" classname="blue.LanguageConcretenessTest" time="0.0" />
+  <testcase name="publicLimitsRemainIndependentOfWarmth()" classname="blue.LanguageConcretenessTest" time="0.0" />
+  <testcase name="aPositiveSiblingDoesNotCertifyAnAbstractBranch()" classname="blue.LanguageConcretenessTest" time="0.0" />
+  </testsuite>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractInitializationTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:55.303Z" hostname="MacBook-Pro-5.local" time="0.05">
+  <properties />
+  <testcase name="descendantsAddedAfterAnOrdinaryWriteMatchFullScanningAndInitializeBeforeUse()" classname="blue.ContractInitializationTest" time="0.04" />
+  <testcase name="discardedInitializationDoesNotEscapeAndACommittedRetryInitializesExactlyOnce()" classname="blue.ContractInitializationTest" time="0.009" />
+  </testsuite>

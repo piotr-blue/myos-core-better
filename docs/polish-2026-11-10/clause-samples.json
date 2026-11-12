@@ -1,0 +1,4548 @@
+{
+  "clause-repeat": [
+    {
+      "boundary": "local signed API submission through exact parent receipt; in-memory storage, no HTTP",
+      "children": 100,
+      "cyclic": false,
+      "samples": [
+        {
+          "children": 1,
+          "completedMillis": 558.78175,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 74.069166
+        },
+        {
+          "children": 1,
+          "completedMillis": 216.114875,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 12.61125
+        },
+        {
+          "children": 2,
+          "completedMillis": 180.564542,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.682709
+        },
+        {
+          "children": 2,
+          "completedMillis": 119.630375,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 8.4005
+        },
+        {
+          "children": 3,
+          "completedMillis": 163.984875,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.498583
+        },
+        {
+          "children": 3,
+          "completedMillis": 140.701542,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 8.423375
+        },
+        {
+          "children": 4,
+          "completedMillis": 171.472917,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.081792
+        },
+        {
+          "children": 5,
+          "completedMillis": 157.014625,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.143708
+        },
+        {
+          "children": 6,
+          "completedMillis": 175.799708,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 4.942708
+        },
+        {
+          "children": 7,
+          "completedMillis": 160.577959,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.056125
+        },
+        {
+          "children": 8,
+          "completedMillis": 162.939375,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.317333
+        },
+        {
+          "children": 9,
+          "completedMillis": 154.279625,
+          "gas": 102143,
+          "operation": "createChild",
+          "submitMillis": 5.143459
+        },
+        {
+          "children": 10,
+          "completedMillis": 165.527125,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.85525
+        },
+        {
+          "children": 11,
+          "completedMillis": 145.66775,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.3025
+        },
+        {
+          "children": 12,
+          "completedMillis": 148.137167,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.543625
+        },
+        {
+          "children": 13,
+          "completedMillis": 159.04375,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.398417
+        },
+        {
+          "children": 14,
+          "completedMillis": 154.053375,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.409875
+        },
+        {
+          "children": 15,
+          "completedMillis": 153.951709,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.661709
+        },
+        {
+          "children": 16,
+          "completedMillis": 154.997125,
+          "gas": 102169,
+          "operation": "createChild",
+          "submitMillis": 4.5875
+        },
+        {
+          "children": 17,
+          "completedMillis": 154.293917,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.545125
+        },
+        {
+          "children": 18,
+          "completedMillis": 160.8065,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.654167
+        },
+        {
+          "children": 19,
+          "completedMillis": 163.473334,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.679334
+        },
+        {
+          "children": 20,
+          "completedMillis": 149.4035,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.868125
+        },
+        {
+          "children": 21,
+          "completedMillis": 161.925958,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.541083
+        },
+        {
+          "children": 22,
+          "completedMillis": 154.735708,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.73975
+        },
+        {
+          "children": 23,
+          "completedMillis": 153.97275,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.622042
+        },
+        {
+          "children": 24,
+          "completedMillis": 155.768833,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.831708
+        },
+        {
+          "children": 25,
+          "completedMillis": 162.608334,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.612459
+        },
+        {
+          "children": 25,
+          "completedMillis": 149.416042,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 7.743209
+        },
+        {
+          "children": 26,
+          "completedMillis": 200.0735,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.811125
+        },
+        {
+          "children": 27,
+          "completedMillis": 158.484708,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.044375
+        },
+        {
+          "children": 28,
+          "completedMillis": 156.407458,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.876417
+        },
+        {
+          "children": 29,
+          "completedMillis": 154.215625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.661292
+        },
+        {
+          "children": 30,
+          "completedMillis": 160.886291,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.505291
+        },
+        {
+          "children": 31,
+          "completedMillis": 158.727791,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.329416
+        },
+        {
+          "children": 32,
+          "completedMillis": 165.661125,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.828084
+        },
+        {
+          "children": 33,
+          "completedMillis": 156.805917,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.858083
+        },
+        {
+          "children": 34,
+          "completedMillis": 154.634166,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.489958
+        },
+        {
+          "children": 35,
+          "completedMillis": 152.736084,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.755584
+        },
+        {
+          "children": 36,
+          "completedMillis": 159.897542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.379417
+        },
+        {
+          "children": 37,
+          "completedMillis": 164.630958,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.493417
+        },
+        {
+          "children": 38,
+          "completedMillis": 166.041875,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.316667
+        },
+        {
+          "children": 39,
+          "completedMillis": 160.922459,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.556917
+        },
+        {
+          "children": 40,
+          "completedMillis": 159.682625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.695083
+        },
+        {
+          "children": 41,
+          "completedMillis": 156.734083,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.399916
+        },
+        {
+          "children": 42,
+          "completedMillis": 168.402917,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.506
+        },
+        {
+          "children": 43,
+          "completedMillis": 159.666833,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.507208
+        },
+        {
+          "children": 44,
+          "completedMillis": 177.618625,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.744083
+        },
+        {
+          "children": 45,
+          "completedMillis": 154.898666,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.381583
+        },
+        {
+          "children": 46,
+          "completedMillis": 165.604666,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.464
+        },
+        {
+          "children": 47,
+          "completedMillis": 162.4115,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.595708
+        },
+        {
+          "children": 48,
+          "completedMillis": 160.008416,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.608958
+        },
+        {
+          "children": 49,
+          "completedMillis": 158.465916,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.569666
+        },
+        {
+          "children": 50,
+          "completedMillis": 174.395417,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.517333
+        },
+        {
+          "children": 50,
+          "completedMillis": 139.526958,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 6.897333
+        },
+        {
+          "children": 51,
+          "completedMillis": 261.703917,
+          "gas": 102177,
+          "operation": "createChild",
+          "submitMillis": 4.776792
+        },
+        {
+          "children": 52,
+          "completedMillis": 180.562667,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.665667
+        },
+        {
+          "children": 53,
+          "completedMillis": 158.796416,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.581958
+        },
+        {
+          "children": 54,
+          "completedMillis": 175.029667,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.880542
+        },
+        {
+          "children": 55,
+          "completedMillis": 159.109041,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.666375
+        },
+        {
+          "children": 56,
+          "completedMillis": 177.5675,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.533917
+        },
+        {
+          "children": 57,
+          "completedMillis": 171.413917,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.641792
+        },
+        {
+          "children": 58,
+          "completedMillis": 163.789375,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.917
+        },
+        {
+          "children": 59,
+          "completedMillis": 174.153167,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.566375
+        },
+        {
+          "children": 60,
+          "completedMillis": 180.370917,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.435083
+        },
+        {
+          "children": 61,
+          "completedMillis": 177.885667,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.722875
+        },
+        {
+          "children": 62,
+          "completedMillis": 186.7155,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.067625
+        },
+        {
+          "children": 63,
+          "completedMillis": 171.916958,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.708458
+        },
+        {
+          "children": 64,
+          "completedMillis": 174.624542,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.657375
+        },
+        {
+          "children": 65,
+          "completedMillis": 188.264708,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.705333
+        },
+        {
+          "children": 66,
+          "completedMillis": 169.476583,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.593708
+        },
+        {
+          "children": 67,
+          "completedMillis": 183.659541,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.729958
+        },
+        {
+          "children": 68,
+          "completedMillis": 169.226709,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.961959
+        },
+        {
+          "children": 69,
+          "completedMillis": 175.616792,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.950083
+        },
+        {
+          "children": 70,
+          "completedMillis": 189.6045,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.558666
+        },
+        {
+          "children": 71,
+          "completedMillis": 175.526083,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.3285
+        },
+        {
+          "children": 72,
+          "completedMillis": 175.564958,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.812958
+        },
+        {
+          "children": 73,
+          "completedMillis": 180.94125,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.909792
+        },
+        {
+          "children": 74,
+          "completedMillis": 183.307334,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 5.229584
+        },
+        {
+          "children": 75,
+          "completedMillis": 182.356166,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.766166
+        },
+        {
+          "children": 75,
+          "completedMillis": 123.072916,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 7.135125
+        },
+        {
+          "children": 76,
+          "completedMillis": 327.769458,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.785416
+        },
+        {
+          "children": 77,
+          "completedMillis": 180.7245,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.632125
+        },
+        {
+          "children": 78,
+          "completedMillis": 194.462542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.720833
+        },
+        {
+          "children": 79,
+          "completedMillis": 210.020292,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 6.066042
+        },
+        {
+          "children": 80,
+          "completedMillis": 183.842583,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.887792
+        },
+        {
+          "children": 81,
+          "completedMillis": 186.69325,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.997
+        },
+        {
+          "children": 82,
+          "completedMillis": 189.766167,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.597708
+        },
+        {
+          "children": 83,
+          "completedMillis": 180.6865,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.785667
+        },
+        {
+          "children": 84,
+          "completedMillis": 202.218458,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.512833
+        },
+        {
+          "children": 85,
+          "completedMillis": 188.914959,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.920709
+        },
+        {
+          "children": 86,
+          "completedMillis": 185.220875,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.990792
+        },
+        {
+          "children": 87,
+          "completedMillis": 203.607667,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.687667
+        },
+        {
+          "children": 88,
+          "completedMillis": 197.110542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.762709
+        },
+        {
+          "children": 89,
+          "completedMillis": 188.447625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.770458
+        },
+        {
+          "children": 90,
+          "completedMillis": 191.767042,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.0175
+        },
+        {
+          "children": 91,
+          "completedMillis": 196.496541,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.115541
+        },
+        {
+          "children": 92,
+          "completedMillis": 181.563042,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.93575
+        },
+        {
+          "children": 93,
+          "completedMillis": 197.324625,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.569459
+        },
+        {
+          "children": 94,
+          "completedMillis": 202.349459,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.9835
+        },
+        {
+          "children": 95,
+          "completedMillis": 189.160375,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.775625
+        },
+        {
+          "children": 96,
+          "completedMillis": 191.359292,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.523167
+        },
+        {
+          "children": 97,
+          "completedMillis": 188.126875,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 6.890917
+        },
+        {
+          "children": 98,
+          "completedMillis": 195.4085,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.868209
+        },
+        {
+          "children": 99,
+          "completedMillis": 192.469834,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.515584
+        },
+        {
+          "children": 100,
+          "completedMillis": 214.820333,
+          "gas": 102215,
+          "operation": "createChild",
+          "submitMillis": 4.685333
+        },
+        {
+          "children": 100,
+          "completedMillis": 124.571125,
+          "gas": 3291,
+          "operation": "increment",
+          "submitMillis": 8.414209
+        }
+      ],
+      "wholeReplayChecked": false
+    },
+    {
+      "boundary": "local signed API submission through exact parent receipt; in-memory storage, no HTTP",
+      "children": 100,
+      "cyclic": false,
+      "samples": [
+        {
+          "children": 1,
+          "completedMillis": 540.192208,
+          "gas": 102144,
+          "operation": "createChild",
+          "submitMillis": 68.169291
+        },
+        {
+          "children": 1,
+          "completedMillis": 173.699625,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 14.084542
+        },
+        {
+          "children": 2,
+          "completedMillis": 217.611833,
+          "gas": 102144,
+          "operation": "createChild",
+          "submitMillis": 6.533833
+        },
+        {
+          "children": 2,
+          "completedMillis": 171.569959,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 13.286584
+        },
+        {
+          "children": 3,
+          "completedMillis": 175.294167,
+          "gas": 102144,
+          "operation": "createChild",
+          "submitMillis": 5.172667
+        },
+        {
+          "children": 3,
+          "completedMillis": 137.912541,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 8.897541
+        },
+        {
+          "children": 4,
+          "completedMillis": 184.05525,
+          "gas": 102135,
+          "operation": "createChild",
+          "submitMillis": 5.655458
+        },
+        {
+          "children": 5,
+          "completedMillis": 156.360791,
+          "gas": 102144,
+          "operation": "createChild",
+          "submitMillis": 5.155333
+        },
+        {
+          "children": 6,
+          "completedMillis": 163.998041,
+          "gas": 102144,
+          "operation": "createChild",
+          "submitMillis": 4.804333
+        },
+        {
+          "children": 7,
+          "completedMillis": 150.8815,
+          "gas": 102144,
+          "operation": "createChild",
+          "submitMillis": 5.33375
+        },
+        {
+          "children": 8,
+          "completedMillis": 154.984167,
+          "gas": 102144,
+          "operation": "createChild",
+          "submitMillis": 4.536084
+        },
+        {
+          "children": 9,
+          "completedMillis": 182.382375,
+          "gas": 102142,
+          "operation": "createChild",
+          "submitMillis": 8.124583
+        },
+        {
+          "children": 10,
+          "completedMillis": 153.211666,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.113583
+        },
+        {
+          "children": 11,
+          "completedMillis": 160.962459,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.892875
+        },
+        {
+          "children": 12,
+          "completedMillis": 163.432166,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.58325
+        },
+        {
+          "children": 13,
+          "completedMillis": 146.233792,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.656584
+        },
+        {
+          "children": 14,
+          "completedMillis": 157.68275,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.579833
+        },
+        {
+          "children": 15,
+          "completedMillis": 149.724291,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.638
+        },
+        {
+          "children": 16,
+          "completedMillis": 154.557,
+          "gas": 102177,
+          "operation": "createChild",
+          "submitMillis": 4.517042
+        },
+        {
+          "children": 17,
+          "completedMillis": 152.506958,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.59925
+        },
+        {
+          "children": 18,
+          "completedMillis": 162.78075,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.526333
+        },
+        {
+          "children": 19,
+          "completedMillis": 155.919167,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.001833
+        },
+        {
+          "children": 20,
+          "completedMillis": 142.59775,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.28325
+        },
+        {
+          "children": 21,
+          "completedMillis": 155.795083,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.858916
+        },
+        {
+          "children": 22,
+          "completedMillis": 148.187917,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.772584
+        },
+        {
+          "children": 23,
+          "completedMillis": 149.082125,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.408
+        },
+        {
+          "children": 24,
+          "completedMillis": 155.716,
+          "gas": 102177,
+          "operation": "createChild",
+          "submitMillis": 4.492833
+        },
+        {
+          "children": 25,
+          "completedMillis": 156.572666,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.263583
+        },
+        {
+          "children": 25,
+          "completedMillis": 160.252042,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 7.44475
+        },
+        {
+          "children": 26,
+          "completedMillis": 193.375,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.534917
+        },
+        {
+          "children": 27,
+          "completedMillis": 161.29225,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.530041
+        },
+        {
+          "children": 28,
+          "completedMillis": 151.999542,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.469625
+        },
+        {
+          "children": 29,
+          "completedMillis": 161.889125,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.04025
+        },
+        {
+          "children": 30,
+          "completedMillis": 155.171334,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.624917
+        },
+        {
+          "children": 31,
+          "completedMillis": 164.574958,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.355125
+        },
+        {
+          "children": 32,
+          "completedMillis": 166.5605,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 7.878333
+        },
+        {
+          "children": 33,
+          "completedMillis": 168.907,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.99425
+        },
+        {
+          "children": 34,
+          "completedMillis": 163.533792,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.964167
+        },
+        {
+          "children": 35,
+          "completedMillis": 160.304875,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.650292
+        },
+        {
+          "children": 36,
+          "completedMillis": 166.151208,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.585916
+        },
+        {
+          "children": 37,
+          "completedMillis": 165.513,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.591791
+        },
+        {
+          "children": 38,
+          "completedMillis": 173.769,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.778959
+        },
+        {
+          "children": 39,
+          "completedMillis": 168.658041,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.715541
+        },
+        {
+          "children": 40,
+          "completedMillis": 166.52325,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.226
+        },
+        {
+          "children": 41,
+          "completedMillis": 158.49625,
+          "gas": 102170,
+          "operation": "createChild",
+          "submitMillis": 5.110833
+        },
+        {
+          "children": 42,
+          "completedMillis": 161.155,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.840042
+        },
+        {
+          "children": 43,
+          "completedMillis": 169.803334,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.681959
+        },
+        {
+          "children": 44,
+          "completedMillis": 157.479875,
+          "gas": 102174,
+          "operation": "createChild",
+          "submitMillis": 4.360333
+        },
+        {
+          "children": 45,
+          "completedMillis": 168.24525,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.394041
+        },
+        {
+          "children": 46,
+          "completedMillis": 174.032041,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.371166
+        },
+        {
+          "children": 47,
+          "completedMillis": 154.86025,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.487833
+        },
+        {
+          "children": 48,
+          "completedMillis": 160.763875,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.515417
+        },
+        {
+          "children": 49,
+          "completedMillis": 178.439958,
+          "gas": 102177,
+          "operation": "createChild",
+          "submitMillis": 4.647791
+        },
+        {
+          "children": 50,
+          "completedMillis": 157.816334,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.438084
+        },
+        {
+          "children": 50,
+          "completedMillis": 138.640792,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 6.914667
+        },
+        {
+          "children": 51,
+          "completedMillis": 256.941958,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.999
+        },
+        {
+          "children": 52,
+          "completedMillis": 176.997417,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.012917
+        },
+        {
+          "children": 53,
+          "completedMillis": 172.089125,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.778542
+        },
+        {
+          "children": 54,
+          "completedMillis": 176.08625,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.67675
+        },
+        {
+          "children": 55,
+          "completedMillis": 186.904333,
+          "gas": 102168,
+          "operation": "createChild",
+          "submitMillis": 4.892042
+        },
+        {
+          "children": 56,
+          "completedMillis": 187.014125,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.98325
+        },
+        {
+          "children": 57,
+          "completedMillis": 171.662041,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.573166
+        },
+        {
+          "children": 58,
+          "completedMillis": 169.434458,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.989458
+        },
+        {
+          "children": 59,
+          "completedMillis": 174.917708,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 5.001333
+        },
+        {
+          "children": 60,
+          "completedMillis": 158.189542,
+          "gas": 102170,
+          "operation": "createChild",
+          "submitMillis": 4.310125
+        },
+        {
+          "children": 61,
+          "completedMillis": 181.381583,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.359916
+        },
+        {
+          "children": 62,
+          "completedMillis": 162.482,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.670625
+        },
+        {
+          "children": 63,
+          "completedMillis": 170.9065,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.507709
+        },
+        {
+          "children": 64,
+          "completedMillis": 163.513084,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.416167
+        },
+        {
+          "children": 65,
+          "completedMillis": 189.10725,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.623167
+        },
+        {
+          "children": 66,
+          "completedMillis": 169.868958,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.273
+        },
+        {
+          "children": 67,
+          "completedMillis": 186.460709,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.861542
+        },
+        {
+          "children": 68,
+          "completedMillis": 170.578334,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.284709
+        },
+        {
+          "children": 69,
+          "completedMillis": 169.825708,
+          "gas": 102177,
+          "operation": "createChild",
+          "submitMillis": 4.6815
+        },
+        {
+          "children": 70,
+          "completedMillis": 178.802875,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.427875
+        },
+        {
+          "children": 71,
+          "completedMillis": 179.10475,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.727625
+        },
+        {
+          "children": 72,
+          "completedMillis": 189.973166,
+          "gas": 102177,
+          "operation": "createChild",
+          "submitMillis": 4.627166
+        },
+        {
+          "children": 73,
+          "completedMillis": 192.366583,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.887958
+        },
+        {
+          "children": 74,
+          "completedMillis": 182.68375,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.545958
+        },
+        {
+          "children": 75,
+          "completedMillis": 169.138834,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.410042
+        },
+        {
+          "children": 75,
+          "completedMillis": 134.117292,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 8.458167
+        },
+        {
+          "children": 76,
+          "completedMillis": 314.05275,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.78525
+        },
+        {
+          "children": 77,
+          "completedMillis": 180.83375,
+          "gas": 102177,
+          "operation": "createChild",
+          "submitMillis": 4.969125
+        },
+        {
+          "children": 78,
+          "completedMillis": 178.197042,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.560042
+        },
+        {
+          "children": 79,
+          "completedMillis": 177.128459,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.797584
+        },
+        {
+          "children": 80,
+          "completedMillis": 181.300584,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.164209
+        },
+        {
+          "children": 81,
+          "completedMillis": 194.987625,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.573166
+        },
+        {
+          "children": 82,
+          "completedMillis": 178.022083,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.648167
+        },
+        {
+          "children": 83,
+          "completedMillis": 184.556666,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.825625
+        },
+        {
+          "children": 84,
+          "completedMillis": 207.58225,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.267125
+        },
+        {
+          "children": 85,
+          "completedMillis": 197.141708,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.516958
+        },
+        {
+          "children": 86,
+          "completedMillis": 191.528334,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.010417
+        },
+        {
+          "children": 87,
+          "completedMillis": 185.455083,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.951417
+        },
+        {
+          "children": 88,
+          "completedMillis": 182.122208,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.679125
+        },
+        {
+          "children": 89,
+          "completedMillis": 181.44725,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.401333
+        },
+        {
+          "children": 90,
+          "completedMillis": 193.360042,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.522375
+        },
+        {
+          "children": 91,
+          "completedMillis": 182.687792,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.511625
+        },
+        {
+          "children": 92,
+          "completedMillis": 180.480209,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.6445
+        },
+        {
+          "children": 93,
+          "completedMillis": 216.584,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.538417
+        },
+        {
+          "children": 94,
+          "completedMillis": 197.736834,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.881125
+        },
+        {
+          "children": 95,
+          "completedMillis": 181.332917,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.753167
+        },
+        {
+          "children": 96,
+          "completedMillis": 200.791083,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.519583
+        },
+        {
+          "children": 97,
+          "completedMillis": 198.470291,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 6.211291
+        },
+        {
+          "children": 98,
+          "completedMillis": 191.182625,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.8395
+        },
+        {
+          "children": 99,
+          "completedMillis": 197.098542,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.373167
+        },
+        {
+          "children": 100,
+          "completedMillis": 207.305917,
+          "gas": 102214,
+          "operation": "createChild",
+          "submitMillis": 4.831792
+        },
+        {
+          "children": 100,
+          "completedMillis": 125.459083,
+          "gas": 3291,
+          "operation": "increment",
+          "submitMillis": 8.928541
+        }
+      ],
+      "wholeReplayChecked": false
+    },
+    {
+      "boundary": "local signed API submission through exact parent receipt; in-memory storage, no HTTP",
+      "children": 100,
+      "cyclic": false,
+      "samples": [
+        {
+          "children": 1,
+          "completedMillis": 512.218292,
+          "gas": 102136,
+          "operation": "createChild",
+          "submitMillis": 67.377125
+        },
+        {
+          "children": 1,
+          "completedMillis": 179.171208,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 13.009791
+        },
+        {
+          "children": 2,
+          "completedMillis": 196.637166,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 6.381375
+        },
+        {
+          "children": 2,
+          "completedMillis": 120.91725,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 7.553958
+        },
+        {
+          "children": 3,
+          "completedMillis": 165.185458,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 6.020958
+        },
+        {
+          "children": 3,
+          "completedMillis": 122.164583,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 7.82725
+        },
+        {
+          "children": 4,
+          "completedMillis": 166.125666,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 4.9915
+        },
+        {
+          "children": 5,
+          "completedMillis": 159.161,
+          "gas": 102144,
+          "operation": "createChild",
+          "submitMillis": 4.931042
+        },
+        {
+          "children": 6,
+          "completedMillis": 163.401875,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 4.945541
+        },
+        {
+          "children": 7,
+          "completedMillis": 155.823708,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 4.8295
+        },
+        {
+          "children": 8,
+          "completedMillis": 162.472916,
+          "gas": 102136,
+          "operation": "createChild",
+          "submitMillis": 4.678166
+        },
+        {
+          "children": 9,
+          "completedMillis": 160.195791,
+          "gas": 102143,
+          "operation": "createChild",
+          "submitMillis": 4.69075
+        },
+        {
+          "children": 10,
+          "completedMillis": 170.724083,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.651833
+        },
+        {
+          "children": 11,
+          "completedMillis": 156.398708,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.103833
+        },
+        {
+          "children": 12,
+          "completedMillis": 146.205583,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.383708
+        },
+        {
+          "children": 13,
+          "completedMillis": 157.145125,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.626625
+        },
+        {
+          "children": 14,
+          "completedMillis": 153.550958,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.236125
+        },
+        {
+          "children": 15,
+          "completedMillis": 148.571666,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.180166
+        },
+        {
+          "children": 16,
+          "completedMillis": 161.552917,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.460125
+        },
+        {
+          "children": 17,
+          "completedMillis": 155.06025,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.572833
+        },
+        {
+          "children": 18,
+          "completedMillis": 156.294542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.453917
+        },
+        {
+          "children": 19,
+          "completedMillis": 158.023542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.647334
+        },
+        {
+          "children": 20,
+          "completedMillis": 161.374125,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 4.371541
+        },
+        {
+          "children": 21,
+          "completedMillis": 156.268666,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.989625
+        },
+        {
+          "children": 22,
+          "completedMillis": 156.328625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.556541
+        },
+        {
+          "children": 23,
+          "completedMillis": 153.5035,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.566583
+        },
+        {
+          "children": 24,
+          "completedMillis": 145.589542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.503042
+        },
+        {
+          "children": 25,
+          "completedMillis": 149.477791,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.597291
+        },
+        {
+          "children": 25,
+          "completedMillis": 113.532042,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 6.682333
+        },
+        {
+          "children": 26,
+          "completedMillis": 205.2305,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.649334
+        },
+        {
+          "children": 27,
+          "completedMillis": 154.124208,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.896625
+        },
+        {
+          "children": 28,
+          "completedMillis": 155.138125,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.430041
+        },
+        {
+          "children": 29,
+          "completedMillis": 149.923,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.392042
+        },
+        {
+          "children": 30,
+          "completedMillis": 161.761708,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.574125
+        },
+        {
+          "children": 31,
+          "completedMillis": 152.923834,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.540875
+        },
+        {
+          "children": 32,
+          "completedMillis": 156.785625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.796541
+        },
+        {
+          "children": 33,
+          "completedMillis": 159.067209,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.338375
+        },
+        {
+          "children": 34,
+          "completedMillis": 149.028792,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.598459
+        },
+        {
+          "children": 35,
+          "completedMillis": 166.988667,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.233834
+        },
+        {
+          "children": 36,
+          "completedMillis": 164.872416,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.525708
+        },
+        {
+          "children": 37,
+          "completedMillis": 161.50425,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.549791
+        },
+        {
+          "children": 38,
+          "completedMillis": 166.697542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.493125
+        },
+        {
+          "children": 39,
+          "completedMillis": 155.261875,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.662458
+        },
+        {
+          "children": 40,
+          "completedMillis": 153.53225,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.675791
+        },
+        {
+          "children": 41,
+          "completedMillis": 170.409542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.334584
+        },
+        {
+          "children": 42,
+          "completedMillis": 171.803167,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.720292
+        },
+        {
+          "children": 43,
+          "completedMillis": 162.257958,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.58525
+        },
+        {
+          "children": 44,
+          "completedMillis": 163.2965,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.789166
+        },
+        {
+          "children": 45,
+          "completedMillis": 175.56925,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 7.487625
+        },
+        {
+          "children": 46,
+          "completedMillis": 162.728333,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.657375
+        },
+        {
+          "children": 47,
+          "completedMillis": 160.163709,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.724042
+        },
+        {
+          "children": 48,
+          "completedMillis": 162.265458,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.429917
+        },
+        {
+          "children": 49,
+          "completedMillis": 167.162625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.59525
+        },
+        {
+          "children": 50,
+          "completedMillis": 168.60875,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 4.657125
+        },
+        {
+          "children": 50,
+          "completedMillis": 134.660667,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 6.743417
+        },
+        {
+          "children": 51,
+          "completedMillis": 262.778125,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.607333
+        },
+        {
+          "children": 52,
+          "completedMillis": 180.504834,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.570917
+        },
+        {
+          "children": 53,
+          "completedMillis": 182.210958,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.586333
+        },
+        {
+          "children": 54,
+          "completedMillis": 164.089666,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.311291
+        },
+        {
+          "children": 55,
+          "completedMillis": 182.164125,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.942166
+        },
+        {
+          "children": 56,
+          "completedMillis": 171.327167,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.236042
+        },
+        {
+          "children": 57,
+          "completedMillis": 166.38875,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.515416
+        },
+        {
+          "children": 58,
+          "completedMillis": 161.897458,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.85925
+        },
+        {
+          "children": 59,
+          "completedMillis": 175.964375,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.065042
+        },
+        {
+          "children": 60,
+          "completedMillis": 171.878125,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.291583
+        },
+        {
+          "children": 61,
+          "completedMillis": 173.700541,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.024083
+        },
+        {
+          "children": 62,
+          "completedMillis": 175.943916,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.648666
+        },
+        {
+          "children": 63,
+          "completedMillis": 164.611625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.260708
+        },
+        {
+          "children": 64,
+          "completedMillis": 175.391708,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.394583
+        },
+        {
+          "children": 65,
+          "completedMillis": 170.929041,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.387208
+        },
+        {
+          "children": 66,
+          "completedMillis": 178.4835,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.864542
+        },
+        {
+          "children": 67,
+          "completedMillis": 162.204583,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.322833
+        },
+        {
+          "children": 68,
+          "completedMillis": 178.98025,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.256875
+        },
+        {
+          "children": 69,
+          "completedMillis": 178.923541,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.691083
+        },
+        {
+          "children": 70,
+          "completedMillis": 187.571375,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.39075
+        },
+        {
+          "children": 71,
+          "completedMillis": 169.427166,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.694208
+        },
+        {
+          "children": 72,
+          "completedMillis": 171.123958,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.608916
+        },
+        {
+          "children": 73,
+          "completedMillis": 185.396834,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.575875
+        },
+        {
+          "children": 74,
+          "completedMillis": 186.096708,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.266541
+        },
+        {
+          "children": 75,
+          "completedMillis": 178.665125,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.801542
+        },
+        {
+          "children": 75,
+          "completedMillis": 122.5025,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 7.157417
+        },
+        {
+          "children": 76,
+          "completedMillis": 323.962042,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.68675
+        },
+        {
+          "children": 77,
+          "completedMillis": 182.629458,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 5.148041
+        },
+        {
+          "children": 78,
+          "completedMillis": 186.2845,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.393917
+        },
+        {
+          "children": 79,
+          "completedMillis": 180.54025,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.559875
+        },
+        {
+          "children": 80,
+          "completedMillis": 174.329666,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.835458
+        },
+        {
+          "children": 81,
+          "completedMillis": 200.609458,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.454417
+        },
+        {
+          "children": 82,
+          "completedMillis": 180.789875,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.795291
+        },
+        {
+          "children": 83,
+          "completedMillis": 192.368,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.609583
+        },
+        {
+          "children": 84,
+          "completedMillis": 190.531875,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.456791
+        },
+        {
+          "children": 85,
+          "completedMillis": 181.28175,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.84025
+        },
+        {
+          "children": 86,
+          "completedMillis": 181.668292,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.979333
+        },
+        {
+          "children": 87,
+          "completedMillis": 195.630041,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.373875
+        },
+        {
+          "children": 88,
+          "completedMillis": 197.245542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.7765
+        },
+        {
+          "children": 89,
+          "completedMillis": 190.312291,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.489916
+        },
+        {
+          "children": 90,
+          "completedMillis": 198.753166,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.992833
+        },
+        {
+          "children": 91,
+          "completedMillis": 210.094,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.96925
+        },
+        {
+          "children": 92,
+          "completedMillis": 191.563334,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.766709
+        },
+        {
+          "children": 93,
+          "completedMillis": 200.649333,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.47175
+        },
+        {
+          "children": 94,
+          "completedMillis": 188.990625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.284666
+        },
+        {
+          "children": 95,
+          "completedMillis": 186.711625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.957333
+        },
+        {
+          "children": 96,
+          "completedMillis": 197.118792,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.54975
+        },
+        {
+          "children": 97,
+          "completedMillis": 198.634709,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.404
+        },
+        {
+          "children": 98,
+          "completedMillis": 202.993583,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.072958
+        },
+        {
+          "children": 99,
+          "completedMillis": 198.552083,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.964458
+        },
+        {
+          "children": 100,
+          "completedMillis": 213.522916,
+          "gas": 102214,
+          "operation": "createChild",
+          "submitMillis": 4.52475
+        },
+        {
+          "children": 100,
+          "completedMillis": 136.226,
+          "gas": 3291,
+          "operation": "increment",
+          "submitMillis": 8.566666
+        }
+      ],
+      "wholeReplayChecked": false
+    }
+  ],
+  "clause-recovery": [
+    {
+      "boundary": "local signed API submission through exact parent receipt; in-memory storage, no HTTP",
+      "children": 100,
+      "cyclic": false,
+      "samples": [
+        {
+          "children": 1,
+          "completedMillis": 542.832791,
+          "gas": 102127,
+          "operation": "createChild",
+          "submitMillis": 70.855041
+        },
+        {
+          "children": 1,
+          "completedMillis": 244.877584,
+          "gas": 3279,
+          "operation": "increment",
+          "submitMillis": 12.872542
+        },
+        {
+          "children": 2,
+          "completedMillis": 179.071292,
+          "gas": 102129,
+          "operation": "createChild",
+          "submitMillis": 6.10425
+        },
+        {
+          "children": 2,
+          "completedMillis": 120.797875,
+          "gas": 3279,
+          "operation": "increment",
+          "submitMillis": 7.905
+        },
+        {
+          "children": 3,
+          "completedMillis": 175.982166,
+          "gas": 102129,
+          "operation": "createChild",
+          "submitMillis": 5.484666
+        },
+        {
+          "children": 3,
+          "completedMillis": 137.397959,
+          "gas": 3279,
+          "operation": "increment",
+          "submitMillis": 8.187542
+        },
+        {
+          "children": 4,
+          "completedMillis": 159.418375,
+          "gas": 102129,
+          "operation": "createChild",
+          "submitMillis": 4.978375
+        },
+        {
+          "children": 5,
+          "completedMillis": 161.893541,
+          "gas": 102129,
+          "operation": "createChild",
+          "submitMillis": 4.563541
+        },
+        {
+          "children": 6,
+          "completedMillis": 200.103084,
+          "gas": 102129,
+          "operation": "createChild",
+          "submitMillis": 5.062292
+        },
+        {
+          "children": 7,
+          "completedMillis": 158.368875,
+          "gas": 102129,
+          "operation": "createChild",
+          "submitMillis": 5.217292
+        },
+        {
+          "children": 8,
+          "completedMillis": 160.188,
+          "gas": 102129,
+          "operation": "createChild",
+          "submitMillis": 4.664958
+        },
+        {
+          "children": 9,
+          "completedMillis": 166.991667,
+          "gas": 102127,
+          "operation": "createChild",
+          "submitMillis": 5.136625
+        },
+        {
+          "children": 10,
+          "completedMillis": 162.823208,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.782625
+        },
+        {
+          "children": 11,
+          "completedMillis": 196.858666,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 5.55925
+        },
+        {
+          "children": 12,
+          "completedMillis": 147.645958,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.854541
+        },
+        {
+          "children": 13,
+          "completedMillis": 154.833,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.454958
+        },
+        {
+          "children": 14,
+          "completedMillis": 142.532667,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 5.412417
+        },
+        {
+          "children": 15,
+          "completedMillis": 162.452375,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 4.549
+        },
+        {
+          "children": 16,
+          "completedMillis": 159.472208,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.621541
+        },
+        {
+          "children": 17,
+          "completedMillis": 145.765375,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.932584
+        },
+        {
+          "children": 18,
+          "completedMillis": 164.25675,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 4.589708
+        },
+        {
+          "children": 19,
+          "completedMillis": 147.076416,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.5635
+        },
+        {
+          "children": 20,
+          "completedMillis": 151.903667,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.589209
+        },
+        {
+          "children": 21,
+          "completedMillis": 158.588,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.635333
+        },
+        {
+          "children": 22,
+          "completedMillis": 142.881209,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.631917
+        },
+        {
+          "children": 23,
+          "completedMillis": 151.830708,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.669583
+        },
+        {
+          "children": 24,
+          "completedMillis": 155.645709,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.949709
+        },
+        {
+          "children": 25,
+          "completedMillis": 145.781041,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.393875
+        },
+        {
+          "children": 25,
+          "completedMillis": 125.968834,
+          "gas": 3282,
+          "operation": "increment",
+          "submitMillis": 6.455959
+        },
+        {
+          "children": 26,
+          "completedMillis": 171.93575,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.579917
+        },
+        {
+          "children": 27,
+          "completedMillis": 156.582875,
+          "gas": 102154,
+          "operation": "createChild",
+          "submitMillis": 4.974458
+        },
+        {
+          "children": 28,
+          "completedMillis": 168.52675,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 4.430208
+        },
+        {
+          "children": 29,
+          "completedMillis": 157.851375,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.478292
+        },
+        {
+          "children": 30,
+          "completedMillis": 149.8065,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.69075
+        },
+        {
+          "children": 31,
+          "completedMillis": 172.569791,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.419458
+        },
+        {
+          "children": 32,
+          "completedMillis": 162.929083,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.747625
+        },
+        {
+          "children": 33,
+          "completedMillis": 167.078209,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.782917
+        },
+        {
+          "children": 34,
+          "completedMillis": 150.67275,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 4.801541
+        },
+        {
+          "children": 35,
+          "completedMillis": 161.642792,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.471167
+        },
+        {
+          "children": 36,
+          "completedMillis": 150.931125,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.593458
+        },
+        {
+          "children": 37,
+          "completedMillis": 162.4065,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.7025
+        },
+        {
+          "children": 38,
+          "completedMillis": 161.912667,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.527958
+        },
+        {
+          "children": 39,
+          "completedMillis": 155.801375,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.757209
+        },
+        {
+          "children": 40,
+          "completedMillis": 164.017167,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.720834
+        },
+        {
+          "children": 41,
+          "completedMillis": 152.765458,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.873167
+        },
+        {
+          "children": 42,
+          "completedMillis": 167.420208,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.711958
+        },
+        {
+          "children": 43,
+          "completedMillis": 150.744084,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.515209
+        },
+        {
+          "children": 44,
+          "completedMillis": 169.85225,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.484
+        },
+        {
+          "children": 45,
+          "completedMillis": 160.362084,
+          "gas": 102161,
+          "operation": "createChild",
+          "submitMillis": 5.38925
+        },
+        {
+          "children": 46,
+          "completedMillis": 167.107583,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 4.513458
+        },
+        {
+          "children": 47,
+          "completedMillis": 156.132792,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.61175
+        },
+        {
+          "children": 48,
+          "completedMillis": 187.169,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 5.266333
+        },
+        {
+          "children": 49,
+          "completedMillis": 162.694125,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 5.341375
+        },
+        {
+          "children": 50,
+          "completedMillis": 162.664542,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 4.601292
+        },
+        {
+          "children": 50,
+          "completedMillis": 126.3195,
+          "gas": 3282,
+          "operation": "increment",
+          "submitMillis": 6.807959
+        },
+        {
+          "children": 51,
+          "completedMillis": 171.408042,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 4.949708
+        },
+        {
+          "children": 52,
+          "completedMillis": 172.197083,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.742708
+        },
+        {
+          "children": 53,
+          "completedMillis": 173.45625,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.758125
+        },
+        {
+          "children": 54,
+          "completedMillis": 175.117375,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.660584
+        },
+        {
+          "children": 55,
+          "completedMillis": 164.029375,
+          "gas": 102161,
+          "operation": "createChild",
+          "submitMillis": 4.56025
+        },
+        {
+          "children": 56,
+          "completedMillis": 177.2755,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.596
+        },
+        {
+          "children": 57,
+          "completedMillis": 175.185667,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 5.77225
+        },
+        {
+          "children": 58,
+          "completedMillis": 171.6645,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 5.184167
+        },
+        {
+          "children": 59,
+          "completedMillis": 175.616958,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.934666
+        },
+        {
+          "children": 60,
+          "completedMillis": 167.579125,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.442
+        },
+        {
+          "children": 61,
+          "completedMillis": 174.339791,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 5.386416
+        },
+        {
+          "children": 62,
+          "completedMillis": 182.849375,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.813375
+        },
+        {
+          "children": 63,
+          "completedMillis": 177.18475,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.405584
+        },
+        {
+          "children": 64,
+          "completedMillis": 195.242542,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.5785
+        },
+        {
+          "children": 65,
+          "completedMillis": 185.927917,
+          "gas": 102161,
+          "operation": "createChild",
+          "submitMillis": 6.126708
+        },
+        {
+          "children": 66,
+          "completedMillis": 184.766708,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.975583
+        },
+        {
+          "children": 67,
+          "completedMillis": 180.303708,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.889
+        },
+        {
+          "children": 68,
+          "completedMillis": 184.519042,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.651833
+        },
+        {
+          "children": 69,
+          "completedMillis": 170.288709,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.5995
+        },
+        {
+          "children": 70,
+          "completedMillis": 183.941416,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.590041
+        },
+        {
+          "children": 71,
+          "completedMillis": 170.838041,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 4.910416
+        },
+        {
+          "children": 72,
+          "completedMillis": 166.156041,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.480041
+        },
+        {
+          "children": 73,
+          "completedMillis": 181.794208,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.67625
+        },
+        {
+          "children": 74,
+          "completedMillis": 163.272292,
+          "gas": 102155,
+          "operation": "createChild",
+          "submitMillis": 4.555625
+        },
+        {
+          "children": 75,
+          "completedMillis": 178.814416,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.432375
+        },
+        {
+          "children": 75,
+          "completedMillis": 122.497083,
+          "gas": 3282,
+          "operation": "increment",
+          "submitMillis": 6.872458
+        },
+        {
+          "children": 76,
+          "completedMillis": 192.872125,
+          "gas": 102161,
+          "operation": "createChild",
+          "submitMillis": 4.658625
+        },
+        {
+          "children": 77,
+          "completedMillis": 185.652042,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.561084
+        },
+        {
+          "children": 78,
+          "completedMillis": 191.335916,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 4.808666
+        },
+        {
+          "children": 79,
+          "completedMillis": 178.639375,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.935625
+        },
+        {
+          "children": 80,
+          "completedMillis": 177.79375,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.595708
+        },
+        {
+          "children": 81,
+          "completedMillis": 187.84025,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.732208
+        },
+        {
+          "children": 82,
+          "completedMillis": 191.995375,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 6.558833
+        },
+        {
+          "children": 83,
+          "completedMillis": 177.716375,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.842875
+        },
+        {
+          "children": 84,
+          "completedMillis": 176.777708,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.658791
+        },
+        {
+          "children": 85,
+          "completedMillis": 197.130625,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.729708
+        },
+        {
+          "children": 86,
+          "completedMillis": 191.249791,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 5.939375
+        },
+        {
+          "children": 87,
+          "completedMillis": 186.193959,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.92675
+        },
+        {
+          "children": 88,
+          "completedMillis": 202.882,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 4.644458
+        },
+        {
+          "children": 89,
+          "completedMillis": 193.091125,
+          "gas": 102155,
+          "operation": "createChild",
+          "submitMillis": 6.033625
+        },
+        {
+          "children": 90,
+          "completedMillis": 198.432584,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.965834
+        },
+        {
+          "children": 91,
+          "completedMillis": 202.52,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.618125
+        },
+        {
+          "children": 92,
+          "completedMillis": 199.42675,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 6.15775
+        },
+        {
+          "children": 93,
+          "completedMillis": 193.130333,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.964333
+        },
+        {
+          "children": 94,
+          "completedMillis": 203.568042,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.734333
+        },
+        {
+          "children": 95,
+          "completedMillis": 196.572542,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 6.294583
+        },
+        {
+          "children": 96,
+          "completedMillis": 185.352541,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.990375
+        },
+        {
+          "children": 97,
+          "completedMillis": 200.472792,
+          "gas": 102164,
+          "operation": "createChild",
+          "submitMillis": 4.629375
+        },
+        {
+          "children": 98,
+          "completedMillis": 204.497625,
+          "gas": 102163,
+          "operation": "createChild",
+          "submitMillis": 6.16425
+        },
+        {
+          "children": 99,
+          "completedMillis": 196.157292,
+          "gas": 102162,
+          "operation": "createChild",
+          "submitMillis": 5.114667
+        },
+        {
+          "children": 100,
+          "completedMillis": 199.398208,
+          "gas": 102197,
+          "operation": "createChild",
+          "submitMillis": 4.472833
+        },
+        {
+          "children": 100,
+          "completedMillis": 129.593292,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 8.771333
+        }
+      ],
+      "wholeReplayChecked": false
+    },
+    {
+      "boundary": "local signed API submission through exact parent receipt; in-memory storage, no HTTP",
+      "children": 100,
+      "cyclic": false,
+      "samples": [
+        {
+          "children": 1,
+          "completedMillis": 539.506208,
+          "gas": 102141,
+          "operation": "createChild",
+          "submitMillis": 68.525791
+        },
+        {
+          "children": 1,
+          "completedMillis": 219.891042,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 12.533708
+        },
+        {
+          "children": 2,
+          "completedMillis": 171.246459,
+          "gas": 102140,
+          "operation": "createChild",
+          "submitMillis": 5.641084
+        },
+        {
+          "children": 2,
+          "completedMillis": 127.916666,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 7.639041
+        },
+        {
+          "children": 3,
+          "completedMillis": 162.224292,
+          "gas": 102141,
+          "operation": "createChild",
+          "submitMillis": 5.795917
+        },
+        {
+          "children": 3,
+          "completedMillis": 107.264541,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 8.080416
+        },
+        {
+          "children": 4,
+          "completedMillis": 152.762792,
+          "gas": 102141,
+          "operation": "createChild",
+          "submitMillis": 4.650958
+        },
+        {
+          "children": 5,
+          "completedMillis": 172.868958,
+          "gas": 102138,
+          "operation": "createChild",
+          "submitMillis": 5.224083
+        },
+        {
+          "children": 6,
+          "completedMillis": 154.365083,
+          "gas": 102141,
+          "operation": "createChild",
+          "submitMillis": 5.242792
+        },
+        {
+          "children": 7,
+          "completedMillis": 160.140209,
+          "gas": 102141,
+          "operation": "createChild",
+          "submitMillis": 5.576375
+        },
+        {
+          "children": 8,
+          "completedMillis": 165.805417,
+          "gas": 102141,
+          "operation": "createChild",
+          "submitMillis": 4.3745
+        },
+        {
+          "children": 9,
+          "completedMillis": 148.635,
+          "gas": 102139,
+          "operation": "createChild",
+          "submitMillis": 4.605709
+        },
+        {
+          "children": 10,
+          "completedMillis": 144.694083,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.624292
+        },
+        {
+          "children": 11,
+          "completedMillis": 157.936167,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.116542
+        },
+        {
+          "children": 12,
+          "completedMillis": 140.390833,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.182083
+        },
+        {
+          "children": 13,
+          "completedMillis": 142.292709,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.314209
+        },
+        {
+          "children": 14,
+          "completedMillis": 155.303625,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.523875
+        },
+        {
+          "children": 15,
+          "completedMillis": 153.596875,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.423416
+        },
+        {
+          "children": 16,
+          "completedMillis": 143.833125,
+          "gas": 102174,
+          "operation": "createChild",
+          "submitMillis": 4.495209
+        },
+        {
+          "children": 17,
+          "completedMillis": 156.792625,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.004333
+        },
+        {
+          "children": 18,
+          "completedMillis": 157.96325,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.826125
+        },
+        {
+          "children": 19,
+          "completedMillis": 154.527583,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.213917
+        },
+        {
+          "children": 20,
+          "completedMillis": 148.859959,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.693375
+        },
+        {
+          "children": 21,
+          "completedMillis": 163.63175,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.796584
+        },
+        {
+          "children": 22,
+          "completedMillis": 164.725458,
+          "gas": 102167,
+          "operation": "createChild",
+          "submitMillis": 4.691167
+        },
+        {
+          "children": 23,
+          "completedMillis": 158.3105,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.467417
+        },
+        {
+          "children": 24,
+          "completedMillis": 152.835583,
+          "gas": 102174,
+          "operation": "createChild",
+          "submitMillis": 4.443875
+        },
+        {
+          "children": 25,
+          "completedMillis": 149.1075,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.36525
+        },
+        {
+          "children": 25,
+          "completedMillis": 122.628,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 7.0495
+        },
+        {
+          "children": 26,
+          "completedMillis": 164.092542,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.451417
+        },
+        {
+          "children": 27,
+          "completedMillis": 156.439458,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.878875
+        },
+        {
+          "children": 28,
+          "completedMillis": 148.794459,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.516709
+        },
+        {
+          "children": 29,
+          "completedMillis": 157.931375,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.431334
+        },
+        {
+          "children": 30,
+          "completedMillis": 159.745959,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.590167
+        },
+        {
+          "children": 31,
+          "completedMillis": 153.203959,
+          "gas": 102175,
+          "operation": "createChild",
+          "submitMillis": 5.062584
+        },
+        {
+          "children": 32,
+          "completedMillis": 166.136625,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.673416
+        },
+        {
+          "children": 33,
+          "completedMillis": 174.74525,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.688458
+        },
+        {
+          "children": 34,
+          "completedMillis": 161.29975,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.639708
+        },
+        {
+          "children": 35,
+          "completedMillis": 158.510083,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.738792
+        },
+        {
+          "children": 36,
+          "completedMillis": 150.871542,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.756584
+        },
+        {
+          "children": 37,
+          "completedMillis": 165.89025,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.012917
+        },
+        {
+          "children": 38,
+          "completedMillis": 156.020958,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.532375
+        },
+        {
+          "children": 39,
+          "completedMillis": 159.183667,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.25775
+        },
+        {
+          "children": 40,
+          "completedMillis": 154.574375,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.791084
+        },
+        {
+          "children": 41,
+          "completedMillis": 151.255458,
+          "gas": 102175,
+          "operation": "createChild",
+          "submitMillis": 4.700958
+        },
+        {
+          "children": 42,
+          "completedMillis": 166.701875,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.355083
+        },
+        {
+          "children": 43,
+          "completedMillis": 145.987833,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.528583
+        },
+        {
+          "children": 44,
+          "completedMillis": 173.544084,
+          "gas": 102165,
+          "operation": "createChild",
+          "submitMillis": 4.417042
+        },
+        {
+          "children": 45,
+          "completedMillis": 150.884625,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.429958
+        },
+        {
+          "children": 46,
+          "completedMillis": 172.73975,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.375292
+        },
+        {
+          "children": 47,
+          "completedMillis": 154.813958,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.375416
+        },
+        {
+          "children": 48,
+          "completedMillis": 177.15525,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.530334
+        },
+        {
+          "children": 49,
+          "completedMillis": 159.446375,
+          "gas": 102175,
+          "operation": "createChild",
+          "submitMillis": 4.539708
+        },
+        {
+          "children": 50,
+          "completedMillis": 175.479666,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.301958
+        },
+        {
+          "children": 50,
+          "completedMillis": 129.223375,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 7.046875
+        },
+        {
+          "children": 51,
+          "completedMillis": 183.736125,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.573125
+        },
+        {
+          "children": 52,
+          "completedMillis": 163.010667,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.8665
+        },
+        {
+          "children": 53,
+          "completedMillis": 171.416125,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.94925
+        },
+        {
+          "children": 54,
+          "completedMillis": 162.4075,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.575042
+        },
+        {
+          "children": 55,
+          "completedMillis": 190.677708,
+          "gas": 102165,
+          "operation": "createChild",
+          "submitMillis": 5.104541
+        },
+        {
+          "children": 56,
+          "completedMillis": 158.804166,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.901208
+        },
+        {
+          "children": 57,
+          "completedMillis": 169.805583,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.489167
+        },
+        {
+          "children": 58,
+          "completedMillis": 158.369792,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.803792
+        },
+        {
+          "children": 59,
+          "completedMillis": 194.726041,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.917083
+        },
+        {
+          "children": 60,
+          "completedMillis": 177.270792,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.533875
+        },
+        {
+          "children": 61,
+          "completedMillis": 173.145,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.857417
+        },
+        {
+          "children": 62,
+          "completedMillis": 176.846417,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.191375
+        },
+        {
+          "children": 63,
+          "completedMillis": 166.424291,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.443166
+        },
+        {
+          "children": 64,
+          "completedMillis": 172.030041,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.565208
+        },
+        {
+          "children": 65,
+          "completedMillis": 174.2475,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.608292
+        },
+        {
+          "children": 66,
+          "completedMillis": 165.9795,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.092667
+        },
+        {
+          "children": 67,
+          "completedMillis": 175.131291,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.523125
+        },
+        {
+          "children": 68,
+          "completedMillis": 163.462625,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.533
+        },
+        {
+          "children": 69,
+          "completedMillis": 192.394875,
+          "gas": 102174,
+          "operation": "createChild",
+          "submitMillis": 5.063541
+        },
+        {
+          "children": 70,
+          "completedMillis": 184.539375,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 6.738708
+        },
+        {
+          "children": 71,
+          "completedMillis": 183.448709,
+          "gas": 102175,
+          "operation": "createChild",
+          "submitMillis": 5.096334
+        },
+        {
+          "children": 72,
+          "completedMillis": 178.823667,
+          "gas": 102174,
+          "operation": "createChild",
+          "submitMillis": 4.412
+        },
+        {
+          "children": 73,
+          "completedMillis": 193.0945,
+          "gas": 102175,
+          "operation": "createChild",
+          "submitMillis": 4.461041
+        },
+        {
+          "children": 74,
+          "completedMillis": 177.941209,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.683667
+        },
+        {
+          "children": 75,
+          "completedMillis": 166.48825,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.65225
+        },
+        {
+          "children": 75,
+          "completedMillis": 114.409791,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 6.44675
+        },
+        {
+          "children": 76,
+          "completedMillis": 196.620541,
+          "gas": 102175,
+          "operation": "createChild",
+          "submitMillis": 4.843166
+        },
+        {
+          "children": 77,
+          "completedMillis": 179.572125,
+          "gas": 102174,
+          "operation": "createChild",
+          "submitMillis": 4.70425
+        },
+        {
+          "children": 78,
+          "completedMillis": 176.145209,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.889334
+        },
+        {
+          "children": 79,
+          "completedMillis": 177.853125,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.248125
+        },
+        {
+          "children": 80,
+          "completedMillis": 182.615416,
+          "gas": 102174,
+          "operation": "createChild",
+          "submitMillis": 4.8465
+        },
+        {
+          "children": 81,
+          "completedMillis": 179.866375,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.579708
+        },
+        {
+          "children": 82,
+          "completedMillis": 182.213917,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.129334
+        },
+        {
+          "children": 83,
+          "completedMillis": 191.531125,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.973041
+        },
+        {
+          "children": 84,
+          "completedMillis": 183.681292,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.928667
+        },
+        {
+          "children": 85,
+          "completedMillis": 183.119375,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.606666
+        },
+        {
+          "children": 86,
+          "completedMillis": 207.06,
+          "gas": 102175,
+          "operation": "createChild",
+          "submitMillis": 4.849041
+        },
+        {
+          "children": 87,
+          "completedMillis": 186.657375,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 6.301792
+        },
+        {
+          "children": 88,
+          "completedMillis": 182.719709,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.942375
+        },
+        {
+          "children": 89,
+          "completedMillis": 190.163708,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.633416
+        },
+        {
+          "children": 90,
+          "completedMillis": 190.611542,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.623625
+        },
+        {
+          "children": 91,
+          "completedMillis": 201.17325,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 5.425292
+        },
+        {
+          "children": 92,
+          "completedMillis": 210.698333,
+          "gas": 102174,
+          "operation": "createChild",
+          "submitMillis": 4.780042
+        },
+        {
+          "children": 93,
+          "completedMillis": 192.267375,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 6.658709
+        },
+        {
+          "children": 94,
+          "completedMillis": 187.529791,
+          "gas": 102175,
+          "operation": "createChild",
+          "submitMillis": 4.852083
+        },
+        {
+          "children": 95,
+          "completedMillis": 203.390792,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 4.744083
+        },
+        {
+          "children": 96,
+          "completedMillis": 190.802667,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 6.0265
+        },
+        {
+          "children": 97,
+          "completedMillis": 196.063334,
+          "gas": 102167,
+          "operation": "createChild",
+          "submitMillis": 4.842542
+        },
+        {
+          "children": 98,
+          "completedMillis": 204.192709,
+          "gas": 102175,
+          "operation": "createChild",
+          "submitMillis": 5.010792
+        },
+        {
+          "children": 99,
+          "completedMillis": 198.266291,
+          "gas": 102176,
+          "operation": "createChild",
+          "submitMillis": 6.111083
+        },
+        {
+          "children": 100,
+          "completedMillis": 195.57975,
+          "gas": 102211,
+          "operation": "createChild",
+          "submitMillis": 4.807833
+        },
+        {
+          "children": 100,
+          "completedMillis": 141.154458,
+          "gas": 3291,
+          "operation": "increment",
+          "submitMillis": 6.749417
+        }
+      ],
+      "wholeReplayChecked": false
+    },
+    {
+      "boundary": "local signed API submission through exact parent receipt; in-memory storage, no HTTP",
+      "children": 100,
+      "cyclic": false,
+      "samples": [
+        {
+          "children": 1,
+          "completedMillis": 536.676792,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 70.04025
+        },
+        {
+          "children": 1,
+          "completedMillis": 226.630833,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 11.651542
+        },
+        {
+          "children": 2,
+          "completedMillis": 170.18925,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.975084
+        },
+        {
+          "children": 2,
+          "completedMillis": 121.59975,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 7.416458
+        },
+        {
+          "children": 3,
+          "completedMillis": 162.03475,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.024041
+        },
+        {
+          "children": 3,
+          "completedMillis": 122.923917,
+          "gas": 3285,
+          "operation": "increment",
+          "submitMillis": 7.553
+        },
+        {
+          "children": 4,
+          "completedMillis": 165.148375,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.005583
+        },
+        {
+          "children": 5,
+          "completedMillis": 174.585208,
+          "gas": 102136,
+          "operation": "createChild",
+          "submitMillis": 5.100708
+        },
+        {
+          "children": 6,
+          "completedMillis": 162.83775,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 4.988
+        },
+        {
+          "children": 7,
+          "completedMillis": 162.785667,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 4.597917
+        },
+        {
+          "children": 8,
+          "completedMillis": 154.071625,
+          "gas": 102145,
+          "operation": "createChild",
+          "submitMillis": 5.114583
+        },
+        {
+          "children": 9,
+          "completedMillis": 147.506292,
+          "gas": 102143,
+          "operation": "createChild",
+          "submitMillis": 4.6
+        },
+        {
+          "children": 10,
+          "completedMillis": 152.066041,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 7.317583
+        },
+        {
+          "children": 11,
+          "completedMillis": 157.922709,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.277334
+        },
+        {
+          "children": 12,
+          "completedMillis": 156.2835,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.781333
+        },
+        {
+          "children": 13,
+          "completedMillis": 161.198541,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.525541
+        },
+        {
+          "children": 14,
+          "completedMillis": 169.786083,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.505916
+        },
+        {
+          "children": 15,
+          "completedMillis": 148.266,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 4.5675
+        },
+        {
+          "children": 16,
+          "completedMillis": 150.762375,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.97375
+        },
+        {
+          "children": 17,
+          "completedMillis": 161.388792,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.566208
+        },
+        {
+          "children": 18,
+          "completedMillis": 153.704667,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.4365
+        },
+        {
+          "children": 19,
+          "completedMillis": 153.328459,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.627
+        },
+        {
+          "children": 20,
+          "completedMillis": 162.6135,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.464833
+        },
+        {
+          "children": 21,
+          "completedMillis": 154.869375,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.624125
+        },
+        {
+          "children": 22,
+          "completedMillis": 154.502542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.66325
+        },
+        {
+          "children": 23,
+          "completedMillis": 156.414416,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.977166
+        },
+        {
+          "children": 24,
+          "completedMillis": 154.667625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.86375
+        },
+        {
+          "children": 25,
+          "completedMillis": 153.482459,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.586375
+        },
+        {
+          "children": 25,
+          "completedMillis": 114.412375,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 6.830667
+        },
+        {
+          "children": 26,
+          "completedMillis": 152.856083,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 4.906291
+        },
+        {
+          "children": 27,
+          "completedMillis": 158.161042,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.270417
+        },
+        {
+          "children": 28,
+          "completedMillis": 159.862917,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.377584
+        },
+        {
+          "children": 29,
+          "completedMillis": 154.404166,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.551
+        },
+        {
+          "children": 30,
+          "completedMillis": 159.392375,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.237542
+        },
+        {
+          "children": 31,
+          "completedMillis": 162.036125,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.797166
+        },
+        {
+          "children": 32,
+          "completedMillis": 177.873167,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.917542
+        },
+        {
+          "children": 33,
+          "completedMillis": 161.671917,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.564084
+        },
+        {
+          "children": 34,
+          "completedMillis": 155.490208,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.560041
+        },
+        {
+          "children": 35,
+          "completedMillis": 165.640959,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 4.972084
+        },
+        {
+          "children": 36,
+          "completedMillis": 165.218458,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.913833
+        },
+        {
+          "children": 37,
+          "completedMillis": 157.016042,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.730125
+        },
+        {
+          "children": 38,
+          "completedMillis": 161.083458,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.755458
+        },
+        {
+          "children": 39,
+          "completedMillis": 164.488416,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.719833
+        },
+        {
+          "children": 40,
+          "completedMillis": 157.728333,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.779375
+        },
+        {
+          "children": 41,
+          "completedMillis": 158.54975,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 5.314875
+        },
+        {
+          "children": 42,
+          "completedMillis": 158.096667,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.668709
+        },
+        {
+          "children": 43,
+          "completedMillis": 164.679709,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.853667
+        },
+        {
+          "children": 44,
+          "completedMillis": 155.952417,
+          "gas": 102169,
+          "operation": "createChild",
+          "submitMillis": 4.59575
+        },
+        {
+          "children": 45,
+          "completedMillis": 173.084917,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.162125
+        },
+        {
+          "children": 46,
+          "completedMillis": 166.347375,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.305958
+        },
+        {
+          "children": 47,
+          "completedMillis": 163.83225,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.760667
+        },
+        {
+          "children": 48,
+          "completedMillis": 158.717791,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.944208
+        },
+        {
+          "children": 49,
+          "completedMillis": 161.42925,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.448334
+        },
+        {
+          "children": 50,
+          "completedMillis": 168.515542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.940917
+        },
+        {
+          "children": 50,
+          "completedMillis": 117.835375,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 6.558041
+        },
+        {
+          "children": 51,
+          "completedMillis": 179.543583,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.572125
+        },
+        {
+          "children": 52,
+          "completedMillis": 179.48575,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.89325
+        },
+        {
+          "children": 53,
+          "completedMillis": 176.238166,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.916958
+        },
+        {
+          "children": 54,
+          "completedMillis": 169.269792,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.926167
+        },
+        {
+          "children": 55,
+          "completedMillis": 163.036209,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.713417
+        },
+        {
+          "children": 56,
+          "completedMillis": 186.063708,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.31575
+        },
+        {
+          "children": 57,
+          "completedMillis": 162.88375,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.468
+        },
+        {
+          "children": 58,
+          "completedMillis": 160.516834,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.847125
+        },
+        {
+          "children": 59,
+          "completedMillis": 169.032833,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.828167
+        },
+        {
+          "children": 60,
+          "completedMillis": 181.886584,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.571667
+        },
+        {
+          "children": 61,
+          "completedMillis": 172.988583,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.496416
+        },
+        {
+          "children": 62,
+          "completedMillis": 177.023666,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.756208
+        },
+        {
+          "children": 63,
+          "completedMillis": 172.203708,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.564708
+        },
+        {
+          "children": 64,
+          "completedMillis": 168.044459,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 5.543834
+        },
+        {
+          "children": 65,
+          "completedMillis": 176.587291,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.753958
+        },
+        {
+          "children": 66,
+          "completedMillis": 187.947,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.350792
+        },
+        {
+          "children": 67,
+          "completedMillis": 164.733125,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.802709
+        },
+        {
+          "children": 68,
+          "completedMillis": 185.542167,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 4.80425
+        },
+        {
+          "children": 69,
+          "completedMillis": 206.212875,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.384459
+        },
+        {
+          "children": 70,
+          "completedMillis": 164.278041,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.728666
+        },
+        {
+          "children": 71,
+          "completedMillis": 182.438917,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.732375
+        },
+        {
+          "children": 72,
+          "completedMillis": 181.516459,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.014209
+        },
+        {
+          "children": 73,
+          "completedMillis": 180.195375,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.155542
+        },
+        {
+          "children": 74,
+          "completedMillis": 185.132625,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.723958
+        },
+        {
+          "children": 75,
+          "completedMillis": 191.396208,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.568125
+        },
+        {
+          "children": 75,
+          "completedMillis": 125.211917,
+          "gas": 3288,
+          "operation": "increment",
+          "submitMillis": 8.632917
+        },
+        {
+          "children": 76,
+          "completedMillis": 194.277541,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.611458
+        },
+        {
+          "children": 77,
+          "completedMillis": 191.115334,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.939625
+        },
+        {
+          "children": 78,
+          "completedMillis": 183.972,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.16525
+        },
+        {
+          "children": 79,
+          "completedMillis": 187.025875,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.212459
+        },
+        {
+          "children": 80,
+          "completedMillis": 178.519542,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.842084
+        },
+        {
+          "children": 81,
+          "completedMillis": 187.176583,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.108166
+        },
+        {
+          "children": 82,
+          "completedMillis": 192.412125,
+          "gas": 102177,
+          "operation": "createChild",
+          "submitMillis": 4.742375
+        },
+        {
+          "children": 83,
+          "completedMillis": 183.424208,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.574458
+        },
+        {
+          "children": 84,
+          "completedMillis": 200.973,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.060208
+        },
+        {
+          "children": 85,
+          "completedMillis": 181.65,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.876542
+        },
+        {
+          "children": 86,
+          "completedMillis": 207.430875,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.918709
+        },
+        {
+          "children": 87,
+          "completedMillis": 182.013041,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.91625
+        },
+        {
+          "children": 88,
+          "completedMillis": 204.992708,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 4.756333
+        },
+        {
+          "children": 89,
+          "completedMillis": 193.2465,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.247708
+        },
+        {
+          "children": 90,
+          "completedMillis": 182.36525,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.411375
+        },
+        {
+          "children": 91,
+          "completedMillis": 193.646208,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.842458
+        },
+        {
+          "children": 92,
+          "completedMillis": 194.04125,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.078208
+        },
+        {
+          "children": 93,
+          "completedMillis": 189.625167,
+          "gas": 102178,
+          "operation": "createChild",
+          "submitMillis": 4.986209
+        },
+        {
+          "children": 94,
+          "completedMillis": 191.877083,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.713833
+        },
+        {
+          "children": 95,
+          "completedMillis": 189.159292,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 5.947583
+        },
+        {
+          "children": 96,
+          "completedMillis": 185.753208,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 6.671417
+        },
+        {
+          "children": 97,
+          "completedMillis": 197.257209,
+          "gas": 102180,
+          "operation": "createChild",
+          "submitMillis": 4.6405
+        },
+        {
+          "children": 98,
+          "completedMillis": 214.707917,
+          "gas": 102171,
+          "operation": "createChild",
+          "submitMillis": 4.894917
+        },
+        {
+          "children": 99,
+          "completedMillis": 192.174417,
+          "gas": 102179,
+          "operation": "createChild",
+          "submitMillis": 5.095542
+        },
+        {
+          "children": 100,
+          "completedMillis": 217.250041,
+          "gas": 102215,
+          "operation": "createChild",
+          "submitMillis": 4.744833
+        },
+        {
+          "children": 100,
+          "completedMillis": 114.097208,
+          "gas": 3291,
+          "operation": "increment",
+          "submitMillis": 8.304416
+        }
+      ],
+      "wholeReplayChecked": false
+    }
+  ]
+}

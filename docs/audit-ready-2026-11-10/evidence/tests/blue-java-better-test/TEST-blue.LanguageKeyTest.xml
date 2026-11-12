@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.LanguageKeyTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:01.559Z" hostname="MacBook-Pro-5.local" time="0.003">
+  <properties />
+  <testcase name="[1] false" classname="blue.LanguageKeyTest" time="0.0" />
+  <testcase name="[2] true" classname="blue.LanguageKeyTest" time="0.001" />
+  <testcase name="[1] false" classname="blue.LanguageKeyTest" time="0.0" />
+  <testcase name="[2] true" classname="blue.LanguageKeyTest" time="0.0" />
+  <testcase name="[1] false" classname="blue.LanguageKeyTest" time="0.001" />
+  <testcase name="[2] true" classname="blue.LanguageKeyTest" time="0.0" />
+  </testsuite>

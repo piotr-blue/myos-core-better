@@ -1,0 +1,106 @@
+{
+  "name": "Local and imported timelines",
+  "count": 0,
+  "contracts": {
+    "external0": {
+      "type": "Coordination/Public Timeline Channel",
+      "provider": {
+        "endpoint": {
+          "type": {
+            "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+          },
+          "value": "https://dzkbzs1daaeut.cloudfront.net/api/provider"
+        },
+        "publicKey": {
+          "type": {
+            "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+          },
+          "value": "80f87666592a03b1a62f57707ce2fe0e89bdd7c3840415cbcc90975d9f552b6c"
+        },
+        "type": {
+          "blueId": "Br6vgZ3rWsNG8bTx5FMCGM78brNtD1UTrs2LhKsGMX5C"
+        }
+      },
+      "url": "https://dzkbzs1daaeut.cloudfront.net/api/provider/timelines/dc3f70e0410c80bb7169517327c76e155514bbcea6780e230bfeb471dd4a96aa"
+    },
+    "external1": {
+      "type": "Coordination/Public Timeline Channel",
+      "provider": {
+        "endpoint": {
+          "type": {
+            "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+          },
+          "value": "https://dzkbzs1daaeut.cloudfront.net/api/provider"
+        },
+        "publicKey": {
+          "type": {
+            "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+          },
+          "value": "80f87666592a03b1a62f57707ce2fe0e89bdd7c3840415cbcc90975d9f552b6c"
+        },
+        "type": {
+          "blueId": "Br6vgZ3rWsNG8bTx5FMCGM78brNtD1UTrs2LhKsGMX5C"
+        }
+      },
+      "url": "https://dzkbzs1daaeut.cloudfront.net/api/provider/timelines/aad7906931a9cdc3c6853bce69219a14811bf931cca39ad955c55618f9959966"
+    },
+    "all": {
+      "type": "Contracts/Composite External Channels",
+      "channels": [
+        "external0",
+        "external1"
+      ]
+    },
+    "receive": {
+      "type": "Contracts/Sequential Workflow",
+      "channel": "all",
+      "steps": [
+        {
+          "type": "Contracts/Update Document",
+          "changeset": [
+            {
+              "op": "replace",
+              "path": "/count",
+              "val": {
+                "$add": [
+                  {
+                    "$document": "/count"
+                  },
+                  {
+                    "$event": "/message/amount"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "local": {
+      "type": "Coordination/Timeline Channel"
+    },
+    "increment": {
+      "type": "Contracts/Sequential Workflow Operation",
+      "channel": "local",
+      "steps": [
+        {
+          "type": "Contracts/Update Document",
+          "changeset": [
+            {
+              "op": "replace",
+              "path": "/count",
+              "val": {
+                "$add": [
+                  {
+                    "$document": "/count"
+                  },
+                  5
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

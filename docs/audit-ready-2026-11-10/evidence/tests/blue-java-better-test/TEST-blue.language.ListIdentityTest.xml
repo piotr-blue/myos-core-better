@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.ListIdentityTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.473Z" hostname="MacBook-Pro-5.local" time="0.01">
+  <properties />
+  <testcase name="values=[1], remove=0, collapsed=false" classname="blue.language.ListIdentityTest" time="0.002" />
+  <testcase name="values=[1], remove=0, collapsed=true" classname="blue.language.ListIdentityTest" time="0.001" />
+  <testcase name="values=[1, 2, 3], remove=0, collapsed=false" classname="blue.language.ListIdentityTest" time="0.0" />
+  <testcase name="values=[1, 2, 3], remove=0, collapsed=true" classname="blue.language.ListIdentityTest" time="0.0" />
+  <testcase name="values=[1, 2, 3], remove=1, collapsed=false" classname="blue.language.ListIdentityTest" time="0.001" />
+  <testcase name="values=[1, 2, 3], remove=1, collapsed=true" classname="blue.language.ListIdentityTest" time="0.0" />
+  <testcase name="values=[1, 2, 3], remove=2, collapsed=false" classname="blue.language.ListIdentityTest" time="0.001" />
+  <testcase name="values=[1, 2, 3], remove=2, collapsed=true" classname="blue.language.ListIdentityTest" time="0.0" />
+  <testcase name="values=[5, 5, -9, 5], remove=0, collapsed=false" classname="blue.language.ListIdentityTest" time="0.001" />
+  <testcase name="values=[5, 5, -9, 5], remove=0, collapsed=true" classname="blue.language.ListIdentityTest" time="0.0" />
+  <testcase name="values=[5, 5, -9, 5], remove=1, collapsed=false" classname="blue.language.ListIdentityTest" time="0.001" />
+  <testcase name="values=[5, 5, -9, 5], remove=1, collapsed=true" classname="blue.language.ListIdentityTest" time="0.0" />
+  <testcase name="values=[5, 5, -9, 5], remove=2, collapsed=false" classname="blue.language.ListIdentityTest" time="0.001" />
+  <testcase name="values=[5, 5, -9, 5], remove=2, collapsed=true" classname="blue.language.ListIdentityTest" time="0.0" />
+  <testcase name="values=[5, 5, -9, 5], remove=3, collapsed=false" classname="blue.language.ListIdentityTest" time="0.0" />
+  <testcase name="values=[5, 5, -9, 5], remove=3, collapsed=true" classname="blue.language.ListIdentityTest" time="0.001" />
+  </testsuite>

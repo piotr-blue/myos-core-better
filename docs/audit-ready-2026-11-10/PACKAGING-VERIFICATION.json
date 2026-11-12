@@ -1,0 +1,9 @@
+{
+  "knownQaAndAwsCredentialValuesAbsent": true,
+  "highConfidenceTokenPatternsAbsent": true,
+  "forbiddenLocalDataAndCredentialFilenamesAbsent": true,
+  "testKeyFixtures": [
+    "myos-aws-test-better/src/test/resources/tls/localhost.p12"
+  ],
+  "scope": "Bounded packaging scan, not a complete security certification"
+}

@@ -1,0 +1,146 @@
+[
+  {
+    "children": 1,
+    "parentRestoreAndRootedExecutionMillis": 8.599208,
+    "registrationMillis": 83.235333,
+    "jobs": 2,
+    "coldAppendThroughParentCommitMillis": 77.033875,
+    "residentDocumentSessions": 0,
+    "childRestoreAndExecutionMillis": 29.298,
+    "gas": [
+      {
+        "gas": 38,
+        "owner": "sha256:cc453a48cae885248409628fec1f0222c4c01a15cc8d7e51ae64ae4c6927efee"
+      },
+      {
+        "gas": 71,
+        "owner": "doc-6225011b-0466-4cdb-a589-9d8af5e63020"
+      }
+    ],
+    "phases": [
+      {
+        "owner": "sha256:cc453a48cae885248409628fec1f0222c4c01a15cc8d7e51ae64ae4c6927efee",
+        "sequence": 1,
+        "restore_ns": 3561458,
+        "execution_ns": 25736542,
+        "prepare_ns": 3190125
+      },
+      {
+        "owner": "doc-6225011b-0466-4cdb-a589-9d8af5e63020",
+        "sequence": 1,
+        "restore_ns": 1784333,
+        "execution_ns": 6814875,
+        "prepare_ns": 1330917
+      }
+    ],
+    "exactUncachedSemanticParity": true
+  },
+  {
+    "children": 5,
+    "parentRestoreAndRootedExecutionMillis": 6.768167,
+    "registrationMillis": 55.78475,
+    "jobs": 2,
+    "coldAppendThroughParentCommitMillis": 29.974125,
+    "residentDocumentSessions": 0,
+    "childRestoreAndExecutionMillis": 8.430958,
+    "gas": [
+      {
+        "gas": 38,
+        "owner": "sha256:3a04ca1b059dcd7273a130065be75b9accdd71cfdf63f2dcaf3a30c1b64ea69f"
+      },
+      {
+        "gas": 71,
+        "owner": "doc-35edd258-2c34-42a0-aafc-e66cf8a082bd"
+      }
+    ],
+    "phases": [
+      {
+        "owner": "sha256:3a04ca1b059dcd7273a130065be75b9accdd71cfdf63f2dcaf3a30c1b64ea69f",
+        "sequence": 1,
+        "restore_ns": 1063750,
+        "execution_ns": 7367208,
+        "prepare_ns": 1329625
+      },
+      {
+        "owner": "doc-35edd258-2c34-42a0-aafc-e66cf8a082bd",
+        "sequence": 1,
+        "restore_ns": 1489500,
+        "execution_ns": 5278667,
+        "prepare_ns": 1064666
+      }
+    ],
+    "exactUncachedSemanticParity": true
+  },
+  {
+    "children": 100,
+    "parentRestoreAndRootedExecutionMillis": 4.030875,
+    "registrationMillis": 357.706417,
+    "jobs": 2,
+    "coldAppendThroughParentCommitMillis": 22.355083,
+    "residentDocumentSessions": 0,
+    "childRestoreAndExecutionMillis": 5.493083,
+    "gas": [
+      {
+        "gas": 38,
+        "owner": "sha256:25579c61161d65565548e189fbb2863b44ca595e602b2a35e4db996b2a0fec09"
+      },
+      {
+        "gas": 71,
+        "owner": "doc-ecad097c-b2ed-4b89-bd6c-20d550f5ca82"
+      }
+    ],
+    "phases": [
+      {
+        "owner": "sha256:25579c61161d65565548e189fbb2863b44ca595e602b2a35e4db996b2a0fec09",
+        "sequence": 1,
+        "restore_ns": 657708,
+        "execution_ns": 4835375,
+        "prepare_ns": 1117042
+      },
+      {
+        "owner": "doc-ecad097c-b2ed-4b89-bd6c-20d550f5ca82",
+        "sequence": 1,
+        "restore_ns": 708459,
+        "execution_ns": 3322416,
+        "prepare_ns": 870542
+      }
+    ],
+    "exactUncachedSemanticParity": true
+  },
+  {
+    "children": 1000,
+    "parentRestoreAndRootedExecutionMillis": 10.032833,
+    "registrationMillis": 4227.440833,
+    "jobs": 2,
+    "coldAppendThroughParentCommitMillis": 29.825833,
+    "residentDocumentSessions": 0,
+    "childRestoreAndExecutionMillis": 4.467542,
+    "gas": [
+      {
+        "gas": 38,
+        "owner": "sha256:ac3a1c250c4d54eb543c51d75b99a62af3db7c0595ad9b291dd892cf1b3c4dc1"
+      },
+      {
+        "gas": 71,
+        "owner": "doc-7cc6aaf3-89c3-4182-8082-e9393a22c9ff"
+      }
+    ],
+    "phases": [
+      {
+        "owner": "sha256:ac3a1c250c4d54eb543c51d75b99a62af3db7c0595ad9b291dd892cf1b3c4dc1",
+        "sequence": 1,
+        "restore_ns": 500833,
+        "execution_ns": 3966709,
+        "prepare_ns": 1132666
+      },
+      {
+        "owner": "doc-7cc6aaf3-89c3-4182-8082-e9393a22c9ff",
+        "sequence": 1,
+        "restore_ns": 786958,
+        "execution_ns": 9245875,
+        "prepare_ns": 1730167
+      }
+    ],
+    "exactUncachedSemanticParity": true
+  }
+]

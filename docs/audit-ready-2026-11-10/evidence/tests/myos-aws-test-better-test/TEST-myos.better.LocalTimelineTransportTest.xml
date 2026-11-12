@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.LocalTimelineTransportTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:00.516Z" hostname="MacBook-Pro-5.local" time="1.734">
+  <properties />
+  <testcase name="freshControlArchivesResolveGrantDefinitionsThroughLocalAndWireTransports()" classname="myos.better.LocalTimelineTransportTest" time="1.586" />
+  <testcase name="onlyExactReadRoutesAreLocalAndBoundsAreEnforced()" classname="myos.better.LocalTimelineTransportTest" time="0.004" />
+  <testcase name="localPrivateReadsStillRequireSignaturesAndCurrentPermission()" classname="myos.better.LocalTimelineTransportTest" time="0.043" />
+  <testcase name="idleLocalSourcesDoNotInventCoverageAndNewEntriesOrDemandsRequireReads()" classname="myos.better.LocalTimelineTransportTest" time="0.062" />
+  <testcase name="immutableLocalMessagesAndWireOnlyTransportEstablishTheSamePrefix()" classname="myos.better.LocalTimelineTransportTest" time="0.039" />
+  </testsuite>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.packages.PackageCacheTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.577Z" hostname="MacBook-Pro-5.local" time="0.028">
+  <properties />
+  <testcase name="cacheEvictionAndDisabledRetentionCannotInvalidateReturnedPackages()" classname="blue.packages.PackageCacheTest" time="0.013" />
+  <testcase name="identicalBytesReuseButChangedOrMissingFilesNeverHitTheCache()" classname="blue.packages.PackageCacheTest" time="0.004" />
+  <testcase name="sharedLoaderHasIndependentVerificationState()" classname="blue.packages.PackageCacheTest" time="0.01" />
+  </testsuite>

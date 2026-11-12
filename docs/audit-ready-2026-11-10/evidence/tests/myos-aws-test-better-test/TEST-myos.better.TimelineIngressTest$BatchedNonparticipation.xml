@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineIngressTest$BatchedNonparticipation" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:53.402Z" hostname="MacBook-Pro-5.local" time="0.416">
+  <properties />
+  <testcase name="anUnmanagedTargetCannotBlockTheFollowingAddressedOperation()" classname="myos.better.TimelineIngressTest$BatchedNonparticipation" time="0.028" />
+  <testcase name="aCompetingBatchPublishesOnceAndTheLoserReselects()" classname="myos.better.TimelineIngressTest$BatchedNonparticipation" time="0.051" />
+  <testcase name="onlyUnclosedCoverageBlocksUnaddressedHistory()" classname="myos.better.TimelineIngressTest$BatchedNonparticipation" time="0.057" />
+  <testcase name="batchingStopsBeforeEligibleInputAndDoesNotLoseFollowingInputAfterRestart()" classname="myos.better.TimelineIngressTest$BatchedNonparticipation" time="0.044" />
+  <testcase name="ordinaryEventsDoNotPublishVersionsForOperationOnlyReceivers()" classname="myos.better.TimelineIngressTest$BatchedNonparticipation" time="0.08" />
+  <testcase name="longUnaddressedHistoryHasBoundedPublicationsAndRetainsEveryOrderKey()" classname="myos.better.TimelineIngressTest$BatchedNonparticipation" time="0.115" />
+  <testcase name="laterPreparationFailureDoesNotDiscardAnEstablishedPrefix()" classname="myos.better.TimelineIngressTest$BatchedNonparticipation" time="0.038" />
+  </testsuite>

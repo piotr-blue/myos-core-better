@@ -1,0 +1,2893 @@
+{
+  "selection": {
+    "orders": 100,
+    "agreement": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+    "order": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+    "payment": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+    "timeline": "G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN",
+    "initializationMillis": 3741.4390839999996,
+    "calls": [
+      {
+        "sample": 0,
+        "submitMillis": 350.16275000000263,
+        "parentObservedMillis": 1578.2433749999996,
+        "entry": "8ePs5QR956UXM3TvqsduKp3D43a8RtNVyUdcjAmwmF35",
+        "parentVersion": 2,
+        "outcome": {
+          "blueId": "CLWx1Zo15ukUKcxadBokPrmuddcPKreorG8Gxn93DPFc",
+          "diagnostic": {},
+          "events": [],
+          "executionNanos": 32966621,
+          "gas": 224,
+          "identity": "sha256:3f33e47ac765520f0eba441dbab4bde1d405250d97ec4ac98b89ee862a24330d",
+          "receipt": "sha256:faea7afceaed21445e935a14007c48cce36a9e3c178021ae9742e340078d5154",
+          "status": "APPLIED",
+          "version": 2
+        }
+      },
+      {
+        "sample": 1,
+        "submitMillis": 321.7405000000042,
+        "parentObservedMillis": 1614.0980000000056,
+        "entry": "99pvDJC6TGqYdiJA34ErQhs5TW4VjY18ctkXKWNQ7fEm",
+        "parentVersion": 3,
+        "outcome": {
+          "blueId": "4e1ze7ASytUEUncLvUamMCdWAe6mRFXBrtEmM7bGgNYU",
+          "diagnostic": {},
+          "events": [],
+          "executionNanos": 29217534,
+          "gas": 224,
+          "identity": "sha256:b9948e59dc33e296cce80956c3741781faed4418643e86efceb5a25e121ef38e",
+          "receipt": "sha256:2badd2652c2d00669b2e4133bc1d04147b3c790789203a70604c3c964087d164",
+          "status": "APPLIED",
+          "version": 3
+        }
+      },
+      {
+        "sample": 2,
+        "submitMillis": 317.706041000001,
+        "parentObservedMillis": 1573.6165409999999,
+        "entry": "DLqXW9AfkHAjuavfqBAs1FH1kCQEp6hKxRiEUv57JsAy",
+        "parentVersion": 4,
+        "outcome": {
+          "blueId": "4Y9MhD9gkRaur6Cz3Tfba1FujCSvyq8sDL2neiQGed2R",
+          "diagnostic": {},
+          "events": [],
+          "executionNanos": 22308740,
+          "gas": 224,
+          "identity": "sha256:b74770e90243a76cc5e54717bcb91ec0164fa40bf3e08d9695174b2e9406ec5b",
+          "receipt": "sha256:d086ce8191ce96c27c8a6447b63a06907b81be5b52080522ed9a9264f4d78a5c",
+          "status": "APPLIED",
+          "version": 4
+        }
+      },
+      {
+        "sample": 3,
+        "submitMillis": 317.193041000003,
+        "parentObservedMillis": 1562.2869999999978,
+        "entry": "J2bu8zAxF77eVQ4Zj94dHW97Vrp6dEg1yKNPfStdkUtv",
+        "parentVersion": 5,
+        "outcome": {
+          "blueId": "GtUw7wQHbjYgtEBW4mkEpL5Q7iqYQwGJGJ4FEg4qXPs4",
+          "diagnostic": {},
+          "events": [],
+          "executionNanos": 23068924,
+          "gas": 224,
+          "identity": "sha256:0683c0a93add3ab38b2ac3db7ec7051f95c763aa600225754c5f45bcc1f16e7e",
+          "receipt": "sha256:bc0ad4536e5f17aabd4ace973b4d3a21e3c5c9caa266c70a65b38edf74f05ed9",
+          "status": "APPLIED",
+          "version": 5
+        }
+      },
+      {
+        "sample": 4,
+        "submitMillis": 317.65137499999696,
+        "parentObservedMillis": 1492.4295000000002,
+        "entry": "BKrx6ARm9vyXWno8YMzPEgwYqJXzoxoBrMBHJMNuC5nC",
+        "parentVersion": 6,
+        "outcome": {
+          "blueId": "CUz3zUEFhQgMziQqjmyQru3X5o1u5p9QZPFThxuKAUkj",
+          "diagnostic": {},
+          "events": [],
+          "executionNanos": 23350374,
+          "gas": 224,
+          "identity": "sha256:10454e579c5550901e3c0b2cd0ab68ea918232624ed9d4eb2a203322180bcfd1",
+          "receipt": "sha256:d48aa464c035d895ddf223d0f7795bf8504382afecd73aa230c856449b8b25bf",
+          "status": "APPLIED",
+          "version": 6
+        }
+      }
+    ]
+  },
+  "calls": [
+    {
+      "round": 0,
+      "kind": "cold",
+      "entry": "2gfUYMQVzmqCCzqCC1FokFjuBTK9V3pGCNDY2MQWY5MA",
+      "parentObservedMillis": 5454.007457999999,
+      "beforeVersion": 7,
+      "afterVersion": 8,
+      "expectedTotal": 294,
+      "clientBreakdown": {
+        "postRoundTripMillis": 1782.0252089999967,
+        "observationHttpMillis": 2944.281250999999,
+        "betweenRequestsMillis": 727.7009980000021
+      },
+      "serverRequestMillis": 1487.113388,
+      "serverRequestToRootCommitMillis": 4725.414991378784,
+      "ownerExecutionTotalMillis": 1508.53204,
+      "ownerProcessTotalMillis": 1540.940765,
+      "httpPhases": [
+        {
+          "phase": "http.request",
+          "subject": "POST /api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.0,
+          "durationMillis": 1487.113388,
+          "thread": 92
+        },
+        {
+          "phase": "http.authenticate",
+          "subject": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.07605552673339844,
+          "durationMillis": 154.46302400000002,
+          "thread": 92
+        },
+        {
+          "phase": "http.authenticate",
+          "subject": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 157.5160026550293,
+          "durationMillis": 0.727032,
+          "thread": 92
+        },
+        {
+          "phase": "operation.submit",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 162.91403770446777,
+          "durationMillis": 1317.7137480000001,
+          "thread": 92
+        },
+        {
+          "phase": "operation.author",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 166.55707359313965,
+          "durationMillis": 166.742957,
+          "thread": 92
+        },
+        {
+          "phase": "operation.append",
+          "subject": "G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN",
+          "startAfterServerRequestMillis": 333.60815048217773,
+          "durationMillis": 1143.50195,
+          "thread": 92
+        },
+        {
+          "phase": "operation.notify",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 1477.126121520996,
+          "durationMillis": 3.4541329999999997,
+          "thread": 92
+        }
+      ],
+      "ownerProcesses": [
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 3046.7851161956787,
+          "durationMillis": 845.612544,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 18,
+              "inclusiveMillis": 65.40466699999999
+            },
+            "store.content": {
+              "calls": 72,
+              "inclusiveMillis": 158.03904999999997
+            },
+            "store.contentAll": {
+              "calls": 17,
+              "inclusiveMillis": 80.934633
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 37.412934
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 18.709755
+            }
+          }
+        },
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+          "startAfterServerRequestMillis": 3953.99808883667,
+          "durationMillis": 308.473524,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 8,
+              "inclusiveMillis": 25.798497
+            },
+            "store.content": {
+              "calls": 34,
+              "inclusiveMillis": 61.716991
+            },
+            "store.contentAll": {
+              "calls": 8,
+              "inclusiveMillis": 33.056175
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 36.153415
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 23.581253999999998
+            }
+          }
+        },
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+          "startAfterServerRequestMillis": 4338.5820388793945,
+          "durationMillis": 386.85469700000004,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 8,
+              "inclusiveMillis": 21.537363
+            },
+            "store.content": {
+              "calls": 49,
+              "inclusiveMillis": 155.27431599999997
+            },
+            "store.contentAll": {
+              "calls": 10,
+              "inclusiveMillis": 44.239565000000006
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 32.143997
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 17.352863
+            }
+          }
+        }
+      ],
+      "owners": [
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 3065.148115158081,
+          "durationMillis": 827.217857,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 46.3578,
+            "admissionNanos": 270.0625,
+            "executionNanos": 231.7585,
+            "preparationNanos": 146.8493,
+            "commitNanos": 131.6934
+          }
+        },
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+          "startAfterServerRequestMillis": 3961.8959426879883,
+          "durationMillis": 300.563283,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 39.5098,
+            "admissionNanos": 44.3444,
+            "executionNanos": 42.4141,
+            "preparationNanos": 77.2531,
+            "commitNanos": 96.9696
+          }
+        },
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+          "startAfterServerRequestMillis": 4344.664096832275,
+          "durationMillis": 380.7509,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 40.8334,
+            "admissionNanos": 30.8118,
+            "executionNanos": 100.8263,
+            "preparationNanos": 122.8777,
+            "commitNanos": 85.3173
+          }
+        }
+      ],
+      "sources": [
+        {
+          "phase": "source.acquire",
+          "subject": "owned-6Kn55TX6wfTbsRHi1wzZQysnAnGxpVUXDZyMbEs6cnXW",
+          "startAfterServerRequestMillis": 1141.2501335144043,
+          "durationMillis": 580.700935,
+          "thread": 41,
+          "io": {
+            "store.get": {
+              "calls": 26,
+              "inclusiveMillis": 115.15774899999998
+            },
+            "store.content": {
+              "calls": 67,
+              "inclusiveMillis": 236.52121799999995
+            },
+            "store.contentAll": {
+              "calls": 7,
+              "inclusiveMillis": 22.998431000000004
+            },
+            "store.getAll": {
+              "calls": 1,
+              "inclusiveMillis": 3.8294840000000003
+            }
+          },
+          "phases": [
+            {
+              "phase": "source.reader",
+              "subject": "6Kn55TX6wfTbsRHi1wzZQysnAnGxpVUXDZyMbEs6cnXW",
+              "startAfterServerRequestMillis": 1243.6981201171875,
+              "durationMillis": 67.043257,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 1323.2030868530273,
+              "durationMillis": 55.086605,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.DISCOVERY",
+              "subject": "",
+              "startAfterServerRequestMillis": 1378.3090114593506,
+              "durationMillis": 127.82280400000002,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1386.2450122833252,
+              "durationMillis": 106.42785500000001,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1519.294023513794,
+              "durationMillis": 14.323122000000001,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 1533.6239337921143,
+              "durationMillis": 109.52708999999999,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1643.1591510772705,
+              "durationMillis": 4.804409,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1647.979974746704,
+              "durationMillis": 68.63880999999999,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1716.8669700622559,
+              "durationMillis": 5.061325,
+              "thread": 41
+            }
+          ]
+        },
+        {
+          "phase": "source.acquire",
+          "subject": "owned-G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN",
+          "startAfterServerRequestMillis": 1538.9389991760254,
+          "durationMillis": 674.299413,
+          "thread": 42,
+          "io": {
+            "store.get": {
+              "calls": 32,
+              "inclusiveMillis": 122.65507
+            },
+            "store.content": {
+              "calls": 194,
+              "inclusiveMillis": 200.716144
+            },
+            "store.getAll": {
+              "calls": 1,
+              "inclusiveMillis": 3.332793
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 22.402223
+            },
+            "store.commit": {
+              "calls": 2,
+              "inclusiveMillis": 63.677047
+            },
+            "store.contentAll": {
+              "calls": 32,
+              "inclusiveMillis": 39.43329899999998
+            },
+            "store.query": {
+              "calls": 1,
+              "inclusiveMillis": 4.094575
+            }
+          },
+          "phases": [
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 1581.25901222229,
+              "durationMillis": 7.882754,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1593.2011604309082,
+              "durationMillis": 3.447302,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 1596.6579914093018,
+              "durationMillis": 129.569952,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1726.2351512908936,
+              "durationMillis": 139.59724200000002,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1865.8530712127686,
+              "durationMillis": 15.015582,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1881.8750381469727,
+              "durationMillis": 331.334349,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1888.2501125335693,
+              "durationMillis": 0.007131,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.WRITE_CONTENT",
+              "subject": "",
+              "startAfterServerRequestMillis": 1897.3770141601562,
+              "durationMillis": 17.34424,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.PUBLISH_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1917.6311492919922,
+              "durationMillis": 292.638605,
+              "thread": 42
+            }
+          ]
+        },
+        {
+          "phase": "source.acquire",
+          "subject": "owned-AnSqtoUo5xiRm1d2uaxk2wczUs7r4TscLCs4WgwkYrFG",
+          "startAfterServerRequestMillis": 1721.9719886779785,
+          "durationMillis": 372.977412,
+          "thread": 41,
+          "io": {
+            "store.get": {
+              "calls": 26,
+              "inclusiveMillis": 92.39390700000003
+            },
+            "store.content": {
+              "calls": 34,
+              "inclusiveMillis": 88.21391200000001
+            },
+            "store.contentAll": {
+              "calls": 7,
+              "inclusiveMillis": 25.764304000000003
+            },
+            "store.getAll": {
+              "calls": 1,
+              "inclusiveMillis": 3.848845
+            }
+          },
+          "phases": [
+            {
+              "phase": "source.reader",
+              "subject": "AnSqtoUo5xiRm1d2uaxk2wczUs7r4TscLCs4WgwkYrFG",
+              "startAfterServerRequestMillis": 1793.8830852508545,
+              "durationMillis": 73.347796,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 1876.776933670044,
+              "durationMillis": 34.280718,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.DISCOVERY",
+              "subject": "",
+              "startAfterServerRequestMillis": 1911.0820293426514,
+              "durationMillis": 64.73081,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1913.8641357421875,
+              "durationMillis": 48.775322,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1984.6949577331543,
+              "durationMillis": 2.4784439999999996,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 1987.1821403503418,
+              "durationMillis": 79.456706,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 2066.648006439209,
+              "durationMillis": 8.819479,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 2075.484037399292,
+              "durationMillis": 11.721316,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 2087.4061584472656,
+              "durationMillis": 7.5259849999999995,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 2094.7630405426025,
+              "durationMillis": 0.007155,
+              "thread": 41
+            }
+          ]
+        },
+        {
+          "phase": "source.acquire",
+          "subject": "owned-72YT5hCR9QdaL9MKY3FGHxUeqYS53f9GGeEAec1XZuXM",
+          "startAfterServerRequestMillis": 2590.9030437469482,
+          "durationMillis": 332.36025800000004,
+          "thread": 41,
+          "io": {
+            "store.get": {
+              "calls": 24,
+              "inclusiveMillis": 63.226653999999996
+            },
+            "store.content": {
+              "calls": 47,
+              "inclusiveMillis": 97.09793300000001
+            },
+            "store.contentAll": {
+              "calls": 4,
+              "inclusiveMillis": 16.661687999999998
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 18.015867999999998
+            },
+            "store.commit": {
+              "calls": 2,
+              "inclusiveMillis": 60.025486
+            }
+          },
+          "phases": [
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 2653.7270545959473,
+              "durationMillis": 39.867628,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.DISCOVERY",
+              "subject": "",
+              "startAfterServerRequestMillis": 2693.613052368164,
+              "durationMillis": 34.526626,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 2695.9590911865234,
+              "durationMillis": 23.470657,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 2731.933116912842,
+              "durationMillis": 15.864207000000002,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 2747.8060722351074,
+              "durationMillis": 53.36511,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 2801.180124282837,
+              "durationMillis": 6.806535,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 2808.0050945281982,
+              "durationMillis": 36.297188,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 2844.480037689209,
+              "durationMillis": 78.754271,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 2849.5070934295654,
+              "durationMillis": 0.006606,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.WRITE_CONTENT",
+              "subject": "",
+              "startAfterServerRequestMillis": 2856.6651344299316,
+              "durationMillis": 12.856622999999999,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.PUBLISH_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 2873.703956604004,
+              "durationMillis": 49.484851000000006,
+              "thread": 41
+            }
+          ]
+        }
+      ],
+      "requestIO": {
+        "store.getAll": {
+          "calls": 1,
+          "inclusiveMillis": 3.466889
+        },
+        "store.get": {
+          "calls": 10,
+          "inclusiveMillis": 49.158086000000004
+        },
+        "store.content": {
+          "calls": 148,
+          "inclusiveMillis": 622.2084120000001
+        },
+        "store.publishContent": {
+          "calls": 2,
+          "inclusiveMillis": 19.043191
+        },
+        "store.contentAll": {
+          "calls": 13,
+          "inclusiveMillis": 68.436396
+        },
+        "store.commit": {
+          "calls": 1,
+          "inclusiveMillis": 105.940263
+        }
+      },
+      "observationRequests": [
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 1721.2400436401367,
+          "durationMillis": 29.406882,
+          "thread": 111
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 2092.5469398498535,
+          "durationMillis": 17.838759,
+          "thread": 114
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 2544.651985168457,
+          "durationMillis": 12.34955,
+          "thread": 121
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 2901.6799926757812,
+          "durationMillis": 12.344433,
+          "thread": 124
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 3258.523941040039,
+          "durationMillis": 24.918697,
+          "thread": 129
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 3629.4000148773193,
+          "durationMillis": 15.944391,
+          "thread": 134
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 4445.405960083008,
+          "durationMillis": 10.256742,
+          "thread": 147
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 4888.779163360596,
+          "durationMillis": 12.077449,
+          "thread": 157
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/8",
+          "startAfterServerRequestMillis": 5135.010004043579,
+          "durationMillis": 18.344936999999998,
+          "thread": 159
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/8",
+          "startAfterServerRequestMillis": 5392.276048660278,
+          "durationMillis": 18.307675999999997,
+          "thread": 164
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/value",
+          "startAfterServerRequestMillis": 6297.508001327515,
+          "durationMillis": 16.256363999999998,
+          "thread": 173
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 7080.244064331055,
+          "durationMillis": 11.99592,
+          "thread": 186
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 7431.389093399048,
+          "durationMillis": 11.070603,
+          "thread": 194
+        }
+      ],
+      "clientRequests": [
+        {
+          "method": "POST",
+          "path": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "status": 200,
+          "startMillis": 0.004791000002057899,
+          "endMillis": 1782.0299999999988,
+          "elapsedMillis": 1782.0252089999967,
+          "startedAtUnixNanos": 1794275737520639000,
+          "serverTiming": "app;dur=1481.795"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 1782.0549999999998,
+          "endMillis": 2050.1100409999963,
+          "elapsedMillis": 268.05504099999666,
+          "startedAtUnixNanos": 1794275739302710000,
+          "serverTiming": "app;dur=27.552"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 2153.8061249999955,
+          "endMillis": 2412.090499999998,
+          "elapsedMillis": 258.28437500000234,
+          "startedAtUnixNanos": 1794275739674467000,
+          "serverTiming": "app;dur=17.196"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 2515.454915999996,
+          "endMillis": 2856.5361249999983,
+          "elapsedMillis": 341.08120900000216,
+          "startedAtUnixNanos": 1794275740036120000,
+          "serverTiming": "app;dur=11.922"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 2961.3142079999975,
+          "endMillis": 3209.388499999996,
+          "elapsedMillis": 248.0742919999983,
+          "startedAtUnixNanos": 1794275740481984000,
+          "serverTiming": "app;dur=7.848"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 3314.518665999998,
+          "endMillis": 3582.9740829999964,
+          "elapsedMillis": 268.4554169999984,
+          "startedAtUnixNanos": 1794275740835192000,
+          "serverTiming": "app;dur=24.601"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 3688.114083000002,
+          "endMillis": 4353.930874999996,
+          "elapsedMillis": 665.8167919999939,
+          "startedAtUnixNanos": 1794275741208792000,
+          "serverTiming": "app;dur=15.541"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 4454.550749999996,
+          "endMillis": 4757.133875000001,
+          "elapsedMillis": 302.5831250000053,
+          "startedAtUnixNanos": 1794275741975237000,
+          "serverTiming": "app;dur=7.720"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 4862.016916000001,
+          "endMillis": 5196.2907079999995,
+          "elapsedMillis": 334.2737919999976,
+          "startedAtUnixNanos": 1794275742382709000,
+          "serverTiming": "app;dur=8.919"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/8",
+          "status": 200,
+          "startMillis": 5196.326749999997,
+          "endMillis": 5453.983958000002,
+          "elapsedMillis": 257.6572080000048,
+          "startedAtUnixNanos": 1794275742717020000,
+          "serverTiming": "app;dur=17.938"
+        }
+      ]
+    },
+    {
+      "round": 0,
+      "kind": "warm",
+      "entry": "J3oxHnAFnCVjbarssKBm2f3haKwsBTH7rYjq4HiqRDUr",
+      "parentObservedMillis": 2614.4418340000043,
+      "beforeVersion": 8,
+      "afterVersion": 9,
+      "expectedTotal": 336,
+      "clientBreakdown": {
+        "postRoundTripMillis": 514.9974580000035,
+        "observationHttpMillis": 1686.4607079999842,
+        "betweenRequestsMillis": 412.9836680000167
+      },
+      "serverRequestMillis": 268.804461,
+      "serverRequestToRootCommitMillis": 1807.0828914642334,
+      "ownerExecutionTotalMillis": 548.841589,
+      "ownerProcessTotalMillis": 571.339868,
+      "httpPhases": [
+        {
+          "phase": "http.request",
+          "subject": "POST /api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.0,
+          "durationMillis": 268.804461,
+          "thread": 178
+        },
+        {
+          "phase": "http.authenticate",
+          "subject": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.016927719116210938,
+          "durationMillis": 0.6336109999999999,
+          "thread": 178
+        },
+        {
+          "phase": "http.authenticate",
+          "subject": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.8120536804199219,
+          "durationMillis": 0.591765,
+          "thread": 178
+        },
+        {
+          "phase": "operation.submit",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 4.348993301391602,
+          "durationMillis": 262.546292,
+          "thread": 178
+        },
+        {
+          "phase": "operation.author",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 6.877899169921875,
+          "durationMillis": 3.907082,
+          "thread": 178
+        },
+        {
+          "phase": "operation.append",
+          "subject": "G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN",
+          "startAfterServerRequestMillis": 10.803937911987305,
+          "durationMillis": 252.74452800000003,
+          "thread": 178
+        },
+        {
+          "phase": "operation.notify",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 263.55791091918945,
+          "durationMillis": 3.314705,
+          "thread": 178
+        }
+      ],
+      "ownerProcesses": [
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 1153.1751155853271,
+          "durationMillis": 238.510197,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 15,
+              "inclusiveMillis": 48.81239100000001
+            },
+            "store.content": {
+              "calls": 26,
+              "inclusiveMillis": 18.801944
+            },
+            "store.contentAll": {
+              "calls": 4,
+              "inclusiveMillis": 10.683613
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 29.857491000000003
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 19.531053999999997
+            }
+          }
+        },
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+          "startAfterServerRequestMillis": 1434.9920749664307,
+          "durationMillis": 148.945676,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 8,
+              "inclusiveMillis": 21.048566
+            },
+            "store.content": {
+              "calls": 14,
+              "inclusiveMillis": 16.126846
+            },
+            "store.contentAll": {
+              "calls": 2,
+              "inclusiveMillis": 11.958094
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 21.226664999999997
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 20.718454
+            }
+          }
+        },
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+          "startAfterServerRequestMillis": 1623.2070922851562,
+          "durationMillis": 183.883995,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 8,
+              "inclusiveMillis": 24.438515
+            },
+            "store.content": {
+              "calls": 16,
+              "inclusiveMillis": 19.158276
+            },
+            "store.contentAll": {
+              "calls": 4,
+              "inclusiveMillis": 22.06807
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 25.673628
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 19.416462999999997
+            }
+          }
+        }
+      ],
+      "owners": [
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 1161.679983139038,
+          "durationMillis": 229.995912,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 31.7998,
+            "admissionNanos": 64.1575,
+            "executionNanos": 40.0494,
+            "preparationNanos": 33.192,
+            "commitNanos": 60.7316
+          }
+        },
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+          "startAfterServerRequestMillis": 1441.572904586792,
+          "durationMillis": 142.356869,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 14.5733,
+            "admissionNanos": 16.3195,
+            "executionNanos": 29.1538,
+            "preparationNanos": 24.3934,
+            "commitNanos": 57.8561
+          }
+        },
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+          "startAfterServerRequestMillis": 1630.59401512146,
+          "durationMillis": 176.488808,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 21.3873,
+            "admissionNanos": 21.8105,
+            "executionNanos": 30.9765,
+            "preparationNanos": 49.9906,
+            "commitNanos": 52.2609
+          }
+        }
+      ],
+      "sources": [
+        {
+          "phase": "source.acquire",
+          "subject": "owned-G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN",
+          "startAfterServerRequestMillis": 468.28699111938477,
+          "durationMillis": 250.563623,
+          "thread": 41,
+          "io": {
+            "store.get": {
+              "calls": 32,
+              "inclusiveMillis": 85.69600100000002
+            },
+            "store.content": {
+              "calls": 175,
+              "inclusiveMillis": 1.0807950000000002
+            },
+            "store.getAll": {
+              "calls": 1,
+              "inclusiveMillis": 4.816245
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 13.515761999999999
+            },
+            "store.commit": {
+              "calls": 2,
+              "inclusiveMillis": 45.915111
+            },
+            "store.contentAll": {
+              "calls": 19,
+              "inclusiveMillis": 0.292127
+            },
+            "store.query": {
+              "calls": 1,
+              "inclusiveMillis": 6.242574
+            }
+          },
+          "phases": [
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 498.76999855041504,
+              "durationMillis": 3.023407,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 505.09095191955566,
+              "durationMillis": 4.56634,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 509.6619129180908,
+              "durationMillis": 83.009658,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 592.677116394043,
+              "durationMillis": 12.031277,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 604.7201156616211,
+              "durationMillis": 1.062922,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 606.0121059417725,
+              "durationMillis": 112.806094,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 612.1480464935303,
+              "durationMillis": 0.006909,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.WRITE_CONTENT",
+              "subject": "",
+              "startAfterServerRequestMillis": 619.7280883789062,
+              "durationMillis": 7.579993,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.PUBLISH_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 629.8079490661621,
+              "durationMillis": 86.19432,
+              "thread": 41
+            }
+          ]
+        },
+        {
+          "phase": "source.acquire",
+          "subject": "owned-72YT5hCR9QdaL9MKY3FGHxUeqYS53f9GGeEAec1XZuXM",
+          "startAfterServerRequestMillis": 897.6960182189941,
+          "durationMillis": 169.689426,
+          "thread": 42,
+          "io": {
+            "store.get": {
+              "calls": 23,
+              "inclusiveMillis": 55.097289999999994
+            },
+            "store.content": {
+              "calls": 30,
+              "inclusiveMillis": 34.168332
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 12.841552
+            },
+            "store.commit": {
+              "calls": 2,
+              "inclusiveMillis": 44.37634
+            }
+          },
+          "phases": [
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 920.7401275634766,
+              "durationMillis": 2.816854,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 927.7911186218262,
+              "durationMillis": 10.457279,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 938.2529258728027,
+              "durationMillis": 44.213088,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 982.4709892272949,
+              "durationMillis": 6.1778900000000005,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 988.663911819458,
+              "durationMillis": 23.231583999999998,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1012.0749473571777,
+              "durationMillis": 55.214492,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1017.3900127410889,
+              "durationMillis": 0.006008,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.WRITE_CONTENT",
+              "subject": "",
+              "startAfterServerRequestMillis": 1021.3949680328369,
+              "durationMillis": 7.786964,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.PUBLISH_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1031.8429470062256,
+              "durationMillis": 35.415952,
+              "thread": 42
+            }
+          ]
+        }
+      ],
+      "requestIO": {
+        "store.getAll": {
+          "calls": 1,
+          "inclusiveMillis": 2.829654
+        },
+        "store.get": {
+          "calls": 9,
+          "inclusiveMillis": 23.411454999999997
+        },
+        "store.content": {
+          "calls": 126,
+          "inclusiveMillis": 0.969277
+        },
+        "store.publishContent": {
+          "calls": 2,
+          "inclusiveMillis": 12.609273
+        },
+        "store.contentAll": {
+          "calls": 13,
+          "inclusiveMillis": 0.21479899999999996
+        },
+        "store.commit": {
+          "calls": 1,
+          "inclusiveMillis": 79.105557
+        }
+      },
+      "observationRequests": [
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 505.47003746032715,
+          "durationMillis": 11.99592,
+          "thread": 186
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 856.6150665283203,
+          "durationMillis": 11.070603,
+          "thread": 194
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 1272.0730304718018,
+          "durationMillis": 20.771558,
+          "thread": 199
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 1639.1451358795166,
+          "durationMillis": 15.826276,
+          "thread": 208
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 2006.814956665039,
+          "durationMillis": 9.048371,
+          "thread": 218
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/9",
+          "startAfterServerRequestMillis": 2299.984931945801,
+          "durationMillis": 21.850506,
+          "thread": 223
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/9",
+          "startAfterServerRequestMillis": 2603.0309200286865,
+          "durationMillis": 18.652377,
+          "thread": 228
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/value",
+          "startAfterServerRequestMillis": 3840.6920433044434,
+          "durationMillis": 9.734741,
+          "thread": 245
+        }
+      ],
+      "clientRequests": [
+        {
+          "method": "POST",
+          "path": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "status": 200,
+          "startMillis": 0.012083999997969386,
+          "endMillis": 515.0095420000014,
+          "elapsedMillis": 514.9974580000035,
+          "startedAtUnixNanos": 1794275744146348000,
+          "serverTiming": "app;dur=267.016"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 515.0323750000041,
+          "endMillis": 764.3397089999979,
+          "elapsedMillis": 249.30733399999383,
+          "startedAtUnixNanos": 1794275744661373000,
+          "serverTiming": "app;dur=11.613"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 866.4863340000011,
+          "endMillis": 1111.6095,
+          "elapsedMillis": 245.12316599999906,
+          "startedAtUnixNanos": 1794275745012832000,
+          "serverTiming": "app;dur=8.041"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 1216.6347500000043,
+          "endMillis": 1542.844291999998,
+          "elapsedMillis": 326.20954199999375,
+          "startedAtUnixNanos": 1794275745362983000,
+          "serverTiming": "app;dur=20.311"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 1647.226584000002,
+          "endMillis": 1911.4743749999975,
+          "elapsedMillis": 264.2477909999954,
+          "startedAtUnixNanos": 1794275745793582000,
+          "serverTiming": "app;dur=15.231"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 2012.822917000001,
+          "endMillis": 2286.069250000004,
+          "elapsedMillis": 273.246333000003,
+          "startedAtUnixNanos": 1794275746159183000,
+          "serverTiming": "app;dur=8.735"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/9",
+          "status": 200,
+          "startMillis": 2286.0941249999983,
+          "endMillis": 2614.4206669999976,
+          "elapsedMillis": 328.3265419999992,
+          "startedAtUnixNanos": 1794275746432455000,
+          "serverTiming": "app;dur=19.309"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "kind": "cold",
+      "entry": "AHeeSBDnpfvfF1pSZuvqjFgYUPdheXgkNb16U9jJARFT",
+      "parentObservedMillis": 5814.824709000007,
+      "beforeVersion": 9,
+      "afterVersion": 10,
+      "expectedTotal": 378,
+      "clientBreakdown": {
+        "postRoundTripMillis": 1681.0052499999983,
+        "observationHttpMillis": 3206.3276259999748,
+        "betweenRequestsMillis": 927.4918330000328
+      },
+      "serverRequestMillis": 1375.883961,
+      "serverRequestToRootCommitMillis": 4836.035251617432,
+      "ownerExecutionTotalMillis": 1515.344166,
+      "ownerProcessTotalMillis": 1539.799997,
+      "httpPhases": [
+        {
+          "phase": "http.request",
+          "subject": "POST /api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.0,
+          "durationMillis": 1375.883961,
+          "thread": 96
+        },
+        {
+          "phase": "http.authenticate",
+          "subject": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.07605552673339844,
+          "durationMillis": 133.21275599999998,
+          "thread": 96
+        },
+        {
+          "phase": "http.authenticate",
+          "subject": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 136.06691360473633,
+          "durationMillis": 0.7103860000000001,
+          "thread": 96
+        },
+        {
+          "phase": "operation.submit",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 143.64886283874512,
+          "durationMillis": 1230.2591220000002,
+          "thread": 96
+        },
+        {
+          "phase": "operation.author",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 146.29793167114258,
+          "durationMillis": 149.57243,
+          "thread": 96
+        },
+        {
+          "phase": "operation.append",
+          "subject": "G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN",
+          "startAfterServerRequestMillis": 296.1769104003906,
+          "durationMillis": 1069.497288,
+          "thread": 96
+        },
+        {
+          "phase": "operation.notify",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 1365.6909465789795,
+          "durationMillis": 8.166539,
+          "thread": 96
+        }
+      ],
+      "ownerProcesses": [
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 3182.8579902648926,
+          "durationMillis": 796.255496,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 18,
+              "inclusiveMillis": 66.67145100000002
+            },
+            "store.content": {
+              "calls": 78,
+              "inclusiveMillis": 130.148867
+            },
+            "store.contentAll": {
+              "calls": 20,
+              "inclusiveMillis": 72.133735
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 25.810312000000003
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 33.590296
+            }
+          }
+        },
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+          "startAfterServerRequestMillis": 4029.5839309692383,
+          "durationMillis": 325.434132,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 8,
+              "inclusiveMillis": 20.977575
+            },
+            "store.content": {
+              "calls": 34,
+              "inclusiveMillis": 79.1769
+            },
+            "store.contentAll": {
+              "calls": 7,
+              "inclusiveMillis": 31.101146000000004
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 42.141118
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 17.997138999999997
+            }
+          }
+        },
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+          "startAfterServerRequestMillis": 4417.934894561768,
+          "durationMillis": 418.110369,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 8,
+              "inclusiveMillis": 25.158859999999997
+            },
+            "store.content": {
+              "calls": 49,
+              "inclusiveMillis": 170.73753900000003
+            },
+            "store.contentAll": {
+              "calls": 10,
+              "inclusiveMillis": 43.070275
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 36.400142
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 19.023994
+            }
+          }
+        }
+      ],
+      "owners": [
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 3196.4218616485596,
+          "durationMillis": 782.658727,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 81.788,
+            "admissionNanos": 243.8594,
+            "executionNanos": 174.0409,
+            "preparationNanos": 132.3824,
+            "commitNanos": 148.3988
+          }
+        },
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+          "startAfterServerRequestMillis": 4034.9340438842773,
+          "durationMillis": 320.07115200000004,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 19.1959,
+            "admissionNanos": 50.3234,
+            "executionNanos": 65.3547,
+            "preparationNanos": 94.6468,
+            "commitNanos": 90.459
+          }
+        },
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+          "startAfterServerRequestMillis": 4423.4209060668945,
+          "durationMillis": 412.61428700000005,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 44.8124,
+            "admissionNanos": 44.2013,
+            "executionNanos": 111.0262,
+            "preparationNanos": 128.8431,
+            "commitNanos": 83.6489
+          }
+        }
+      ],
+      "sources": [
+        {
+          "phase": "source.acquire",
+          "subject": "owned-6Kn55TX6wfTbsRHi1wzZQysnAnGxpVUXDZyMbEs6cnXW",
+          "startAfterServerRequestMillis": 677.947998046875,
+          "durationMillis": 556.749254,
+          "thread": 42,
+          "io": {
+            "store.get": {
+              "calls": 26,
+              "inclusiveMillis": 98.30671
+            },
+            "store.content": {
+              "calls": 67,
+              "inclusiveMillis": 210.23770799999997
+            },
+            "store.contentAll": {
+              "calls": 7,
+              "inclusiveMillis": 29.688482
+            },
+            "store.getAll": {
+              "calls": 1,
+              "inclusiveMillis": 5.524593
+            }
+          },
+          "phases": [
+            {
+              "phase": "source.reader",
+              "subject": "6Kn55TX6wfTbsRHi1wzZQysnAnGxpVUXDZyMbEs6cnXW",
+              "startAfterServerRequestMillis": 773.7278938293457,
+              "durationMillis": 54.69924,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 840.6538963317871,
+              "durationMillis": 59.325855,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.DISCOVERY",
+              "subject": "",
+              "startAfterServerRequestMillis": 899.9998569488525,
+              "durationMillis": 120.244326,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 905.4000377655029,
+              "durationMillis": 103.135509,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1031.4979553222656,
+              "durationMillis": 18.677814,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 1050.1818656921387,
+              "durationMillis": 103.009328,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1153.2039642333984,
+              "durationMillis": 15.199785,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1168.4229373931885,
+              "durationMillis": 57.147418,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1225.877046585083,
+              "durationMillis": 8.800535,
+              "thread": 42
+            }
+          ]
+        },
+        {
+          "phase": "source.acquire",
+          "subject": "owned-AnSqtoUo5xiRm1d2uaxk2wczUs7r4TscLCs4WgwkYrFG",
+          "startAfterServerRequestMillis": 1035.465955734253,
+          "durationMillis": 442.398831,
+          "thread": 41,
+          "io": {
+            "store.get": {
+              "calls": 26,
+              "inclusiveMillis": 98.396091
+            },
+            "store.content": {
+              "calls": 34,
+              "inclusiveMillis": 119.529694
+            },
+            "store.contentAll": {
+              "calls": 7,
+              "inclusiveMillis": 35.411485000000006
+            },
+            "store.getAll": {
+              "calls": 1,
+              "inclusiveMillis": 2.687055
+            }
+          },
+          "phases": [
+            {
+              "phase": "source.reader",
+              "subject": "AnSqtoUo5xiRm1d2uaxk2wczUs7r4TscLCs4WgwkYrFG",
+              "startAfterServerRequestMillis": 1124.71604347229,
+              "durationMillis": 56.251199,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 1202.0599842071533,
+              "durationMillis": 53.12687,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.DISCOVERY",
+              "subject": "",
+              "startAfterServerRequestMillis": 1255.2049160003662,
+              "durationMillis": 92.264212,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1266.9589519500732,
+              "durationMillis": 64.398095,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1351.611852645874,
+              "durationMillis": 3.6743029999999997,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 1355.2930355072021,
+              "durationMillis": 91.17992,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1446.483850479126,
+              "durationMillis": 11.669834999999999,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1458.1718444824219,
+              "durationMillis": 13.532577,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1471.9738960266113,
+              "durationMillis": 5.871371,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1477.6818752288818,
+              "durationMillis": 0.007072,
+              "thread": 41
+            }
+          ]
+        },
+        {
+          "phase": "source.acquire",
+          "subject": "owned-G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN",
+          "startAfterServerRequestMillis": 1477.8938293457031,
+          "durationMillis": 690.0893850000001,
+          "thread": 41,
+          "io": {
+            "store.get": {
+              "calls": 32,
+              "inclusiveMillis": 96.722345
+            },
+            "store.content": {
+              "calls": 198,
+              "inclusiveMillis": 250.91656300000008
+            },
+            "store.getAll": {
+              "calls": 1,
+              "inclusiveMillis": 2.483311
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 11.770013
+            },
+            "store.commit": {
+              "calls": 2,
+              "inclusiveMillis": 74.814288
+            },
+            "store.contentAll": {
+              "calls": 32,
+              "inclusiveMillis": 36.581602999999994
+            },
+            "store.query": {
+              "calls": 1,
+              "inclusiveMillis": 3.728351
+            }
+          },
+          "phases": [
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 1515.8159732818604,
+              "durationMillis": 3.115197,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1523.2880115509033,
+              "durationMillis": 0.800459,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 1524.096965789795,
+              "durationMillis": 88.304486,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1612.4110221862793,
+              "durationMillis": 131.373701,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1743.8030242919922,
+              "durationMillis": 7.366473,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1763.0128860473633,
+              "durationMillis": 404.93649700000003,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1769.3040370941162,
+              "durationMillis": 0.008502,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.WRITE_CONTENT",
+              "subject": "",
+              "startAfterServerRequestMillis": 1778.6638736724854,
+              "durationMillis": 7.238847,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.PUBLISH_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1790.8709049224854,
+              "durationMillis": 374.328291,
+              "thread": 41
+            }
+          ]
+        },
+        {
+          "phase": "source.acquire",
+          "subject": "owned-72YT5hCR9QdaL9MKY3FGHxUeqYS53f9GGeEAec1XZuXM",
+          "startAfterServerRequestMillis": 2664.8049354553223,
+          "durationMillis": 400.21871799999997,
+          "thread": 41,
+          "io": {
+            "store.get": {
+              "calls": 24,
+              "inclusiveMillis": 85.17098299999998
+            },
+            "store.content": {
+              "calls": 49,
+              "inclusiveMillis": 114.84939100000004
+            },
+            "store.contentAll": {
+              "calls": 4,
+              "inclusiveMillis": 15.402786
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 11.115092
+            },
+            "store.commit": {
+              "calls": 2,
+              "inclusiveMillis": 52.340804999999996
+            }
+          },
+          "phases": [
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 2756.8929195404053,
+              "durationMillis": 50.371227,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.DISCOVERY",
+              "subject": "",
+              "startAfterServerRequestMillis": 2807.2848320007324,
+              "durationMillis": 65.75083599999999,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 2813.631057739258,
+              "durationMillis": 33.965193,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 2877.2590160369873,
+              "durationMillis": 18.025922,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 2895.292043685913,
+              "durationMillis": 63.37152999999999,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 2958.6730003356934,
+              "durationMillis": 10.260375999999999,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 2968.950033187866,
+              "durationMillis": 36.230958,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 3005.4759979248047,
+              "durationMillis": 59.514192,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 3011.375904083252,
+              "durationMillis": 0.008518000000000001,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.WRITE_CONTENT",
+              "subject": "",
+              "startAfterServerRequestMillis": 3015.643835067749,
+              "durationMillis": 6.542727,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.PUBLISH_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 3025.1359939575195,
+              "durationMillis": 39.776915,
+              "thread": 41
+            }
+          ]
+        }
+      ],
+      "requestIO": {
+        "store.getAll": {
+          "calls": 1,
+          "inclusiveMillis": 4.447328000000001
+        },
+        "store.get": {
+          "calls": 10,
+          "inclusiveMillis": 39.758078000000005
+        },
+        "store.content": {
+          "calls": 152,
+          "inclusiveMillis": 600.4631119999997
+        },
+        "store.publishContent": {
+          "calls": 2,
+          "inclusiveMillis": 12.670417999999998
+        },
+        "store.contentAll": {
+          "calls": 13,
+          "inclusiveMillis": 57.610868
+        },
+        "store.commit": {
+          "calls": 1,
+          "inclusiveMillis": 78.33471
+        }
+      },
+      "observationRequests": [
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 1619.1198825836182,
+          "durationMillis": 25.058737,
+          "thread": 113
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 1989.7339344024658,
+          "durationMillis": 12.856804,
+          "thread": 118
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 2408.8950157165527,
+          "durationMillis": 21.661226,
+          "thread": 124
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 2824.0649700164795,
+          "durationMillis": 18.352849000000003,
+          "thread": 126
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 3236.6909980773926,
+          "durationMillis": 16.645676,
+          "thread": 131
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 3649.435043334961,
+          "durationMillis": 8.989844999999999,
+          "thread": 136
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 4005.844831466675,
+          "durationMillis": 18.432188,
+          "thread": 141
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 4361.177921295166,
+          "durationMillis": 20.864321,
+          "thread": 148
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 4726.157903671265,
+          "durationMillis": 17.432001,
+          "thread": 151
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 5134.37294960022,
+          "durationMillis": 7.725294,
+          "thread": 162
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/10",
+          "startAfterServerRequestMillis": 5488.332986831665,
+          "durationMillis": 20.555266999999997,
+          "thread": 167
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/10",
+          "startAfterServerRequestMillis": 5752.58994102478,
+          "durationMillis": 15.872674,
+          "thread": 168
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/value",
+          "startAfterServerRequestMillis": 6523.455858230591,
+          "durationMillis": 19.324185,
+          "thread": 179
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 7386.2059116363525,
+          "durationMillis": 9.948033,
+          "thread": 195
+        }
+      ],
+      "clientRequests": [
+        {
+          "method": "POST",
+          "path": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "status": 200,
+          "startMillis": 0.0046669999989035205,
+          "endMillis": 1681.0099169999971,
+          "elapsedMillis": 1681.0052499999983,
+          "startedAtUnixNanos": 1794275797382622000,
+          "serverTiming": "app;dur=1375.060"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 1681.0668340000063,
+          "endMillis": 1948.9292089999992,
+          "elapsedMillis": 267.8623749999929,
+          "startedAtUnixNanos": 1794275799063703000,
+          "serverTiming": "app;dur=24.723"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 2053.8774170000097,
+          "endMillis": 2315.170709,
+          "elapsedMillis": 261.29329199999063,
+          "startedAtUnixNanos": 1794275799436519000,
+          "serverTiming": "app;dur=11.664"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 2416.7931249999983,
+          "endMillis": 2732.363417000002,
+          "elapsedMillis": 315.57029200000386,
+          "startedAtUnixNanos": 1794275799799440000,
+          "serverTiming": "app;dur=19.214"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 2832.582500000001,
+          "endMillis": 3145.132458999996,
+          "elapsedMillis": 312.5499589999947,
+          "startedAtUnixNanos": 1794275800215233000,
+          "serverTiming": "app;dur=16.699"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 3250.1249590000043,
+          "endMillis": 3555.8897089999987,
+          "elapsedMillis": 305.7647499999945,
+          "startedAtUnixNanos": 1794275800632780000,
+          "serverTiming": "app;dur=16.281"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 3659.756625,
+          "endMillis": 3960.0963750000064,
+          "elapsedMillis": 300.33975000000623,
+          "startedAtUnixNanos": 1794275801042416000,
+          "serverTiming": "app;dur=8.673"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 4065.131500000007,
+          "endMillis": 4323.697042000006,
+          "elapsedMillis": 258.5655419999995,
+          "startedAtUnixNanos": 1794275801447795000,
+          "serverTiming": "app;dur=15.171"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 4425.011917000006,
+          "endMillis": 4687.348499999999,
+          "elapsedMillis": 262.33658299999263,
+          "startedAtUnixNanos": 1794275801807679000,
+          "serverTiming": "app;dur=19.368"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 4788.056459000003,
+          "endMillis": 5041.753084000007,
+          "elapsedMillis": 253.69662500000345,
+          "startedAtUnixNanos": 1794275802170730000,
+          "serverTiming": "app;dur=11.497"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 5146.420500000005,
+          "endMillis": 5445.684125,
+          "elapsedMillis": 299.2636249999947,
+          "startedAtUnixNanos": 1794275802529097000,
+          "serverTiming": "app;dur=7.395"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/10",
+          "status": 200,
+          "startMillis": 5445.708334000003,
+          "endMillis": 5814.793167000005,
+          "elapsedMillis": 369.0848330000023,
+          "startedAtUnixNanos": 1794275802828387000,
+          "serverTiming": "app;dur=20.162"
+        }
+      ]
+    },
+    {
+      "round": 1,
+      "kind": "warm",
+      "entry": "7GfkBWdhwCGirkyrffmnNNnnJuweG72kU56TeavqubE4",
+      "parentObservedMillis": 2650.8428750000094,
+      "beforeVersion": 10,
+      "afterVersion": 11,
+      "expectedTotal": 420,
+      "clientBreakdown": {
+        "postRoundTripMillis": 609.3027089999907,
+        "observationHttpMillis": 1623.956834000012,
+        "betweenRequestsMillis": 417.5833320000065
+      },
+      "serverRequestMillis": 317.971469,
+      "serverRequestToRootCommitMillis": 1885.2484226226807,
+      "ownerExecutionTotalMillis": 577.280561,
+      "ownerProcessTotalMillis": 592.49294,
+      "httpPhases": [
+        {
+          "phase": "http.request",
+          "subject": "POST /api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.0,
+          "durationMillis": 317.971469,
+          "thread": 184
+        },
+        {
+          "phase": "http.authenticate",
+          "subject": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.023126602172851562,
+          "durationMillis": 0.671358,
+          "thread": 184
+        },
+        {
+          "phase": "http.authenticate",
+          "subject": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "startAfterServerRequestMillis": 0.8101463317871094,
+          "durationMillis": 0.373796,
+          "thread": 184
+        },
+        {
+          "phase": "operation.submit",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 4.403114318847656,
+          "durationMillis": 312.418526,
+          "thread": 184
+        },
+        {
+          "phase": "operation.author",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 7.095098495483398,
+          "durationMillis": 8.164102,
+          "thread": 184
+        },
+        {
+          "phase": "operation.append",
+          "subject": "G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN",
+          "startAfterServerRequestMillis": 15.288114547729492,
+          "durationMillis": 298.69162900000003,
+          "thread": 184
+        },
+        {
+          "phase": "operation.notify",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 313.98701667785645,
+          "durationMillis": 2.80581,
+          "thread": 184
+        }
+      ],
+      "ownerProcesses": [
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 1201.9031047821045,
+          "durationMillis": 224.13672400000002,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 15,
+              "inclusiveMillis": 54.655633
+            },
+            "store.content": {
+              "calls": 31,
+              "inclusiveMillis": 29.711220000000004
+            },
+            "store.contentAll": {
+              "calls": 4,
+              "inclusiveMillis": 8.157055
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 25.462243
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 20.126416000000003
+            }
+          }
+        },
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+          "startAfterServerRequestMillis": 1470.7770347595215,
+          "durationMillis": 179.975399,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 8,
+              "inclusiveMillis": 25.284733000000003
+            },
+            "store.content": {
+              "calls": 14,
+              "inclusiveMillis": 10.931918
+            },
+            "store.contentAll": {
+              "calls": 3,
+              "inclusiveMillis": 13.361451
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 19.071512
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 19.291705
+            }
+          }
+        },
+        {
+          "phase": "owner.process",
+          "subject": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+          "startAfterServerRequestMillis": 1696.8770027160645,
+          "durationMillis": 188.380817,
+          "thread": 45,
+          "io": {
+            "store.get": {
+              "calls": 8,
+              "inclusiveMillis": 20.410505999999998
+            },
+            "store.content": {
+              "calls": 16,
+              "inclusiveMillis": 16.793862999999998
+            },
+            "store.contentAll": {
+              "calls": 4,
+              "inclusiveMillis": 16.28602
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 21.029894
+            },
+            "store.commit": {
+              "calls": 1,
+              "inclusiveMillis": 19.863074
+            }
+          }
+        }
+      ],
+      "owners": [
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+          "startAfterServerRequestMillis": 1206.9571018218994,
+          "durationMillis": 219.072466,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 14.9805,
+            "admissionNanos": 74.165,
+            "executionNanos": 27.1736,
+            "preparationNanos": 32.5503,
+            "commitNanos": 70.1175
+          }
+        },
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+          "startAfterServerRequestMillis": 1476.2020111083984,
+          "durationMillis": 174.541596,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 13.4464,
+            "admissionNanos": 31.9848,
+            "executionNanos": 42.0995,
+            "preparationNanos": 33.053,
+            "commitNanos": 53.891
+          }
+        },
+        {
+          "phase": "myos.OwnerExecution",
+          "subject": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+          "startAfterServerRequestMillis": 1701.5819549560547,
+          "durationMillis": 183.66649900000002,
+          "thread": 45,
+          "detail": {
+            "restoreNanos": 16.5859,
+            "admissionNanos": 28.7901,
+            "executionNanos": 39.396,
+            "preparationNanos": 53.9434,
+            "commitNanos": 44.8838
+          }
+        }
+      ],
+      "sources": [
+        {
+          "phase": "source.acquire",
+          "subject": "owned-G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN",
+          "startAfterServerRequestMillis": 392.08507537841797,
+          "durationMillis": 366.781727,
+          "thread": 41,
+          "io": {
+            "store.get": {
+              "calls": 32,
+              "inclusiveMillis": 101.652219
+            },
+            "store.content": {
+              "calls": 185,
+              "inclusiveMillis": 7.592474999999998
+            },
+            "store.getAll": {
+              "calls": 1,
+              "inclusiveMillis": 2.14719
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 40.346324
+            },
+            "store.commit": {
+              "calls": 2,
+              "inclusiveMillis": 66.87731099999999
+            },
+            "store.contentAll": {
+              "calls": 19,
+              "inclusiveMillis": 0.261437
+            },
+            "store.query": {
+              "calls": 1,
+              "inclusiveMillis": 2.8536989999999998
+            }
+          },
+          "phases": [
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 425.08602142333984,
+              "durationMillis": 2.699879,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 430.9251308441162,
+              "durationMillis": 0.197978,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 431.12897872924805,
+              "durationMillis": 120.9735,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 552.1130561828613,
+              "durationMillis": 18.66948,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 570.7991123199463,
+              "durationMillis": 5.590201,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 578.0880451202393,
+              "durationMillis": 180.738574,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 585.5460166931152,
+              "durationMillis": 0.006358,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.WRITE_CONTENT",
+              "subject": "",
+              "startAfterServerRequestMillis": 593.6601161956787,
+              "durationMillis": 7.945463999999999,
+              "thread": 41
+            },
+            {
+              "phase": "timeline.PUBLISH_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 604.1679382324219,
+              "durationMillis": 150.215611,
+              "thread": 41
+            }
+          ]
+        },
+        {
+          "phase": "source.acquire",
+          "subject": "owned-72YT5hCR9QdaL9MKY3FGHxUeqYS53f9GGeEAec1XZuXM",
+          "startAfterServerRequestMillis": 888.8449668884277,
+          "durationMillis": 239.829728,
+          "thread": 42,
+          "io": {
+            "store.get": {
+              "calls": 23,
+              "inclusiveMillis": 85.54299700000001
+            },
+            "store.content": {
+              "calls": 32,
+              "inclusiveMillis": 61.18096899999999
+            },
+            "store.publishContent": {
+              "calls": 2,
+              "inclusiveMillis": 9.890895
+            },
+            "store.commit": {
+              "calls": 2,
+              "inclusiveMillis": 49.933554
+            }
+          },
+          "phases": [
+            {
+              "phase": "timeline.READ_CONTEXT",
+              "subject": "",
+              "startAfterServerRequestMillis": 924.807071685791,
+              "durationMillis": 2.896763,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 934.9510669708252,
+              "durationMillis": 21.932163000000003,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.READ_HTTP",
+              "subject": "",
+              "startAfterServerRequestMillis": 956.8989276885986,
+              "durationMillis": 68.653274,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.VERIFY_PAGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1025.5601406097412,
+              "durationMillis": 12.90997,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.COLLECT_RECORDS",
+              "subject": "",
+              "startAfterServerRequestMillis": 1038.4860038757324,
+              "durationMillis": 42.304171000000004,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.ACQUIRE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1081.1409950256348,
+              "durationMillis": 47.491692,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.VERIFY_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1086.6379737854004,
+              "durationMillis": 0.0065769999999999995,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.WRITE_CONTENT",
+              "subject": "",
+              "startAfterServerRequestMillis": 1087.5670909881592,
+              "durationMillis": 6.187385,
+              "thread": 42
+            },
+            {
+              "phase": "timeline.PUBLISH_RANGE",
+              "subject": "",
+              "startAfterServerRequestMillis": 1096.5180397033691,
+              "durationMillis": 32.080654,
+              "thread": 42
+            }
+          ]
+        }
+      ],
+      "requestIO": {
+        "store.getAll": {
+          "calls": 1,
+          "inclusiveMillis": 3.114833
+        },
+        "store.get": {
+          "calls": 9,
+          "inclusiveMillis": 27.996311000000002
+        },
+        "store.content": {
+          "calls": 132,
+          "inclusiveMillis": 7.291311999999997
+        },
+        "store.publishContent": {
+          "calls": 2,
+          "inclusiveMillis": 12.825315
+        },
+        "store.contentAll": {
+          "calls": 13,
+          "inclusiveMillis": 0.16385200000000003
+        },
+        "store.commit": {
+          "calls": 1,
+          "inclusiveMillis": 48.650434
+        }
+      },
+      "observationRequests": [
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 560.0759983062744,
+          "durationMillis": 9.948033,
+          "thread": 195
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 1035.9249114990234,
+          "durationMillis": 12.911057999999999,
+          "thread": 200
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 1387.671947479248,
+          "durationMillis": 9.9472,
+          "thread": 206
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 1742.6769733428955,
+          "durationMillis": 9.670468999999999,
+          "thread": 215
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "startAfterServerRequestMillis": 2093.8920974731445,
+          "durationMillis": 14.903497999999999,
+          "thread": 224
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/11",
+          "startAfterServerRequestMillis": 2345.7419872283936,
+          "durationMillis": 14.942426999999999,
+          "thread": 227
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/11",
+          "startAfterServerRequestMillis": 2601.135015487671,
+          "durationMillis": 16.996344,
+          "thread": 230
+        },
+        {
+          "phase": "http.request",
+          "subject": "GET /api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/value",
+          "startAfterServerRequestMillis": 3411.7701053619385,
+          "durationMillis": 9.395617999999999,
+          "thread": 244
+        }
+      ],
+      "clientRequests": [
+        {
+          "method": "POST",
+          "path": "/api/documents/graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b/operations",
+          "status": 200,
+          "startMillis": 0.01325000000917953,
+          "endMillis": 609.3159589999999,
+          "elapsedMillis": 609.3027089999907,
+          "startedAtUnixNanos": 1794275804223228000,
+          "serverTiming": "app;dur=316.893"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 609.3496670000036,
+          "endMillis": 979.6484590000034,
+          "elapsedMillis": 370.2987919999998,
+          "startedAtUnixNanos": 1794275804832571000,
+          "serverTiming": "app;dur=7.770"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 1084.7622920000076,
+          "endMillis": 1334.020792000004,
+          "elapsedMillis": 249.25849999999627,
+          "startedAtUnixNanos": 1794275805307990000,
+          "serverTiming": "app;dur=8.589"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 1438.6775420000076,
+          "endMillis": 1687.7544170000078,
+          "elapsedMillis": 249.0768750000001,
+          "startedAtUnixNanos": 1794275805661909000,
+          "serverTiming": "app;dur=8.748"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 1791.3649999999989,
+          "endMillis": 2041.4737090000017,
+          "elapsedMillis": 250.1087090000027,
+          "startedAtUnixNanos": 1794275806014601000,
+          "serverTiming": "app;dur=9.202"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/head",
+          "status": 200,
+          "startMillis": 2145.5803340000016,
+          "endMillis": 2396.8571670000074,
+          "elapsedMillis": 251.2768330000057,
+          "startedAtUnixNanos": 1794275806368821000,
+          "serverTiming": "app;dur=12.234"
+        },
+        {
+          "method": "GET",
+          "path": "/api/documents/graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6/history/11",
+          "status": 200,
+          "startMillis": 2396.8869170000035,
+          "endMillis": 2650.8240420000106,
+          "elapsedMillis": 253.9371250000073,
+          "startedAtUnixNanos": 1794275806620128000,
+          "serverTiming": "app;dur=14.617"
+        }
+      ]
+    }
+  ],
+  "startup": [
+    {
+      "round": 0,
+      "millis": 19642.479415,
+      "subject": "runtime-console.json",
+      "start": "2026-11-10T01:55:12.843265520Z"
+    },
+    {
+      "round": 1,
+      "millis": 19615.87631,
+      "subject": "runtime-console.json",
+      "start": "2026-11-10T01:56:12.541081748Z"
+    }
+  ]
+}

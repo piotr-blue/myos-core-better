@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreDashboardHttpTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:39.847Z" hostname="MacBook-Pro-5.local" time="0.063">
+  <properties />
+  <testcase name="userAndAccountEditsAreRevisionCheckedDurableAndRetrySafe()" classname="myos.better.CoreDashboardHttpTest" time="0.013" />
+  <testcase name="publishedHeadRoutesHaveGetHeadersWithoutBodiesOrAuthenticationBypass()" classname="myos.better.CoreDashboardHttpTest" time="0.007" />
+  <testcase name="preferencesCheckMembershipAndPatchRequiresSameOrigin()" classname="myos.better.CoreDashboardHttpTest" time="0.006" />
+  <testcase name="discoversExistingPersonalIdentityWithSeparateUserAndAccountGuards()" classname="myos.better.CoreDashboardHttpTest" time="0.005" />
+  <testcase name="coreKeyRepresentationUsesExistingDurableCredentialsWithoutExpandingAuthority()" classname="myos.better.CoreDashboardHttpTest" time="0.009" />
+  <testcase name="readerCustodyRoutesExposeOnlyAccountPublicMetadata()" classname="myos.better.CoreDashboardHttpTest" time="0.007" />
+  <testcase name="credentialPaginationHonorsTheLimitAndBindsCursorsToAccountAndQuery()" classname="myos.better.CoreDashboardHttpTest" time="0.007" />
+  <testcase name="originalYamlContentFormUsesTheCoreAdmissionAndReadContract()" classname="myos.better.CoreDashboardHttpTest" time="0.008" />
+  </testsuite>

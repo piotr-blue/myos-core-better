@@ -1,0 +1,78 @@
+.access-settings {
+  max-width: 1040px;
+}
+.access-settings h2 {
+  margin: 0 0 8px;
+  font-size: 22px;
+}
+.access-description,
+.access-preference > p,
+.access-requests-body > p {
+  color: var(--color-greys-secondary);
+}
+.access-description {
+  margin-bottom: 24px;
+}
+.access-preference {
+  margin-top: 24px;
+  padding: 20px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+}
+.access-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.account-management .access-toggle input {
+  flex: 0 0 18px;
+  width: 18px;
+  height: 18px;
+  margin: 3px 0;
+  accent-color: var(--color-brand-blue);
+}
+.access-preference > p {
+  margin: 8px 0 0 30px;
+  font-size: 14px;
+}
+.access-requests-heading {
+  flex-wrap: wrap;
+}
+.access-requests-heading h2,
+.access-requests-body > p {
+  margin: 0;
+}
+.access-request {
+  overflow-wrap: anywhere;
+}
+.access-request + .access-request {
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-border);
+}
+.access-request > p {
+  margin-top: 8px;
+}
+.access-request summary {
+  cursor: pointer;
+  color: var(--color-brand-blue);
+}
+.access-request pre {
+  max-width: 100%;
+  overflow-x: auto;
+}
+.access-request > button {
+  margin-top: 16px;
+  white-space: normal;
+}
+@media (max-width: 600px) {
+  .access-preference {
+    padding: 16px;
+  }
+  .access-preference > p {
+    margin-left: 0;
+  }
+}

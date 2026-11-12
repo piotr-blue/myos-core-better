@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.ConsoleApiKeysTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:38.823Z" hostname="MacBook-Pro-5.local" time="0.156">
+  <properties />
+  <testcase name="bearerKeyRunsDocumentsAndTimelinesWithoutBrowserOriginButCannotManageKeys()" classname="myos.better.ConsoleApiKeysTest" time="0.148" />
+  <testcase name="cookiesStillRequireOriginAndInvalidBearerNeverFallsBackToCookie()" classname="myos.better.ConsoleApiKeysTest" time="0.008" />
+  </testsuite>

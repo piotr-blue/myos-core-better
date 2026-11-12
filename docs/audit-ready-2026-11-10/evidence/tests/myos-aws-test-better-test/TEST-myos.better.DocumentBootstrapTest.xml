@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.DocumentBootstrapTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:54.385Z" hostname="MacBook-Pro-5.local" time="1.816">
+  <properties />
+  <testcase name="previewFindsInheritedRolesWithoutProvisioningAndRejectsUnsupportedBindings()" classname="myos.better.DocumentBootstrapTest" time="0.09" />
+  <testcase name="explicitForeignAccountLocatorIsNeverSilentlyReplacedByTheSignedInOwner()" classname="myos.better.DocumentBootstrapTest" time="0.027" />
+  <testcase name="bootstrapBindsTwoSourcesAndRetriesWithoutDuplicatingResources()" classname="myos.better.DocumentBootstrapTest" time="0.352" />
+  <testcase name="foreignTimelineIsRejectedBeforeCreatingAnyOtherParticipant()" classname="myos.better.DocumentBootstrapTest" time="0.026" />
+  <testcase name="selectedOwnerTimelineIsReusedAndAuthoredSourceRemainsDistinctFromBindings()" classname="myos.better.DocumentBootstrapTest" time="0.283" />
+  </testsuite>

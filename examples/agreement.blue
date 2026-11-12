@@ -1,0 +1,42 @@
+name: Agreement with Orders and Payments
+orders: {}
+initializedOrders: 0
+paidTotal: 0
+contracts:
+  input: {type: Contracts/External Channel}
+  embedded: {type: Contracts/Process Embedded, collectionPaths: [/orders]}
+  addOrder:
+    type: Contracts/Sequential Workflow Operation
+    channel: input
+    steps:
+      - type: Contracts/Compute
+        do:
+          - $failIf:
+              cond: {$exists: {$document: {$concat: [/orders/, {$event: /request/key}]}}}
+              message: Order already exists
+          - $appendChange:
+              op: add
+              path: {$concat: [/orders/, {$event: /request/key}]}
+              val: {$event: /request/order}
+  ready: {type: Contracts/Embedded Node Channel, event: {kind: Order Initialized}}
+  orderReady:
+    type: Contracts/Sequential Workflow
+    channel: ready
+    steps:
+      - type: Contracts/Update Document
+        changeset:
+          - op: replace
+            path: /initializedOrders
+            val: {$add: [{$document: /initializedOrders}, 1]}
+  paid: {type: Contracts/Embedded Node Channel, event: {kind: Order Paid}}
+  orderPaid:
+    type: Contracts/Sequential Workflow
+    channel: paid
+    steps:
+      - type: Contracts/Update Document
+        changeset:
+          - op: replace
+            path: /paidTotal
+            val: {$add: [{$document: /paidTotal}, {$event: /event/amount}]}
+      - type: Contracts/Trigger Event
+        event: {kind: Agreement Payment Received, amount: {$event: /event/amount}}

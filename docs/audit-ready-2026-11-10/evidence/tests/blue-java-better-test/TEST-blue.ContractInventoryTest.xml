@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractInventoryTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:55.360Z" hostname="MacBook-Pro-5.local" time="0.001">
+  <properties />
+  <testcase name="ordinaryAndCyclicEvidenceShareTheExistingRecordOrder()" classname="blue.ContractInventoryTest" time="0.0" />
+  <testcase name="identitiesRetainUtf16OrderAndExactEscapingAcrossIncrementalAdditions()" classname="blue.ContractInventoryTest" time="0.001" />
+  </testsuite>

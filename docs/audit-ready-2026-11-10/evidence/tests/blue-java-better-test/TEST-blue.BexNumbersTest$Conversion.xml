@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.BexNumbersTest$Conversion" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:06.916Z" hostname="MacBook-Pro-5.local" time="0.02">
+  <properties />
+  <testcase name="[1] -128" classname="blue.BexNumbersTest$Conversion" time="0.002" />
+  <testcase name="[2] 32767" classname="blue.BexNumbersTest$Conversion" time="0.001" />
+  <testcase name="[3] -2147483648" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[4] -1" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[5] 0" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[6] 1" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[7] 2147483647" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[8] -9223372036854775808" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[9] 9223372036854775807" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[10] 0" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[11] 9007199254740993" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[12] 179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474124377767893424865485276302219601246094119453082952085005768838150682342462881473913110540827237163350510684586298239947245938479716304835356329624224137216" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="[13] -179769313486231590772930519078902473361797697894230657273430081157732675805500963132708477322407536021120113879871393357658789768814416622492847430639474124377767893424865485276302219601246094119453082952085005768838150682342462881473913110540827237163350510684586298239947245938479716304835356329624224137216" classname="blue.BexNumbersTest$Conversion" time="0.0" />
+  <testcase name="canonicalTextAndOtherNumericRepresentationsKeepTheirRules()" classname="blue.BexNumbersTest$Conversion" time="0.001" />
+  </testsuite>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractPreparationDeltaTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:55.589Z" hostname="MacBook-Pro-5.local" time="2.651">
+  <properties />
+  <testcase name="[1] 10" classname="blue.ContractPreparationDeltaTest" time="0.029" />
+  <testcase name="[2] 1000" classname="blue.ContractPreparationDeltaTest" time="2.621" />
+  </testsuite>

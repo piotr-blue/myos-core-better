@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractEvidenceTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:55.155Z" hostname="MacBook-Pro-5.local" time="0.013">
+  <properties />
+  <testcase name="failedProviderDecodingRestoresTheConstructionBoundary()" classname="blue.ContractEvidenceTest" time="0.002" />
+  <testcase name="aPreviouslyVerifiedCyclicMemberCannotHideAnotherMembersFalseBodyClaim()" classname="blue.ContractEvidenceTest" time="0.0" />
+  <testcase name="canonicalDoubleTokensCannotBypassDecimalScaleLimits()" classname="blue.ContractEvidenceTest" time="0.002" />
+  <testcase name="warmExactResponsesRetainInlineTypeBodiesAndTypedListPayloads()" classname="blue.ContractEvidenceTest" time="0.002" />
+  <testcase name="canonicalTextLimitsAreRecheckedWhenInlineEvidenceUsedShorthand()" classname="blue.ContractEvidenceTest" time="0.0" />
+  <testcase name="reusedInlineBodiesReplaceLaterEquivalentRepresentationsInBatchOrder()" classname="blue.ContractEvidenceTest" time="0.001" />
+  <testcase name="aWarmResponseCacheNeverAuthenticatesDifferentTextOrProviderModes()" classname="blue.ContractEvidenceTest" time="0.001" />
+  <testcase name="warmEvidenceDoesNotBypassAStricterHostLimit()" classname="blue.ContractEvidenceTest" time="0.001" />
+  <testcase name="validRecordsCanReuseVerifiedDependenciesAcrossBatchesWithoutLosingOlderEvidence()" classname="blue.ContractEvidenceTest" time="0.0" />
+  <testcase name="aVerifiedInlineChildDoesNotAuthenticateItsForgedSeparateResponse()" classname="blue.ContractEvidenceTest" time="0.001" />
+  <testcase name="suppliedBuiltinsAreNotAcceptedFromTheAlreadyInstalledRegistry()" classname="blue.ContractEvidenceTest" time="0.001" />
+  <testcase name="precedingInlineEvidenceCannotHideAnOversizedEquivalentResponse()" classname="blue.ContractEvidenceTest" time="0.0" />
+  <testcase name="canonicalInlineEvidenceCanVerifyASeparateResponseWithoutChangingItsShape()" classname="blue.ContractEvidenceTest" time="0.001" />
+  <testcase name="providerDecodingDoesNotBecomeDocumentConstruction()" classname="blue.ContractEvidenceTest" time="0.001" />
+  </testsuite>

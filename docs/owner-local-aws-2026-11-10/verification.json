@@ -1,0 +1,20 @@
+{
+  "library": {
+    "tests": 2536,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "awsApplication": {
+    "tests": 830,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "localCompatibility": {
+    "tests": 13,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  }
+}

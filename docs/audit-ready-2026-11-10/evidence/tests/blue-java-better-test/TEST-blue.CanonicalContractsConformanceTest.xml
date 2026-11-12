@@ -1,0 +1,27 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.CanonicalContractsConformanceTest" tests="23" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:08.265Z" hostname="MacBook-Pro-5.local" time="0.194">
+  <properties />
+  <testcase name="declarations-static/gas=582" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="declarations-static/gas=583" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="declarations-static/gas=584" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="declarations-static/gas=10000000" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="declarations-add/gas=694" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="declarations-add/gas=695" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="declarations-add/gas=696" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="declarations-add/gas=10000000" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="lazy-list/gas=251" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="lazy-list/gas=253" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="lazy-list/gas=656" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="lazy-list/gas=657" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="lazy-list/gas=658" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="lazy-list/gas=10000000" classname="blue.CanonicalContractsConformanceTest" time="0.001" />
+  <testcase name="large-workflow/gas=100000" classname="blue.CanonicalContractsConformanceTest" time="0.016" />
+  <testcase name="large-workflow/gas=160997" classname="blue.CanonicalContractsConformanceTest" time="0.022" />
+  <testcase name="large-workflow/gas=160998" classname="blue.CanonicalContractsConformanceTest" time="0.02" />
+  <testcase name="large-workflow/gas=160999" classname="blue.CanonicalContractsConformanceTest" time="0.018" />
+  <testcase name="large-workflow/gas=10000000" classname="blue.CanonicalContractsConformanceTest" time="0.017" />
+  <testcase name="published-counter/gas=630" classname="blue.CanonicalContractsConformanceTest" time="0.022" />
+  <testcase name="published-counter/gas=631" classname="blue.CanonicalContractsConformanceTest" time="0.022" />
+  <testcase name="published-counter/gas=632" classname="blue.CanonicalContractsConformanceTest" time="0.021" />
+  <testcase name="published-counter/gas=10000000" classname="blue.CanonicalContractsConformanceTest" time="0.019" />
+  </testsuite>

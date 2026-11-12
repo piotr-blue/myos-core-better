@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.contracts.ProjectionLimitsTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.841Z" hostname="MacBook-Pro-5.local" time="0.012">
+  <properties />
+  <testcase name="exactBoundsPreserveDataAndRejectOneUnitLess()" classname="blue.contracts.ProjectionLimitsTest" time="0.007" />
+  <testcase name="typedAndCyclicReferencesAreCountedAsTheirReturnedShape()" classname="blue.contracts.ProjectionLimitsTest" time="0.001" />
+  <testcase name="missingValuesAndLocalSessionsHaveTheSameInclusiveBounds()" classname="blue.contracts.ProjectionLimitsTest" time="0.001" />
+  <testcase name="sharedReferencesCannotExpandPastAnExplicitSmallOutputAllowance()" classname="blue.contracts.ProjectionLimitsTest" time="0.003" />
+  <testcase name="negativeBoundsAreRejected()" classname="blue.contracts.ProjectionLimitsTest" time="0.0" />
+  </testsuite>

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.AdditiveBexTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:02.326Z" hostname="MacBook-Pro-5.local" time="0.545">
+  <properties />
+  <testcase name="additionHasTheReviewedSevenUnitPrice()" classname="blue.AdditiveBexTest" time="0.079" />
+  <testcase name="ceilingAndExactWideCandidateCannotWrap()" classname="blue.AdditiveBexTest" time="0.002" />
+  <testcase name="deepOperandsUseHeapContinuationsAndUnselectedBranchesAreLazy()" classname="blue.AdditiveBexTest" time="0.056" />
+  <testcase name="matchingAndRejectedPrimitiveObligationsAreBothCharged()" classname="blue.AdditiveBexTest" time="0.0" />
+  <testcase name="selectedReadDoesNotBindUnrelatedDocumentFields()" classname="blue.AdditiveBexTest" time="0.001" />
+  <testcase name="closedMatchingObligationsAgreeWithCanonicalLanguage()" classname="blue.AdditiveBexTest" time="0.284" />
+  <testcase name="falseTextPredicatePaysForExaminedBytesAndPreservesOddByteFailure()" classname="blue.AdditiveBexTest" time="0.001" />
+  <testcase name="undefinedBindingsAreOperationalIncompleteness()" classname="blue.AdditiveBexTest" time="0.0" />
+  <testcase name="independentSmallExpressionReferenceSelectsChargesAndValues()" classname="blue.AdditiveBexTest" time="0.111" />
+  <testcase name="referenceShapedInputDoesNotEstablishAFreeMatchingPremise()" classname="blue.AdditiveBexTest" time="0.001" />
+  <testcase name="namespaceAloneDoesNotApproveAnUnpricedNativeCapability()" classname="blue.AdditiveBexTest" time="0.001" />
+  </testsuite>

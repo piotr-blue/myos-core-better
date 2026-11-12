@@ -1,0 +1,254 @@
+{
+  "format": "myos-default-packages/1",
+  "sourceRevision": "69ca46fef9552a574ad8965e3ed742f53dd87dc3",
+  "packages": [
+    {
+      "name": "blue-language",
+      "namespace": "Language",
+      "version": "1.0.0",
+      "path": "runtime/pinned-packages/blue-language/dist/package.bluepkg",
+      "blueId": "8XGYNufx24r7Dc5bGoeobcGNCn9roLzSfZCQyHBTaTx4",
+      "archiveSha256": "sha256:a030dd4c88e41a414918ef4895017862e154b438848bd5c0e4f5bc880e7b8a90"
+    },
+    {
+      "name": "blue-bex",
+      "namespace": "BEX",
+      "version": "1.0.0-final-gas.1",
+      "path": "runtime/blue-contracts-core/src/main/resources/runtime/final-gas/blue-bex/dist/package.bluepkg",
+      "blueId": "6L2cQG3oSX4WPkXoTvGXeTEjn41WYnjdNKSo1F61xonc",
+      "archiveSha256": "sha256:5998a83724b69b4065dc6bd3cc1a0a5af7b5d041e6b3957cbb4949fb2b338f3e"
+    },
+    {
+      "name": "blue-contracts",
+      "namespace": "Contracts",
+      "version": "1.0.0-final-gas.1",
+      "path": "runtime/blue-contracts-core/src/main/resources/runtime/final-gas/blue-contracts/dist/package.bluepkg",
+      "blueId": "AibxCqz62K19mhRWXuWhnZJx6a3o5UXU7sRnAhoUNnFD",
+      "archiveSha256": "sha256:61c6dd2b0a442e3ffdf564b24ef6db6ff7a2c6aa115c18d00ecc3952af6cdcb1"
+    },
+    {
+      "name": "blue-coordination",
+      "namespace": "Coordination",
+      "version": "0.2.0-gas10m.1.finalgas.1",
+      "path": "runtime/blue-coordination-core/src/main/resources/final-gas/coordination.bluepkg",
+      "blueId": "AbBQz7Pv6AJdJioLnoTCxUNFE4LTjM7kfbKUjW6rR68R",
+      "archiveSha256": "sha256:82bacc2c78b2416387183845f8a49d308ffedbcb6a395d9a2e5e3b2393005061"
+    },
+    {
+      "name": "blue-time",
+      "namespace": "Time",
+      "version": "0.2.0-gas10m.1.finalgas.1",
+      "path": "runtime/blue-coordination-core/src/main/resources/final-gas/time.bluepkg",
+      "blueId": "4KdRWND1E4N7iyfdCJxcasCSvNs3gVUKRc2JfzexdPJf",
+      "archiveSha256": "sha256:cf09e0172ffdae8170b59a4cdbb13233b4543c364f5509343cc0fd07e6ad14fe"
+    },
+    {
+      "name": "blue-events",
+      "namespace": "Events",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/blue-events@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "AfEoe7ZarQrFXCKpD5siYpc7YiJbKNPSoHpkP4disaYy",
+      "archiveSha256": "sha256:f54c02559d4f319b8f2e500cd951102e0f0fb4aa3ad2b1440c9e7e67a6fd59dd"
+    },
+    {
+      "name": "blue-parties",
+      "namespace": "Parties",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/blue-parties@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "BBumyx1fUwF19bDgMzLGGLHDSr3bNLB1GXKmax7NUDVh",
+      "archiveSha256": "sha256:fef325c9966fdcc740434de70ac5901828d0a0b7a44bf7816189c2e7a535e68c"
+    },
+    {
+      "name": "blue-mandates",
+      "namespace": "Mandates",
+      "version": "0.2.0-preview.1.finalgas.1",
+      "path": "runtime/blue-coordination-core/src/main/resources/final-gas/mandates.bluepkg",
+      "blueId": "8dTFkUe3aUi8vCcELqG3P8D5PnvjUq1GkFygfJXK78We",
+      "archiveSha256": "sha256:2d3d0be3879422ef5152c2ad3df0bb60b4d6bfca96926bee32c429f38610e085"
+    },
+    {
+      "name": "blue-clauses",
+      "namespace": "Clauses",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/blue-clauses@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "FSKcdErp3bHVufrAMdd1Hdedeca6x2XrQn34WY3NG95m",
+      "archiveSha256": "sha256:ea7a03bf18a64756109ecb6f534b132efc24e1c0f32862388a69638e50ced817"
+    },
+    {
+      "name": "blue-agreements",
+      "namespace": "Agreements",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/blue-agreements@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "BEWquusbPUSLE9bR43RdaULEQu2MstNGgj6Xw751zo8k",
+      "archiveSha256": "sha256:a380ac4ada173b21af91968545cde595f2e25808f403a7a245cc7d4d966c30d5"
+    },
+    {
+      "name": "blue-orders",
+      "namespace": "Orders",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/blue-orders@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "5iZnK2WkES9uufY7FXtHnCj14xpogyBZ7Vk7mVZ7ju6X",
+      "archiveSha256": "sha256:6b736238a2e638fb4c6a66dcaf208e512de458d83d065b93b399eb3768cf9862"
+    },
+    {
+      "name": "blue-documents",
+      "namespace": "DocumentsDomain",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/blue-documents@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "8P5HM4Qo6F3k67cYcyAGJhcaHoa8YbdvoF1w7GP6W7tF",
+      "archiveSha256": "sha256:8a47e2b6ef3a354abdf940c53b2b0050b19a6a36b8d4cbc89169543fb2b3bab0"
+    },
+    {
+      "name": "clause-connections",
+      "namespace": "Connections",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-connections@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "A3favxaegH6NLnwAXBLudSPBPfHkQVaNDbxbwyxi11G",
+      "archiveSha256": "sha256:14769b314e9b53973a1d57fa546df761e6a02493e880f2f640a3b72deb480f74"
+    },
+    {
+      "name": "clause-commerce",
+      "namespace": "Commerce",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-commerce@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "ByMfd6Sgv866NcUwyyUSd1Nsb8KahDSh2aWdfTdKBHcR",
+      "archiveSha256": "sha256:bacfe75a9656c2b4428252880c3eea0c8d34bed926a55b7b0d69013a253623a6"
+    },
+    {
+      "name": "clause-activation",
+      "namespace": "Activation",
+      "version": "0.7.0-preview.1.finalgas.2",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-activation@0.7.0-preview.1.finalgas.2.bluepkg",
+      "blueId": "B7x665VQ1ZHBfTZwN4CGqX29TeGePqb6E7kTVXA3cLJd",
+      "archiveSha256": "sha256:ec52b8a3657fe2bd2e179af8875b46288fc3fa583746450293805cf991db0221"
+    },
+    {
+      "name": "payment-instruction",
+      "namespace": "PaymentInstruction",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/payment-instruction@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "H7U5sZeT9G1toXie8JTVsEhkUdiCgGkQDS6q3bQcxvt",
+      "archiveSha256": "sha256:178571b7a89314127ec19a32f394287705fe4dd89b89a4100a26b0e5e4f964d8"
+    },
+    {
+      "name": "clause-payment",
+      "namespace": "Payment",
+      "version": "0.7.0-preview.1.finalgas.2",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-payment@0.7.0-preview.1.finalgas.2.bluepkg",
+      "blueId": "9neK6QFKfJGGxYT2ee82oEPyRz8nCANDVr8TWCFLhCZq",
+      "archiveSha256": "sha256:79e16edaeabeaed4e7c90740b0400b191d3412c77144e5a53b1ff1ea9f90f9dc"
+    },
+    {
+      "name": "clause-state-machine",
+      "namespace": "State",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-state-machine@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "5bZZQJnxJ4Yfa6DMR8bv8wveoK9AeqixtHTRhnvszvej",
+      "archiveSha256": "sha256:2573c037af8f60ed16fe0bf76e47574c4fdb530cc68f61483c3337eb3fd0aaaa"
+    },
+    {
+      "name": "clause-features",
+      "namespace": "Features",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-features@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "GFctesXT41yvyF5bLRLy9APsp2GuPPA4UB99pjJJYawR",
+      "archiveSha256": "sha256:2ea7c452258019aa86844d61435eafcc320bb49fbc0a439da420b77fdc8a89cd"
+    },
+    {
+      "name": "blue-money",
+      "namespace": "Money",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/blue-money@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "BGsWVic7b5BN3KRK5dDuJevTf2WPwfMav9DkaVuwSuSh",
+      "archiveSha256": "sha256:3dc5435d1aa37a7b3f60b46ab2a54017bf3a3a1f655bd4f14dd681b84edd5f42"
+    },
+    {
+      "name": "clause-balance",
+      "namespace": "Ledger",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-balance@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "HfQqSt5qFPUh7PkmosgJDVygUe6URYn9yQiVF9Jkz7v3",
+      "archiveSha256": "sha256:e7562ec6cf1369e54e0a04ebacaa72a8c408f19b0caf12da70739eac8cb46007"
+    },
+    {
+      "name": "clause-termination",
+      "namespace": "Termination",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-termination@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "2qknmVxLdpY4cwkZD18jszb9n7D9Rn9mi3GeQx3kq2uX",
+      "archiveSha256": "sha256:6ef79f3a110f95a553e5617accc4b5f02a6623c9bf7a2196dbf21618b8058400"
+    },
+    {
+      "name": "clause-amendments",
+      "namespace": "Amendments",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-amendments@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "DU3JjMwbEbsfZ1XxUv4APAFsp1fSDF5w3cayCtQD9YiL",
+      "archiveSha256": "sha256:ca0101fdbc38a2520c561fb723d2f5d7dd059e2e2d0c95e3f66068ccb7e58ab6"
+    },
+    {
+      "name": "clause-documents",
+      "namespace": "Documents",
+      "version": "0.7.0-preview.1.finalgas.2",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-documents@0.7.0-preview.1.finalgas.2.bluepkg",
+      "blueId": "6N2F3iLvT2fCfA8mkd9fkSa5FA8TUvPAHV6FgubpJr6B",
+      "archiveSha256": "sha256:987435461f4a9fb06f1c02998b31cc533c6018d005cafe260c39ce921401c411"
+    },
+    {
+      "name": "clause-schedule",
+      "namespace": "Schedule",
+      "version": "0.7.0-preview.1.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/clause-schedule@0.7.0-preview.1.finalgas.1.bluepkg",
+      "blueId": "Geku5hNxfFMFxgDAqVPs4e5Tu62qYSKQtSYhDcMU5dZz",
+      "archiveSha256": "sha256:029882663a8336cb3b1dbeac9482ae83766269be89da707e8e716f63e94341c6"
+    },
+    {
+      "name": "myos",
+      "namespace": "MyOS",
+      "version": "0.7.0-preview.1.finalgas.2",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/myos@0.7.0-preview.1.finalgas.2.bluepkg",
+      "blueId": "A3DGwPzVVhEbJVf2MiEiubqN89U87DcKqGBiEhcpjJ4G",
+      "archiveSha256": "sha256:dde63b9d43866dd11213554ef0d41f56654d00879ecc1064f4bed61c8da4c96e"
+    },
+    {
+      "name": "acme-bank",
+      "namespace": "ACME",
+      "version": "0.7.0-preview.1.finalgas.2",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/acme-bank@0.7.0-preview.1.finalgas.2.bluepkg",
+      "blueId": "B8GYYMJqQ1vcvf5pBfvLr6euKVZeUPz4vE2kAsZ2ovo1",
+      "archiveSha256": "sha256:2157f760ef9092735d7c1784a22484ff5dfe9510f594b685ae5046b2fdcd7398"
+    },
+    {
+      "name": "manual-payments",
+      "namespace": "ManualPayments",
+      "version": "0.7.0-preview.1.finalgas.2",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/manual-payments@0.7.0-preview.1.finalgas.2.bluepkg",
+      "blueId": "5JXiuQFiCEPH7imqmBTCwBHeFndkxqPZFF3NVdipietu",
+      "archiveSha256": "sha256:67ce898e4b2d0453327e252fd88ad160bcdec154a8b0f3f08231ba0b9b6ba0e4"
+    },
+    {
+      "name": "shipping-instruction",
+      "namespace": "Shipping",
+      "version": "0.7.0-preview.1.finalgas.2",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/shipping-instruction@0.7.0-preview.1.finalgas.2.bluepkg",
+      "blueId": "3V6vRwCDC2D1KGFu7ZGanB3Q386hWuHEDXgS5TRgdu7u",
+      "archiveSha256": "sha256:31d3f82cc2cdd3211b5b9a672626586e87f7234440abcc53e5642006dd25110f"
+    },
+    {
+      "name": "blue-tasks",
+      "namespace": "Tasks",
+      "version": "0.1.0-preview.3.finalgas.1",
+      "path": "runtime/blue-core-service/src/main/resources/package-catalog/blue-tasks@0.1.0-preview.3.finalgas.1.bluepkg",
+      "blueId": "AcWWxbYbwVesQyQicU6wLt3ArqpUinrzMwL1WysZQCuh",
+      "archiveSha256": "sha256:fdfac9768099c8f3a3510e3892cc2e3ba1f22f13ad2076c644dd5c9ff7b576c0"
+    }
+  ],
+  "excludedPackages": [
+    {
+      "name": "clause-representation",
+      "blueId": "5hrSxxCTWSNWDJcrVUQsecGwDhrHLLsgFxLGskoFP5dJ",
+      "archiveSha256": "sha256:e1be45c9305f0f3264c0ec3c529fadedddc5b4480af2408a456244355838bbbf",
+      "reason": "Representation belongs to native Mandates, not the clause catalogue."
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.GraphTimelineIngressTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:57.162Z" hostname="MacBook-Pro-5.local" time="0.404">
+  <properties />
+  <testcase name="foreignOperationTargetsAreBatchedWithoutChangingAnyMember()" classname="myos.better.GraphTimelineIngressTest" time="0.092" />
+  <testcase name="parentRejectionConsumesTheInputButRollsBackEveryMember()" classname="myos.better.GraphTimelineIngressTest" time="0.041" />
+  <testcase name="signedOperationTraversesACycleAndThePublishedSnapshotRestoresExactly()" classname="myos.better.GraphTimelineIngressTest" time="0.044" />
+  <testcase name="aSignedInputForOneGraphDoesNotExecuteAnotherOnTheSameTimeline()" classname="myos.better.GraphTimelineIngressTest" time="0.022" />
+  <testcase name="unauthenticatedEvidenceCannotConsumeOrMutateTheGraph()" classname="myos.better.GraphTimelineIngressTest" time="0.026" />
+  <testcase name="batchesOnlyNonparticipatingInputsAndRetainsEveryOrderKeyAcrossRestart()" classname="myos.better.GraphTimelineIngressTest" time="0.108" />
+  <testcase name="signedOriginalInputUpdatesChildAndParentAtomicallyAndSurvivesRestart()" classname="myos.better.GraphTimelineIngressTest" time="0.051" />
+  <testcase name="rawObserversStillReceiveEachOrdinaryInput()" classname="myos.better.GraphTimelineIngressTest" time="0.02" />
+  </testsuite>

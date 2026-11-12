@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineContentTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:41.435Z" hostname="MacBook-Pro-5.local" time="0.271">
+  <properties />
+  <testcase name="explicitPublicDefinitionsAreAvailableWithoutTreatingPrivateGlobalContentAsMembership()" classname="myos.better.TimelineContentTest" time="0.268" />
+  <testcase name="legacyAndIndexedPacketsRoundTripAndAPinnedRootCannotSeeLaterContent()" classname="myos.better.TimelineContentTest" time="0.002" />
+  </testsuite>

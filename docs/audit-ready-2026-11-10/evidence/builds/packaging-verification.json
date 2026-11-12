@@ -1,0 +1,9 @@
+{
+  "consoleInputsAndAssets": "verified",
+  "applicationBuild": "checkFormat classes testClasses qualificationClasses installDist passed",
+  "localBuild": "classes testClasses passed",
+  "freshLayout": true,
+  "compilationCacheReused": true,
+  "additionalTestsExecuted": false,
+  "appJarSha256": "dd5d053e3ab28d0a95b3a7b92fcc336446a72b35159195ca326140949aad4615"
+}

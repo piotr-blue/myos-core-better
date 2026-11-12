@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineRunnerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:56.337Z" hostname="MacBook-Pro-5.local" time="2.836">
+  <properties />
+  <testcase name="automaticCatchupClosesSeveralChunksWithoutExplicitAcquisitionOrStepCalls()" classname="myos.better.TimelineRunnerTest" time="0.342" />
+  <testcase name="automaticConfigurationIsExplicitBoundedAndRefusesUnsignedPrivateSources()" classname="myos.better.TimelineRunnerTest" time="0.627" />
+  <testcase name="failingProviderBacksOffWhileOtherSourcesAndDocumentsStillProgress()" classname="myos.better.TimelineRunnerTest" time="1.151" />
+  <testcase name="competingHostsCannotDuplicateEffectsAfterDurableWakeup()" classname="myos.better.TimelineRunnerTest" time="0.234" />
+  <testcase name="completeQuietCoverageReleasesOriginalInputAndRestartResumesExactlyOnce()" classname="myos.better.TimelineRunnerTest" time="0.481" />
+  </testsuite>

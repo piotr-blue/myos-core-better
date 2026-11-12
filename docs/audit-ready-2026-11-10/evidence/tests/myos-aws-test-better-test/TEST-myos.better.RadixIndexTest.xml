@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.RadixIndexTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:22.262Z" hostname="MacBook-Pro-5.local" time="0.032">
+  <properties />
+  <testcase name="callerMutationsCannotPoisonGenericLeafValues()" classname="myos.better.RadixIndexTest" time="0.002" />
+  <testcase name="initialBulkPublicationWritesOnlyTheFinalTree()" classname="myos.better.RadixIndexTest" time="0.007" />
+  <testcase name="repeatedLookupsReuseVerifiedPagesWithoutChangingPinnedRoots()" classname="myos.better.RadixIndexTest" time="0.0" />
+  <testcase name="denseLeavesKeepOldRootsReadableAndRespectTheByteBound()" classname="myos.better.RadixIndexTest" time="0.004" />
+  <testcase name="batchesMatchTheLogicalMapAndPreservePreviousRoots()" classname="myos.better.RadixIndexTest" time="0.014" />
+  <testcase name="cacheCapacityIsolationAndCorruptMissesRemainEnforced()" classname="myos.better.RadixIndexTest" time="0.0" />
+  <testcase name="selectedBatchesAgreeWithPointReadsWithoutScanningUnrelatedPaths()" classname="myos.better.RadixIndexTest" time="0.004" />
+  </testsuite>

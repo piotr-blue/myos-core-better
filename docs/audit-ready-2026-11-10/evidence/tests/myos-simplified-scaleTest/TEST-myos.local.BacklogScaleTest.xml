@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.BacklogScaleTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:35.159Z" hostname="MacBook-Pro-5.local" time="1.332">
+  <properties />
+  <testcase name="[1] 1" classname="myos.local.BacklogScaleTest" time="0.41" />
+  <testcase name="[2] 100" classname="myos.local.BacklogScaleTest" time="0.026" />
+  <testcase name="[3] 100000" classname="myos.local.BacklogScaleTest" time="0.872" />
+  </testsuite>

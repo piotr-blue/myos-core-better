@@ -1,0 +1,22 @@
+{
+  "CommandId": "6f991618-c0e0-4ffb-ba57-c02b8a54a86c",
+  "InstanceId": "i-052007ebaf704c0ad",
+  "Comment": "Install verified isolated MyOS better release",
+  "DocumentName": "AWS-RunShellScript",
+  "DocumentVersion": "$DEFAULT",
+  "PluginName": "aws:runShellScript",
+  "ResponseCode": 0,
+  "ExecutionStartDateTime": "2026-11-10T01:25:51.658Z",
+  "ExecutionElapsedTime": "PT21.905S",
+  "ExecutionEndDateTime": "2026-11-10T01:26:12.658Z",
+  "Status": "Success",
+  "StatusDetails": "Success",
+  "StandardOutputContent": "{\"canonicalGraphs\": true, \"combinedAcknowledgements\": true, \"durable\": true, \"edition\": \"AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup\", \"nativeAdmission\": true, \"newOwnerGasSchedule\": \"contracts-compositional-gas-1\", \"status\": \"ok\", \"supportedEditions\": [\"AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup\"], \"timelineAutomatic\": true, \"timelineProcessing\": true, \"workers\": 2}\n",
+  "StandardOutputUrl": "",
+  "StandardErrorContent": "openjdk version \"25.0.5\" 2026-10-20 LTS\nOpenJDK Runtime Environment Corretto-25.0.5.0.10 (build 25.0.5+10-LTS)\nOpenJDK 64-Bit Server VM Corretto-25.0.5.0.10 (build 25.0.5+10-LTS, mixed mode, sharing)\n",
+  "StandardErrorUrl": "",
+  "CloudWatchOutputConfig": {
+    "CloudWatchLogGroupName": "",
+    "CloudWatchOutputEnabled": false
+  }
+}

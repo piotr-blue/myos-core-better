@@ -1,0 +1,10 @@
+{
+  "name": "@blue-labs/account-ui",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "license": "UNLICENSED",
+  "exports": { ".": "./src/index.tsx" },
+  "files": ["src", "README.md"],
+  "peerDependencies": { "react": "^19.0.0" }
+}

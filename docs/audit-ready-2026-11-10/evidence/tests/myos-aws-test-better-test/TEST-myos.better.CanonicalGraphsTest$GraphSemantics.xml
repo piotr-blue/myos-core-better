@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CanonicalGraphsTest$GraphSemantics" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:34.997Z" hostname="MacBook-Pro-5.local" time="0.084">
+  <properties />
+  <testcase name="cyclicMembersStayInOnePublicationAndSurviveColdRestore()" classname="myos.better.CanonicalGraphsTest$GraphSemantics" time="0.051" />
+  <testcase name="aRejectedParentRollsBackTheChangedChild()" classname="myos.better.CanonicalGraphsTest$GraphSemantics" time="0.033" />
+  </testsuite>

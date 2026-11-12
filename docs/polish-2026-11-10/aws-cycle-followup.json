@@ -1,0 +1,302 @@
+{
+  "status": "COMPLETE",
+  "startedAt": "2026-11-10T09:04:57.131381+00:00",
+  "runId": "cycle-retest-442afccb4336",
+  "rounds": [
+    {
+      "round": 1,
+      "millis": 1626.1687500000014,
+      "gas": 4219,
+      "correct": true
+    },
+    {
+      "round": 2,
+      "millis": 1629.677333,
+      "gas": 4211,
+      "correct": true
+    },
+    {
+      "round": 3,
+      "millis": 1201.914624999997,
+      "gas": 4211,
+      "correct": true
+    },
+    {
+      "round": 4,
+      "millis": 1273.3687499999994,
+      "gas": 4211,
+      "correct": true
+    },
+    {
+      "round": 5,
+      "millis": 1180.4681660000008,
+      "gas": 4211,
+      "correct": true
+    }
+  ],
+  "root": "graph-fast-bc5deba7ccbbc596bc3c3e3cf4bfb983c0e199ecfbc1cbae",
+  "timeline": "2d4BDaWRZeqxb8jQUdfodJ5BPuGhi5wPNnZoq2asXdgk",
+  "bootstrapMillis": 3486.0667089999993,
+  "backEdgeMatches": true,
+  "childCount": 5,
+  "rootCount": 5,
+  "initialHistoryUnchanged": true,
+  "metricsDelta": {
+    "sessions": {
+      "abandoned": 0,
+      "capacityEvictions": 0,
+      "estimatedBytes": 0,
+      "historyRenewals": 0,
+      "hits": 0,
+      "loadNanos": 0,
+      "loads": 0,
+      "maximumBytes": 0,
+      "maximumEntries": 0,
+      "maximumUses": 0,
+      "residentEntries": 0,
+      "versionMisses": 0
+    },
+    "storage": {
+      "commit.calls": 168,
+      "commit.failures": 0,
+      "commit.nanos": 2791191557,
+      "commit.retryableFailures": 7,
+      "content.calls": 2091,
+      "content.failures": 0,
+      "content.nanos": 813878151,
+      "contentAll.calls": 178,
+      "contentAll.failures": 0,
+      "contentAll.nanos": 1814407,
+      "get.calls": 3460,
+      "get.failures": 0,
+      "get.nanos": 6565995919,
+      "getAll.calls": 199,
+      "getAll.failures": 0,
+      "getAll.nanos": 552296699,
+      "publishContent.calls": 79,
+      "publishContent.failures": 0,
+      "publishContent.nanos": 1052373978,
+      "query.calls": 65,
+      "query.failures": 0,
+      "query.nanos": 139186533,
+      "work.calls": 301,
+      "work.failures": 0,
+      "work.nanos": 740329278
+    },
+    "timelines": {
+      "ACQUIRE.active": 0,
+      "ACQUIRE.calls": 35,
+      "ACQUIRE.nanos": 2084124980,
+      "COLLECT_RECORDS.active": 0,
+      "COLLECT_RECORDS.calls": 72,
+      "COLLECT_RECORDS.nanos": 707627975,
+      "DISCOVERY.active": 0,
+      "DISCOVERY.calls": 2,
+      "DISCOVERY.nanos": 27463098,
+      "EXECUTE_INPUT.active": 0,
+      "EXECUTE_INPUT.calls": 0,
+      "EXECUTE_INPUT.nanos": 0,
+      "FANOUT.active": 0,
+      "FANOUT.calls": 40,
+      "FANOUT.nanos": 772586304,
+      "GRAPH_ADDRESSES.active": 0,
+      "GRAPH_ADDRESSES.calls": 0,
+      "GRAPH_ADDRESSES.nanos": 0,
+      "GRAPH_ADMISSION.active": 0,
+      "GRAPH_ADMISSION.calls": 0,
+      "GRAPH_ADMISSION.nanos": 0,
+      "GRAPH_COMMIT.active": 0,
+      "GRAPH_COMMIT.calls": 0,
+      "GRAPH_COMMIT.nanos": 0,
+      "GRAPH_LOAD.active": 0,
+      "GRAPH_LOAD.calls": 0,
+      "GRAPH_LOAD.nanos": 0,
+      "GRAPH_OPERATIONS.active": 0,
+      "GRAPH_OPERATIONS.calls": 0,
+      "GRAPH_OPERATIONS.nanos": 0,
+      "GRAPH_RESTORE.active": 0,
+      "GRAPH_RESTORE.calls": 0,
+      "GRAPH_RESTORE.nanos": 0,
+      "GRAPH_SNAPSHOT.active": 0,
+      "GRAPH_SNAPSHOT.calls": 0,
+      "GRAPH_SNAPSHOT.nanos": 0,
+      "GRAPH_SUBSCRIPTIONS.active": 0,
+      "GRAPH_SUBSCRIPTIONS.calls": 0,
+      "GRAPH_SUBSCRIPTIONS.nanos": 0,
+      "PREPARE_INPUT.active": 0,
+      "PREPARE_INPUT.calls": 0,
+      "PREPARE_INPUT.nanos": 0,
+      "PUBLISH_RANGE.active": 0,
+      "PUBLISH_RANGE.calls": 42,
+      "PUBLISH_RANGE.nanos": 1138543639,
+      "READ_CONTENT_HTTP.active": 0,
+      "READ_CONTENT_HTTP.calls": 83,
+      "READ_CONTENT_HTTP.nanos": 754185662,
+      "READ_CONTEXT.active": 0,
+      "READ_CONTEXT.calls": 35,
+      "READ_CONTEXT.nanos": 74920046,
+      "READ_ENTRY_HTTP.active": 0,
+      "READ_ENTRY_HTTP.calls": 0,
+      "READ_ENTRY_HTTP.nanos": 0,
+      "READ_HTTP.active": 0,
+      "READ_HTTP.calls": 35,
+      "READ_HTTP.nanos": 1853643513,
+      "RESOLVE_INPUT.active": 0,
+      "RESOLVE_INPUT.calls": 0,
+      "RESOLVE_INPUT.nanos": 0,
+      "VERIFY_CONTENT.active": 0,
+      "VERIFY_CONTENT.calls": 83,
+      "VERIFY_CONTENT.nanos": 235527562,
+      "VERIFY_ENTRY.active": 0,
+      "VERIFY_ENTRY.calls": 0,
+      "VERIFY_ENTRY.nanos": 0,
+      "VERIFY_PAGE.active": 0,
+      "VERIFY_PAGE.calls": 35,
+      "VERIFY_PAGE.nanos": 1372507627,
+      "VERIFY_RANGE.active": 0,
+      "VERIFY_RANGE.calls": 35,
+      "VERIFY_RANGE.nanos": 27894171,
+      "WRITE_CONTENT.active": 0,
+      "WRITE_CONTENT.calls": 35,
+      "WRITE_CONTENT.nanos": 494794349,
+      "graphSessions.compactionFailures": 0,
+      "graphSessions.compactions": 0,
+      "graphSessions.entries": 0,
+      "graphSessions.historyRenewals": 0,
+      "graphSessions.hits": 0,
+      "graphSessions.loads": 0,
+      "graphSessions.maximumUses": 0
+    }
+  },
+  "finishedAt": "2026-11-10T09:05:25.546493+00:00",
+  "release": "66d9d21516b6c2c1916d48a501a79860d33fb003b1cc0c961c70487f54cf9497",
+  "fixtureSha256": "6d61b33a06460f5f5a09bf7b490fa2af3b8a6d24eafef051dd0d199a1048f65d",
+  "operations": [
+    {
+      "operation": "createChild",
+      "status": "COMPLETE",
+      "parentObservedMillis": 1705.7004579999991,
+      "rootBefore": 1,
+      "rootAfter": 2,
+      "targetBefore": 1,
+      "targetAfter": 2,
+      "entry": "8mn6S2WrnAHs9U72JBpcFqSj7mFBvRp9HpYFsvPzq2iR",
+      "rootServer": {
+        "executionMillis": 367.050913,
+        "gas": 105141,
+        "inputToPublishMillis": 849.4980335235596
+      },
+      "targetServer": {
+        "executionMillis": 367.050913,
+        "gas": 105141,
+        "inputToPublishMillis": 849.4980335235596
+      },
+      "submitServerTiming": "app;dur=209.524"
+    },
+    {
+      "operation": "pulse",
+      "status": "COMPLETE",
+      "parentObservedMillis": 1626.1687500000014,
+      "rootBefore": 2,
+      "rootAfter": 3,
+      "targetBefore": 2,
+      "targetAfter": 3,
+      "entry": "ihH47mYkGgZuAT3GQwXDW323EFTDn73V5VndbizWygt",
+      "rootServer": {
+        "executionMillis": 351.099843,
+        "gas": 4219,
+        "inputToPublishMillis": 799.6101379394531
+      },
+      "targetServer": {
+        "executionMillis": 351.099843,
+        "gas": 4219,
+        "inputToPublishMillis": 799.6101379394531
+      },
+      "submitServerTiming": "app;dur=99.292"
+    },
+    {
+      "operation": "pulse",
+      "status": "COMPLETE",
+      "parentObservedMillis": 1629.677333,
+      "rootBefore": 3,
+      "rootAfter": 4,
+      "targetBefore": 3,
+      "targetAfter": 4,
+      "entry": "EWCbGfHPVNnaRBbZCQcbYKSq53wyk2LuCWfw9YZiyW1e",
+      "rootServer": {
+        "executionMillis": 326.39111,
+        "gas": 4211,
+        "inputToPublishMillis": 591.0677909851074
+      },
+      "targetServer": {
+        "executionMillis": 326.39111,
+        "gas": 4211,
+        "inputToPublishMillis": 591.0677909851074
+      },
+      "submitServerTiming": "app;dur=89.629"
+    },
+    {
+      "operation": "pulse",
+      "status": "COMPLETE",
+      "parentObservedMillis": 1201.914624999997,
+      "rootBefore": 4,
+      "rootAfter": 5,
+      "targetBefore": 4,
+      "targetAfter": 5,
+      "entry": "2A41vU688fznuiJXLuenSn2ThJqUXTCRWwCnmdqL4jz5",
+      "rootServer": {
+        "executionMillis": 269.830946,
+        "gas": 4211,
+        "inputToPublishMillis": 559.9009990692139
+      },
+      "targetServer": {
+        "executionMillis": 269.830946,
+        "gas": 4211,
+        "inputToPublishMillis": 559.9009990692139
+      },
+      "submitServerTiming": "app;dur=92.529"
+    },
+    {
+      "operation": "pulse",
+      "status": "COMPLETE",
+      "parentObservedMillis": 1273.3687499999994,
+      "rootBefore": 5,
+      "rootAfter": 6,
+      "targetBefore": 5,
+      "targetAfter": 6,
+      "entry": "46VJ2q1oUkCFgcEd354QThSerTjjkzbVrwrhmvNq6ygd",
+      "rootServer": {
+        "executionMillis": 292.696125,
+        "gas": 4211,
+        "inputToPublishMillis": 588.0570411682129
+      },
+      "targetServer": {
+        "executionMillis": 292.696125,
+        "gas": 4211,
+        "inputToPublishMillis": 588.0570411682129
+      },
+      "submitServerTiming": "app;dur=94.827"
+    },
+    {
+      "operation": "pulse",
+      "status": "COMPLETE",
+      "parentObservedMillis": 1180.4681660000008,
+      "rootBefore": 6,
+      "rootAfter": 7,
+      "targetBefore": 6,
+      "targetAfter": 7,
+      "entry": "4xmfj78dnntohhP3uatikwq1nCpgzY3XqHkFMWZTng8P",
+      "rootServer": {
+        "executionMillis": 272.655267,
+        "gas": 4211,
+        "inputToPublishMillis": 535.269021987915
+      },
+      "targetServer": {
+        "executionMillis": 272.655267,
+        "gas": 4211,
+        "inputToPublishMillis": 535.269021987915
+      },
+      "submitServerTiming": "app;dur=89.346"
+    }
+  ]
+}

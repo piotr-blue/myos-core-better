@@ -1,0 +1,123 @@
+name: Incremental two-Timeline supply agreement
+type: Agreements/Agreement with Clauses
+description: Create an Order, prepare its manual payment, and follow recipient acknowledgment back to this agreement.
+orders: {}
+paidTotal: 0
+clauses:
+  activation:
+    type: Activation/Activation Clause
+    parameters:
+      parties:
+        customer: {type: Parties/Party, displayName: Customer}
+        seller: {type: Parties/Party, displayName: Seller}
+      required: []
+  orders:
+    type: IncrementalDocuments/Documents Clause
+    parameters:
+      obtain: create
+      fieldPaths:
+        readerAccess: /timelineReadAccess
+      template:
+        name: Supply Order
+        type: Orders/Order with Clauses
+        paidTotal: 0
+        timelineReadAccess: {type: Dictionary}
+        clauses:
+          activation:
+            type: Activation/Activation Clause
+            parameters:
+              parties:
+                buyer: {type: Parties/Party}
+                supplier: {type: Parties/Party}
+              required: []
+          payment:
+            type: Payment/Payment Clause
+            parameters:
+              obtain: create
+              fieldPaths:
+                readerAccess: /timelineReadAccess
+              template:
+                name: Manual payment for the Order
+                type: ManualPayments/Manual Receipt Instruction
+                timelineReadAccess: {type: Dictionary}
+                clauses:
+                  activation:
+                    type: Activation/Activation Clause
+                    parameters:
+                      parties:
+                        payer: {type: Parties/Party}
+                        payee: {type: Parties/Party}
+                        guarantor: {type: Parties/Party}
+                      required: []
+                paymentTerms:
+                  amountMinor: 200
+                  limitMinor: 200
+                  currency: EUR
+                  payerChannel: payer
+                  payeeChannel: payee
+                  guarantorChannel: guarantor
+                  allowedPayees: [payee]
+                  recipientApprovalRequired: false
+            bindings:
+              instruction: /payment
+              parties:
+                payer: buyer
+                payee: supplier
+                guarantor: supplier
+              prepare:
+                preparePayment:
+                  'on': workflow
+                  party: buyer
+                  params:
+                    values:
+                      readerAccess: {$document: /timelineReadAccess}
+        contracts:
+          receipt:
+            type: Contracts/Embedded Node Channel
+            sourcePath: /payment
+            event:
+              type: PaymentInstruction/Payment Event
+              kind: Manual Receipt Acknowledged
+          receiptReceived:
+            type: Contracts/Sequential Workflow
+            channel: receipt
+            steps:
+            - type: Contracts/Update Document
+              changeset:
+              - op: replace
+                path: /paidTotal
+                val: {$event: /event/amountMinor}
+            - type: Contracts/Trigger Event
+              event:
+                kind: Order Payment Received
+                amountMinor: {$event: /event/amountMinor}
+    bindings:
+      collection: /orders
+      parties:
+        buyer: customer
+        supplier: seller
+      prepare:
+        placeOrder:
+          'on': workflow
+          party: customer
+          params:
+            key: {$var: {name: trigger, path: /orderId}}
+            values:
+              readerAccess: {$document: /timelineReadAccess}
+contracts:
+  orderReceipt:
+    type: Contracts/Embedded Node Channel
+    event: {kind: Order Payment Received}
+  orderPaid:
+    type: Contracts/Sequential Workflow
+    channel: orderReceipt
+    steps:
+    - type: Contracts/Update Document
+      changeset:
+      - op: replace
+        path: /paidTotal
+        val: {$add: [{$document: /paidTotal}, {$event: /event/amountMinor}]}
+    - type: Contracts/Trigger Event
+      event:
+        kind: Agreement Payment Received
+        amountMinor: {$event: /event/amountMinor}

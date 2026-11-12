@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelinePublisherTest$SourceOrder" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:06.422Z" hostname="MacBook-Pro-5.local" time="0.003">
+  <properties />
+  <testcase name="onlyTheExactIncreasingSuccessorCanAdvanceAPreparedHead()" classname="blue.coordination.TimelinePublisherTest$SourceOrder" time="0.002" />
+  <testcase name="candidateSchemaStillRejectsAnInvalidActor()" classname="blue.coordination.TimelinePublisherTest$SourceOrder" time="0.001" />
+  </testsuite>

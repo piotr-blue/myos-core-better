@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractCompactionTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:54.924Z" hostname="MacBook-Pro-5.local" time="0.063">
+  <properties />
+  <testcase name="dropsUnreachableEvidenceAndProcessViewsWhilePreservingBorrowedValues()" classname="blue.ContractCompactionTest" time="0.009" />
+  <testcase name="[1] false" classname="blue.ContractCompactionTest" time="0.018" />
+  <testcase name="[2] true" classname="blue.ContractCompactionTest" time="0.035" />
+  </testsuite>

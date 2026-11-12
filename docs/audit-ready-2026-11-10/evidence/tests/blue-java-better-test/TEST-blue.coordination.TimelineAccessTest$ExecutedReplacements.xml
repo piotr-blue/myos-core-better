@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineAccessTest$ExecutedReplacements" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.921Z" hostname="MacBook-Pro-5.local" time="0.844">
+  <properties />
+  <testcase name="unchangedListsStillEmitAndEmptyListsRevokeWithoutInventedGrantIds()" classname="blue.coordination.TimelineAccessTest$ExecutedReplacements" time="0.131" />
+  <testcase name="publishedBexAtomicallyReplacesBothListsAndEmitsItsRealEvent()" classname="blue.coordination.TimelineAccessTest$ExecutedReplacements" time="0.019" />
+  <testcase name="[1] 8" classname="blue.coordination.TimelineAccessTest$ExecutedReplacements" time="0.087" />
+  <testcase name="[2] 64" classname="blue.coordination.TimelineAccessTest$ExecutedReplacements" time="0.595" />
+  <testcase name="otherAccessDocumentsAreDispositionedWithoutRunningTheirPrograms()" classname="blue.coordination.TimelineAccessTest$ExecutedReplacements" time="0.012" />
+  </testsuite>

@@ -1,0 +1,388 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Isolated canonical Blue preview: one host, protected DynamoDB records and scoped signing custody.",
+  "Resources": {
+    "Artifacts": {
+      "Type": "AWS::S3::Bucket",
+      "Properties": {
+        "BucketEncryption": {
+          "ServerSideEncryptionConfiguration": [
+            {
+              "ServerSideEncryptionByDefault": {
+                "SSEAlgorithm": "AES256"
+              }
+            }
+          ]
+        },
+        "PublicAccessBlockConfiguration": {
+          "BlockPublicAcls": true,
+          "BlockPublicPolicy": true,
+          "IgnorePublicAcls": true,
+          "RestrictPublicBuckets": true
+        },
+        "VersioningConfiguration": {
+          "Status": "Enabled"
+        },
+        "Tags": [
+          {
+            "Key": "owner",
+            "Value": "myos-core-better"
+          },
+          {
+            "Key": "environment",
+            "Value": "isolated-experiment"
+          },
+          {
+            "Key": "review-after",
+            "Value": "2026-11-12"
+          },
+          {
+            "Key": "project",
+            "Value": "myos-better-canonical-20261108"
+          }
+        ]
+      }
+    },
+    "Documents": {
+      "Type": "AWS::DynamoDB::Table",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "TableName": "myos-better-canonical-20261108-documents",
+        "BillingMode": "PAY_PER_REQUEST",
+        "AttributeDefinitions": [
+          {
+            "AttributeName": "pk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "sk",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "work",
+            "AttributeType": "S"
+          },
+          {
+            "AttributeName": "position",
+            "AttributeType": "S"
+          }
+        ],
+        "KeySchema": [
+          {
+            "AttributeName": "pk",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "sk",
+            "KeyType": "RANGE"
+          }
+        ],
+        "GlobalSecondaryIndexes": [
+          {
+            "IndexName": "work",
+            "KeySchema": [
+              {
+                "AttributeName": "work",
+                "KeyType": "HASH"
+              },
+              {
+                "AttributeName": "position",
+                "KeyType": "RANGE"
+              }
+            ],
+            "Projection": {
+              "ProjectionType": "ALL"
+            }
+          }
+        ],
+        "SSESpecification": {
+          "SSEEnabled": true
+        },
+        "PointInTimeRecoverySpecification": {
+          "PointInTimeRecoveryEnabled": true
+        },
+        "Tags": [
+          {
+            "Key": "owner",
+            "Value": "myos-core-better"
+          },
+          {
+            "Key": "environment",
+            "Value": "isolated-experiment"
+          },
+          {
+            "Key": "review-after",
+            "Value": "2026-11-12"
+          },
+          {
+            "Key": "project",
+            "Value": "myos-better-canonical-20261108"
+          }
+        ]
+      }
+    },
+    "Role": {
+      "Type": "AWS::IAM::Role",
+      "Properties": {
+        "AssumeRolePolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Principal": {
+                "Service": "ec2.amazonaws.com"
+              },
+              "Action": "sts:AssumeRole"
+            }
+          ]
+        },
+        "ManagedPolicyArns": [
+          "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+        ],
+        "Policies": [
+          {
+            "PolicyName": "IsolatedDocuments",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "dynamodb:GetItem",
+                    "dynamodb:PutItem",
+                    "dynamodb:UpdateItem",
+                    "dynamodb:DeleteItem",
+                    "dynamodb:Query",
+                    "dynamodb:Scan",
+                    "dynamodb:TransactWriteItems",
+                    "dynamodb:TransactGetItems",
+                    "dynamodb:BatchGetItem",
+                    "dynamodb:BatchWriteItem",
+                    "dynamodb:DescribeTable",
+                    "dynamodb:ConditionCheckItem"
+                  ],
+                  "Resource": [
+                    {
+                      "Fn::GetAtt": [
+                        "Documents",
+                        "Arn"
+                      ]
+                    },
+                    {
+                      "Fn::Sub": "${Documents.Arn}/index/*"
+                    }
+                  ]
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:GetObject"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${Artifacts.Arn}/releases/*"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "s3:PutObject"
+                  ],
+                  "Resource": {
+                    "Fn::Sub": "${Artifacts.Arn}/reports/*"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "PolicyName": "CanonicalPreviewCustody",
+            "PolicyDocument": {
+              "Version": "2012-10-17",
+              "Statement": [
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "secretsmanager:GetSecretValue"
+                  ],
+                  "Resource": {
+                    "Ref": "ProviderIdentity"
+                  }
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "secretsmanager:GetSecretValue"
+                  ],
+                  "Resource": "arn:aws:secretsmanager:eu-west-1:581571886327:secret:myos-better-reader-canonical-v1-*"
+                },
+                {
+                  "Effect": "Allow",
+                  "Action": [
+                    "secretsmanager:CreateSecret"
+                  ],
+                  "Resource": "arn:aws:secretsmanager:eu-west-1:581571886327:secret:myos-better-reader-canonical-v1-*",
+                  "Condition": {
+                    "StringLike": {
+                      "secretsmanager:Name": "myos-better-reader-canonical-v1-*"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "owner",
+            "Value": "myos-core-better"
+          },
+          {
+            "Key": "environment",
+            "Value": "isolated-experiment"
+          },
+          {
+            "Key": "review-after",
+            "Value": "2026-11-12"
+          },
+          {
+            "Key": "project",
+            "Value": "myos-better-canonical-20261108"
+          }
+        ]
+      }
+    },
+    "Profile": {
+      "Type": "AWS::IAM::InstanceProfile",
+      "Properties": {
+        "Roles": [
+          {
+            "Ref": "Role"
+          }
+        ]
+      }
+    },
+    "SecurityGroup": {
+      "Type": "AWS::EC2::SecurityGroup",
+      "Properties": {
+        "GroupDescription": "No inbound ports; authenticated SSM access only",
+        "VpcId": "vpc-0f07b96be67f4b4d1",
+        "SecurityGroupIngress": [],
+        "Tags": [
+          {
+            "Key": "owner",
+            "Value": "myos-core-better"
+          },
+          {
+            "Key": "environment",
+            "Value": "isolated-experiment"
+          },
+          {
+            "Key": "review-after",
+            "Value": "2026-11-12"
+          },
+          {
+            "Key": "project",
+            "Value": "myos-better-canonical-20261108"
+          }
+        ]
+      }
+    },
+    "Host": {
+      "Type": "AWS::EC2::Instance",
+      "Properties": {
+        "ImageId": "ami-00fcaf85b81e85b1d",
+        "InstanceType": "m7i.large",
+        "IamInstanceProfile": {
+          "Ref": "Profile"
+        },
+        "SubnetId": "subnet-086427905c9f20d26",
+        "SecurityGroupIds": [
+          {
+            "Ref": "SecurityGroup"
+          }
+        ],
+        "MetadataOptions": {
+          "HttpTokens": "required",
+          "HttpEndpoint": "enabled"
+        },
+        "BlockDeviceMappings": [
+          {
+            "DeviceName": "/dev/xvda",
+            "Ebs": {
+              "Encrypted": true,
+              "VolumeSize": 30,
+              "VolumeType": "gp3",
+              "DeleteOnTermination": true
+            }
+          }
+        ],
+        "Tags": [
+          {
+            "Key": "owner",
+            "Value": "myos-core-better"
+          },
+          {
+            "Key": "environment",
+            "Value": "isolated-experiment"
+          },
+          {
+            "Key": "review-after",
+            "Value": "2026-11-12"
+          },
+          {
+            "Key": "project",
+            "Value": "myos-better-canonical-20261108"
+          },
+          {
+            "Key": "Name",
+            "Value": "myos-better-canonical-20261108"
+          }
+        ],
+        "UserData": {
+          "Fn::Base64": "#!/bin/bash\nset -euo pipefail\ndnf install -y java-25-amazon-corretto-devel\nuseradd --system --home-dir /opt/myos-better myos-better\ninstall -d -o myos-better -g myos-better /opt/myos-better /var/lib/myos-better\n"
+        }
+      }
+    },
+    "ProviderIdentity": {
+      "Type": "AWS::SecretsManager::Secret",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "Description": "Canonical preview provider identity; immutable pinned version",
+        "Tags": [
+          {
+            "Key": "owner",
+            "Value": "myos-core-better"
+          },
+          {
+            "Key": "project",
+            "Value": "myos-better-canonical-20261108"
+          }
+        ]
+      }
+    }
+  },
+  "Outputs": {
+    "Instance": {
+      "Value": {
+        "Ref": "Host"
+      }
+    },
+    "Table": {
+      "Value": {
+        "Ref": "Documents"
+      }
+    },
+    "Artifacts": {
+      "Value": {
+        "Ref": "Artifacts"
+      }
+    },
+    "SecretArn": {
+      "Value": {
+        "Ref": "ProviderIdentity"
+      }
+    }
+  }
+}

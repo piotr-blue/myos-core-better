@@ -1,0 +1,101 @@
+name: Clause-only supply agreement · AWS walkthrough · 11 Nov 2026
+type: Agreements/Agreement with Clauses
+description: Two orders with manual receipt instructions; child documents reuse the customer and seller Timelines.
+orders: {}
+clauses:
+  activation:
+    type: Activation/Activation Clause
+    parameters:
+      parties:
+        customer:
+          type: Parties/Party
+          displayName: Customer
+        seller:
+          type: Parties/Party
+          displayName: Seller
+      required: []
+  orders:
+    type: IncrementalDocuments/Documents Clause
+    parameters:
+      obtain: create
+      fieldPaths:
+        readerAccess: /timelineReadAccess
+      template:
+        name: Supply Order
+        type: Orders/Order with Clauses
+        timelineReadAccess:
+          type: Dictionary
+        clauses:
+          activation:
+            type: Activation/Activation Clause
+            parameters:
+              parties:
+                buyer:
+                  type: Parties/Party
+                supplier:
+                  type: Parties/Party
+              required: []
+          payment:
+            type: Payment/Payment Clause
+            parameters:
+              obtain: create
+              fieldPaths:
+                readerAccess: /timelineReadAccess
+              template:
+                name: Manual payment for the Order
+                type: ManualPayments/Manual Receipt Instruction
+                timelineReadAccess:
+                  type: Dictionary
+                clauses:
+                  activation:
+                    type: Activation/Activation Clause
+                    parameters:
+                      parties:
+                        payer:
+                          type: Parties/Party
+                        payee:
+                          type: Parties/Party
+                        guarantor:
+                          type: Parties/Party
+                      required: []
+                paymentTerms:
+                  amountMinor: 200
+                  limitMinor: 200
+                  currency: EUR
+                  payerChannel: payer
+                  payeeChannel: payee
+                  guarantorChannel: guarantor
+                  allowedPayees:
+                    - payee
+                  recipientApprovalRequired: false
+            bindings:
+              instruction: /payment
+              parties:
+                payer: buyer
+                payee: supplier
+                guarantor: supplier
+              prepare:
+                preparePayment:
+                  on: workflow
+                  party: buyer
+                  params:
+                    values:
+                      readerAccess:
+                        $document: /timelineReadAccess
+    bindings:
+      collection: /orders
+      parties:
+        buyer: customer
+        supplier: seller
+      prepare:
+        placeOrder:
+          on: workflow
+          party: customer
+          params:
+            key:
+              $var:
+                name: trigger
+                path: /orderId
+            values:
+              readerAccess:
+                $document: /timelineReadAccess

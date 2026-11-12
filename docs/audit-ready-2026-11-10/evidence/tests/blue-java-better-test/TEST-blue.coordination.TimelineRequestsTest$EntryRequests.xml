@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineRequestsTest$EntryRequests" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:09.664Z" hostname="MacBook-Pro-5.local" time="0.1">
+  <properties />
+  <testcase name="exactEntryReferenceCanBeLookedUpWithoutOpeningItsHistory()" classname="blue.coordination.TimelineRequestsTest$EntryRequests" time="0.002" />
+  </testsuite>

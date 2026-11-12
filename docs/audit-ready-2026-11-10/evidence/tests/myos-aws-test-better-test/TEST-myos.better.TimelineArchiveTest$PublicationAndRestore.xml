@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineArchiveTest$PublicationAndRestore" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:30.762Z" hostname="MacBook-Pro-5.local" time="7.475">
+  <properties />
+  <testcase name="exactHistoryContentAndBoundsSurviveRestartAndDuplicateAcquisition()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.018" />
+  <testcase name="boundedReplayWindowsRemainPinnedWhenAnotherImporterAdvances()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.168" />
+  <testcase name="tenantScopesAndMissingAdoptedHistoryNeverBecomeAnEmptyOtherAccount()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.017" />
+  <testcase name="failedLaterReadAheadDoesNotPublishAPartialPrefixAndCanBeRetried()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.132" />
+  <testcase name="emptyCoverageAndAnAuthenticatedSuccessorSurviveRestartWithoutClosingTheFutureEntry()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.027" />
+  <testcase name="corruptPrefetchedContentCannotPoisonALaterRecovery()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.016" />
+  <testcase name="differentlyAnchoredUnchangedCoverageReusesTheCommittedReceiptAfterVerification()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.032" />
+  <testcase name="anEstablishedImporterVerifiesOnlyNewBatchesWhenAnotherImporterAdvances()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.164" />
+  <testcase name="selectionSkipsVerifiedQuietRunsAndRetainsItsOriginalSourceCut()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.16" />
+  <testcase name="sharedPackageDefinitionsRemainAvailableAfterArchiveRecreation()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="6.726" />
+  <testcase name="separatelyOfferedCyclicContentIsRetainedWithItsProof()" classname="myos.better.TimelineArchiveTest$PublicationAndRestore" time="0.013" />
+  </testsuite>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.LanguageLimitsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.472Z" hostname="MacBook-Pro-5.local" time="0.001">
+  <properties />
+  <testcase name="resourceExhaustionIsIncompleteAndIndependentOfPriorSuccess()" classname="blue.language.LanguageLimitsTest" time="0.0" />
+  <testcase name="providerAndCyclicProofParsingHonorHostInputBounds()" classname="blue.language.LanguageLimitsTest" time="0.001" />
+  </testsuite>

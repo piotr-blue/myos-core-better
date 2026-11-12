@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CanonicalAdmissionsTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:22:56.084Z" hostname="MacBook-Pro-5.local" time="0.287">
+  <properties />
+  <testcase name="protectedPublicationRecoveryAuthenticatesMetadataWithoutTraversingOldHistory()" classname="myos.better.CanonicalAdmissionsTest" time="0.182" />
+  <testcase name="failedLegacyValidationNeverWritesAnAdmissionCheckpoint()" classname="myos.better.CanonicalAdmissionsTest" time="0.008" />
+  <testcase name="legacyBackfillIsIdempotentAndCannotRewriteTheOriginalPublication()" classname="myos.better.CanonicalAdmissionsTest" time="0.02" />
+  <testcase name="coldRecoveryDoesNotFetchHistoricalDependenciesButNormalReadStillDoes()" classname="myos.better.CanonicalAdmissionsTest" time="0.015" />
+  <testcase name="legacyPagesNeedExplicitValidatedUpgradeAndUnchangedMembersReuseTheirCheckpoint()" classname="myos.better.CanonicalAdmissionsTest" time="0.016" />
+  <testcase name="invalidPublishedRecoveryWritesNoCheckpoint()" classname="myos.better.CanonicalAdmissionsTest" time="0.008" />
+  <testcase name="coldCurrentAndHistoricalMembersRecoverTheirOwnAdmissionWithoutChangingPortableSnapshots()" classname="myos.better.CanonicalAdmissionsTest" time="0.036" />
+  </testsuite>

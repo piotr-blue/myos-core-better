@@ -1,0 +1,16 @@
+.gradle/
+build/
+reports/
+*.jfr
+*.hprof
+.DS_Store
+aws-access.properties
+.env
+__pycache__/
+*.pyc
+
+node_modules/
+core-ui/dist/
+playwright-report/
+test-results/
+*.class

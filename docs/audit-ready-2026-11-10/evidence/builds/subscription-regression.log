@@ -1,0 +1,20 @@
+Calculating task graph as no cached configuration is available for tasks: format test --tests myos.better.TimelineWorkTest --tests myos.better.OwnerGraphsTest
+> Task :processResources UP-TO-DATE
+> Task :processTestResources UP-TO-DATE
+> Task :processQualificationResources UP-TO-DATE
+> Task :blue-java-better:processResources UP-TO-DATE
+> Task :blue-java-better:compileJava UP-TO-DATE
+> Task :blue-java-better:classes UP-TO-DATE
+> Task :blue-java-better:jar UP-TO-DATE
+> Task :format
+> Task :compileJava
+> Task :classes
+> Task :compileQualificationJava UP-TO-DATE
+> Task :qualificationClasses UP-TO-DATE
+> Task :compileTestJava
+> Task :testClasses
+> Task :test
+
+BUILD SUCCESSFUL in 17s
+11 actionable tasks: 4 executed, 7 up-to-date
+Configuration cache entry stored.

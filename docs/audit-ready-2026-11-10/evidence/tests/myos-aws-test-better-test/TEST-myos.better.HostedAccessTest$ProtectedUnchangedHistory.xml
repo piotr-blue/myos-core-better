@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.HostedAccessTest$ProtectedUnchangedHistory" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:57.823Z" hostname="MacBook-Pro-5.local" time="0.263">
+  <properties />
+  <testcase name="laterUpdatesAlwaysFallBackToHistoricalReplayIncludingAfterRestart()" classname="myos.better.HostedAccessTest$ProtectedUnchangedHistory" time="0.052" />
+  <testcase name="lookupDoesNotWalkOtherGrantsOnTheControlTimeline()" classname="myos.better.HostedAccessTest$ProtectedUnchangedHistory" time="0.115" />
+  <testcase name="unchangedStateIsAvailableOnlyAfterItsOriginalPublication()" classname="myos.better.HostedAccessTest$ProtectedUnchangedHistory" time="0.024" />
+  <testcase name="warmHistoryReadsOnlyTheCurrentGrantAndStillSeesPeerUpdates()" classname="myos.better.HostedAccessTest$ProtectedUnchangedHistory" time="0.047" />
+  <testcase name="aForeignOwnerSourceOrStoreCannotReuseLocalAuthority()" classname="myos.better.HostedAccessTest$ProtectedUnchangedHistory" time="0.024" />
+  </testsuite>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.ExternalTimelinesTest$DurablePublication" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:20.386Z" hostname="MacBook-Pro-5.local" time="0.116">
+  <properties />
+  <testcase name="duplicateConcurrentImportsPublishOnePrefixAndRestartResumesItsExactAnchor()" classname="myos.local.ExternalTimelinesTest$DurablePublication" time="0.051" />
+  <testcase name="failureWhileIndexingRollsBackEntriesAndCoverageTogether()" classname="myos.local.ExternalTimelinesTest$DurablePublication" time="0.064" />
+  </testsuite>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractSnapshotSharingTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:58.865Z" hostname="MacBook-Pro-5.local" time="0.014">
+  <properties />
+  <testcase name="forkSharesTheIndexButAnEditCannotChangeTheOriginalMetadataOrCommitment()" classname="blue.ContractSnapshotSharingTest" time="0.005" />
+  <testcase name="sharedProofCachesCannotMixTheViewsOrTariffsOfDifferentSnapshotBranches()" classname="blue.ContractSnapshotSharingTest" time="0.009" />
+  </testsuite>

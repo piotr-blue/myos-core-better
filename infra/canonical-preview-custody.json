@@ -1,0 +1,65 @@
+{
+  "AWSTemplateFormatVersion": "2010-09-09",
+  "Description": "Canonical preview dashboard envelope key; separate from provider signing.",
+  "Resources": {
+    "Identity": {
+      "Type": "AWS::SecretsManager::Secret",
+      "DeletionPolicy": "Retain",
+      "UpdateReplacePolicy": "Retain",
+      "Properties": {
+        "Description": "Pinned callback envelope key; rotation requires re-encryption",
+        "GenerateSecretString": {
+          "SecretStringTemplate": "{\"format\":\"myos.better.webhook-key/1\"}",
+          "GenerateStringKey": "seed",
+          "PasswordLength": 64,
+          "ExcludePunctuation": true,
+          "IncludeSpace": false
+        },
+        "Tags": [
+          {
+            "Key": "owner",
+            "Value": "myos-core-better"
+          },
+          {
+            "Key": "environment",
+            "Value": "test"
+          },
+          {
+            "Key": "purpose",
+            "Value": "dashboard-parity"
+          }
+        ]
+      }
+    },
+    "ReadIdentity": {
+      "Type": "AWS::IAM::Policy",
+      "Properties": {
+        "PolicyName": "myos-better-canonical-custody-20261108-read",
+        "Roles": [
+          "myos-better-canonical-20261108-Role-IvObHaHgdlB7"
+        ],
+        "PolicyDocument": {
+          "Version": "2012-10-17",
+          "Statement": [
+            {
+              "Effect": "Allow",
+              "Action": [
+                "secretsmanager:GetSecretValue"
+              ],
+              "Resource": {
+                "Ref": "Identity"
+              }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "Outputs": {
+    "SecretArn": {
+      "Value": {
+        "Ref": "Identity"
+      }
+    }
+  }
+}

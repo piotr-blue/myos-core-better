@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreRelationshipsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:46.308Z" hostname="MacBook-Pro-5.local" time="0.022">
+  <properties />
+  <testcase name="selfCycleIsOneNativeOccurrenceInBothDirections()" classname="myos.better.CoreRelationshipsTest" time="0.009" />
+  <testcase name="acyclicEdgesUseTheirActualEndpointsAndAccountBoundPages()" classname="myos.better.CoreRelationshipsTest" time="0.013" />
+  </testsuite>

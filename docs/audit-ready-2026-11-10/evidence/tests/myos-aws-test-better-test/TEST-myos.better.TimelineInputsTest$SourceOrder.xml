@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineInputsTest$SourceOrder" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:53.818Z" hostname="MacBook-Pro-5.local" time="0.131">
+  <properties />
+  <testcase name="coverageCanAdvancePastEmptyBatchesWithoutConsumingAWaitingEntry()" classname="myos.better.TimelineInputsTest$SourceOrder" time="0.018" />
+  <testcase name="controlOnlyHistoryConstrainsCoverageWithoutBecomingBusinessInput()" classname="myos.better.TimelineInputsTest$SourceOrder" time="0.035" />
+  <testcase name="positionsWithinOneBatchSurviveRestartWithoutSkippingOrRepeatingEntries()" classname="myos.better.TimelineInputsTest$SourceOrder" time="0.032" />
+  <testcase name="equalTimestampEntriesUseFullSourceOrderRegardlessOfAcquisitionOrRegistrationOrder()" classname="myos.better.TimelineInputsTest$SourceOrder" time="0.014" />
+  <testcase name="aPinnedSourceViewDoesNotSeeAnEntryAcquiredLater()" classname="myos.better.TimelineInputsTest$SourceOrder" time="0.014" />
+  <testcase name="aQuietRequiredSourceAndAnEqualBoundBothBlockTheCandidate()" classname="myos.better.TimelineInputsTest$SourceOrder" time="0.015" />
+  </testsuite>

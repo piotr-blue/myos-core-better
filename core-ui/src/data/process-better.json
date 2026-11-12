@@ -1,0 +1,119 @@
+{
+  "runtime": {
+    "bex": "9X3Ws96pyH1SdP4yuXpkNfWPfW3vJCzDzhdza3u9NpoB",
+    "bexSpecification": "8ncKHLULWkzyNKEHfzpswF6iKZfc3H1DzDpgH8UC1hV",
+    "contracts": "AEnxkRz13q1LE1SLFxQMV5wu5V2eYRfu5WCSy4aTpg3o",
+    "contractsSpecification": "AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup",
+    "coordination": "Fp82TjS466qoRRAkr9UQ5s8yJpc43jwVmkjkxyrsDf6H",
+    "coordinationSpecification": "EaunpFZBeZWAPHtsLYWoEwfokANbZN4PzkQ7x3h8vcd4",
+    "hostExecution": "myos.canonical-owners/2",
+    "hostHistory": "myos.better.processing-receipt/1",
+    "language": "8XGYNufx24r7Dc5bGoeobcGNCn9roLzSfZCQyHBTaTx4",
+    "supportedPackages": [
+      "2Vv4qzjdT1AFXbss2pBosH4Qjq3cfhJCoK9GVbpJUCdc",
+      "3REY1NvPSCHxPkQHTRMQJ6NiqLKCXLrBw6coL7desXbM",
+      "4Jmza3Z7eEDah9qtyYq5i2AqX5tKfUnLNKYAoAPoWzmF",
+      "4jsSnzpfSjT7MNhJkUaSjr6j1Pv7pzqFaMfBRgpW66Yk",
+      "4jsxkYNn8LAHTaYVm9SyC6yaViQdNJkdxa6mnM24xc8o",
+      "4oeZS1TNgkpHEbWhhRk7oCZQZYzfwSsPxrC6ojyUpP1f",
+      "5qBykS7uRhzUCLUbxKvtGfWwJfJtvRu95iULxNtPquWb",
+      "67SMChJ95B6AJJZz3iKnsa6rxGJzGhvpbNTJv8U8s838",
+      "6L2cQG3oSX4WPkXoTvGXeTEjn41WYnjdNKSo1F61xonc",
+      "6QHd1RcXJnddfLyePbtHouNYEpis6CXe4mMu4pNBqZrU",
+      "8XGYNufx24r7Dc5bGoeobcGNCn9roLzSfZCQyHBTaTx4",
+      "9R3k6v5r1NY5JJqGaFx3yqqosXXbyQHLj7BrfhrvMizZ",
+      "A5jPE2pMzyKk1dWNyW1jcNd5ZF1tpw1jSMWLNoMbdcQy",
+      "AfEoe7ZarQrFXCKpD5siYpc7YiJbKNPSoHpkP4disaYy",
+      "CT3bxHmCN2FnB6XVkqC87kiccqCBYGRSvQwLbJTVKqpu",
+      "CabukQBZ8roxvFScD5moCaf2oAXPtuoPUUVjeokGwNeF",
+      "CtGNX2EA7RndTVJuDnT4HtrvxYmdR9uD6LZ3EsDr2jeq",
+      "FatyrA88FeJNLaYUMZMkWpQieP1gfpS49pM68dWMDQCS",
+      "GMzA1zqLaxpDhxefhcS3gWtPFQobAUB5rgWSj3jtvaJa",
+      "jdYoDcS4q8oWs6Ma9NfysBX3mVg7moenTwLVTKzP428"
+    ],
+    "time": "ErUiczJ2TLjsX4RS4SnkYvkM5RyM5aNWirzDSSp82Rnh",
+    "timeSpecification": "6493wie6qLg12FyYzpHq2rXTq1SdbVjE5JTHU1MrrFSG"
+  },
+  "packages": [
+    {
+      "name": "Agreements",
+      "blueId": "5qBykS7uRhzUCLUbxKvtGfWwJfJtvRu95iULxNtPquWb"
+    },
+    {
+      "name": "BEX",
+      "blueId": "6L2cQG3oSX4WPkXoTvGXeTEjn41WYnjdNKSo1F61xonc"
+    },
+    {
+      "name": "Clauses",
+      "blueId": "2Vv4qzjdT1AFXbss2pBosH4Qjq3cfhJCoK9GVbpJUCdc"
+    },
+    {
+      "name": "Contracts",
+      "blueId": "4Jmza3Z7eEDah9qtyYq5i2AqX5tKfUnLNKYAoAPoWzmF"
+    },
+    {
+      "name": "Coordination",
+      "blueId": "GMzA1zqLaxpDhxefhcS3gWtPFQobAUB5rgWSj3jtvaJa"
+    },
+    {
+      "name": "Dispatch",
+      "blueId": "A5jPE2pMzyKk1dWNyW1jcNd5ZF1tpw1jSMWLNoMbdcQy"
+    },
+    {
+      "name": "Events",
+      "blueId": "AfEoe7ZarQrFXCKpD5siYpc7YiJbKNPSoHpkP4disaYy"
+    },
+    {
+      "name": "Language",
+      "blueId": "8XGYNufx24r7Dc5bGoeobcGNCn9roLzSfZCQyHBTaTx4"
+    },
+    {
+      "name": "Orders",
+      "blueId": "jdYoDcS4q8oWs6Ma9NfysBX3mVg7moenTwLVTKzP428"
+    },
+    {
+      "name": "Parties",
+      "blueId": "3REY1NvPSCHxPkQHTRMQJ6NiqLKCXLrBw6coL7desXbM"
+    },
+    {
+      "name": "Time",
+      "blueId": "6QHd1RcXJnddfLyePbtHouNYEpis6CXe4mMu4pNBqZrU"
+    },
+    {
+      "name": "Activation",
+      "blueId": "4jsSnzpfSjT7MNhJkUaSjr6j1Pv7pzqFaMfBRgpW66Yk"
+    },
+    {
+      "name": "Amendments",
+      "blueId": "CabukQBZ8roxvFScD5moCaf2oAXPtuoPUUVjeokGwNeF"
+    },
+    {
+      "name": "Commerce",
+      "blueId": "4oeZS1TNgkpHEbWhhRk7oCZQZYzfwSsPxrC6ojyUpP1f"
+    },
+    {
+      "name": "Connections",
+      "blueId": "CT3bxHmCN2FnB6XVkqC87kiccqCBYGRSvQwLbJTVKqpu"
+    },
+    {
+      "name": "Documents",
+      "blueId": "CtGNX2EA7RndTVJuDnT4HtrvxYmdR9uD6LZ3EsDr2jeq"
+    },
+    {
+      "name": "IncrementalDocuments",
+      "blueId": "67SMChJ95B6AJJZz3iKnsa6rxGJzGhvpbNTJv8U8s838"
+    },
+    {
+      "name": "Payment",
+      "blueId": "9R3k6v5r1NY5JJqGaFx3yqqosXXbyQHLj7BrfhrvMizZ"
+    },
+    {
+      "name": "ManualPayments",
+      "blueId": "4jsxkYNn8LAHTaYVm9SyC6yaViQdNJkdxa6mnM24xc8o"
+    },
+    {
+      "name": "PaymentInstruction",
+      "blueId": "FatyrA88FeJNLaYUMZMkWpQieP1gfpS49pM68dWMDQCS"
+    }
+  ]
+}

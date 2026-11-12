@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineDirectoryTest$Publication" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:47.336Z" hostname="MacBook-Pro-5.local" time="0.102">
+  <properties />
+  <testcase name="restartRetainsDefinitionsAndPinsWhileAccountsRemainIndependent()" classname="myos.better.TimelineDirectoryTest$Publication" time="0.048" />
+  <testcase name="competingHostsPublishOneWholeBinding()" classname="myos.better.TimelineDirectoryTest$Publication" time="0.019" />
+  <testcase name="retriesRecoverLostRepliesAndConflictingAliasesOrUrlsCannotRebind()" classname="myos.better.TimelineDirectoryTest$Publication" time="0.035" />
+  </testsuite>

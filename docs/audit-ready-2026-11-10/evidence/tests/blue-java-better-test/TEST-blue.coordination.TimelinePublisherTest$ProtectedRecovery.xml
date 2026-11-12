@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelinePublisherTest$ProtectedRecovery" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:06.425Z" hostname="MacBook-Pro-5.local" time="0.011">
+  <properties />
+  <testcase name="changedDataWrongCommitmentAndOtherSourcesCannotRestore()" classname="blue.coordination.TimelinePublisherTest$ProtectedRecovery" time="0.002" />
+  <testcase name="coldRecoveryNeedsOnlyTheCurrentHeadAndDoesNotTeachOrdinaryAdmission()" classname="blue.coordination.TimelinePublisherTest$ProtectedRecovery" time="0.009" />
+  </testsuite>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.OwnerInitializationTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:18.689Z" hostname="MacBook-Pro-5.local" time="0.245">
+  <properties />
+  <testcase name="[1] 1" classname="myos.better.OwnerInitializationTest" time="0.007" />
+  <testcase name="[2] 8" classname="myos.better.OwnerInitializationTest" time="0.025" />
+  <testcase name="[3] 64" classname="myos.better.OwnerInitializationTest" time="0.212" />
+  </testsuite>

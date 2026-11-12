@@ -1,0 +1,630 @@
+.account-management {
+  width: 100%;
+  min-width: 0;
+}
+.account-management h1 {
+  margin-bottom: 12px;
+}
+.account-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.account-list-heading h2 {
+  margin: 0;
+}
+.account-list-heading > button {
+  white-space: nowrap;
+}
+.account-creation-dialog > .account-creation > h2 {
+  display: none;
+}
+.user-avatar {
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+.user-profile-settings .field {
+  max-width: 520px;
+}
+.user-profile-settings input[readonly] {
+  background: #f6f8fb;
+  color: #526178;
+}
+.account-management .field {
+  display: grid;
+  gap: 8px;
+  margin: 18px 0;
+}
+.account-management input:not([type="checkbox"]),
+.account-management select {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 12px;
+  border: 1px solid var(--border, #ddd);
+  border-radius: 8px;
+  background: white;
+  color: inherit;
+}
+.account-management input[type="checkbox"] {
+  margin-right: 8px;
+}
+.account-management dt {
+  font-weight: 600;
+  margin-top: 16px;
+}
+.account-management dd {
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+}
+.account-choices {
+  display: grid;
+  gap: 12px;
+  margin: 24px 0;
+}
+.account-choices button {
+  text-align: left;
+  padding: 18px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.account-invitation-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+.account-member-list {
+  display: grid;
+  gap: 16px;
+}
+.account-member-list h2 {
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+
+.dialog.account-onboarding {
+  max-width: none;
+  margin: auto;
+  width: min(600px, calc(100vw - 32px));
+  max-height: calc(100dvh - 32px);
+  overflow-y: auto;
+}
+.account-onboarding > .panel {
+  padding: 0;
+  margin: 24px 0 0;
+  border: 0;
+  box-shadow: none;
+}
+.onboarding-admin-menu {
+  flex-shrink: 0;
+}
+.onboarding-admin-menu > summary {
+  list-style: none;
+  cursor: pointer;
+}
+.onboarding-admin-menu > summary::-webkit-details-marker {
+  display: none;
+}
+.account-onboarding > p {
+  color: #526178;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.account-onboarding textarea {
+  min-height: 88px;
+}
+.account-gate-placeholder {
+  min-height: 280px;
+}
+.account-kind-toggle {
+  border: 0;
+  padding: 0;
+  margin: 24px 0;
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+.account-kind-toggle legend {
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+.account-kind-toggle label {
+  position: relative;
+  flex: 1;
+}
+.account-kind-toggle input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  min-height: 0;
+}
+.account-kind-toggle span {
+  display: block;
+  padding: 12px 24px;
+  text-align: center;
+  border-radius: 24px;
+  background: #f0f3fa;
+  cursor: pointer;
+}
+.account-kind-toggle input:checked + span {
+  background: #1450ef;
+  color: white;
+}
+.account-kind-toggle input:focus-visible + span {
+  outline: 3px solid #80a5ff;
+  outline-offset: 3px;
+}
+.account-kind-toggle:disabled span {
+  opacity: 0.65;
+  cursor: wait;
+}
+.settings-sections {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  margin: 16px 0 28px;
+  border-bottom: 1px solid var(--border);
+}
+.settings-sections a {
+  padding: 12px 0;
+  text-decoration: none;
+}
+.settings-sections a[aria-current="page"] {
+  border-bottom: 3px solid #1450ef;
+  font-weight: 600;
+}
+.workspace-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+.workspace-selector {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.workspace-selector img {
+  flex: 0 0 32px;
+  width: 32px;
+  height: 32px;
+  object-fit: contain;
+}
+.workspace-selector-control {
+  position: relative;
+  min-width: 0;
+  max-width: 280px;
+  min-height: 42px;
+  padding: 8px 32px 8px 14px;
+  border: 1px solid var(--border, var(--color-border));
+  border-radius: 10px;
+  background: white;
+  display: block;
+}
+.workspace-selector-label {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.workspace-selector-control::after {
+  content: "";
+  position: absolute;
+  right: 13px;
+  top: calc(50% - 5px);
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid #66758b;
+  border-bottom: 2px solid #66758b;
+  transform: rotate(45deg);
+  pointer-events: none;
+}
+.workspace-selector select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  border: 0;
+  border-radius: inherit;
+  appearance: none;
+  overflow: hidden;
+  background: transparent;
+  color: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+.workspace-selector select option {
+  color: #243249;
+  background: white;
+}
+@media (max-width: 600px) {
+  .workspace-controls {
+    gap: 8px;
+  }
+  .workspace-selector-control {
+    max-width: 150px;
+  }
+  .account-onboarding {
+    padding: 20px;
+  }
+}
+
+.account-management textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--border, #dde3ec);
+  border-radius: 8px;
+  background: white;
+  color: inherit;
+  font: inherit;
+  resize: vertical;
+}
+.account-details dt {
+  font-weight: 600;
+  margin-top: 16px;
+}
+.account-details dd {
+  margin: 6px 0 0;
+  overflow-wrap: anywhere;
+}
+.account-member-list {
+  gap: 0;
+  border-radius: 12px;
+  background: white;
+  overflow: hidden;
+}
+.account-member {
+  padding: 24px;
+  border-bottom: 1px solid var(--border, #e8ecf2);
+}
+.account-member:last-child {
+  border-bottom: 0;
+}
+.account-member h2,
+.account-member h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+.account-member .field,
+.account-member .account-field {
+  max-width: 260px;
+}
+.member-status {
+  display: inline-block;
+  margin: 0;
+  color: #526178;
+  font-size: 13px;
+}
+.member-role {
+  font-weight: 500;
+}
+.account-users-table {
+  width: 100%;
+  overflow-x: auto;
+}
+.account-users-table table {
+  width: 100%;
+  min-width: 760px;
+}
+.account-users-table td {
+  vertical-align: middle;
+}
+.account-users-table td:first-child {
+  overflow-wrap: anywhere;
+}
+.account-users-table select {
+  min-width: 150px;
+}
+.account-users-table .inline-actions {
+  flex-wrap: nowrap;
+}
+.account-users-table button {
+  white-space: nowrap;
+}
+.member-id {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 240px;
+}
+.member-id code {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+}
+.member-id .copy-icon {
+  flex-shrink: 0;
+}
+.member-status {
+  white-space: nowrap;
+  padding: 5px 9px;
+  border-radius: 6px;
+  background: #f1f5f9;
+}
+.member-status.pending {
+  background: #fff5da;
+  color: #795d16;
+}
+.account-invite-form {
+  display: grid;
+  grid-template-columns: minmax(200px, 1fr) minmax(150px, 220px) auto;
+  gap: 16px;
+  align-items: end;
+}
+.account-invite-form .field {
+  margin: 0;
+}
+.account-invite-form > button {
+  min-height: 42px;
+  white-space: nowrap;
+}
+@media (max-width: 800px) {
+  .account-invite-form {
+    grid-template-columns: 1fr;
+  }
+}
+.workspace-selector select:focus-visible,
+.account-management select:focus-visible {
+  outline: 3px solid #b9ceff;
+  outline-offset: 2px;
+}
+@supports (appearance: base-select) {
+  .workspace-selector select,
+  .workspace-selector select::picker(select),
+  .account-management select,
+  .account-management select::picker(select) {
+    appearance: base-select;
+  }
+  .workspace-selector select::picker(select),
+  .account-management select::picker(select) {
+    border: 1px solid var(--border, #dde3ec);
+    border-radius: 12px;
+    padding: 6px;
+    background: white;
+    color: #243249;
+    box-shadow: 0 12px 32px #1d30521f;
+    margin-top: 6px;
+    max-height: 320px;
+    overflow: auto;
+    font: inherit;
+  }
+  .workspace-selector select option,
+  .account-management select option {
+    padding: 10px 14px;
+    border-radius: 7px;
+    cursor: pointer;
+    overflow-wrap: anywhere;
+  }
+  .workspace-selector select::picker-icon {
+    visibility: hidden;
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: white;
+  }
+  .workspace-selector select option {
+    white-space: normal;
+  }
+  .workspace-selector select option:hover,
+  .account-management select option:hover {
+    background: #f2f5fc;
+  }
+  .workspace-selector select option:checked,
+  .account-management select option:checked {
+    background: #edf2ff;
+    color: #1450ef;
+  }
+  .workspace-selector select::picker-icon,
+  .account-management select::picker-icon {
+    color: #66758b;
+    margin-left: 12px;
+  }
+}
+
+.member-guidance {
+  max-width: 260px;
+  margin: 8px 0 0;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #526178;
+}
+
+.account-agent-list .panel-heading {
+  flex-wrap: wrap;
+}
+.account-agent-list .panel-heading h2 {
+  margin: 0;
+  font-size: 20px;
+}
+.account-agent-list .panel-heading p {
+  margin: 6px 0 0;
+  color: var(--color-greys-secondary);
+  font-size: 14px;
+}
+.account-agents-table {
+  overflow-x: auto;
+}
+.account-agents-table table {
+  width: 100%;
+  min-width: 580px;
+}
+.agent-expand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: 0;
+  padding: 8px 0;
+  color: inherit;
+  font-weight: 600;
+  text-align: left;
+}
+.agent-expand svg {
+  flex-shrink: 0;
+}
+.agent-row.expanded {
+  background: #f5f8ff;
+}
+.account-agents-table .agent-expanded > td {
+  padding: 0;
+}
+.agent-settings {
+  padding: 24px;
+  background: #fafbfe;
+  border-top: 1px solid var(--color-border);
+}
+.agent-settings h3 {
+  margin: 0;
+}
+.agent-settings .field {
+  max-width: 480px;
+}
+.agent-connection-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+}
+.agent-connection-row > span {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.connect-agent-dialog .inline-actions {
+  flex-wrap: nowrap;
+}
+.connect-agent-dialog input {
+  min-width: 0;
+}
+.connection-oauth-setup {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-background);
+}
+.connection-oauth-setup h3 {
+  margin-bottom: 12px;
+}
+.connection-oauth-setup p {
+  margin-bottom: 12px;
+  font-size: 14px;
+}
+.connection-oauth-setup p:last-child {
+  margin-bottom: 0;
+}
+.connect-agent-dialog li {
+  padding-left: 4px;
+  margin: 12px 0;
+}
+.connect-agent-dialog summary {
+  cursor: pointer;
+  font-weight: 600;
+  color: var(--color-brand-blue);
+}
+.connect-agent-dialog textarea {
+  margin-bottom: 12px;
+}
+.connect-agent-dialog .connection-client-hint {
+  margin-top: 24px;
+  font-size: 13px;
+  color: var(--color-greys-secondary);
+}
+
+.connection-tabs { margin-bottom: 20px; }
+
+.account-creation .myos-image-picker {
+  grid-template-columns: 128px minmax(0, 1fr);
+  gap: 20px;
+  padding: 16px;
+  border: 1px solid #dfe5ed;
+  border-radius: 12px;
+  background: #f7f9fc;
+}
+.account-creation .myos-image-preview {
+  width: 128px;
+  height: 128px;
+  background: white;
+}
+.account-creation .myos-image-selection {
+  flex-direction: column;
+  align-items: flex-start;
+}
+.account-creation .myos-image-filename {
+  order: -1;
+  max-width: 100%;
+}
+.account-creation .myos-image-picker:not(:has(img)) {
+  grid-template-columns: 40px minmax(0, 1fr);
+  gap: 12px;
+  border-style: dashed;
+}
+.account-creation .myos-image-picker:not(:has(img)) .myos-image-preview {
+  width: 40px;
+  height: 40px;
+  border: 0;
+  background: transparent;
+}
+.account-creation .myos-image-picker:not(:has(img)) .myos-image-controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+}
+.account-creation .myos-image-picker:not(:has(img)) .myos-image-selection {
+  grid-column: 2;
+  grid-row: 1;
+}
+.account-creation .myos-image-picker:not(:has(img)) .myos-image-help {
+  grid-column: 1;
+  grid-row: 1;
+  margin: 0;
+}
+@media (max-width: 360px) {
+  .account-creation .myos-image-picker:not(:has(img)) {
+    grid-template-columns: 24px minmax(0, 1fr);
+    gap: 8px;
+    padding: 12px;
+  }
+  .account-creation .myos-image-picker:not(:has(img)) .myos-image-preview {
+    width: 24px;
+    height: 24px;
+  }
+  .account-creation .myos-image-picker:not(:has(img)) .myos-image-controls {
+    gap: 8px;
+  }
+}
+.account-creation form > .button {
+  width: 100%;
+}
+.account-creation form > .button.primary {
+  position: relative;
+  margin-top: 24px;
+}
+.account-creation form > .button.primary::before {
+  content: '';
+  position: absolute;
+  top: -25px;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: #dfe5ed;
+  pointer-events: none;
+}
+.account-creation form > .button + .button {
+  margin-top: 12px;
+}
+@media (max-width: 540px) {
+  .account-creation .myos-image-picker:has(img) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

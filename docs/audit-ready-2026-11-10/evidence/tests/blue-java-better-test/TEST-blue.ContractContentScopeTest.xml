@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractContentScopeTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:54.987Z" hostname="MacBook-Pro-5.local" time="0.141">
+  <properties />
+  <testcase name="neededExternalRecordsAreStillVerifiedAndFailuresDoNotPoisonTheNextScope()" classname="blue.ContractContentScopeTest" time="0.001" />
+  <testcase name="cyclicContentKeepsItsProofAndCanBeExportedAfterTheScopeCloses()" classname="blue.ContractContentScopeTest" time="0.001" />
+  <testcase name="oneMessageDoesNotImportThePublishersUnrelatedCatalogue()" classname="blue.ContractContentScopeTest" time="0.138" />
+  </testsuite>

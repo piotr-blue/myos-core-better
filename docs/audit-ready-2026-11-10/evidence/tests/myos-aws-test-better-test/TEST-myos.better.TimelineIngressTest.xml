@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineIngressTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:52.900Z" hostname="MacBook-Pro-5.local" time="0.028">
+  <properties />
+  <testcase name="concurrentDocumentsShareTheRegistrationWithoutSharingReceivingScopes()" classname="myos.better.TimelineIngressTest" time="0.028" />
+  </testsuite>

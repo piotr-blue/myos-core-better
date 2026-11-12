@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.packages.PackageLoadingTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.696Z" hostname="MacBook-Pro-5.local" time="0.113">
+  <properties />
+  <testcase name="mountingDifferentLanguageSelectionsFailsAtomically()" classname="blue.packages.PackageLoadingTest" time="0.081" />
+  <testcase name="callerOwnsStreamsAndPinsApplyOnEveryLoad()" classname="blue.packages.PackageLoadingTest" time="0.005" />
+  <testcase name="publication=&quot;language&quot;" classname="blue.packages.PackageLoadingTest" time="0.005" />
+  <testcase name="publication=&quot;geometry&quot;" classname="blue.packages.PackageLoadingTest" time="0.005" />
+  <testcase name="publication=&quot;drawing&quot;" classname="blue.packages.PackageLoadingTest" time="0.006" />
+  <testcase name="publication=&quot;geometry-v2&quot;" classname="blue.packages.PackageLoadingTest" time="0.005" />
+  <testcase name="publication=&quot;content&quot;" classname="blue.packages.PackageLoadingTest" time="0.005" />
+  </testsuite>

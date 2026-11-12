@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreAccessBarrierHttpTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:39.463Z" hostname="MacBook-Pro-5.local" time="0.02">
+  <properties />
+  <testcase name="revokeWaitsForAdmissionAndDeniesAQueuedLegacyRequest()" classname="myos.better.CoreAccessBarrierHttpTest" time="0.014" />
+  <testcase name="aPendingRequestBodyCannotHoldRevocationOrRetainOldAuthentication()" classname="myos.better.CoreAccessBarrierHttpTest" time="0.006" />
+  </testsuite>

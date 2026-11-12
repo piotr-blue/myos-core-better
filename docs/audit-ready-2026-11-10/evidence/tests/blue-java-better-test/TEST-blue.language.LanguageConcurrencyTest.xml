@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.LanguageConcurrencyTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.458Z" hostname="MacBook-Pro-5.local" time="0.004">
+  <properties />
+  <testcase name="immutableContextsAndDocumentsCanBeUsedConcurrently()" classname="blue.language.LanguageConcurrencyTest" time="0.003" />
+  </testsuite>

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.NodeTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:03.800Z" hostname="MacBook-Pro-5.local" time="0.367">
+  <properties />
+  <testcase name="yamlJsonAndPersistentEdits()" classname="blue.NodeTest" time="0.024" />
+  <testcase name="randomPersistentEditsPreserveLogicalWeightsAndOldSnapshots()" classname="blue.NodeTest" time="0.342" />
+  <testcase name="pointerEscapingAndListPatchSemantics()" classname="blue.NodeTest" time="0.0" />
+  </testsuite>

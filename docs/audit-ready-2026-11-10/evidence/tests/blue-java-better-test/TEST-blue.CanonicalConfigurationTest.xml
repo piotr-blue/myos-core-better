@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.CanonicalConfigurationTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:08.128Z" hostname="MacBook-Pro-5.local" time="0.137">
+  <properties />
+  <testcase name="preparedConfigurationMatchesAFreshCanonicalInterpreter()" classname="blue.CanonicalConfigurationTest" time="0.124" />
+  <testcase name="experimentalExecutionFacadesAreNotPublished()" classname="blue.CanonicalConfigurationTest" time="0.001" />
+  <testcase name="canonicalSessionAndDurableExecutionProduceTheSameReceipt()" classname="blue.CanonicalConfigurationTest" time="0.012" />
+  </testsuite>

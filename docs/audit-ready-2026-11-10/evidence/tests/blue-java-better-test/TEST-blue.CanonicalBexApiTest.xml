@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.CanonicalBexApiTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:07.286Z" hostname="MacBook-Pro-5.local" time="0.011">
+  <properties />
+  <testcase name="compileOnceRunWithImmutableInputsAndSeparateEffects()" classname="blue.CanonicalBexApiTest" time="0.005" />
+  <testcase name="undefinedAndNullRemainDifferent()" classname="blue.CanonicalBexApiTest" time="0.001" />
+  <testcase name="staticErrorsAreCaughtAtCompileTime()" classname="blue.CanonicalBexApiTest" time="0.001" />
+  <testcase name="preservingViewsDoesNotAdmitNullOrNonFiniteBlueValues()" classname="blue.CanonicalBexApiTest" time="0.0" />
+  <testcase name="exactIdentityAndLanguageMatchingUseTheCanonicalLanguage()" classname="blue.CanonicalBexApiTest" time="0.001" />
+  <testcase name="freezingReusesOnlyOwnedImmutableTreesAndRejectsMutableCycles()" classname="blue.CanonicalBexApiTest" time="0.001" />
+  <testcase name="failuresDiscardPartialEffectsAndRetainTheFirstRejectedCharge()" classname="blue.CanonicalBexApiTest" time="0.0" />
+  <testcase name="functionArgumentMatchingPreservesViewsNestedInObjectsAndLists()" classname="blue.CanonicalBexApiTest" time="0.001" />
+  </testsuite>

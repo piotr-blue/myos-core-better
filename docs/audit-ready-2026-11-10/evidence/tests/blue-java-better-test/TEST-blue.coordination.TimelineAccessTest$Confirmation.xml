@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineAccessTest$Confirmation" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:05.765Z" hostname="MacBook-Pro-5.local" time="0.054">
+  <properties />
+  <testcase name="unrelatedPublicationsAndMessagesDoNotCreatePermissions()" classname="blue.coordination.TimelineAccessTest$Confirmation" time="0.009" />
+  <testcase name="authoredListsGrantNothingUntilTheirExactPublicationIsClosed()" classname="blue.coordination.TimelineAccessTest$Confirmation" time="0.01" />
+  <testcase name="initialDefinitionCannotReplaceTheProgramOrProviderControlSource()" classname="blue.coordination.TimelineAccessTest$Confirmation" time="0.016" />
+  <testcase name="[1] &quot;keys&quot;" classname="blue.coordination.TimelineAccessTest$Confirmation" time="0.007" />
+  <testcase name="[2] &quot;timelines&quot;" classname="blue.coordination.TimelineAccessTest$Confirmation" time="0.005" />
+  <testcase name="[3] &quot;uppercase&quot;" classname="blue.coordination.TimelineAccessTest$Confirmation" time="0.004" />
+  </testsuite>

@@ -1,0 +1,1206 @@
+{
+  "date": "2026-11-06",
+  "runtimeIteration": 231,
+  "qualificationIteration": 230,
+  "deployment": {
+    "artifactSha256": "87a7a8fc263eeb67e77daef47c4e610dfe68ce6e1e1e37433b691a4a8f3bcd9c",
+    "commandId": "6c5a2357-5b7f-4120-a4be-5a48925aa720",
+    "region": "eu-west-1",
+    "instance": "i-0d892c8d2e30807a2",
+    "stack": "myos-better-20261105"
+  },
+  "qualification": {
+    "commandId": "9f246166-6aed-4ca3-ab76-f5d00020dd85",
+    "account": "canonical-qa-6f2d8dc51ace4979",
+    "artifactSha256": "87a7a8fc263eeb67e77daef47c4e610dfe68ce6e1e1e37433b691a4a8f3bcd9c",
+    "qualificationSha256": "d54da50a80ec459de728ac2436f78f53302a91743c46dfed573efe09179a849b"
+  },
+  "environment": {
+    "instanceType": "c7i.large",
+    "vcpus": 2,
+    "memoryGiB": 4,
+    "serviceHeapGiB": 2,
+    "jdk": "Corretto 25.0.5",
+    "store": "DynamoDB"
+  },
+  "regression": {
+    "libraryTests": 2482,
+    "hostTests": 509,
+    "failures": 0,
+    "errors": 0,
+    "skips": 0,
+    "installedJarsVerified": 53
+  },
+  "signedNative": {
+    "fresh": {
+      "url": "https://d2ya9daeiur7nz.cloudfront.net",
+      "orders": 8,
+      "calls": [
+        {
+          "operation": "placeOrder",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+          "entry": "91rWa8hnaR8WJK6o9VWJDoJhn2ANJRUQf9PDxLr843rj",
+          "version": 2,
+          "engineMillis": 779.484517,
+          "lookupMillis": 565.499333,
+          "submitMillis": 1013.4216249999995,
+          "submitServerTiming": "app;dur=753.713",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 964174205,
+            "engineNanos": 779484517,
+            "signedEntryThroughCommitMicros": 4780119
+          },
+          "observedWithLookupMillis": 6429.601625,
+          "observedTotalMillis": 5864.104166999999
+        },
+        {
+          "operation": "preparePayment",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.ecdfa7ee01d8b9ea6d464c014e0e5f25",
+          "entry": "4bMbNcroKfALijVcPTGys2KjiRnhbPge31xfTsZv5iNY",
+          "version": 3,
+          "engineMillis": 731.349757,
+          "lookupMillis": 445.11870799999895,
+          "submitMillis": 771.6028339999993,
+          "submitServerTiming": "app;dur=555.219",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 940961635,
+            "engineNanos": 731349757,
+            "signedEntryThroughCommitMicros": 3025969
+          },
+          "observedWithLookupMillis": 4484.779374999998,
+          "observedTotalMillis": 4039.662208999999
+        },
+        {
+          "operation": "acceptPaymentInstruction",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.161783f8b379c63c0d5c24e73ac29628",
+          "entry": "wcDxq7jFJKEmTCLRheyPEafBdPmpQvBe4WPaCDkhKSp",
+          "version": 4,
+          "engineMillis": 110.613936,
+          "lookupMillis": 447.69099999999895,
+          "submitMillis": 648.3318750000002,
+          "submitServerTiming": "app;dur=403.939",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 226146424,
+            "engineNanos": 110613936,
+            "signedEntryThroughCommitMicros": 2976290
+          },
+          "observedWithLookupMillis": 4345.500916999999,
+          "observedTotalMillis": 3897.810625000002
+        },
+        {
+          "operation": "reportTransfer",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.161783f8b379c63c0d5c24e73ac29628",
+          "entry": "44pJRUTsvVNUusr16R3Rj8Vq1jX165SE62H8nwb941gs",
+          "version": 5,
+          "engineMillis": 158.40808,
+          "lookupMillis": 449.87508399999854,
+          "submitMillis": 477.7351659999987,
+          "submitServerTiming": "app;dur=261.990",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 263517240,
+            "engineNanos": 158408080,
+            "signedEntryThroughCommitMicros": 1678902
+          },
+          "observedWithLookupMillis": 2866.2879169999974,
+          "observedTotalMillis": 2416.4142909999987
+        },
+        {
+          "operation": "acknowledgeTransfer",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.161783f8b379c63c0d5c24e73ac29628",
+          "entry": "rfCrv1J88L7HHr23ryYJE1nhzGk8aHCVtRRXk6sXqTn",
+          "version": 6,
+          "engineMillis": 269.391771,
+          "lookupMillis": 480.647207999997,
+          "submitMillis": 389.60787500000293,
+          "submitServerTiming": "app;dur=173.979",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 387890320,
+            "engineNanos": 269391771,
+            "signedEntryThroughCommitMicros": 635667
+          },
+          "observedWithLookupMillis": 1840.8076250000001,
+          "observedTotalMillis": 1360.1625000000013
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+          "entry": "8qd4xyqfB9WRVpHCA4HkECgy4NDmtGVZtFxGvY91LiCE",
+          "version": 7,
+          "engineMillis": 528.700929,
+          "lookupMillis": 468.62337499999995,
+          "submitMillis": 397.4663750000005,
+          "submitServerTiming": "app;dur=155.499",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 655620496,
+            "engineNanos": 528700929,
+            "signedEntryThroughCommitMicros": 1005200
+          },
+          "observedWithLookupMillis": 2063.8577500000038,
+          "observedTotalMillis": 1595.2355419999976
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+          "entry": "6uhMpJh3w269g9YFPXoyPFAZ7YKsni7PHKmkPJDjaLJ3",
+          "version": 8,
+          "engineMillis": 428.892111,
+          "lookupMillis": 445.0569580000021,
+          "submitMillis": 449.780582999999,
+          "submitServerTiming": "app;dur=208.127",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 551030333,
+            "engineNanos": 428892111,
+            "signedEntryThroughCommitMicros": 793416
+          },
+          "observedWithLookupMillis": 1858.808541000002,
+          "observedTotalMillis": 1413.752291999998
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+          "entry": "2ofTViJnJZr6NkAJ5wfZMkbSBncvRku3w166X3ACCtbR",
+          "version": 9,
+          "engineMillis": 580.059454,
+          "lookupMillis": 468.5927499999991,
+          "submitMillis": 372.9341670000039,
+          "submitServerTiming": "app;dur=155.943",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 733576810,
+            "engineNanos": 580059454,
+            "signedEntryThroughCommitMicros": 991126
+          },
+          "observedWithLookupMillis": 2085.433625,
+          "observedTotalMillis": 1616.8436670000049
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+          "entry": "2PEB1C2jg1sBQGd6LgaVQPFnZSNsHUP23A6uZz1teKKd",
+          "version": 10,
+          "engineMillis": 359.568491,
+          "lookupMillis": 444.64766700000524,
+          "submitMillis": 405.8283749999987,
+          "submitServerTiming": "app;dur=161.406",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 515429356,
+            "engineNanos": 359568491,
+            "signedEntryThroughCommitMicros": 779407
+          },
+          "observedWithLookupMillis": 1844.3142090000038,
+          "observedTotalMillis": 1399.6669999999938
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+          "entry": "cLadoJ9SrPmzKhrarX4gpthrjMCNWPLCBzkmrzn17xk",
+          "version": 11,
+          "engineMillis": 344.614868,
+          "lookupMillis": 446.0889160000008,
+          "submitMillis": 422.5931250000059,
+          "submitServerTiming": "app;dur=178.805",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 545602452,
+            "engineNanos": 344614868,
+            "signedEntryThroughCommitMicros": 824187
+          },
+          "observedWithLookupMillis": 1897.5997500000049,
+          "observedTotalMillis": 1451.5130000000056
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+          "entry": "2jQgqsgsbHig9EBQUKZxm5Rtth36iAK7KT612kfh8MTt",
+          "version": 12,
+          "engineMillis": 474.627212,
+          "lookupMillis": 474.0085829999998,
+          "submitMillis": 394.00820799999536,
+          "submitServerTiming": "app;dur=150.346",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 617409681,
+            "engineNanos": 474627212,
+            "signedEntryThroughCommitMicros": 893911
+          },
+          "observedWithLookupMillis": 2042.3876659999962,
+          "observedTotalMillis": 1568.3803330000003
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+          "entry": "5CmB8ctiwBHsUTwquYnr4XsphHGyRneqwfmkEP3C6a2o",
+          "version": 13,
+          "engineMillis": 308.196105,
+          "lookupMillis": 445.8542090000037,
+          "submitMillis": 406.61866599999996,
+          "submitServerTiming": "app;dur=163.982",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 428731223,
+            "engineNanos": 308196105,
+            "signedEntryThroughCommitMicros": 755645
+          },
+          "observedWithLookupMillis": 1782.785000000004,
+          "observedTotalMillis": 1336.933082999998
+        },
+        {
+          "operation": "preparePayment",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.11a28fd66a7f8c1646a0d4e72fb69734",
+          "entry": "DK2Nb1yxwidcdxQeqb8EHBc8Gv6UT3DfMprTmVvrC3Dq",
+          "version": 14,
+          "engineMillis": 464.986093,
+          "lookupMillis": 442.5503329999998,
+          "submitMillis": 583.9917079999992,
+          "submitServerTiming": "app;dur=367.817",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 584052912,
+            "engineNanos": 464986093,
+            "signedEntryThroughCommitMicros": 1433676
+          },
+          "observedWithLookupMillis": 2838.149625,
+          "observedTotalMillis": 2395.600457999997
+        },
+        {
+          "operation": "acceptPaymentInstruction",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.43852d3b89ccf8976b557b5f7a8e7e8f",
+          "entry": "DBcXKZ42vJ4uF5Cr1R4qyp4KcgY54X2bymDypVH481aa",
+          "version": 15,
+          "engineMillis": 67.621785,
+          "lookupMillis": 484.0392919999985,
+          "submitMillis": 508.063583000002,
+          "submitServerTiming": "app;dur=265.535",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 162379054,
+            "engineNanos": 67621785,
+            "signedEntryThroughCommitMicros": 880738
+          },
+          "observedWithLookupMillis": 2189.6160419999974,
+          "observedTotalMillis": 1705.5792080000033
+        },
+        {
+          "operation": "reportTransfer",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.43852d3b89ccf8976b557b5f7a8e7e8f",
+          "entry": "B7V1wzxpe8vyiXUAxvt1ti5oBNBcn6fJKdrJBeNi39aF",
+          "version": 16,
+          "engineMillis": 130.663969,
+          "lookupMillis": 445.3378329999964,
+          "submitMillis": 356.30991699999726,
+          "submitServerTiming": "app;dur=139.481",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 228463750,
+            "engineNanos": 130663969,
+            "signedEntryThroughCommitMicros": 865521
+          },
+          "observedWithLookupMillis": 1970.9380420000002,
+          "observedTotalMillis": 1525.6014169999971
+        },
+        {
+          "operation": "acknowledgeTransfer",
+          "document": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.43852d3b89ccf8976b557b5f7a8e7e8f",
+          "entry": "3awLqrJqJkEBAjCQnPW2dmyRpJ4vAZwAAhNpwQCQniiP",
+          "version": 17,
+          "engineMillis": 201.96478,
+          "lookupMillis": 447.8007909999988,
+          "submitMillis": 380.6255000000007,
+          "submitServerTiming": "app;dur=137.339",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 317305566,
+            "engineNanos": 201964780,
+            "signedEntryThroughCommitMicros": 564181
+          },
+          "observedWithLookupMillis": 1540.5109159999952,
+          "observedTotalMillis": 1092.711874999999
+        }
+      ],
+      "agreement": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+      "bootstrapMillis": 7246.240292,
+      "agreementUrl": "https://d2ya9daeiur7nz.cloudfront.net/#documents/graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+      "lastOrder": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.11a28fd66a7f8c1646a0d4e72fb69734",
+      "lastPayment": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.43852d3b89ccf8976b557b5f7a8e7e8f",
+      "paidTotal": 400,
+      "unrelatedIdentities": {
+        "before": {
+          "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.ecdfa7ee01d8b9ea6d464c014e0e5f25": "265dWbvk9owjDAKcfF91mY2rKQj7eVppyyWiTTdPyGaB",
+          "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.161783f8b379c63c0d5c24e73ac29628": "8SqLTdTTJjDtLr4vwZkdujvJWnFqCBEbvnVzTC2t2spP"
+        },
+        "after": {
+          "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.ecdfa7ee01d8b9ea6d464c014e0e5f25": "265dWbvk9owjDAKcfF91mY2rKQj7eVppyyWiTTdPyGaB",
+          "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.161783f8b379c63c0d5c24e73ac29628": "8SqLTdTTJjDtLr4vwZkdujvJWnFqCBEbvnVzTC2t2spP"
+        },
+        "unchanged": true
+      },
+      "checks": [
+        "Payment, Order and Agreement totals agree",
+        "all three documents reuse the same two participant Timelines",
+        "every submitted entry has a committed APPLIED outcome",
+        "paginated current graph contains every requested Order and exactly 8 Orders"
+      ],
+      "medianEngineMillis": 352.0916795,
+      "verifiedOrders": 8,
+      "verifiedAtVersion": 17
+    },
+    "large": {
+      "agreement": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+      "ordersBefore": 200,
+      "calls": [
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "5uqqKwp44m5ak7V6hv9Q269u6ev7W4KebNg7k4bsiMwE",
+          "version": 238,
+          "engineMillis": 1031.908891,
+          "lookupMillis": 558.9537079999998,
+          "submitMillis": 906.0015830000001,
+          "submitServerTiming": "app;dur=579.976",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 1241667515,
+            "engineNanos": 1031908891,
+            "signedEntryThroughCommitMicros": 1991125
+          },
+          "observedWithLookupMillis": 3698.377708,
+          "observedTotalMillis": 3139.425417
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "HN18tjsrF5kM1MVz4gR5CYu5cLvjZ6GG2kXWzVm8LG8R",
+          "version": 239,
+          "engineMillis": 716.879252,
+          "lookupMillis": 547.6327079999983,
+          "submitMillis": 452.5703750000005,
+          "submitServerTiming": "app;dur=181.369",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 965156377,
+            "engineNanos": 716879252,
+            "signedEntryThroughCommitMicros": 1357929
+          },
+          "observedWithLookupMillis": 2682.995042,
+          "observedTotalMillis": 2135.364667000001
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "Gk7DqTajTSXxRj6bELHY9q9qRbbyJD1TfpciiKuBqSMD",
+          "version": 240,
+          "engineMillis": 554.200818,
+          "lookupMillis": 606.445665999999,
+          "submitMillis": 485.9022090000007,
+          "submitServerTiming": "app;dur=180.062",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 713231974,
+            "engineNanos": 554200818,
+            "signedEntryThroughCommitMicros": 1002528
+          },
+          "observedWithLookupMillis": 2468.128290999999,
+          "observedTotalMillis": 1861.6847090000003
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "BSGyUJes495mR4rQKLr4ok6RNrhUHCo4BZGdLy5foorH",
+          "version": 241,
+          "engineMillis": 934.663485,
+          "lookupMillis": 497.06399999999996,
+          "submitMillis": 467.2464170000019,
+          "submitServerTiming": "app;dur=224.716",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 1102347777,
+            "engineNanos": 934663485,
+            "signedEntryThroughCommitMicros": 1520432
+          },
+          "observedWithLookupMillis": 2900.157334000001,
+          "observedTotalMillis": 2403.094208999999
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "DAookPrHmgTJgdo7heqwGrCFfgNNzxWbEgYypYcVwgRs",
+          "version": 242,
+          "engineMillis": 630.719087,
+          "lookupMillis": 589.3707910000003,
+          "submitMillis": 430.44133400000106,
+          "submitServerTiming": "app;dur=191.713",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 796751147,
+            "engineNanos": 630719087,
+            "signedEntryThroughCommitMicros": 1214754
+          },
+          "observedWithLookupMillis": 2423.1879999999996,
+          "observedTotalMillis": 1833.8192090000014
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "6MB8pU1h9DEVqVR54qzHK8v5viN2cquwPtup5dyDKEz7",
+          "version": 243,
+          "engineMillis": 609.261309,
+          "lookupMillis": 491.1220830000005,
+          "submitMillis": 416.2895419999977,
+          "submitServerTiming": "app;dur=171.903",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 764801080,
+            "engineNanos": 609261309,
+            "signedEntryThroughCommitMicros": 1150680
+          },
+          "observedWithLookupMillis": 2323.139957999999,
+          "observedTotalMillis": 1832.019374999998
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "3BoreCAmz2i6Hr5Hmk9xPVh3sGWtcHHR2eeRXEcbJ87M",
+          "version": 244,
+          "engineMillis": 513.01183,
+          "lookupMillis": 489.50945800000056,
+          "submitMillis": 446.6172919999991,
+          "submitServerTiming": "app;dur=206.637",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 668305849,
+            "engineNanos": 513011830,
+            "signedEntryThroughCommitMicros": 1002731
+          },
+          "observedWithLookupMillis": 2292.6827079999975,
+          "observedTotalMillis": 1803.1734999999999
+        },
+        {
+          "operation": "placeOrder",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+          "entry": "G5yXPPuj6t9c2gLvoy3BGHdDcDjrMgPQznb5nn7xpxRx",
+          "version": 245,
+          "engineMillis": 954.380293,
+          "lookupMillis": 545.1521249999978,
+          "submitMillis": 412.8045,
+          "submitServerTiming": "app;dur=173.611",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 1133117446,
+            "engineNanos": 954380293,
+            "signedEntryThroughCommitMicros": 1450033
+          },
+          "observedWithLookupMillis": 2579.1194589999977,
+          "observedTotalMillis": 2033.9697920000006
+        },
+        {
+          "operation": "preparePayment",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.54d0f330052fe9477c70c6e70cb1b7a7",
+          "entry": "6xMsXimLuHFcTEuwXCUDztUGoHSgbjsr8ji2bV8ShqWK",
+          "version": 246,
+          "engineMillis": 686.16025,
+          "lookupMillis": 547.127875000001,
+          "submitMillis": 655.5342499999988,
+          "submitServerTiming": "app;dur=417.522",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 855598725,
+            "engineNanos": 686160250,
+            "signedEntryThroughCommitMicros": 1834851
+          },
+          "observedWithLookupMillis": 3394.5566249999997,
+          "observedTotalMillis": 2847.430541999998
+        },
+        {
+          "operation": "acceptPaymentInstruction",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.c405aa1f0430ce7f67cef5c6c0b4e881",
+          "entry": "2KGaK31oLyGZTEABdMM3NzJR7e7F7LCgTvTHn8n29JEK",
+          "version": 247,
+          "engineMillis": 386.994282,
+          "lookupMillis": 551.4260830000026,
+          "submitMillis": 597.9842499999961,
+          "submitServerTiming": "app;dur=358.497",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 563616764,
+            "engineNanos": 386994282,
+            "signedEntryThroughCommitMicros": 1611751
+          },
+          "observedWithLookupMillis": 3074.266542000004,
+          "observedTotalMillis": 2522.8415419999947
+        },
+        {
+          "operation": "reportTransfer",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.c405aa1f0430ce7f67cef5c6c0b4e881",
+          "entry": "HPbVqjmySkby1w6QigfmzcWYkWVLu5utSqHZU3skr6xQ",
+          "version": 248,
+          "engineMillis": 228.250061,
+          "lookupMillis": 545.1850829999998,
+          "submitMillis": 442.02362499999737,
+          "submitServerTiming": "app;dur=202.614",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 352287089,
+            "engineNanos": 228250061,
+            "signedEntryThroughCommitMicros": 1134043
+          },
+          "observedWithLookupMillis": 2331.746916,
+          "observedTotalMillis": 1786.5636669999958
+        },
+        {
+          "operation": "acknowledgeTransfer",
+          "document": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.c405aa1f0430ce7f67cef5c6c0b4e881",
+          "entry": "AFrx2sSwWoMPk4DZv26mXATZGCYnKo9Qrr3oAkjAsfo2",
+          "version": 249,
+          "engineMillis": 460.143393,
+          "lookupMillis": 495.9017079999981,
+          "submitMillis": 398.2232090000011,
+          "submitServerTiming": "app;dur=156.721",
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 623601354,
+            "engineNanos": 460143393,
+            "signedEntryThroughCommitMicros": 875160
+          },
+          "observedWithLookupMillis": 2065.789125000002,
+          "observedTotalMillis": 1569.8881670000019
+        }
+      ],
+      "agreementUrl": "https://d2ya9daeiur7nz.cloudfront.net/#documents/graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+      "initialReadMillis": 257.3457909999997,
+      "unrelatedIdentities": {
+        "before": {
+          "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.75ce61fd1f7145284b4dce887e3bac3d": "4HCmYjDciatUSwxxhfRnv19Ura4vCUwP3shzWhmoBHs8",
+          "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.6f41314b1a4004ed277dec1d9fd38f0e": "FTwecK3BE8mZc2HWUbczci25R7cz7FnWgFY27PQqGW79"
+        },
+        "after": {
+          "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.75ce61fd1f7145284b4dce887e3bac3d": "4HCmYjDciatUSwxxhfRnv19Ura4vCUwP3shzWhmoBHs8",
+          "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.6f41314b1a4004ed277dec1d9fd38f0e": "FTwecK3BE8mZc2HWUbczci25R7cz7FnWgFY27PQqGW79"
+        },
+        "unchanged": true
+      },
+      "ordersAfter": 208,
+      "paidTotal": 2000,
+      "lastOrder": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.54d0f330052fe9477c70c6e70cb1b7a7",
+      "lastPayment": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.c405aa1f0430ce7f67cef5c6c0b4e881",
+      "checks": [
+        "all three totals agree",
+        "same two participant Timelines",
+        "each signed input committed APPLIED",
+        "paginated current graph contains every requested Order and exactly 208 Orders"
+      ],
+      "verifiedOrders": 208,
+      "verifiedAtVersion": 249
+    }
+  },
+  "operatorScale": {
+    "input": "trusted operator qualification",
+    "results": [
+      {
+        "changedMembersPerCall": 3,
+        "documents": 3,
+        "durableInitializationMillis": 1039.792547,
+        "durableMillis": [
+          79.446194,
+          75.677751,
+          85.99849,
+          76.26587,
+          77.928976
+        ],
+        "engineMillis": [
+          25.762218,
+          23.502392,
+          36.251841,
+          27.130621,
+          27.037273
+        ],
+        "inlineInitializationMillis": 1049.335727,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "orders": 1,
+        "samples": 5,
+        "warmup": 2
+      },
+      {
+        "changedMembersPerCall": 3,
+        "documents": 257,
+        "durableInitializationMillis": 3824.188485,
+        "durableMillis": [
+          151.842711,
+          117.342383,
+          125.034786,
+          146.098309,
+          119.242224
+        ],
+        "engineMillis": [
+          98.817954,
+          64.214869,
+          66.244225,
+          80.036084,
+          61.02445
+        ],
+        "inlineInitializationMillis": 2902.283481,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "orders": 128,
+        "samples": 5,
+        "warmup": 2
+      },
+      {
+        "changedMembersPerCall": 3,
+        "documents": 2049,
+        "durableInitializationMillis": 76732.828572,
+        "durableMillis": [
+          731.957167,
+          524.745886,
+          589.389282,
+          707.520493,
+          452.11302
+        ],
+        "engineMillis": [
+          605.794879,
+          400.624744,
+          381.661376,
+          563.551539,
+          356.825517
+        ],
+        "inlineInitializationMillis": 70364.326789,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "orders": 1024,
+        "samples": 5,
+        "warmup": 2
+      }
+    ],
+    "store": "DynamoDB"
+  },
+  "operatorCycles": {
+    "cycles": [
+      {
+        "allReceiptsAndColdSnapshotEqual": true,
+        "calls": 7,
+        "durableMillis": [
+          82.704812,
+          77.803027,
+          68.141985,
+          80.291766,
+          70.945709
+        ],
+        "executionAfterRestartEqual": true,
+        "members": 2,
+        "warmup": 1
+      },
+      {
+        "allReceiptsAndColdSnapshotEqual": true,
+        "calls": 7,
+        "durableMillis": [
+          119.818883,
+          106.825874,
+          95.838364,
+          126.046818,
+          108.684755
+        ],
+        "executionAfterRestartEqual": true,
+        "members": 8,
+        "warmup": 1
+      }
+    ],
+    "feedbackCycles": [
+      {
+        "durableMillis": 64.913843,
+        "executionAfterRestartEqual": true,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "members": 1,
+        "rejectingPeer": false,
+        "status": "APPLIED"
+      },
+      {
+        "durableMillis": 81.751456,
+        "executionAfterRestartEqual": true,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "members": 2,
+        "rejectingPeer": false,
+        "status": "APPLIED"
+      },
+      {
+        "durableMillis": 280.516685,
+        "executionAfterRestartEqual": true,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "members": 8,
+        "rejectingPeer": false,
+        "status": "APPLIED"
+      },
+      {
+        "durableMillis": 36.21961,
+        "executionAfterRestartEqual": true,
+        "inlineReceiptsAndSnapshotEqual": true,
+        "members": 2,
+        "rejectingPeer": true,
+        "status": "FAILED"
+      }
+    ],
+    "input": "trusted operator qualification",
+    "store": "DynamoDB"
+  },
+  "limitations": [
+    "Operator qualification uses simpler documents and trusted inputs; not a signed-console latency estimate.",
+    "Native client times exclude catalogue/head lookup unless observedWithLookupMillis is selected.",
+    "Five steady-state operator samples are not a tail-latency or throughput qualification.",
+    "No tens-of-thousands or long-history production qualification."
+  ],
+  "localCpuProfile": {
+    "kind": "local JFR CPU samples; diagnostic, not latency benchmark",
+    "samples": 3804,
+    "allSamples": 4991,
+    "calls": 40,
+    "orders": 1024,
+    "inclusive": [
+      [
+        "blue.ContractCanonical.write",
+        679
+      ],
+      [
+        "java.util.TreeMap.getEntry",
+        428
+      ],
+      [
+        "blue.CanonicalOutput.quote",
+        404
+      ],
+      [
+        "java.util.HashMap.put",
+        369
+      ],
+      [
+        "blue.LanguageCodec.appendQuote",
+        347
+      ],
+      [
+        "java.util.HashMap.putVal",
+        324
+      ],
+      [
+        "blue.ContractCanonical.compare",
+        294
+      ],
+      [
+        "blue.LanguageCodec.quote",
+        268
+      ],
+      [
+        "blue.ContractCanonical$$Lambda.0x000040000110cef8.compare",
+        244
+      ],
+      [
+        "java.util.TreeMap.containsKey",
+        233
+      ],
+      [
+        "blue.CanonicalOutput.appendUtf8",
+        216
+      ],
+      [
+        "blue.ContractLanguage.retain",
+        216
+      ],
+      [
+        "java.util.HashMap.getNode",
+        208
+      ],
+      [
+        "java.util.HashSet.add",
+        204
+      ],
+      [
+        "java.util.TreeMap.get",
+        196
+      ],
+      [
+        "java.util.TreeMap.getEntryUsingComparator",
+        192
+      ],
+      [
+        "blue.ContractRun.begin",
+        185
+      ],
+      [
+        "java.util.TreeMap.put",
+        177
+      ],
+      [
+        "java.util.Collections$UnmodifiableMap.get",
+        177
+      ],
+      [
+        "myos.better.CanonicalSnapshots.update",
+        175
+      ],
+      [
+        "java.util.Objects.equals",
+        171
+      ],
+      [
+        "blue.LanguageTrie.find",
+        165
+      ],
+      [
+        "blue.ContractRun.preflight",
+        162
+      ],
+      [
+        "blue.ContractData.copy",
+        157
+      ],
+      [
+        "blue.ContractData.freeze",
+        151
+      ],
+      [
+        "blue.CanonicalOutput.makeRoom",
+        148
+      ],
+      [
+        "blue.ContractWire.immutable",
+        143
+      ],
+      [
+        "blue.ContractBridge.retain",
+        141
+      ],
+      [
+        "blue.ContractRun.finishWork",
+        131
+      ],
+      [
+        "blue.LanguageCodec.appendRendered",
+        130
+      ],
+      [
+        "myos.better.CanonicalSnapshots.save",
+        129
+      ],
+      [
+        "blue.ContractRun.guard",
+        124
+      ],
+      [
+        "java.util.TreeSet.add",
+        124
+      ],
+      [
+        "blue.ContractData$FrozenMap.get",
+        114
+      ],
+      [
+        "blue.LanguageCodec.render",
+        114
+      ],
+      [
+        "blue.ContractRun.beginWork",
+        113
+      ],
+      [
+        "blue.ContractProcessor.validate",
+        108
+      ],
+      [
+        "myos.better.RecordBodies.remember",
+        104
+      ],
+      [
+        "myos.better.RecordBodies.freeze",
+        103
+      ],
+      [
+        "java.util.HashMap.resize",
+        102
+      ],
+      [
+        "blue.ContractModel$Snapshot.wire",
+        102
+      ],
+      [
+        "blue.ContractModel$Document.metadata",
+        93
+      ],
+      [
+        "java.util.TreeMap.successor",
+        85
+      ],
+      [
+        "java.util.Map.forEach",
+        82
+      ],
+      [
+        "blue.ContractGraph.reachable",
+        81
+      ],
+      [
+        "myos.better.CanonicalSnapshots.saveDelta",
+        81
+      ],
+      [
+        "java.util.TreeMap$PrivateEntryIterator.nextEntry",
+        80
+      ],
+      [
+        "java.util.AbstractCollection.addAll",
+        75
+      ],
+      [
+        "java.util.HashMap.containsKey",
+        74
+      ],
+      [
+        "blue.ContractAttempt$$Lambda.0x00004000011237f8.get",
+        74
+      ],
+      [
+        "java.util.LinkedHashMap.get",
+        69
+      ],
+      [
+        "java.util.HashMap.putMapEntries",
+        68
+      ],
+      [
+        "java.util.HashMap.<init>",
+        67
+      ],
+      [
+        "blue.ContractChannels.select",
+        66
+      ],
+      [
+        "java.lang.String.compareTo",
+        63
+      ],
+      [
+        "blue.ContractRun.patch",
+        61
+      ],
+      [
+        "blue.ContractAttempt$$Lambda.0x00004000011372a0.get",
+        61
+      ],
+      [
+        "blue.ContractRun.newPhase",
+        60
+      ],
+      [
+        "blue.ContractRun.runUnit",
+        60
+      ],
+      [
+        "blue.LanguageSemantics.readHead",
+        59
+      ]
+    ],
+    "firstOwnedFrame": [
+      [
+        "blue.LanguageCodec.appendQuote",
+        347
+      ],
+      [
+        "blue.ContractCanonical.compare",
+        294
+      ],
+      [
+        "blue.ContractLanguage.retain",
+        195
+      ],
+      [
+        "blue.LanguageTrie.find",
+        165
+      ],
+      [
+        "blue.CanonicalOutput.makeRoom",
+        148
+      ],
+      [
+        "blue.ContractData$FrozenMap.get",
+        114
+      ],
+      [
+        "blue.ContractRun.preflight",
+        111
+      ],
+      [
+        "blue.ContractCanonical.write",
+        111
+      ],
+      [
+        "myos.better.RecordBodies.freeze",
+        103
+      ],
+      [
+        "myos.better.CanonicalSnapshots.update",
+        102
+      ],
+      [
+        "blue.ContractData.copy",
+        98
+      ],
+      [
+        "blue.ContractGraph.reachable",
+        79
+      ],
+      [
+        "blue.CanonicalOutput.appendUtf8",
+        73
+      ],
+      [
+        "blue.LanguageCodec.unicode",
+        59
+      ],
+      [
+        "blue.TopologyMap$1$1.next",
+        54
+      ],
+      [
+        "blue.ContractGraph.lambda$refreshAliases$0",
+        48
+      ],
+      [
+        "blue.LanguageCodec.appendRendered",
+        42
+      ],
+      [
+        "blue.LanguageModel$Recipe.key",
+        39
+      ],
+      [
+        "blue.ContractModel$Meter.contracts",
+        38
+      ],
+      [
+        "blue.LanguageContext.bound",
+        36
+      ],
+      [
+        "blue.LanguageCore.identity",
+        34
+      ],
+      [
+        "blue.ContractGraph.lambda$new$0",
+        33
+      ],
+      [
+        "blue.CanonicalOutput.quote",
+        32
+      ],
+      [
+        "blue.TopologyMap.get",
+        32
+      ],
+      [
+        "blue.ContractGraph.reconcile",
+        31
+      ],
+      [
+        "blue.LanguageTrie.union",
+        31
+      ],
+      [
+        "blue.ContractTopology.components",
+        29
+      ],
+      [
+        "blue.LanguageCodec.quote",
+        28
+      ],
+      [
+        "blue.ContractModel.segments",
+        27
+      ],
+      [
+        "blue.ContractIdentityMap$Branch.find",
+        27
+      ],
+      [
+        "blue.ContractFacts.check",
+        27
+      ],
+      [
+        "blue.CanonicalOutput.append",
+        26
+      ],
+      [
+        "blue.ContractData$ScalarRecord$1$1.hasNext",
+        25
+      ],
+      [
+        "blue.ContractRun.captureRoutes",
+        25
+      ],
+      [
+        "blue.ContractTopology.outgoingEdges",
+        25
+      ],
+      [
+        "blue.ContractBridge.child",
+        25
+      ],
+      [
+        "blue.ContractModel$Document.copy",
+        25
+      ],
+      [
+        "blue.ContractIdentityMap$Branch.put",
+        25
+      ],
+      [
+        "blue.LanguageSemantics.child",
+        24
+      ],
+      [
+        "blue.ContractRun.newPhase",
+        24
+      ]
+    ]
+  },
+  "localEdgeIndexComparison": {
+    "baseline": {
+      "environment": "local in-memory durable-store model; no AWS or HTTP",
+      "results": [
+        {
+          "allReceiptsAndSnapshotEqual": true,
+          "delivery": "targeted",
+          "documents": 2049,
+          "inlineMillis": [
+            134.986375,
+            132.9595,
+            128.294791,
+            128.10375,
+            128.23625,
+            114.879917,
+            114.617542,
+            117.421041
+          ],
+          "orders": 1024,
+          "samples": 8,
+          "storedMillis": [
+            219.729791,
+            191.2005,
+            171.66775,
+            190.11425,
+            165.079958,
+            157.132209,
+            176.700459,
+            151.624542
+          ],
+          "warmup": 1
+        }
+      ]
+    },
+    "candidate": {
+      "environment": "local in-memory durable-store model; no AWS or HTTP",
+      "results": [
+        {
+          "allReceiptsAndSnapshotEqual": true,
+          "delivery": "targeted",
+          "documents": 2049,
+          "inlineMillis": [
+            145.727625,
+            149.212458,
+            125.554875,
+            114.33175,
+            113.490458,
+            115.412833,
+            126.367917,
+            114.970125
+          ],
+          "orders": 1024,
+          "samples": 8,
+          "storedMillis": [
+            211.9875,
+            191.117792,
+            162.884666,
+            164.727458,
+            159.317417,
+            163.38375,
+            179.523458,
+            166.089833
+          ],
+          "warmup": 1
+        }
+      ]
+    }
+  }
+}

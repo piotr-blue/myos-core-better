@@ -1,0 +1,474 @@
+{
+  "generatedUtc": "2026-11-10T09:07:51.163018+00:00",
+  "files": [
+    {
+      "path": "blue-java-better/CONTRIBUTING.md",
+      "originalSha256": "8cdaafefb1499d20049c1d23e1e60a2fdf40c483eb284457f8d576d8269c8c1e",
+      "candidateSha256": "b4fbfe3af920586bc033daa32ee16c146f02ec33395c5ef150d54eeeaa907724",
+      "bytes": 2505,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/README.md",
+      "originalSha256": "12a71eeace72e976c1f53ac52c212ddfec07ccdb2b7f848c85b5a003628b1402",
+      "candidateSha256": "0ad5e1438b5f44a5fe04313aeb64f2b07bb5868738c69d6c2eb0e3c6404670da",
+      "bytes": 10640,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/docs/CAPABILITY-GAPS.md",
+      "originalSha256": "60e6177c91c951fe4e8247c4af6b39a6ec7c743739b76cdf9740affe95c9dde8",
+      "candidateSha256": "00a6fdee6f80db6e0a73b1ca4b99b98e6a00a852557a8beda7ecab855b5221a2",
+      "bytes": 2802,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/docs/TESTING.md",
+      "originalSha256": "01dc9557d5c66c8f46c9420704edcfe979e86b033a73b86767367a116d9e6ef5",
+      "candidateSha256": "d302150d002061ce677c3db3bb2c56317b21bedf0f354148ccb0f26fccb0863f",
+      "bytes": 4315,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/ContractCache.java",
+      "originalSha256": "5900aa60c55e0e78dbdb3b9ce22c36154a3235a9bc3dc828eb63850fa339c71f",
+      "candidateSha256": "4d0485124525b1e967a896fa5742177c938f70384743309b6a7a51b497caacee",
+      "bytes": 4638,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/ContractLocal.java",
+      "originalSha256": "a89051d3ec20c10c56984bebb7efecbc420bd3fdcb1fdca8e768313c2e7bb7fa",
+      "candidateSha256": "5f6c428bd580a2b10569d892d8cdca4c95de1526adaef74c2e5f94eb0fb1f1d1",
+      "bytes": 19049,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/ContractPreparations.java",
+      "originalSha256": "c76c85d68b1369965200db3750b58a200d0205a493dfe2083c94864dbc2396d9",
+      "candidateSha256": "ce8f3ee775d76400edcbb7372314c621b6243cb97678017810ad814952f5033a",
+      "bytes": 15398,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/Contracts.java",
+      "originalSha256": "da3fdd29f22cb793134375ce2f6ac1f439160794dd03d59c54442128c8daa26e",
+      "candidateSha256": "f3ba6d74fdeab5fb14a1fc67f8c601de0873004b841266c125a63ac181bfdf09",
+      "bytes": 88411,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/GasSchedule.java",
+      "originalSha256": "475aa4b34b8f54cf0e5c4a7b16e490736efa28d92f0e0614f2626cf82d2675bd",
+      "candidateSha256": "03a5f2e1af3f68898d22a7939bd4323b902ebf4a26df9f7c689a1b2f4d63e7a5",
+      "bytes": 547,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/Language.java",
+      "originalSha256": "aed4050a574b824896b9e3fd3cbf223fb4618b758fdd5518e824ba80eb92384b",
+      "candidateSha256": "a2ce0865023c01f2ba95dd75fcfcd31d4e46ce4f02fd33e29bfcf61a3a5520c0",
+      "bytes": 59420,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/src/test/java/blue/ContractCacheTest.java",
+      "originalSha256": null,
+      "candidateSha256": "9458f12eb0d721ec36d6eb8dbc44c984a7ae6a023661effc51bd6be27ec8b4b2",
+      "bytes": 2429,
+      "status": "added"
+    },
+    {
+      "path": "blue-java-better/src/test/java/blue/ContractPreparationTopologyTest.java",
+      "originalSha256": null,
+      "candidateSha256": "0b3ccff37161412e2255b60cf8f5de558b186177b76231689a41621280c11727",
+      "bytes": 4913,
+      "status": "added"
+    },
+    {
+      "path": "blue-java-better/src/test/java/blue/LocalOwnerExecutionTest.java",
+      "originalSha256": "13686eb04cf0b9c1e164e558678fb996c3274eda93e6222390ce9999c99e4d00",
+      "candidateSha256": "8cdfe0b293b099ac7d4d447d2b37cec2f21492bcfe992a88a5d0323ea321fe4d",
+      "bytes": 14451,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/src/test/java/blue/coordination/TimelineAccessTest.java",
+      "originalSha256": "442425333d7f4cb43b40eb01aeb277cab930816067d9ee26d5d0638da5656519",
+      "candidateSha256": "5d22c29dac9b2c149779c5460e6a3d987fad0ca9790c781728db2c2cde92c695",
+      "bytes": 46717,
+      "status": "modified"
+    },
+    {
+      "path": "blue-java-better/src/test/java/blue/language/CheckpointTest.java",
+      "originalSha256": "aeaad4161130b6bc5485cb19e35d8c84aa82a0bd7d418019810887b23cbec92e",
+      "candidateSha256": "42e662487868b75f0292b1820ea69a7b416360957e7d99d77c050f3bbb761453",
+      "bytes": 8951,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/CONTRIBUTING.md",
+      "originalSha256": null,
+      "candidateSha256": "394ae49161c99c8802cab2530c5e4c97d830e81efa7627134502bfca8ab8783d",
+      "bytes": 1415,
+      "status": "added"
+    },
+    {
+      "path": "myos-simplified/README.md",
+      "originalSha256": "2739abfee50b8faa6393815e76b1d647e7368752abf2331064fb2c43cbba017e",
+      "candidateSha256": "e0b75526cc0c88485e27fb3cfdb004fecf54074b3e166cd2fabaec235dd9cbb7",
+      "bytes": 13112,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/build.gradle.kts",
+      "originalSha256": "d372442caf74772d55e9696e766f1b93b05dcf77899e1beb47d64f6fd240dc66",
+      "candidateSha256": "0b3ceec7300e477ead593ec96e4dd97857f3695583b79db984e5cb3361812a73",
+      "bytes": 9256,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/docs/qualification-method.md",
+      "originalSha256": "dbca23819d8b6135113805ab55813e3dd6f149808ecc296bdab846eede01203f",
+      "candidateSha256": "56fce4a3b4b4f4dc1534fbf6da9fa6710fd037a40b57fe5cd50bcde58ab8ba34",
+      "bytes": 8914,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/docs/testing.md",
+      "originalSha256": "e973e813b4b8075668f0599222a9fe567d753c50c67a068ee435906190c8bea1",
+      "candidateSha256": "840b88638f6bc8cf949aa20d8d64fe57e4c25cb8a9ecf8ca14b4091ea3cd5e8a",
+      "bytes": 8425,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/gradle.lockfile",
+      "originalSha256": "b15c2c2a636f155f89868efe782fbeaa0b281db4f07f0af0ce56fe034f9cc782",
+      "candidateSha256": "aa8af30a5ef7f498162a66a87eb956d03a141b5fa141d0bfacf488ff9a68d1c1",
+      "bytes": 1927,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/main/java/myos/local/Json.java",
+      "originalSha256": "3919fd59be10a9464ced61d69be342773d79d27b24f006b24c01089aa56f6d7b",
+      "candidateSha256": "0a64490ec1362a97a9a3716a20b33239daba2edb3b80294b66300ecf4c901781",
+      "bytes": 1372,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/main/java/myos/local/LocalOwners.java",
+      "originalSha256": "09fa3ee3f05990d59a5abdf76ac92763afc95cc3075bb5c2071d88da073bb20d",
+      "candidateSha256": "5ac7f350c61958cb4542277278b5eac8923d48b4b2b7772aed4db38d2bb15af1",
+      "bytes": 14755,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/main/java/myos/local/LocalRuntime.java",
+      "originalSha256": "771e7e361ee4ea521858c1d55d9632deb1e0210aae1cc26967620090dd346885",
+      "candidateSha256": "394227a9ae460bb05a3cb0cc8504366264b3e73b8a9ed5a93ada4b22c6d6698d",
+      "bytes": 30159,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/main/java/myos/local/Repository.java",
+      "originalSha256": "9b10c22da7acb94780c56f8c65791c88c8f1dfaaf56419694599f3dc64d2872b",
+      "candidateSha256": "8a8c168e891384aca8e48d8cc8b834c17acae3520401d38d73bd1aea61862f5e",
+      "bytes": 9743,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/qualification/java/myos/local/AuditExisting.java",
+      "originalSha256": "1db67fdeba9a7a33098d4b034aa3932620b3e5b0b211dfb915fa237daedcf745",
+      "candidateSha256": "bc4839e57a33aeae2c6914b1538dfdd8b906527a56c5acc29a4f96daff08916a",
+      "bytes": 2227,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/qualification/java/myos/local/NativeOracle.java",
+      "originalSha256": "ba84ed8d575fed2393c3e33b112b77ac5d1c379c1bf33a1561d376f3540fcb4d",
+      "candidateSha256": "a3add36e57fc09f2219c20a6e4366a519e81480b9c78e690e5b5222f66572353",
+      "bytes": 6447,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/qualification/java/myos/local/OrderGrowth.java",
+      "originalSha256": "b9406d43aa357cb4b233f863a44f9f074b5ef1e22409cdd39c55e70bc29bca3b",
+      "candidateSha256": "e124edb99ba01f5f11450a2f6d731fa777f38e1f476ea463206f67e11c9907bf",
+      "bytes": 6281,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/qualification/java/myos/local/OrderScale.java",
+      "originalSha256": "47b08b0c45fa683c798ac035c0d3fe5aa5df0164637417b1a050dc4b6204753e",
+      "candidateSha256": "d22ca9f5f236c992f70e8e17384f07c08a1d490bc93f97218dac3abf1addb070",
+      "bytes": 16380,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/qualification/java/myos/local/Qualification.java",
+      "originalSha256": "256d09cf5d9957929724769b9400e7088c28d6a353ba9943f83a8fd7507e0276",
+      "candidateSha256": "2749c1c90a34ccb4782f9879a7ae71f5b568619e4ae713060e58d8fcb0170c5e",
+      "bytes": 10332,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/qualification/java/myos/local/RootedParityAudit.java",
+      "originalSha256": "1beb97a5cd6fae7257dfa0bca1d16ef8bb45cd84f8616a731dad06f0f587da6b",
+      "candidateSha256": "b6346727a00fb8224091ca400c1b338cfdebf3e6485401e9b0f1d7abbb72fa66",
+      "bytes": 9049,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/test/java/myos/local/CompositionBoundaryTest.java",
+      "originalSha256": "1ba452ab9e93622deb0b60989cb1d9f236d303910c99ad8ff6622a2c2a5a37b4",
+      "candidateSha256": "e078a7c4173a74d425470d2f5d55f16469fefa9c0ab5b996cdcf365ab85b3b58",
+      "bytes": 5869,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/test/java/myos/local/CycleBirthTest.java",
+      "originalSha256": null,
+      "candidateSha256": "9ef799f517a571eef87720942c80eac1508a17bd5a5df3b246b43478d43ebae2",
+      "bytes": 4073,
+      "status": "added"
+    },
+    {
+      "path": "myos-simplified/src/test/java/myos/local/NativeFanoutTest.java",
+      "originalSha256": "10774ed6aa60e23ce97dfe3f97ec75db9c6b88b123193757187cd8d593a3b71b",
+      "candidateSha256": "36a5936870df46ab3103f5ca8308e76f9fc6c97a77acfdf5f758d2403a418973",
+      "bytes": 9328,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/test/java/myos/local/NativePreparationTest.java",
+      "originalSha256": null,
+      "candidateSha256": "cebb300c91888978ed21862b283cdd078ba8ff4a6b500bdde3ff48ff56459d01",
+      "bytes": 2225,
+      "status": "added"
+    },
+    {
+      "path": "myos-simplified/src/test/java/myos/local/NativeReceivingTest.java",
+      "originalSha256": "c02d483323aef9ca57418793f9556cb6463eabff1097ba2942e3a7331b133ca6",
+      "candidateSha256": "41293d742a3551174a3cdb67327b2a5a0aa0b516e6b0e06bff9505fa1cbb531f",
+      "bytes": 3860,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/test/java/myos/local/RootedCompositionTest.java",
+      "originalSha256": "1733c9f29a193993a4174355015fd6de74b566bd19e739dc486d6b68c446eca9",
+      "candidateSha256": "f76b99547c550f89a4c17542d7ccb9b84ef5ff6a0fef741f80d9f80851bce474",
+      "bytes": 7704,
+      "status": "modified"
+    },
+    {
+      "path": "myos-simplified/src/test/java/myos/local/SemanticPolicyTest.java",
+      "originalSha256": "ea4a463e51c352b5ac3f3a15f4cd2c2ab2b5a66936350b37ce393eaeada31894",
+      "candidateSha256": "c255a9b0f3323747d27a30ece43c5bafd4ecbf05ea9d2bb2dd6bdbedfea5b923",
+      "bytes": 5337,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/README.md",
+      "originalSha256": "9bb299339b2d3de198968ef15d93e31519ba67955e1e9761eed8e5c43f89f02f",
+      "candidateSha256": "9b190846e87f3d3ee320fd34e924decb8c8a4937a20ae3e03e1394e63f80deb2",
+      "bytes": 5824,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/build.gradle.kts",
+      "originalSha256": "670fc4d11f135ac9bfe7a243e65b0f2e9b08e5120bfba497a8c46db024ef51a9",
+      "candidateSha256": "62365235d3b411d6ebe9cfccc60adb29b1a2f9cefb9aa0d3e7f7b3ca4b786fe2",
+      "bytes": 6936,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/docs/testing.md",
+      "originalSha256": "ca5d233aa75e206543a21458df4d8a9b06b0fb03774f6c29046455158812a02b",
+      "candidateSha256": "973bf56012907c7679df516fcbcb4997dd888dff29916fa1d5973ba75fd76a1d",
+      "bytes": 7732,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/scripts/core-baseline-sdk-probe.mjs",
+      "originalSha256": null,
+      "candidateSha256": "70ba0ef24053f97c50ac31beab9d6166a13a09e478d03fc4c5caa285d562a73f",
+      "bytes": 1873,
+      "status": "added"
+    },
+    {
+      "path": "myos-aws-test-better/scripts/core-checkpoint-sdk-acceptance.mjs",
+      "originalSha256": null,
+      "candidateSha256": "c75a7fca77adcd2ac7bb47d6ae83e3e5bf0ad53efa90576a35d7903937095b46",
+      "bytes": 4449,
+      "status": "added"
+    },
+    {
+      "path": "myos-aws-test-better/sdk/typescript/README.md",
+      "originalSha256": "548d0bcc5f21282d4eb2f292246e04e48e08f7fe6d5e1564c193b7977b2b5930",
+      "candidateSha256": "5262ee831033047c5eac777c9f5cf42502413f8725b2cbf0117e23bf18be00a8",
+      "bytes": 18617,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/main/java/myos/better/CanonicalSnapshots.java",
+      "originalSha256": "1e55c99245b6fed0c5f4fdc3d5c547f3fc7d6774b37e138fb140400ce3ecdb6d",
+      "candidateSha256": "4a6ec5ed802feded65318f42741f525a2062767e30966de038512cae26dbba35",
+      "bytes": 44535,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/main/java/myos/better/GraphDocuments.java",
+      "originalSha256": "0fce520a0e646becd67880b7b79aa8279cef03eed247a0d9ef0203f18a934a20",
+      "candidateSha256": "336a10437eac4cec6fd7c9e3fabc2966a02f60fa3672a45741b96f14cad2de75",
+      "bytes": 25597,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/main/java/myos/better/OwnerGraphs.java",
+      "originalSha256": "709159d47c864769ea588c5cf4d4fd2fc9aa52b80aca5495563c299bcd76e81d",
+      "candidateSha256": "3805d60e5380923eb4b9d81ed69fe8f754052a863db06b630c09cfe28e0a2bed",
+      "bytes": 40618,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/main/java/myos/better/OwnerLocal.java",
+      "originalSha256": "7cb03ae35fc443dd7fef2c0a1d43ee802a10e9e74b6c78fe1a53dffe0bd4bcf0",
+      "candidateSha256": "28b3282bc9cbaf260895e41668db866f2a7cca9ccc8b1edfbc6411c0a629e77f",
+      "bytes": 15168,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/main/java/myos/better/OwnerRecords.java",
+      "originalSha256": "aef007e09d1818a7ae9f66b405217dbda719a47800d7c4a4793108f3e32e9d75",
+      "candidateSha256": "83961d1ec694372f1b78dcc09c6296a934b347dfe8fc6c72d9b51945d3fb7c94",
+      "bytes": 5872,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/main/java/myos/better/TimelineReadAccess.java",
+      "originalSha256": "e85ab53f422c3dcd54848e47b9d98d2b17884c16a6812040b8dec75c1577b06a",
+      "candidateSha256": "83020121e6c7523c77c42368c5bb193d4863c9c89908a30a22edc49cfbb4cb94",
+      "bytes": 7942,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/test/java/myos/better/CanonicalSnapshotsTest.java",
+      "originalSha256": "ae2be7c1b009e49ea917c76935760f6e259273b6719ed75e4f7067651f113037",
+      "candidateSha256": "14f49a1c21e77bcfbdbaef3469ec1d0d9a5404cfdc0cfdd5c60e28bb74496113",
+      "bytes": 32300,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/test/java/myos/better/ClauseGrowthTest.java",
+      "originalSha256": null,
+      "candidateSha256": "42e2677de71811670bc5cf224a62e6a439ada881a3a676274ebb3c0fd8a7408f",
+      "bytes": 8151,
+      "status": "added"
+    },
+    {
+      "path": "myos-aws-test-better/src/test/java/myos/better/GraphOperationAddressTest.java",
+      "originalSha256": "37efaa41ecd6552522b38678f81b12d7b9820767497fa675c77d4791e97e681a",
+      "candidateSha256": "6e677fa346c0321f2f5bd944c7c0ab3dbd5ce041199f49c7cd6811db0789fcc7",
+      "bytes": 8707,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/test/java/myos/better/OwnerCycleBirthTest.java",
+      "originalSha256": null,
+      "candidateSha256": "6ad5543d60edb201f45120d6be47476823e064e0d52ee5e40100238c5d388102",
+      "bytes": 6277,
+      "status": "added"
+    },
+    {
+      "path": "myos-aws-test-better/src/test/java/myos/better/TimelineReadAccessTest.java",
+      "originalSha256": "802fc07a4ee3ab07142f072efce6705555f8fc6a9aad19769d34154858c8e81a",
+      "candidateSha256": "60d2adeef18a1cc9f5e566cd57b6e8057d299e5efdddbd89510f1fc68ae22417",
+      "bytes": 9555,
+      "status": "modified"
+    },
+    {
+      "path": "myos-aws-test-better/src/test/resources/clauses/counter-growth.blue",
+      "originalSha256": null,
+      "candidateSha256": "2abca4066abd607110f02e0b8f31f077748599d3ec784df2b14eed756c552c8c",
+      "bytes": 3186,
+      "status": "added"
+    },
+    {
+      "path": "myos-aws-test-better/src/test/resources/clauses/cyclic-growth.blue",
+      "originalSha256": null,
+      "candidateSha256": "6d61b33a06460f5f5a09bf7b490fa2af3b8a6d24eafef051dd0d199a1048f65d",
+      "bytes": 4410,
+      "status": "added"
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/ContractModel.java",
+      "originalSha256": "9cfe5c8adc7b19af010cd37582d27fb9880a763b56484ee5e561bdb0154a0841",
+      "status": "modified",
+      "candidateSha256": "4ec3d76aa689ef835ab7f2e3d7e73933dfd7df25980c23515fff79dcee0223af",
+      "bytes": 29316
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/ContractRun.java",
+      "originalSha256": "b1abd53e25c4e9e7a0fff2bdea772f1ff92ff554406b69b5c5c51467fd0a4668",
+      "status": "modified",
+      "candidateSha256": "6dde17e292c174405a850585649bd63e14834d8b6d7de91a574852229291631d",
+      "bytes": 76231
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/ContractGraph.java",
+      "originalSha256": "dabb49823c3960ab4bd25869d39f61a90a105e8f3407ae6a4ed6717563f47e35",
+      "status": "modified",
+      "candidateSha256": "0fe2b8203c1f73ad6925e44727923c790cea81bb129acf8e8b97e0635875bc28",
+      "bytes": 32152
+    },
+    {
+      "path": "blue-java-better/src/main/java/blue/ContractRunFork.java",
+      "originalSha256": "2974b56305b5a60d31a45d863a6cc2352ee190c521cd10de38314f3a635df115",
+      "status": "modified",
+      "candidateSha256": "d46c547dd263f759fdc72266e35c14fe6f003dea353f121ff0281cab14efd9d0",
+      "bytes": 4688
+    },
+    {
+      "path": "blue-java-better/src/test/java/blue/ContractSnapshotCommitmentTest.java",
+      "originalSha256": "02669764894d0586e00602284487f96b33edb8bf722147ae4fa95314f7a40245",
+      "status": "modified",
+      "candidateSha256": "3abf4cc30b3f5d76fd9974cf61d50b22f4d1c2008d4d9d8140285f267eb271b2",
+      "bytes": 7180
+    },
+    {
+      "path": "blue-java-better/src/test/java/blue/ContractTopologyTest.java",
+      "originalSha256": "4fd735f7a48a3c91b8b0c612afaa6784a82ebe0447ae86396da34d1e289f6224",
+      "status": "modified",
+      "candidateSha256": "176dc8eacc11708e2cb6452e78b7382034f540353fe2bb188d9d33f651a0a3cc",
+      "bytes": 14793
+    },
+    {
+      "path": "myos-aws-test-better/docs/OPERATIONS.md",
+      "originalSha256": "482e3a96c3cf6022b8ae64bd1a5b2b58806f34bf3e3bf261c013c0a5418c9f15",
+      "status": "modified",
+      "candidateSha256": "f0d3eba90e66dc7105eb4c47d83f8d111bd84aa8cbd9211a449adcfa563a3e46",
+      "bytes": 5513
+    },
+    {
+      "path": "blue-java-better/.gitignore",
+      "originalSha256": "b04da56c854d3aa74f5298758d2cdf510227c15dfad2c4fbc7cfb59dd3f13b78",
+      "status": "modified",
+      "candidateSha256": "3778e624c1be665b0ecb6ff20ad19c2fd6d2a22d5c805a13ee1b01f320faa9a2",
+      "bytes": 70
+    },
+    {
+      "path": "myos-simplified/.gitignore",
+      "originalSha256": "c08e0d9894418106a195e06b3303e273820e6a6839d937e80efd09b55aefbb6d",
+      "status": "modified",
+      "candidateSha256": "75ac416538b2e64fa81aca8bea6f4314f4873a8fa11c09ad203d58f1b6525a75",
+      "bytes": 98
+    },
+    {
+      "path": "myos-aws-test-better/.gitignore",
+      "originalSha256": "daedf3ef75cb669a967044ebdb428c16b022c4492d27f7d77ada4e508165677b",
+      "status": "modified",
+      "candidateSha256": "ac7783d5a3f5d418d053d8f89f2125bdb9e2bfd082f3118029929726256cb0a2",
+      "bytes": 165
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineVerifierTest$DocumentExecution" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:09.801Z" hostname="MacBook-Pro-5.local" time="0.155">
+  <properties />
+  <testcase name="[1] 2" classname="blue.coordination.TimelineVerifierTest$DocumentExecution" time="0.117" />
+  <testcase name="[2] 128" classname="blue.coordination.TimelineVerifierTest$DocumentExecution" time="0.038" />
+  </testsuite>

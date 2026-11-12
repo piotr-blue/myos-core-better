@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreMemberHistoryTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:40.809Z" hostname="MacBook-Pro-5.local" time="0.159">
+  <properties />
+  <testcase name="laterMemberHistoryStartsAtItsActualAdmissionNotAtGraphCreation()" classname="myos.better.CoreMemberHistoryTest" time="0.118" />
+  <testcase name="embeddedSourceAndEmissionsAreTheMembersOwnImmutableContent()" classname="myos.better.CoreMemberHistoryTest" time="0.028" />
+  <testcase name="publicationIdentityMatchesEachInlineVersionAfterTheMemberChanges()" classname="myos.better.CoreMemberHistoryTest" time="0.012" />
+  </testsuite>

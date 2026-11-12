@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineReaderTest$CheckpointAndFailureClaims" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:09.617Z" hostname="MacBook-Pro-5.local" time="0.047">
+  <properties />
+  <testcase name="correlatedSignedFailureIsNotAnEmptyPageAndDoesNotConsumeTheRead()" classname="blue.coordination.TimelineReaderTest$CheckpointAndFailureClaims" time="0.008" />
+  <testcase name="checkpointOnlyClaimsCannotContradictEstablishedHistoryOrTimestampZero()" classname="blue.coordination.TimelineReaderTest$CheckpointAndFailureClaims" time="0.012" />
+  <testcase name="pagePresenceExactlyMatchesTheRequestedMode()" classname="blue.coordination.TimelineReaderTest$CheckpointAndFailureClaims" time="0.007" />
+  <testcase name="checkpointOnlyDoesNotFetchOrCertifyAnUnknownHead()" classname="blue.coordination.TimelineReaderTest$CheckpointAndFailureClaims" time="0.004" />
+  <testcase name="responseCorrelationAndOuterSignatureAreRequiredForSuccessAndFailure()" classname="blue.coordination.TimelineReaderTest$CheckpointAndFailureClaims" time="0.007" />
+  <testcase name="signedEmptyCheckpointCanAdvanceAnEmptyPrefixAndMinimumMustBeMet()" classname="blue.coordination.TimelineReaderTest$CheckpointAndFailureClaims" time="0.007" />
+  </testsuite>

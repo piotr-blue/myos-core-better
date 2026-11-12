@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreMembershipsTest$Lifetime" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:40.980Z" hostname="MacBook-Pro-5.local" time="0.002">
+  <properties />
+  <testcase name="selfRemovalReplaysWithoutAuthorityButCannotReviveARemovedGeneration()" classname="myos.better.CoreMembershipsTest$Lifetime" time="0.001" />
+  <testcase name="removedPersonalMembershipDoesNotBreakUserDiscoveryOrReappearImplicitly()" classname="myos.better.CoreMembershipsTest$Lifetime" time="0.001" />
+  <testcase name="receiptsAreScopedToActorAndAccountAndRequireAnAuthenticatedContext()" classname="myos.better.CoreMembershipsTest$Lifetime" time="0.0" />
+  </testsuite>

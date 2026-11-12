@@ -1,0 +1,7 @@
+{
+  "secretArn": "arn:aws:secretsmanager:eu-west-1:581571886327:secret:Identity-jeZK6Kpe2n4y-kZW68E",
+  "secretVersion": "5f7c614b-cfbc-4cc4-8a63-06f026be4f27",
+  "providerId": "12wzrh6r1tQEBTKTXeYDusoyqZENnDDuYdJHvGaEhzwZ",
+  "endpoint": "https://d2ya9daeiur7nz.cloudfront.net/api/provider",
+  "namespace": "console-timelines"
+}

@@ -1,0 +1,1434 @@
+{
+  "sourceCommit": "8b71a0e7de48aaeb79bddddb25ae04e0fc0f2d85",
+  "paths": 91,
+  "operations": [
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/admin/session",
+      "operationId": "getAdminSession",
+      "status": "partial",
+      "tests": [
+        "CoreAdministratorsTest",
+        "CoreAdminDirectoryTest",
+        "CoreAdminApiTest",
+        "CoreAdminHttpTest"
+      ],
+      "notes": "Verified human administrator allowlist, local user directory, filters and original HTTP responses. Host-wide identity-provider credential revocation remains outside this implementation."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/admin/users",
+      "operationId": "listAdminUsers",
+      "status": "partial",
+      "tests": [
+        "CoreAdministratorsTest",
+        "CoreAdminDirectoryTest",
+        "CoreAdminApiTest",
+        "CoreAdminHttpTest"
+      ],
+      "notes": "Verified human administrator allowlist, local user directory, filters and original HTTP responses. Host-wide identity-provider credential revocation remains outside this implementation."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/admin/users/{id}",
+      "operationId": "getAdminUser",
+      "status": "partial",
+      "tests": [
+        "CoreAdministratorsTest",
+        "CoreAdminDirectoryTest",
+        "CoreAdminApiTest",
+        "CoreAdminHttpTest"
+      ],
+      "notes": "Verified human administrator allowlist, local user directory, filters and original HTTP responses. Host-wide identity-provider credential revocation remains outside this implementation."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/admin/notifications",
+      "operationId": "getAdminNotifications",
+      "status": "partial",
+      "tests": [
+        "CoreAdminNotificationsTest",
+        "CoreAdminApiTest",
+        "CoreAdminHttpTest"
+      ],
+      "notes": "Administrator notification settings and durable delivery intent are implemented. External email delivery requires configured and authorized SES transport."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/blue/v1/admin/notifications",
+      "operationId": "updateAdminNotifications",
+      "status": "partial",
+      "tests": [
+        "CoreAdminNotificationsTest",
+        "CoreAdminApiTest",
+        "CoreAdminHttpTest"
+      ],
+      "notes": "Administrator notification settings and durable delivery intent are implemented. External email delivery requires configured and authorized SES transport."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/admin/users/{userId}/impersonations",
+      "operationId": "createImpersonation",
+      "status": "partial",
+      "tests": [
+        "CoreImpersonationsTest",
+        "CoreImpersonationHttpTest"
+      ],
+      "notes": "Time-bounded impersonation, revocation, session fencing and audit entries are implemented over the local host authority. Cross-deployment session revocation is not claimed."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/impersonation",
+      "operationId": "getImpersonation",
+      "status": "partial",
+      "tests": [
+        "CoreImpersonationsTest",
+        "CoreImpersonationHttpTest"
+      ],
+      "notes": "Time-bounded impersonation, revocation, session fencing and audit entries are implemented over the local host authority. Cross-deployment session revocation is not claimed."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/impersonation",
+      "operationId": "endImpersonation",
+      "status": "partial",
+      "tests": [
+        "CoreImpersonationsTest",
+        "CoreImpersonationHttpTest"
+      ],
+      "notes": "Time-bounded impersonation, revocation, session fencing and audit entries are implemented over the local host authority. Cross-deployment session revocation is not claimed."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/agent-subscriptions",
+      "operationId": "subscribeAgentEvents",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: external Agent authorization, durable subscription management and delivery require the external Agent runtime and OAuth integration."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/agent-subscriptions",
+      "operationId": "unsubscribeAgentEvents",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: external Agent authorization, durable subscription management and delivery require the external Agent runtime and OAuth integration."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/account/image",
+      "operationId": "deleteAccountImage",
+      "status": "partial",
+      "tests": [
+        "CoreImagesTest",
+        "CoreImagesHttpTest",
+        "HttpDeadlineTest"
+      ],
+      "notes": "Original multipart parser, normalization and authenticated image lifecycle; atomic profile/bytes/receipt storage. Revision, replay, conditional GET/HEAD and retirement tested. S3 lifecycle replaced by AtomicStore publication; immutable content-page garbage collection remains host-wide work."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/blue/v1/account/image",
+      "operationId": "putAccountImage",
+      "status": "partial",
+      "tests": [
+        "CoreImagesTest",
+        "CoreImagesHttpTest",
+        "HttpDeadlineTest"
+      ],
+      "notes": "Original multipart parser, normalization and authenticated image lifecycle; atomic profile/bytes/receipt storage. Revision, replay, conditional GET/HEAD and retirement tested. S3 lifecycle replaced by AtomicStore publication; immutable content-page garbage collection remains host-wide work."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/accounts/{accountId}/image/{version}",
+      "operationId": "getAccountImage",
+      "status": "partial",
+      "tests": [
+        "CoreImagesTest",
+        "CoreImagesHttpTest",
+        "HttpDeadlineTest"
+      ],
+      "notes": "Original multipart parser, normalization and authenticated image lifecycle; atomic profile/bytes/receipt storage. Revision, replay, conditional GET/HEAD and retirement tested. S3 lifecycle replaced by AtomicStore publication; immutable content-page garbage collection remains host-wide work."
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/blue/v1/account/agents/{agentId}",
+      "operationId": "updateAccountAgent",
+      "status": "partial",
+      "tests": [
+        "CoreAgentsTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-agents.mjs"
+      ],
+      "limitations": "Account metadata and connection reads only; OAuth, connection authorization and Agent execution are not implemented."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/account/agents",
+      "operationId": "listAccountAgents",
+      "status": "partial",
+      "tests": [
+        "CoreRosterTest",
+        "scripts/test-core-sdk.mjs"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/account/agents",
+      "operationId": "createAccountAgent",
+      "status": "partial",
+      "tests": [
+        "CoreAgentsTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-agents.mjs"
+      ],
+      "limitations": "Account metadata and connection reads only; OAuth, connection authorization and Agent execution are not implemented."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/account/agents/{agentId}/connections",
+      "operationId": "listAgentConnections",
+      "status": "partial",
+      "tests": [
+        "CoreAgentsTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-agents.mjs"
+      ],
+      "limitations": "Account metadata and connection reads only; OAuth, connection authorization and Agent execution are not implemented."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/account/agents/{agentId}/connections/{connectionId}",
+      "operationId": "revokeAgentConnection",
+      "status": "partial",
+      "tests": [
+        "CoreAgentRevocationTest",
+        "CoreAgentRevocationHttpTest"
+      ],
+      "notes": "Revision/generation checked revocation and replay, authorization and request-drain fencing are implemented. OAuth issuance and external Agent execution remain unimplemented."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/invitations/{invitationId}/accept",
+      "operationId": "acceptAccountInvitation",
+      "status": "partial",
+      "tests": [
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-invitations.mjs"
+      ],
+      "notes": "Original issue/revoke/accept forms and generated-SDK contract; durable encrypted email intent, recipient/generation pinning, CAS membership/account fences, same-link leased retry and replay. AWS SES transport implemented but disabled until a verified sender, configuration set and explicit send scope are configured. Global login revocation/distributed restrictions and global ownership remain separate parity gaps."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/account/invitations/{invitationId}",
+      "operationId": "revokeAccountInvitation",
+      "status": "partial",
+      "tests": [
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-invitations.mjs"
+      ],
+      "notes": "Original issue/revoke/accept forms and generated-SDK contract; durable encrypted email intent, recipient/generation pinning, CAS membership/account fences, same-link leased retry and replay. AWS SES transport implemented but disabled until a verified sender, configuration set and explicit send scope are configured. Global login revocation/distributed restrictions and global ownership remain separate parity gaps."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/account/invitations",
+      "operationId": "listAccountInvitations",
+      "status": "partial",
+      "tests": [
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-invitations.mjs"
+      ],
+      "notes": "Original issue/revoke/accept forms and generated-SDK contract; durable encrypted email intent, recipient/generation pinning, CAS membership/account fences, same-link leased retry and replay. AWS SES transport implemented but disabled until a verified sender, configuration set and explicit send scope are configured. Global login revocation/distributed restrictions and global ownership remain separate parity gaps."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/account/invitations",
+      "operationId": "createAccountInvitation",
+      "status": "partial",
+      "tests": [
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-invitations.mjs"
+      ],
+      "notes": "Original issue/revoke/accept forms and generated-SDK contract; durable encrypted email intent, recipient/generation pinning, CAS membership/account fences, same-link leased retry and replay. AWS SES transport implemented but disabled until a verified sender, configuration set and explicit send scope are configured. Global login revocation/distributed restrictions and global ownership remain separate parity gaps."
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/blue/v1/account/users/{userId}",
+      "operationId": "updateAccountMembership",
+      "status": "partial",
+      "tests": [
+        "CoreMembershipsTest",
+        "CoreMembershipsHttpTest",
+        "CoreAccessBarrierTest",
+        "CoreAccessBarrierHttpTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-members.mjs",
+        "CoreOwnershipTest"
+      ],
+      "notes": "Revision-checked roles, Owner release/assignment, removal and replay, last-admin protection and request draining are implemented. Unique ownership uses verified-email fences and a global ownership registry after directory backfill. Distributed cross-instance request draining and original external Agent restrictions remain separate gaps."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/account/users",
+      "operationId": "listAccountMembers",
+      "status": "partial",
+      "tests": [
+        "CoreRosterTest",
+        "scripts/test-core-sdk.mjs"
+      ]
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/blue/v1/account/profile",
+      "operationId": "updateAccountProfile",
+      "status": "partial",
+      "tests": [
+        "CoreDashboardHttpTest",
+        "CoreOwnershipTest",
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest"
+      ],
+      "notes": "Personal accounts, additional workspaces, profiles, avatars, preferences, invitation/rejoin lifecycle, configured delivery and unique Owner assignment are implemented. Global ownership assignment requires the directory migration to be complete. External identity-provider lifecycle and original runtime activation remain separate gaps."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/accounts",
+      "operationId": "createAccount",
+      "status": "partial",
+      "tests": [
+        "CoreWorkspacesTest",
+        "CoreWorkspacesHttpTest",
+        "CoreLiveHttpTest"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/identity",
+      "operationId": "getIdentity",
+      "status": "partial",
+      "tests": [
+        "CoreDashboardHttpTest",
+        "CoreOwnershipTest",
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest"
+      ],
+      "notes": "Personal accounts, additional workspaces, profiles, avatars, preferences, invitation/rejoin lifecycle, configured delivery and unique Owner assignment are implemented. Global ownership assignment requires the directory migration to be complete. External identity-provider lifecycle and original runtime activation remain separate gaps."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/me",
+      "operationId": "getMe",
+      "status": "partial",
+      "tests": [
+        "CoreDashboardHttpTest",
+        "CoreOwnershipTest",
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest"
+      ],
+      "notes": "Personal accounts, additional workspaces, profiles, avatars, preferences, invitation/rejoin lifecycle, configured delivery and unique Owner assignment are implemented. Global ownership assignment requires the directory migration to be complete. External identity-provider lifecycle and original runtime activation remain separate gaps."
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/blue/v1/me/profile",
+      "operationId": "updateMyProfile",
+      "status": "partial",
+      "tests": [
+        "CoreDashboardHttpTest",
+        "CoreOwnershipTest",
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest"
+      ],
+      "notes": "Personal accounts, additional workspaces, profiles, avatars, preferences, invitation/rejoin lifecycle, configured delivery and unique Owner assignment are implemented. Global ownership assignment requires the directory migration to be complete. External identity-provider lifecycle and original runtime activation remain separate gaps."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/me/avatar",
+      "operationId": "deleteMyAvatar",
+      "status": "partial",
+      "tests": [
+        "CoreImagesTest",
+        "CoreImagesHttpTest",
+        "HttpDeadlineTest"
+      ],
+      "notes": "Original multipart parser, normalization and authenticated image lifecycle; atomic profile/bytes/receipt storage. Revision, replay, conditional GET/HEAD and retirement tested. S3 lifecycle replaced by AtomicStore publication; immutable content-page garbage collection remains host-wide work."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/blue/v1/me/avatar",
+      "operationId": "putMyAvatar",
+      "status": "partial",
+      "tests": [
+        "CoreImagesTest",
+        "CoreImagesHttpTest",
+        "HttpDeadlineTest"
+      ],
+      "notes": "Original multipart parser, normalization and authenticated image lifecycle; atomic profile/bytes/receipt storage. Revision, replay, conditional GET/HEAD and retirement tested. S3 lifecycle replaced by AtomicStore publication; immutable content-page garbage collection remains host-wide work."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/users/{userId}/avatar/{version}",
+      "operationId": "getUserAvatar",
+      "status": "partial",
+      "tests": [
+        "CoreImagesTest",
+        "CoreImagesHttpTest",
+        "HttpDeadlineTest"
+      ],
+      "notes": "Original multipart parser, normalization and authenticated image lifecycle; atomic profile/bytes/receipt storage. Revision, replay, conditional GET/HEAD and retirement tested. S3 lifecycle replaced by AtomicStore publication; immutable content-page garbage collection remains host-wide work."
+    },
+    {
+      "method": "PATCH",
+      "path": "/api/blue/v1/me/preferences",
+      "operationId": "updateUserPreferences",
+      "status": "partial",
+      "tests": [
+        "CoreDashboardHttpTest",
+        "CoreOwnershipTest",
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest"
+      ],
+      "notes": "Personal accounts, additional workspaces, profiles, avatars, preferences, invitation/rejoin lifecycle, configured delivery and unique Owner assignment are implemented. Global ownership assignment requires the directory migration to be complete. External identity-provider lifecycle and original runtime activation remain separate gaps."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/account/gas",
+      "operationId": "getAccountGas",
+      "status": "partial",
+      "tests": [
+        "CoreGasHttpTest",
+        "OwnerGasEventsTest",
+        "CoreGasProvisioningTest"
+      ],
+      "notes": "Read-only string-encoded balances and atomic gas change events. New owner-runtime workspaces receive one frozen entitlement; existing accounts are not silently activated or refilled."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/info",
+      "operationId": "getInfo",
+      "status": "partial",
+      "tests": [
+        "CoreRuntimeCatalogueTest",
+        "CorePackagesTest"
+      ],
+      "notes": "Exact deployed Better edition and pinned catalogue. Account-local install/remove and selected bootstrap package closure are implemented. Original historical runtime/catalogue editions and their proof-wire compatibility remain separate gaps."
+    },
+    {
+      "method": "HEAD",
+      "path": "/api/blue/v1/info",
+      "operationId": "headInfo",
+      "status": "partial",
+      "tests": [
+        "CoreDashboardHttpTest"
+      ],
+      "notes": "Same authenticated GET representation headers, no response body. Runtime metadata retains the explicit Better host edition."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/openapi.json",
+      "operationId": "getOpenApi",
+      "status": "partial",
+      "tests": [
+        "CoreDashboardHttpTest"
+      ],
+      "notes": "Original OpenAPI served as parity target; unimplemented routes still reject explicitly."
+    },
+    {
+      "method": "HEAD",
+      "path": "/api/blue/v1/openapi.json",
+      "operationId": "headOpenApi",
+      "status": "partial",
+      "tests": [
+        "CoreDashboardHttpTest"
+      ],
+      "notes": "Same authenticated GET representation headers, no response body. Runtime metadata retains the explicit Better host edition."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents",
+      "operationId": "listDocuments",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentsTest",
+        "CoreInitializationVisibilityTest",
+        "CoreRegistrationsTest",
+        "OwnerInitializationRuntimeTest",
+        "test-core-sdk.mjs",
+        "CoreDocumentTypeFilterTest"
+      ],
+      "notes": "Uses the explicit Better publication/history edition. Document listing supports exact type and inherited type filters, filter unions and scoped pagination. This does not establish original Core proof-wire compatibility or every original advanced content selector.",
+      "initializationScope": "Durable waiting/failed initialization remains visible, retains exact input, and supports pause/resume/unlink and evaluation-targeted failed-initialization retry. An initialized input already consumed by the owner model is not replayed by this API."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/documents",
+      "operationId": "createDocument",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentsTest",
+        "CoreInitializationVisibilityTest",
+        "CoreRegistrationsTest",
+        "OwnerInitializationRuntimeTest",
+        "test-core-sdk.mjs",
+        "CoreDocumentTypeFilterTest"
+      ],
+      "notes": "Uses the explicit Better publication/history edition. Document listing supports exact type and inherited type filters, filter unions and scoped pagination. This does not establish original Core proof-wire compatibility or every original advanced content selector.",
+      "initializationScope": "Durable waiting/failed initialization remains visible, retains exact input, and supports pause/resume/unlink and evaluation-targeted failed-initialization retry. An initialized input already consumed by the owner model is not replayed by this API."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}",
+      "operationId": "getDocument",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentsTest",
+        "CoreInitializationVisibilityTest",
+        "CoreNativeIsolationHttpTest",
+        "CoreRegistrationsTest",
+        "OwnerInitializationRuntimeTest",
+        "test-core-sdk.mjs",
+        "CoreDocumentTypeFilterTest"
+      ],
+      "notes": "Uses the explicit Better publication/history edition. Document listing supports exact type and inherited type filters, filter unions and scoped pagination. This does not establish original Core proof-wire compatibility or every original advanced content selector.",
+      "initializationScope": "Durable waiting/failed initialization remains visible, retains exact input, and supports pause/resume/unlink and evaluation-targeted failed-initialization retry. An initialized input already consumed by the owner model is not replayed by this API."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/documents/{sessionId}",
+      "operationId": "unlinkDocument",
+      "status": "partial",
+      "tests": [
+        "CoreInitializationVisibilityTest",
+        "CoreRegistrationsTest",
+        "OwnerInitializationRuntimeTest",
+        "test-core-sdk.mjs"
+      ],
+      "notes": "Root visibility only; native processing/history and embedded members survive. Re-registration returns a new alias over the same native instance; old handles remain hidden.",
+      "initializationScope": "Durable waiting/failed initialization remains visible, retains exact input, and supports pause/resume/unlink and evaluation-targeted failed-initialization retry. An initialized input already consumed by the owner model is not replayed by this API."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/evidence",
+      "operationId": "getDocumentEvidence",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentsTest.Evidence",
+        "CoreOperationsTest",
+        "test-core-sdk.mjs"
+      ],
+      "notes": "Pinned epoch/position/entry subsets with original SDK shape and exact BlueIds; explicit Better host receipt format, not original native proof receipts."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/history",
+      "operationId": "getDocumentHistory",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentsTest",
+        "CoreNativeIsolationHttpTest",
+        "CoreDocumentTypeFilterTest"
+      ],
+      "notes": "Uses the explicit Better publication/history edition. Document listing supports exact type and inherited type filters, filter unions and scoped pagination. This does not establish original Core proof-wire compatibility or every original advanced content selector."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/epochs",
+      "operationId": "getDocumentEpochs",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentsTest",
+        "CoreWorkspacesHttpTest",
+        "CoreNativeIsolationHttpTest"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/processing",
+      "operationId": "getDocumentProcessing",
+      "status": "partial",
+      "tests": [
+        "CoreInitializationVisibilityTest",
+        "CoreNativeIsolationHttpTest",
+        "CoreProcessingTest",
+        "DocumentControlsTest",
+        "OwnerInitializationRuntimeTest",
+        "TimelinePollingTest"
+      ],
+      "notes": "Durable atomic-graph controls; original billed-failure retry ledger remains pending.",
+      "initializationScope": "Durable waiting/failed initialization remains visible, retains exact input, and supports pause/resume/unlink and evaluation-targeted failed-initialization retry. An initialized input already consumed by the owner model is not replayed by this API."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/processing/requirements",
+      "operationId": "getDocumentProcessingRequirements",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentsTest",
+        "CoreWorkspacesHttpTest",
+        "CoreNativeIsolationHttpTest",
+        "CoreProcessingTest",
+        "TimelinePollingTest"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/inputs/{entryBlueId}",
+      "operationId": "getDocumentInputsEntryblueid",
+      "status": "partial",
+      "tests": [
+        "CoreOperationsTest",
+        "CoreNativeIsolationHttpTest"
+      ],
+      "notes": "Actual native routes and input processing; broader represented-account authority remains pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/epochs/{epoch}",
+      "operationId": "getDocumentEpochsEpoch",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentsTest",
+        "CoreNativeIsolationHttpTest",
+        "CoreDocumentTypeFilterTest"
+      ],
+      "notes": "Uses the explicit Better publication/history edition. Document listing supports exact type and inherited type filters, filter unions and scoped pagination. This does not establish original Core proof-wire compatibility or every original advanced content selector."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/epochs/{epoch}/events",
+      "operationId": "getDocumentEpochsEpochEvents",
+      "status": "partial",
+      "tests": [
+        "CoreMemberHistoryTest",
+        "CoreNativeIsolationHttpTest"
+      ],
+      "notes": "Exact retained member events; older child publications created before event retention report unavailability."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/operations",
+      "operationId": "getDocumentOperations",
+      "status": "partial",
+      "tests": [
+        "CoreOperationsTest",
+        "CoreNativeIsolationHttpTest"
+      ],
+      "notes": "Actual native routes and input processing; broader represented-account authority remains pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/documents/{sessionId}/operations",
+      "operationId": "invokeOperation",
+      "status": "partial",
+      "tests": [
+        "CoreOperationsTest"
+      ],
+      "notes": "Actual native routes and input processing; broader represented-account authority remains pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/documents/{sessionId}/operations/prepare",
+      "operationId": "prepareDocumentOperation",
+      "status": "partial",
+      "tests": [
+        "CoreOperationPreparationTest",
+        "scripts/test-core-sdk.mjs"
+      ],
+      "notes": "Read-only canonical source validation, original form descriptors, exact reviewed publication and authorized route; uses Better runtime identities. Represented-account/agent authority remains pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/relationships",
+      "operationId": "getDocumentRelationships",
+      "status": "partial",
+      "tests": [
+        "CoreRelationshipsTest",
+        "CoreNativeIsolationHttpTest"
+      ],
+      "notes": "Canonical topology and pinned outgoing views; legacy local generations remain strings."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/timelines",
+      "operationId": "getDocumentTimelines",
+      "status": "partial",
+      "tests": [
+        "CoreOperationsTest",
+        "CoreNativeIsolationHttpTest"
+      ],
+      "notes": "Actual native routes and input processing; broader represented-account authority remains pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/timers",
+      "operationId": "getDocumentTimers",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentTimersTest",
+        "CoreFunctionalRuntimeTest",
+        "OwnerTimeWorkTest"
+      ],
+      "notes": "Retained pending-timer inspection, cancellation, owner-time scheduling and restart are implemented. The shipped console profile enables its compatible Time edition and advertises its exact runtime identity. This source change has not been deployed to AWS."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/content",
+      "operationId": "getDocumentContent",
+      "status": "partial",
+      "tests": [
+        "CoreDocumentsTest",
+        "CoreNativeIsolationHttpTest",
+        "CoreOperationContextTest",
+        "scripts/test-core-sdk.mjs"
+      ],
+      "notes": "Exact/resolved content and original bounded operation_context selectors, current-publication pinning, metadata/list outlines and inlineContracts supported; native Better host/history edition remains distinct."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/processing/history",
+      "operationId": "getDocumentProcessingHistory",
+      "status": "partial",
+      "tests": [
+        "CorePublicationEventsTest",
+        "CoreEventsTest"
+      ],
+      "limitations": [
+        "Forward canonical root publication events; no historical backfill or per-member publication projection yet."
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/documents/{sessionId}/pause",
+      "operationId": "pauseDocument",
+      "status": "partial",
+      "tests": [
+        "DocumentControlsTest"
+      ],
+      "notes": "Durable atomic-graph controls; original billed-failure retry ledger remains pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/documents/{sessionId}/resume",
+      "operationId": "resumeDocument",
+      "status": "partial",
+      "tests": [
+        "DocumentControlsTest"
+      ],
+      "notes": "Durable atomic-graph controls; original billed-failure retry ledger remains pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/documents/{sessionId}/retry",
+      "operationId": "retryDocument",
+      "status": "partial",
+      "tests": [
+        "CoreInitializationVisibilityTest",
+        "DocumentControlsTest",
+        "OwnerInitializationRuntimeTest"
+      ],
+      "notes": "Durable atomic-graph controls; original billed-failure retry ledger remains pending.",
+      "initializationScope": "Durable waiting/failed initialization remains visible, retains exact input, and supports pause/resume/unlink and evaluation-targeted failed-initialization retry. An initialized input already consumed by the owner model is not replayed by this API."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/admissions",
+      "operationId": "listAdmissions",
+      "status": "partial",
+      "tests": [
+        "CoreAdmissionListingTest",
+        "CoreAdmissionsHttpTest",
+        "CoreAdmissionsTest",
+        "test-core-sdk.mjs"
+      ],
+      "notes": "Ordered live metadata listing; kind/status/session/time filters, scoped cursors, bounded 200-record scans and resumable 64-record historical-index migration. Historical pending receipts without retained session context cannot acquire that missing fact retroactively. Limited-member receipt redaction awaits membership/agent authority support."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/admissions/{admissionId}",
+      "operationId": "getAdmission",
+      "status": "partial",
+      "tests": [
+        "CoreAdmissionsTest"
+      ],
+      "notes": "Durable pending/success/failure receipts; background resumption remains pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/admissions/{admissionId}/history",
+      "operationId": "getAdmissionHistory",
+      "status": "partial",
+      "tests": [
+        "CoreEventsTest",
+        "CoreAdmissionsTest",
+        "CoreDashboardHttpTest"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/timelines",
+      "operationId": "listTimelines",
+      "status": "partial",
+      "tests": [
+        "CoreTimelinesTest",
+        "CoreTimelineImportsTest",
+        "CoreTimelineDiscoveryTest",
+        "PublicTimelineTransportTest",
+        "TimelineArchiveTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-imports.mjs"
+      ],
+      "notes": "Owned and verified managed imports, public control history, retry, exact retained entries and logarithmic occurrence lookup. Import SDK/browser qualification is recorded per iteration; advanced grant/delegate selection and original latched integrity-failure lifecycle remain pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/timelines",
+      "operationId": "createTimeline",
+      "status": "partial",
+      "tests": [
+        "CoreTimelinesTest"
+      ],
+      "notes": "Owned native Timelines and read-only imported-source denial. Delegates, access automation and advanced selection remain pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/timelines/{timelineId}",
+      "operationId": "getTimeline",
+      "status": "partial",
+      "tests": [
+        "CoreTimelinesTest",
+        "CoreTimelineImportsTest",
+        "CoreTimelineDiscoveryTest",
+        "PublicTimelineTransportTest",
+        "TimelineArchiveTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-imports.mjs"
+      ],
+      "notes": "Owned and verified managed imports, public control history, retry, exact retained entries and logarithmic occurrence lookup. Import SDK/browser qualification is recorded per iteration; advanced grant/delegate selection and original latched integrity-failure lifecycle remain pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/timelines/{timelineId}/entries",
+      "operationId": "listTimelineEntries",
+      "status": "partial",
+      "tests": [
+        "CoreTimelinesTest",
+        "CoreTimelineImportsTest",
+        "CoreTimelineDiscoveryTest",
+        "PublicTimelineTransportTest",
+        "TimelineArchiveTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-imports.mjs"
+      ],
+      "notes": "Owned and verified managed imports, public control history, retry, exact retained entries and logarithmic occurrence lookup. Import SDK/browser qualification is recorded per iteration; advanced grant/delegate selection and original latched integrity-failure lifecycle remain pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/timelines/{timelineId}/entries",
+      "operationId": "appendEntry",
+      "status": "partial",
+      "tests": [
+        "CoreTimelinesTest",
+        "CoreTimelineEntriesTest",
+        "scripts/inspect-timeline-operation.mjs"
+      ],
+      "notes": "Owned native Timelines and read-only imported-source denial. Delegates, access automation and advanced selection remain pending.",
+      "limitations": "Owned Timeline publication supports documentId, authored native target insertion, exact/reference target validation, conditional predecessor and durable replay. Imported/delegated append authority and broader runtime selection remain unported."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/timelines/{timelineId}/entries/{entryBlueId}",
+      "operationId": "getTimelineEntry",
+      "status": "partial",
+      "tests": [
+        "CoreTimelinesTest",
+        "CoreTimelineImportsTest",
+        "CoreTimelineDiscoveryTest",
+        "PublicTimelineTransportTest",
+        "TimelineArchiveTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-imports.mjs"
+      ],
+      "notes": "Owned and verified managed imports, public control history, retry, exact retained entries and logarithmic occurrence lookup. Import SDK/browser qualification is recorded per iteration; advanced grant/delegate selection and original latched integrity-failure lifecycle remain pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/timelines/{timelineId}/guarantees",
+      "operationId": "postTimelineGuarantees",
+      "status": "partial",
+      "tests": [
+        "CoreTimelineGuaranteesTest",
+        "CoreTimelineImportsTest",
+        "scripts/test-core-sdk.mjs"
+      ],
+      "notes": "Native owned-provider signed range proofs, established exclusive boundary, pinned paging, account isolation and durable exact replay. Imported read access returns provider_proof_unavailable. Query/body pagination follows the generated SDK; contradictory selectors are rejected. Broader represented/delegated authority remains pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/contents",
+      "operationId": "listContents",
+      "status": "partial",
+      "tests": [
+        "CoreContentsTest"
+      ],
+      "notes": "Exact private content and retention; advanced list filters remain pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/contents",
+      "operationId": "createContent",
+      "status": "partial",
+      "tests": [
+        "CoreContentsTest"
+      ],
+      "notes": "Exact private content and retention; advanced list filters remain pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/contents/{blueId}",
+      "operationId": "getContent",
+      "status": "partial",
+      "tests": [
+        "CoreContentsTest"
+      ],
+      "notes": "Exact private content and retention; advanced list filters remain pending."
+    },
+    {
+      "method": "PUT",
+      "path": "/api/blue/v1/contents/{blueId}",
+      "operationId": "retainContent",
+      "status": "partial",
+      "tests": [
+        "CoreContentsTest"
+      ],
+      "notes": "Exact private content and retention; advanced list filters remain pending."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/contents/{blueId}",
+      "operationId": "removeContentRetention",
+      "status": "partial",
+      "tests": [
+        "CoreContentsTest"
+      ],
+      "notes": "Exact private content and retention; advanced list filters remain pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/api-keys",
+      "operationId": "listApiKeys",
+      "status": "partial",
+      "tests": [
+        "CoreApiKeysTest",
+        "CorePermissionsHttpTest",
+        "ConsoleApiKeysTest",
+        "CoreDashboardHttpTest",
+        "test-core-sdk.mjs"
+      ],
+      "notes": "New credentials bind user/account/membership generation and follow current roles; encrypted exact secret replay for 24h, user-scoped listings/revocation, complete native list and explicit pagination extension. Versioned tokens fail closed on old runtimes. Retained legacy account credentials remain explicitly compatible. The single-owner HTTP revocation barrier drains admitted request work and revalidates queued clients. Original credential restriction projections, multi-host barriers and full membership command parity remain pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/api-keys",
+      "operationId": "createApiKey",
+      "status": "partial",
+      "tests": [
+        "CoreApiKeysTest",
+        "CorePermissionsHttpTest",
+        "ConsoleApiKeysTest",
+        "CoreDashboardHttpTest",
+        "test-core-sdk.mjs"
+      ],
+      "notes": "New credentials bind user/account/membership generation and follow current roles; encrypted exact secret replay for 24h, user-scoped listings/revocation, complete native list and explicit pagination extension. Versioned tokens fail closed on old runtimes. Retained legacy account credentials remain explicitly compatible. The single-owner HTTP revocation barrier drains admitted request work and revalidates queued clients. Original credential restriction projections, multi-host barriers and full membership command parity remain pending."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/api-keys/{keyId}",
+      "operationId": "revokeApiKey",
+      "status": "partial",
+      "tests": [
+        "CoreApiKeysTest",
+        "CorePermissionsHttpTest",
+        "ConsoleApiKeysTest",
+        "CoreDashboardHttpTest",
+        "test-core-sdk.mjs"
+      ],
+      "notes": "New credentials bind user/account/membership generation and follow current roles; encrypted exact secret replay for 24h, user-scoped listings/revocation, complete native list and explicit pagination extension. Versioned tokens fail closed on old runtimes. Retained legacy account credentials remain explicitly compatible. The single-owner HTTP revocation barrier drains admitted request work and revalidates queued clients. Original credential restriction projections, multi-host barriers and full membership command parity remain pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/events",
+      "operationId": "listEvents",
+      "status": "partial",
+      "tests": [
+        "CoreEventsTest",
+        "CoreAdmissionsTest",
+        "CoreDashboardHttpTest"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/events/{eventId}",
+      "operationId": "getEvent",
+      "status": "partial",
+      "tests": [
+        "CoreEventsTest",
+        "CoreAdmissionsTest",
+        "CoreDashboardHttpTest"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/webhooks",
+      "operationId": "listWebhooks",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/webhooks",
+      "operationId": "createWebhook",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/webhooks/{webhookId}",
+      "operationId": "getWebhook",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/webhooks/{webhookId}",
+      "operationId": "postWebhook",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/webhooks/{webhookId}",
+      "operationId": "deleteWebhook",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/webhooks/{webhookId}/health",
+      "operationId": "getWebhookHealth",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/webhooks/{webhookId}/events",
+      "operationId": "listWebhookEvents",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/webhooks/{webhookId}/events/{eventId}",
+      "operationId": "getWebhookEvents",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/webhooks/{webhookId}/events/{eventId}/attempts",
+      "operationId": "listWebhookEventsAttempts",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/webhooks/{webhookId}/events/{eventId}/retry",
+      "operationId": "retryWebhookEvents",
+      "status": "partial",
+      "tests": [
+        "CoreWebhooksTest",
+        "CoreEventSourceTest",
+        "WebhookHttpTransportTest",
+        "WebhookSecretsTest",
+        "CoreLiveTest",
+        "test-core-sdk.mjs",
+        "inspect-webhooks.mjs"
+      ],
+      "notes": "Original configuration, native-v1 exact-body HMAC, encrypted secret/replay custody, durable delivery/attempts/retry, source-generation cut and reused UI. AWS qualification recorded in DASHBOARD-PARITY.md. Remaining differences: incomplete source event coverage; account-owned API-key and receipt identity; 256 subscriptions/account, 4 MiB payload bound, FIFO per subscription and paginated detail after 100 attempts; filter pagination may contain empty pages."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/packages",
+      "operationId": "getPackages",
+      "status": "partial",
+      "tests": [
+        "CorePackagesTest",
+        "CoreAdmissionsTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-packages.mjs"
+      ],
+      "notes": "Account-local declarative install/remove in the verified deployed catalogue; managed native closure is protected. Conditional dependency checks, durable receipts, source aliases and explicit bootstrap closure selection. Original historical catalogue/runtime editions remain a separate parity gap."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/types/{blueId}",
+      "operationId": "getTypes",
+      "status": "partial",
+      "tests": [
+        "CoreRuntimeCatalogueTest",
+        "CorePackagesTest"
+      ],
+      "notes": "Exact deployed Better edition and pinned catalogue. Account-local install/remove and selected bootstrap package closure are implemented. Original historical runtime/catalogue editions and their proof-wire compatibility remain separate gaps."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/references/{blueId}",
+      "operationId": "getReferences",
+      "status": "partial",
+      "tests": [
+        "CoreRuntimeCatalogueTest",
+        "CorePackagesTest"
+      ],
+      "notes": "Exact deployed Better edition and pinned catalogue. Account-local install/remove and selected bootstrap package closure are implemented. Original historical runtime/catalogue editions and their proof-wire compatibility remain separate gaps."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/packages/{packageId}",
+      "operationId": "postPackage",
+      "status": "partial",
+      "tests": [
+        "CorePackagesTest",
+        "CoreAdmissionsTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-packages.mjs"
+      ],
+      "notes": "Account-local declarative install/remove in the verified deployed catalogue; managed native closure is protected. Conditional dependency checks, durable receipts, source aliases and explicit bootstrap closure selection. Original historical catalogue/runtime editions remain a separate parity gap."
+    },
+    {
+      "method": "DELETE",
+      "path": "/api/blue/v1/packages/{packageId}",
+      "operationId": "deletePackage",
+      "status": "partial",
+      "tests": [
+        "CorePackagesTest",
+        "CoreAdmissionsTest",
+        "scripts/test-core-sdk.mjs",
+        "scripts/inspect-packages.mjs"
+      ],
+      "notes": "Account-local declarative install/remove in the verified deployed catalogue; managed native closure is protected. Conditional dependency checks, durable receipts, source aliases and explicit bootstrap closure selection. Original historical catalogue/runtime editions remain a separate parity gap."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/live",
+      "operationId": "streamLive",
+      "status": "partial",
+      "tests": [
+        "CoreLiveTest"
+      ],
+      "notes": "Bounded account-isolated SSE invalidations, verified through HTTP."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/account",
+      "operationId": "getAccount",
+      "status": "partial",
+      "tests": [
+        "CoreDashboardHttpTest",
+        "CoreOwnershipTest",
+        "CoreInvitationsTest",
+        "CoreInvitationDeliveryTest"
+      ],
+      "notes": "Personal accounts, additional workspaces, profiles, avatars, preferences, invitation/rejoin lifecycle, configured delivery and unique Owner assignment are implemented. Global ownership assignment requires the directory migration to be complete. External identity-provider lifecycle and original runtime activation remain separate gaps."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/accounts/lookup",
+      "operationId": "lookupAccounts",
+      "status": "partial",
+      "tests": [
+        "CoreAccountLookupTest",
+        "CoreDashboardHttpTest",
+        "CorePermissionsHttpTest",
+        "scripts/test-core-sdk.mjs",
+        "CorePublicDirectoryTest",
+        "CorePublicDirectoryHttpTest",
+        "DynamoPublicDirectoryTest"
+      ],
+      "notes": "Account-ID, verified email and public text lookup are implemented with bounded indexed reads, pagination and current profile checks. Email/text discovery and global ownership resolution require completion of the resumable directory backfill; a building directory returns an explicit temporary error. Lookup grants no private resource access."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/timelines/import",
+      "operationId": "importTimeline",
+      "status": "partial",
+      "tests": [
+        "CoreTimelineDiscoveryTest",
+        "CoreTimelineImportsTest",
+        "OwnerSourceFailuresTest",
+        "PublicTimelineTransportTest",
+        "TimelineArchiveTest",
+        "TimelinePollingTest",
+        "scripts/inspect-imports.mjs",
+        "scripts/test-core-sdk.mjs"
+      ],
+      "notes": "Owned and verified managed imports, public control history, retry, exact retained entries and logarithmic occurrence lookup. Import SDK/browser qualification is recorded per iteration; advanced grant/delegate selection and original latched integrity-failure lifecycle remain pending. Durable directory polling now distinguishes availability and integrity failures, stops ordinary retries after three attempts, preserves access/content wakeups and fences stale responses. Independent-owner integrity recovery requires explicit document retry after verified import recovery."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/timelines/{timelineId}/retry",
+      "operationId": "retryTimeline",
+      "status": "partial",
+      "tests": [
+        "CoreTimelineDiscoveryTest",
+        "CoreTimelineImportsTest",
+        "OwnerSourceFailuresTest",
+        "PublicTimelineTransportTest",
+        "TimelineArchiveTest",
+        "TimelinePollingTest",
+        "scripts/inspect-imports.mjs",
+        "scripts/test-core-sdk.mjs"
+      ],
+      "notes": "Owned and verified managed imports, public control history, retry, exact retained entries and logarithmic occurrence lookup. Import SDK/browser qualification is recorded per iteration; advanced grant/delegate selection and original latched integrity-failure lifecycle remain pending. Durable directory polling now distinguishes availability and integrity failures, stops ordinary retries after three attempts, preserves access/content wakeups and fences stale responses. Independent-owner integrity recovery requires explicit document retry after verified import recovery."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/timelines/{timelineId}/access",
+      "operationId": "listTimelineAccess",
+      "status": "partial",
+      "tests": [
+        "CoreTimelinesTest"
+      ],
+      "notes": "Owned native Timelines and read-only imported-source denial. Delegates, access automation and advanced selection remain pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/timelines/{timelineId}/access",
+      "operationId": "updateTimelineAccess",
+      "status": "partial",
+      "tests": [
+        "CoreTimelinesTest"
+      ],
+      "notes": "Owned native Timelines and read-only imported-source denial. Delegates, access automation and advanced selection remain pending."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/timeline-access/import",
+      "operationId": "importTimelineAccess",
+      "status": "partial",
+      "tests": [
+        "CoreAccessImportsTest",
+        "CoreRegistrationEditionTest"
+      ],
+      "notes": "Verified provider control-history replay before importing an access follower, exact identities and execution selection are enforced. Other delegation/mandate workflows are separate capabilities."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/documents/mandate-proposals",
+      "operationId": "proposeMandate",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: native mandate proposal admission and its Agent/representative workflow have not been ported."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/documents/bootstrap",
+      "operationId": "bootstrapDocument",
+      "status": "partial",
+      "tests": [
+        "CoreBootstrapContentTest",
+        "CoreBootstrapJobsTest",
+        "CoreBootstrapParticipantsTest",
+        "CoreBootstrapPartyTest",
+        "CoreBootstrapTest",
+        "CoreCollaborativeBootstrapTest",
+        "HostedTimelineWriterTest",
+        "CoreBootstrapRepresentativeTest",
+        "CorePendingRecipientsTest",
+        "CoreBootstrapNewRecipientTest"
+      ],
+      "notes": "Durable accepted jobs, exact package content, collaborative account participants, registered owned-account email resolution, typed ordinary/custom/list Parties, and Activation reader groups with managed reader selection are implemented. Authenticated human lead and named representative writers are implemented for active WRITE/ADMIN/OWNER memberships. First-time email recipients now have atomic reservations, durable signup notices, verified ownership claims and normal gas provisioning. Agent writers, READ_SELECTED representation coverage and mandate flows remain pending. Large recipient rosters remain bounded by acceptance conditions; SES delivery requires configuration. See docs/FUNCTIONAL-PARITY.md for acceptance and recovery limits."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/runtime/retry",
+      "operationId": "retryRuntime",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: original account activation/recovery retry API. Automatic process restart and retained owner work recovery do not implement this API contract."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/bootstrap/{admissionId}",
+      "operationId": "getBootstrapRecipients",
+      "status": "partial",
+      "tests": [
+        "CoreBootstrapPartyTest",
+        "CoreBootstrapTest",
+        "CoreCollaborativeBootstrapTest",
+        "HostedTimelineWriterTest",
+        "CoreBootstrapRepresentativeTest",
+        "CorePendingRecipientsTest",
+        "CoreBootstrapNewRecipientTest"
+      ],
+      "notes": "Reports participant and read-only Activation recipient accounts and roles for collaborative bootstrap. New-email provisioning and representative/Agent writers remain pending."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/agent-runs",
+      "operationId": "listDocumentAgentRuns",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: the external Agent execution, run history and artifact storage are absent; Agent settings alone do not provide execution."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/documents/{sessionId}/agent-runs/{requestId}/artifacts/{fileName}",
+      "operationId": "getDocumentAgentArtifact",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: the external Agent execution, run history and artifact storage are absent; Agent settings alone do not provide execution."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/account/mandate-sharing",
+      "operationId": "getMandateSharing",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: mandate disclosure policy and the corresponding native mandate import processing."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/account/mandate-sharing",
+      "operationId": "updateMandateSharing",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: mandate disclosure policy and the corresponding native mandate import processing."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/account/access-automation",
+      "operationId": "getPartyAccessAutomation",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: access-event automation, pending party-access requests and their approval workflow. Direct Timeline access management is a separate implemented feature."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/account/access-automation",
+      "operationId": "updatePartyAccessAutomation",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: access-event automation, pending party-access requests and their approval workflow. Direct Timeline access management is a separate implemented feature."
+    },
+    {
+      "method": "GET",
+      "path": "/api/blue/v1/access-requests",
+      "operationId": "listPartyAccessRequests",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: access-event automation, pending party-access requests and their approval workflow. Direct Timeline access management is a separate implemented feature."
+    },
+    {
+      "method": "POST",
+      "path": "/api/blue/v1/access-requests/{requestId}/approve",
+      "operationId": "approvePartyAccessRequest",
+      "status": "pending",
+      "tests": [],
+      "notes": "Not implemented: access-event automation, pending party-access requests and their approval workflow. Direct Timeline access management is a separate implemented feature."
+    }
+  ],
+  "qualification": "Host candidate through iteration 40; original generated SDK and browser qualification tracked in DASHBOARD-PARITY.md. Not full API compatibility.",
+  "originalOperationCount": 114,
+  "compatibilityOnlyOperations": [
+    "HEAD /api/blue/v1/info",
+    "HEAD /api/blue/v1/openapi.json"
+  ],
+  "qualificationNote": "Statuses describe implemented scope; the release qualification manifest identifies the exact executed source and tests. Partial does not mean the route is absent."
+}

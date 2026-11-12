@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.ContentGraphTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.443Z" hostname="MacBook-Pro-5.local" time="0.005">
+  <properties />
+  <testcase name="expansionCollapseAndSplittingPreserveIdentity()" classname="blue.language.ContentGraphTest" time="0.001" />
+  <testcase name="expandedTypeAndSpecificationKeepMeaningAcrossOperationsAndBuilders()" classname="blue.language.ContentGraphTest" time="0.001" />
+  <testcase name="importingMaterializedContentRetainsInlineChildrenForIndependentReferenceReads()" classname="blue.language.ContentGraphTest" time="0.0" />
+  <testcase name="preparingAnotherOwnersMaterializationDoesNotImportItsPrivateProviderEvidence()" classname="blue.language.ContentGraphTest" time="0.0" />
+  <testcase name="preparedContentUsesTheReceiversProvidersWithoutChangingTheOriginal()" classname="blue.language.ContentGraphTest" time="0.0" />
+  <testcase name="blueIdsValidateCanonicalMemberSuffixes()" classname="blue.language.ContentGraphTest" time="0.001" />
+  <testcase name="cyclicMembersRequireOwningSetEditsButCanRemainUntouched()" classname="blue.language.ContentGraphTest" time="0.0" />
+  <testcase name="preparedExpansionAlsoKeepsMeaningAndDoesNotImplyAdmission()" classname="blue.language.ContentGraphTest" time="0.0" />
+  <testcase name="cyclicMembersKeepTheirOwningIdentityAndVerifyProofs()" classname="blue.language.ContentGraphTest" time="0.0" />
+  <testcase name="importingACyclicReferenceDoesNotImportAnAttachedHiddenBody()" classname="blue.language.ContentGraphTest" time="0.001" />
+  </testsuite>

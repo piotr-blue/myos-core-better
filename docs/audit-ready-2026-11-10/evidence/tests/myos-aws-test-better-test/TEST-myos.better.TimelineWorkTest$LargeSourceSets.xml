@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineWorkTest$LargeSourceSets" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:59.825Z" hostname="MacBook-Pro-5.local" time="0.002">
+  <properties />
+  <testcase name="removalFencesHistoricalPointersAndReadditionReusesThem()" classname="myos.better.TimelineWorkTest$LargeSourceSets" time="0.001" />
+  <testcase name="abandonedPreparationCannotWakeReceiverAndRetryCatchesUpAfterReopen()" classname="myos.better.TimelineWorkTest$LargeSourceSets" time="0.001" />
+  </testsuite>

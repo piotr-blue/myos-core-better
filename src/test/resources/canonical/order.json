@@ -1,0 +1,137 @@
+{
+  "name": "Order",
+  "orderKey": "ORDER_KEY",
+  "state": "draft",
+  "ready": false,
+  "amount": 42,
+  "contracts": {
+    "ORDER_CHANNEL": {
+      "type": "Contracts/External Channel"
+    },
+    "lifecycle": {
+      "type": "Contracts/Lifecycle Event Channel",
+      "event": {
+        "type": "Contracts/Document Processing Initiated"
+      }
+    },
+    "initialize": {
+      "type": "Contracts/Sequential Workflow",
+      "channel": "lifecycle",
+      "steps": [
+        {
+          "type": "Contracts/Compute",
+          "do": [
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/ready",
+                "val": true
+              }
+            }
+          ]
+        },
+        {
+          "type": "Contracts/Trigger Event",
+          "event": {
+            "kind": "Order Initialized",
+            "key": {
+              "$document": "/orderKey"
+            }
+          }
+        }
+      ]
+    },
+    "embedded": {
+      "type": "Contracts/Process Embedded",
+      "paths": [
+        "/payment"
+      ]
+    },
+    "submit": {
+      "type": "Contracts/Sequential Workflow Operation",
+      "channel": "ORDER_CHANNEL",
+      "steps": [
+        {
+          "type": "Contracts/Compute",
+          "do": [
+            {
+              "$failIf": {
+                "cond": {
+                  "$ne": [
+                    {
+                      "$document": "/state"
+                    },
+                    "draft"
+                  ]
+                },
+                "message": "Order already submitted"
+              }
+            },
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/state",
+                "val": "submitted"
+              }
+            },
+            {
+              "$appendChange": {
+                "op": "add",
+                "path": "/payment",
+                "val": {
+                  "$binding": "call/request/payment"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Contracts/Trigger Event",
+          "event": {
+            "kind": "Order Submitted",
+            "key": {
+              "$document": "/orderKey"
+            }
+          }
+        }
+      ]
+    },
+    "paid": {
+      "type": "Contracts/Embedded Node Channel",
+      "sourcePath": "/payment",
+      "event": {
+        "kind": "Payment Settled"
+      }
+    },
+    "onPaid": {
+      "type": "Contracts/Sequential Workflow",
+      "channel": "paid",
+      "steps": [
+        {
+          "type": "Contracts/Compute",
+          "do": [
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/state",
+                "val": "paid"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Contracts/Trigger Event",
+          "event": {
+            "kind": "Order Paid",
+            "key": {
+              "$document": "/orderKey"
+            },
+            "amount": {
+              "$event": "/event/amount"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

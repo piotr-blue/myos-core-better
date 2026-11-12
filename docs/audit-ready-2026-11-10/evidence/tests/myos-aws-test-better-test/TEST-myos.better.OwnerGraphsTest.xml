@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.OwnerGraphsTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:05.717Z" hostname="MacBook-Pro-5.local" time="12.972">
+  <properties />
+  <testcase name="compositionalRejectionStillPreservesBusinessFailureAndOrderedProgress()" classname="myos.better.OwnerGraphsTest" time="0.194" />
+  <testcase name="optionalRecordingDistinguishesDurableDispositionFromNativeFailure()" classname="myos.better.OwnerGraphsTest" time="0.103" />
+  <testcase name="ownerLocalFailureReconstructsTheHistoricalWholePredecessor()" classname="myos.better.OwnerGraphsTest" time="0.185" />
+  <testcase name="[1] 1" classname="myos.better.OwnerGraphsTest" time="0.077" />
+  <testcase name="[2] 10" classname="myos.better.OwnerGraphsTest" time="0.132" />
+  <testcase name="[3] 20" classname="myos.better.OwnerGraphsTest" time="0.164" />
+  <testcase name="[4] 65" classname="myos.better.OwnerGraphsTest" time="0.403" />
+  <testcase name="compositionalHistoryReusesChildrenAndSurvivesAChangeInCreationDefaults()" classname="myos.better.OwnerGraphsTest" time="0.25" />
+  <testcase name="[1] 1" classname="myos.better.OwnerGraphsTest" time="0.168" />
+  <testcase name="[2] 20" classname="myos.better.OwnerGraphsTest" time="0.286" />
+  <testcase name="[3] 1000" classname="myos.better.OwnerGraphsTest" time="10.917" />
+  <testcase name="rejectedBusinessInputIsConsumedAndFollowingInputStillRuns()" classname="myos.better.OwnerGraphsTest" time="0.09" />
+  </testsuite>

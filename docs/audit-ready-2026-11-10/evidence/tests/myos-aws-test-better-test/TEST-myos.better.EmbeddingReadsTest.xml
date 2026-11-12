@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.EmbeddingReadsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:56.927Z" hostname="MacBook-Pro-5.local" time="0.011">
+  <properties />
+  <testcase name="tenantsVersionsAndAttemptsNeverSharePinnedDocuments()" classname="myos.better.EmbeddingReadsTest" time="0.008" />
+  <testcase name="repeatedSelectionsReuseOneVersionAndKeepItsDepthBound()" classname="myos.better.EmbeddingReadsTest" time="0.003" />
+  </testsuite>

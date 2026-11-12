@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.ConsoleGasPolicyTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:38.979Z" hostname="MacBook-Pro-5.local" time="0.016">
+  <properties />
+  <testcase name="explicitOwnerPolicyDoesNotChangeTheDefaultOrAnExistingHistory()" classname="myos.better.ConsoleGasPolicyTest" time="0.016" />
+  </testsuite>

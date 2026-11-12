@@ -1,0 +1,24 @@
+.gas-summary { display: grid; grid-template-columns: minmax(260px, 1.4fr) repeat(3, minmax(150px, 1fr)); gap: 16px; margin-bottom: 24px; }
+.gas-card { display: flex; flex-direction: column; gap: 12px; padding: 24px; background: white; border-radius: 8px; min-width: 0; }
+.gas-card > span { font-size: 14px; color: var(--color-greys-secondary); }
+.gas-card > strong { font-size: clamp(23px, 2.5vw, 32px); line-height: 1.2; font-variant-numeric: tabular-nums; overflow-wrap: anywhere; }
+.gas-card > small { color: var(--color-greys-secondary); font-size: 12px; line-height: 1.5; }
+.gas-available { background: #e9f0ff; border: 1px solid #cbdafa; }
+.gas-available > strong { color: #2155c9; }
+.gas-history .panel-heading h2 { margin: 0; }
+.gas-history .panel-heading p { color: var(--color-greys-secondary); font-size: 13px; margin: 8px 0 0; }
+.gas-history-count { font-size: 13px; color: var(--color-greys-secondary); white-space: nowrap; }
+.gas-new { padding: 12px 24px; background: #edf5ff; font-size: 13px; }
+.gas-history .gas-number { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.gas-number small { display: block; font-size: 12px; margin-top: 6px; color: var(--color-greys-secondary); }
+.gas-history .gas-date { min-width: 140px; }
+.gas-history td.gas-date { font-size: 13px; }
+.gas-history .gas-description { min-width: 260px; max-width: 450px; }
+.gas-description p, .gas-description ul { font-size: 13px; line-height: 1.6; color: var(--color-greys-secondary); margin: 7px 0; overflow-wrap: anywhere; }
+.gas-links { display: flex; flex-wrap: wrap; gap: 8px 16px; font-size: 12px; }
+.gas-positive { color: #187453; }
+.gas-negative { color: #a63232; }
+.gas-history-footer { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; padding: 20px 24px; border-top: 1px solid var(--color-border); }
+.gas-history-footer > span { color: var(--color-greys-secondary); font-size: 12px; }
+@media (max-width: 1150px) { .gas-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 580px) { .gas-summary { grid-template-columns: 1fr; gap: 12px; } .gas-card { padding: 20px; } }

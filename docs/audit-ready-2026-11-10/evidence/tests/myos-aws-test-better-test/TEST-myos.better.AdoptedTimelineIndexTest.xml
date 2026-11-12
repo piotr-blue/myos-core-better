@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.AdoptedTimelineIndexTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:22:55.263Z" hostname="MacBook-Pro-5.local" time="0.774">
+  <properties />
+  <testcase name="repeatedBindingsDoNotRescanTheAdoptedSourceCollection()" classname="myos.better.AdoptedTimelineIndexTest" time="0.703" />
+  <testcase name="exactAndPublicBindingsPreserveAccountProviderUrlAndAccessBoundaries()" classname="myos.better.AdoptedTimelineIndexTest" time="0.039" />
+  <testcase name="duplicateRegistrationsRemainAmbiguousInsteadOfSilentlySelectingOne()" classname="myos.better.AdoptedTimelineIndexTest" time="0.018" />
+  </testsuite>

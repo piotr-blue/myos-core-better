@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.CrashRecoveryTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:17.504Z" hostname="MacBook-Pro-5.local" time="2.542">
+  <properties />
+  <testcase name="[1] &quot;after-child&quot;" classname="myos.local.CrashRecoveryTest" time="1.257" />
+  <testcase name="[2] &quot;uncommitted&quot;" classname="myos.local.CrashRecoveryTest" time="1.284" />
+  </testsuite>

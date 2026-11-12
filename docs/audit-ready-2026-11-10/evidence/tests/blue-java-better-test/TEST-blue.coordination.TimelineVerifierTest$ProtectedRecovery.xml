@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineVerifierTest$ProtectedRecovery" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.208Z" hostname="MacBook-Pro-5.local" time="0.058">
+  <properties />
+  <testcase name="recoveryNeedsOnlyTheLastEntryAndDoesNotChangeOrdinaryAdmission()" classname="blue.coordination.TimelineVerifierTest$ProtectedRecovery" time="0.051" />
+  <testcase name="changedMetadataWrongCommitmentsAndSourcesAreRejected()" classname="blue.coordination.TimelineVerifierTest$ProtectedRecovery" time="0.003" />
+  <testcase name="recoveryPreservesEmptyBoundsAndUnclosedSuccessors()" classname="blue.coordination.TimelineVerifierTest$ProtectedRecovery" time="0.004" />
+  </testsuite>

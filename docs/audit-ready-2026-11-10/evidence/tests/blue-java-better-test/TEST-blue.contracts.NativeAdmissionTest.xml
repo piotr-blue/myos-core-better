@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.contracts.NativeAdmissionTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.611Z" hostname="MacBook-Pro-5.local" time="0.069">
+  <properties />
+  <testcase name="privateCanonicalCandidatesVerifyFreshEvidenceAndRetainNativeRegistration()" classname="blue.contracts.NativeAdmissionTest" time="0.018" />
+  <testcase name="localPayloadOverloadUsesOrdinaryEventIdentityAndChecksThePreviousCheckpoint()" classname="blue.contracts.NativeAdmissionTest" time="0.005" />
+  <testcase name="concurrentSessionsDoNotShareVerifiedAuthorityOrMutableVerificationState()" classname="blue.contracts.NativeAdmissionTest" time="0.006" />
+  <testcase name="evidenceAndVerifiedProjectionAreIndependentImmutableSnapshots()" classname="blue.contracts.NativeAdmissionTest" time="0.002" />
+  <testcase name="admissionFailureOrGasExhaustionPrecedesEveryChannelAndRollsBack()" classname="blue.contracts.NativeAdmissionTest" time="0.003" />
+  <testcase name="receiptsCommitVerifiedClaimsRatherThanUnusedProofTransportFields()" classname="blue.contracts.NativeAdmissionTest" time="0.004" />
+  <testcase name="admissionChargesOncePerTypeAndBuildersRetainTheirVerifier()" classname="blue.contracts.NativeAdmissionTest" time="0.004" />
+  <testcase name="restoreAndCompactionKeepVerifierAndExactReplayOutcome()" classname="blue.contracts.NativeAdmissionTest" time="0.014" />
+  <testcase name="signedPermitBindsSnapshotPayloadInputTimestampAndGeneration()" classname="blue.contracts.NativeAdmissionTest" time="0.004" />
+  <testcase name="oversizedVerifierOutputCannotPublishAnyState()" classname="blue.contracts.NativeAdmissionTest" time="0.002" />
+  <testcase name="bulkEvidenceCaptureHasAnImmutableTypedTransportViewAndSharesTheRecordDomain()" classname="blue.contracts.NativeAdmissionTest" time="0.001" />
+  <testcase name="verifierContextCannotEscapeAndOneVerificationCoversAllReceiversOfItsType()" classname="blue.contracts.NativeAdmissionTest" time="0.003" />
+  <testcase name="boundedEvidenceRejectsOversizedAndCyclicDataBeforeProcessing()" classname="blue.contracts.NativeAdmissionTest" time="0.0" />
+  <testcase name="evidenceIsRequiredExplicitlyAndUnknownTypesCannotBeIgnored()" classname="blue.contracts.NativeAdmissionTest" time="0.002" />
+  </testsuite>

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineIngressTest$PublicationAndRecovery" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:53.128Z" hostname="MacBook-Pro-5.local" time="0.153">
+  <properties />
+  <testcase name="missingOriginalCheckpointHistoryCannotBeReplacedByItsCommandEnvelope()" classname="myos.better.TimelineIngressTest$PublicationAndRecovery" time="0.025" />
+  <testcase name="aDifferentStoreCannotSupplyTheReceivingHistory()" classname="myos.better.TimelineIngressTest$PublicationAndRecovery" time="0.029" />
+  <testcase name="aChangedActorOnTheSameSourceRequiresHistoricalRebaseInsteadOfSkippingBacklog()" classname="myos.better.TimelineIngressTest$PublicationAndRecovery" time="0.027" />
+  <testcase name="lostCommitResponseRecoversExecutionAndOriginalCheckpointMappingTogether()" classname="myos.better.TimelineIngressTest$PublicationAndRecovery" time="0.034" />
+  <testcase name="aCompetingReceiverCannotCommitTheSameOriginalOccurrenceTwice()" classname="myos.better.TimelineIngressTest$PublicationAndRecovery" time="0.038" />
+  </testsuite>

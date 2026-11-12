@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.PropagationReadTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:21.374Z" hostname="MacBook-Pro-5.local" time="0.003">
+  <properties />
+  <testcase name="automaticWorkersDoNotScanEveryShardOnEveryIdlePoll()" classname="myos.better.PropagationReadTest" time="0.001" />
+  <testcase name="localHintReadsWakeHeadAndAcknowledgementTogether()" classname="myos.better.PropagationReadTest" time="0.0" />
+  <testcase name="directlyIndexedLegacyOutboxKeepsItsOriginalDeliveryHash()" classname="myos.better.PropagationReadTest" time="0.0" />
+  <testcase name="automaticWorkerConsumesALocalHintBeforeTheNextDiscovery()" classname="myos.better.PropagationReadTest" time="0.0" />
+  <testcase name="discoveredPageUsesBoundedBatchesAcrossIndependentSources()" classname="myos.better.PropagationReadTest" time="0.001" />
+  <testcase name="staleIndexRowsCannotDeliverRemovedOrSuspendedWork()" classname="myos.better.PropagationReadTest" time="0.001" />
+  <testcase name="aFailedBatchLeavesDurableWorkDiscoverable()" classname="myos.better.PropagationReadTest" time="0.0" />
+  </testsuite>

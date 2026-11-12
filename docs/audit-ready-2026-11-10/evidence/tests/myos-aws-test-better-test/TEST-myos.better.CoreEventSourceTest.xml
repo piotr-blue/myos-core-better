@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreEventSourceTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:40.108Z" hostname="MacBook-Pro-5.local" time="0.004">
+  <properties />
+  <testcase name="mixedStrongReadsDuringCreationAreRejectedByTheAtomicWrites()" classname="myos.better.CoreEventSourceTest" time="0.001" />
+  <testcase name="independentSourceCommitsOnlyCheckGatesAndNeverIncrementSharedCounters()" classname="myos.better.CoreEventSourceTest" time="0.001" />
+  <testcase name="missingLegacyGenerationRemainsZeroAcrossProjectionAndRestart()" classname="myos.better.CoreEventSourceTest" time="0.0" />
+  <testcase name="competingSubscriptionsCannotPublishAnInconsistentBoundary()" classname="myos.better.CoreEventSourceTest" time="0.0" />
+  <testcase name="sourcePreparedBeforeCreationMustRetryIfItsCommitLosesTheRace()" classname="myos.better.CoreEventSourceTest" time="0.001" />
+  <testcase name="aBoundaryExcludesCommittedBacklogEvenWhenItIsProjectedAfterCreation()" classname="myos.better.CoreEventSourceTest" time="0.001" />
+  </testsuite>

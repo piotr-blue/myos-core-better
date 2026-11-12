@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.OwnerLocalAuthorityTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:18.934Z" hostname="MacBook-Pro-5.local" time="0.029">
+  <properties />
+  <testcase name="twoOwnedTimelinesShareCompletenessWithoutSharingEntryTimestamps()" classname="myos.better.OwnerLocalAuthorityTest" time="0.019" />
+  <testcase name="sealingDuringAnAppendRetriesItsTimestampAndPublishesItsObligationOnce()" classname="myos.better.OwnerLocalAuthorityTest" time="0.01" />
+  </testsuite>

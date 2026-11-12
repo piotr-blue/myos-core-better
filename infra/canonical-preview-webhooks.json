@@ -1,0 +1,4 @@
+{
+  "secretArn": "arn:aws:secretsmanager:eu-west-1:581571886327:secret:Identity-va5KCe2HPg1o-ilyS6d",
+  "secretVersion": "99558a12-ccd8-5013-4285-2ff92245b3c9"
+}

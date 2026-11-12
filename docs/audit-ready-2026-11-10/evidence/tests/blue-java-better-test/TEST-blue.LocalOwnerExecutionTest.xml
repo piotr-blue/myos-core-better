@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.LocalOwnerExecutionTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:01.660Z" hostname="MacBook-Pro-5.local" time="1.46">
+  <properties />
+  <testcase name="[1] 1" classname="blue.LocalOwnerExecutionTest" time="0.016" />
+  <testcase name="[2] 20" classname="blue.LocalOwnerExecutionTest" time="0.017" />
+  <testcase name="[3] 1000" classname="blue.LocalOwnerExecutionTest" time="1.417" />
+  <testcase name="historicalMetadataMustMatchItsProtectedOwner()" classname="blue.LocalOwnerExecutionTest" time="0.005" />
+  <testcase name="sourceCausePredecessorAndAttachmentGenerationAreChecked()" classname="blue.LocalOwnerExecutionTest" time="0.003" />
+  </testsuite>

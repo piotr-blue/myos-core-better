@@ -1,0 +1,225 @@
+{
+  "name": "Trading agreement",
+  "activityCount": 0,
+  "initializedOrders": 0,
+  "submittedOrders": 0,
+  "paidTotal": 0,
+  "orders": {},
+  "contracts": {
+    "input": {
+      "type": "Contracts/External Channel"
+    },
+    "embedded": {
+      "type": "Contracts/Process Embedded",
+      "collectionPaths": [
+        "/orders"
+      ]
+    },
+    "addOrder": {
+      "type": "Contracts/Sequential Workflow Operation",
+      "channel": "input",
+      "steps": [
+        {
+          "type": "Contracts/Compute",
+          "do": [
+            {
+              "$failIf": {
+                "cond": {
+                  "$hasKey": {
+                    "object": {
+                      "$document": "/orders"
+                    },
+                    "key": {
+                      "$binding": "call/request/key"
+                    }
+                  }
+                },
+                "message": "Order already exists"
+              }
+            },
+            {
+              "$appendChange": {
+                "op": "add",
+                "path": {
+                  "$pointerJoin": [
+                    "orders",
+                    {
+                      "$binding": "call/request/key"
+                    }
+                  ]
+                },
+                "val": {
+                  "$binding": "call/request/order"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "created": {
+      "type": "Contracts/Embedded Node Channel",
+      "event": {
+        "kind": "Order Initialized"
+      }
+    },
+    "onCreated": {
+      "type": "Contracts/Sequential Workflow",
+      "channel": "created",
+      "steps": [
+        {
+          "type": "Contracts/Compute",
+          "do": [
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/initializedOrders",
+                "val": {
+                  "$add": [
+                    {
+                      "$document": "/initializedOrders"
+                    },
+                    1
+                  ]
+                }
+              }
+            },
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/activityCount",
+                "val": {
+                  "$add": [
+                    {
+                      "$document": "/activityCount"
+                    },
+                    1
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Contracts/Trigger Event",
+          "event": {
+            "kind": "Agreement Order Added",
+            "key": {
+              "$event": "/event/key"
+            }
+          }
+        }
+      ]
+    },
+    "submitted": {
+      "type": "Contracts/Embedded Node Channel",
+      "event": {
+        "kind": "Order Submitted"
+      }
+    },
+    "onSubmitted": {
+      "type": "Contracts/Sequential Workflow",
+      "channel": "submitted",
+      "steps": [
+        {
+          "type": "Contracts/Compute",
+          "do": [
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/submittedOrders",
+                "val": {
+                  "$add": [
+                    {
+                      "$document": "/submittedOrders"
+                    },
+                    1
+                  ]
+                }
+              }
+            },
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/activityCount",
+                "val": {
+                  "$add": [
+                    {
+                      "$document": "/activityCount"
+                    },
+                    1
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Contracts/Trigger Event",
+          "event": {
+            "kind": "Agreement Order Submitted",
+            "key": {
+              "$event": "/event/key"
+            }
+          }
+        }
+      ]
+    },
+    "paid": {
+      "type": "Contracts/Embedded Node Channel",
+      "event": {
+        "kind": "Order Paid"
+      }
+    },
+    "onPaid": {
+      "type": "Contracts/Sequential Workflow",
+      "channel": "paid",
+      "steps": [
+        {
+          "type": "Contracts/Compute",
+          "do": [
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/paidTotal",
+                "val": {
+                  "$add": [
+                    {
+                      "$document": "/paidTotal"
+                    },
+                    {
+                      "$event": "/event/amount"
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/activityCount",
+                "val": {
+                  "$add": [
+                    {
+                      "$document": "/activityCount"
+                    },
+                    1
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "type": "Contracts/Trigger Event",
+          "event": {
+            "kind": "Agreement Payment Received",
+            "amount": {
+              "$event": "/event/amount"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

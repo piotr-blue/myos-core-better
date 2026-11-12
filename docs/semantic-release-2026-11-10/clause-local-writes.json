@@ -1,0 +1,1505 @@
+{
+  "run": {
+    "commandId": "c6399e6e-70c9-4d6f-acc3-546072d45861",
+    "instance": "i-00b2c678c14ed991e",
+    "account": "clause-qa-987ad95d94f0",
+    "digest": "5a76a96ddb075936121988009c0f0273573f8938deaaa49e8557db84bf79b128",
+    "orders": 2,
+    "reports": "/private/tmp/blue-efficient-20261110/myos-aws-test-better/reports/clauses-10670820edea"
+  },
+  "status": "Success",
+  "result": {
+    "account": "clause-qa-987ad95d94f0",
+    "agreement": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+    "bootstrapMillis": 4468.216778,
+    "catalogueMillis": 15173.544651,
+    "measurementBoundary": "console application API submission through exact submitted-entry Agreement receipt and expected state; no HTTP",
+    "measurements": [
+      {
+        "cpuSamples": [
+          {
+            "myos.better.RadixIndex.load": 101
+          },
+          {
+            "blue.LanguageTrie.find": 20
+          },
+          {
+            "myos.better.DynamoStore.readItem": 17
+          },
+          {
+            "blue.LanguageCore.hashBytes": 12
+          },
+          {
+            "myos.better.CanonicalSnapshots.closure": 12
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 9
+          },
+          {
+            "myos.better.Json.object": 9
+          },
+          {
+            "blue.ExactNode$Value.has": 8
+          },
+          {
+            "blue.LanguageCore.normalize": 8
+          },
+          {
+            "blue.LanguageSemantics.concreteNodeUncached": 8
+          },
+          {
+            "myos.better.Json.hash": 8
+          },
+          {
+            "blue.LanguageSemantics.lambda$strict$2": 7
+          },
+          {
+            "blue.ContractCache.put": 6
+          },
+          {
+            "blue.ContractCache.weight": 6
+          },
+          {
+            "blue.LanguageModel$Recipe.key": 6
+          },
+          {
+            "blue.LanguageContext.retainedBody": 5
+          },
+          {
+            "myos.better.DynamoStore.writeContentBatch": 5
+          },
+          {
+            "myos.better.Json.read": 5
+          },
+          {
+            "blue.ContractCache.get": 4
+          },
+          {
+            "blue.ContractEvidenceCache.key": 4
+          },
+          {
+            "blue.ExactNode$Value.get": 4
+          },
+          {
+            "blue.LanguageContext$ValidationKey.equals": 4
+          },
+          {
+            "blue.LanguageContext.sameMaterialization": 4
+          },
+          {
+            "blue.LanguageSemantics.merge": 4
+          },
+          {
+            "blue.LanguageTrie.size": 4
+          }
+        ],
+        "entry": "H2tEU5ikR3dHhMVU238JE9EtdmXNTaxKK2WvewH3V2Xv",
+        "io": {
+          "commit.calls": 38,
+          "commit.failures": 0,
+          "commit.nanos": 808381039,
+          "commit.retryableFailures": 4,
+          "content.calls": 311,
+          "content.failures": 0,
+          "content.nanos": 2551173,
+          "contentAll.calls": 133,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 3389627,
+          "get.calls": 295,
+          "get.failures": 0,
+          "get.nanos": 1300157518,
+          "getAll.calls": 29,
+          "getAll.failures": 0,
+          "getAll.nanos": 194184009,
+          "publishContent.calls": 20,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 591310654,
+          "query.calls": 8,
+          "query.failures": 0,
+          "query.nanos": 101101253,
+          "work.calls": 22,
+          "work.failures": 0,
+          "work.nanos": 193182846
+        },
+        "operation": "placeOrder",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 86.106713,
+            "commitMillis": 117.976962,
+            "entry": "H2tEU5ikR3dHhMVU238JE9EtdmXNTaxKK2WvewH3V2Xv",
+            "executionMillis": 728.868702,
+            "fallback": "LOCAL_EXECUTION_UNAVAILABLE: {diagnostic={code=LOCAL_EXECUTION_UNAVAILABLE, path=/orders/order-1, reason=PATCH_REQUIRES_GRAPH}}",
+            "mode": "graph",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 723.406398,
+            "restoreMillis": 778.625534,
+            "status": "APPLIED",
+            "totalMillis": 2436.20012
+          }
+        ],
+        "parentObservedMillis": 5752.549932,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 2,
+        "stateObservedMillis": 5752.540844,
+        "submitMillis": 1080.30703,
+        "waitedForRootReceipt": true
+      },
+      {
+        "cpuSamples": [
+          {
+            "myos.better.RadixIndex.load": 134
+          },
+          {
+            "blue.LanguageTrie.find": 21
+          },
+          {
+            "myos.better.Json.hash": 16
+          },
+          {
+            "myos.better.CanonicalSnapshots.closure": 14
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 13
+          },
+          {
+            "myos.better.DynamoStore.readItem": 10
+          },
+          {
+            "blue.LanguageSemantics.lambda$validate$1": 8
+          },
+          {
+            "blue.BlueIdSyntax.digest": 7
+          },
+          {
+            "blue.ExactNode$Value.get": 7
+          },
+          {
+            "blue.LanguageCore.hashBytes": 7
+          },
+          {
+            "blue.LanguageCore.normalize": 7
+          },
+          {
+            "blue.LanguageSemantics.concreteNodeUncached": 6
+          },
+          {
+            "myos.better.Json.bytes": 6
+          },
+          {
+            "myos.better.Json.object": 6
+          },
+          {
+            "myos.better.RadixIndex.getAll": 6
+          },
+          {
+            "blue.ContractCache.weight": 5
+          },
+          {
+            "blue.LanguageContext.step": 5
+          },
+          {
+            "blue.LanguageCore.helperBytes": 5
+          },
+          {
+            "blue.LanguageTrie.union": 5
+          },
+          {
+            "myos.better.DynamoStore.writeContentBatch": 5
+          },
+          {
+            "blue.LanguageCodec.read": 4
+          },
+          {
+            "blue.LanguageContext$ValidationKey.equals": 4
+          },
+          {
+            "blue.LanguageContext.bound": 4
+          },
+          {
+            "blue.LanguageContext.sameMaterialization": 4
+          },
+          {
+            "blue.LanguageCore.digestBase58": 4
+          }
+        ],
+        "entry": "DjSh9D4kuNQznv8cCyFBF5y2pZAYJgFbpYNNjtfqkmFu",
+        "io": {
+          "commit.calls": 18,
+          "commit.failures": 0,
+          "commit.nanos": 365900886,
+          "commit.retryableFailures": 0,
+          "content.calls": 234,
+          "content.failures": 0,
+          "content.nanos": 1357086,
+          "contentAll.calls": 70,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 23654714,
+          "get.calls": 169,
+          "get.failures": 0,
+          "get.nanos": 570130250,
+          "getAll.calls": 33,
+          "getAll.failures": 0,
+          "getAll.nanos": 122046820,
+          "publishContent.calls": 10,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 327059462,
+          "query.calls": 3,
+          "query.failures": 0,
+          "query.nanos": 10901412,
+          "work.calls": 19,
+          "work.failures": 0,
+          "work.nanos": 86554090
+        },
+        "operation": "preparePayment",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 76.129013,
+            "commitMillis": 152.492357,
+            "entry": "DjSh9D4kuNQznv8cCyFBF5y2pZAYJgFbpYNNjtfqkmFu",
+            "executionMillis": 381.698751,
+            "fallback": "LOCAL_EXECUTION_UNAVAILABLE: {diagnostic={code=LOCAL_EXECUTION_UNAVAILABLE, path=/payment, reason=PATCH_REQUIRES_GRAPH}}",
+            "mode": "graph",
+            "owner": "graph-fast-91fb1e7d268c9326049b84214f698736461fed990867c205",
+            "preparationMillis": 609.979249,
+            "restoreMillis": 394.606983,
+            "status": "APPLIED",
+            "totalMillis": 1615.715797
+          },
+          {
+            "admissionMillis": 86.659073,
+            "commitMillis": 48.511197,
+            "entry": "DjSh9D4kuNQznv8cCyFBF5y2pZAYJgFbpYNNjtfqkmFu",
+            "executionMillis": 1601.866324,
+            "fallback": "NO_LOCAL_COMPLETION",
+            "mode": "graph",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 185.823897,
+            "restoreMillis": 6.241654,
+            "status": "APPLIED",
+            "totalMillis": 1929.260433
+          }
+        ],
+        "parentObservedMillis": 4755.41042,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 3,
+        "stateObservedMillis": 4747.596361,
+        "submitMillis": 307.07802,
+        "waitedForRootReceipt": true
+      },
+      {
+        "cpuSamples": [
+          {
+            "blue.LanguageCore.normalize": 8
+          },
+          {
+            "blue.LanguageTrie.find": 8
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 5
+          },
+          {
+            "blue.LanguageModel$Head.<init>": 5
+          },
+          {
+            "myos.better.DynamoStore.readItem": 5
+          },
+          {
+            "blue.ExactNode$Value.has": 3
+          },
+          {
+            "blue.LanguageCore.digestBase58": 3
+          },
+          {
+            "blue.LanguageSchema.conjoin": 3
+          },
+          {
+            "blue.LanguageSemantics.lambda$strict$2": 3
+          },
+          {
+            "blue.LanguageSemantics.lambda$validate$1": 3
+          },
+          {
+            "myos.better.Json.read": 3
+          },
+          {
+            "blue.ExactNode$Value.<init>": 2
+          },
+          {
+            "blue.ExactNode$Value.get": 2
+          },
+          {
+            "blue.LanguageCodec.appendRendered": 2
+          },
+          {
+            "blue.LanguageContext.bound": 2
+          },
+          {
+            "blue.LanguageFacts.remember": 2
+          },
+          {
+            "blue.LanguageSemantics.concreteNodeUncached": 2
+          },
+          {
+            "blue.LanguageSemantics.merge": 2
+          },
+          {
+            "blue.LanguageTrie.with": 2
+          },
+          {
+            "myos.better.Json.bytes": 2
+          },
+          {
+            "blue.BexMachine.execute": 1
+          },
+          {
+            "blue.BexPlanCompiler.expr": 1
+          },
+          {
+            "blue.BexValues$FrozenMap.containsKey": 1
+          },
+          {
+            "blue.BlueId.equals": 1
+          },
+          {
+            "blue.BlueIdSyntax.digest": 1
+          }
+        ],
+        "entry": "5NH33Cg9CniHBa6bWmubuFDrMG1YLhnnyU3uUVULjnSC",
+        "io": {
+          "commit.calls": 23,
+          "commit.failures": 0,
+          "commit.nanos": 421044054,
+          "commit.retryableFailures": 3,
+          "content.calls": 343,
+          "content.failures": 0,
+          "content.nanos": 1285452,
+          "contentAll.calls": 87,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 524500,
+          "get.calls": 189,
+          "get.failures": 0,
+          "get.nanos": 417911441,
+          "getAll.calls": 16,
+          "getAll.failures": 0,
+          "getAll.nanos": 36545360,
+          "publishContent.calls": 12,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 144027276,
+          "query.calls": 3,
+          "query.failures": 0,
+          "query.nanos": 7701018,
+          "work.calls": 7,
+          "work.failures": 0,
+          "work.nanos": 23206173
+        },
+        "operation": "acceptPaymentInstruction",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 60.025876,
+            "commitMillis": 42.519856,
+            "entry": "5NH33Cg9CniHBa6bWmubuFDrMG1YLhnnyU3uUVULjnSC",
+            "executionMillis": 74.646107,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-421597f5604f133143a281bfb696f3fe2ad60e7b9a9a49d0",
+            "preparationMillis": 25.297997,
+            "restoreMillis": 2.191811,
+            "status": "APPLIED",
+            "totalMillis": 205.102617
+          },
+          {
+            "admissionMillis": 135.599351,
+            "commitMillis": 39.672028,
+            "entry": "5NH33Cg9CniHBa6bWmubuFDrMG1YLhnnyU3uUVULjnSC",
+            "executionMillis": 51.392766,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-91fb1e7d268c9326049b84214f698736461fed990867c205",
+            "preparationMillis": 20.303586,
+            "restoreMillis": 4.374802,
+            "status": "APPLIED",
+            "totalMillis": 251.503136
+          },
+          {
+            "admissionMillis": 132.17238,
+            "commitMillis": 37.360536,
+            "entry": "5NH33Cg9CniHBa6bWmubuFDrMG1YLhnnyU3uUVULjnSC",
+            "executionMillis": 21.19898,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 17.387673,
+            "restoreMillis": 3.490798,
+            "status": "APPLIED",
+            "totalMillis": 211.709667
+          }
+        ],
+        "parentObservedMillis": 1656.878558,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 4,
+        "stateObservedMillis": 1165.151756,
+        "submitMillis": 289.726688,
+        "waitedForRootReceipt": true
+      },
+      {
+        "cpuSamples": [
+          {
+            "myos.better.Json.bytes": 13
+          },
+          {
+            "myos.better.DynamoStore.readItem": 10
+          },
+          {
+            "myos.better.RadixIndex.load": 9
+          },
+          {
+            "myos.better.Json.hash": 8
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 7
+          },
+          {
+            "blue.LanguageTrie.find": 7
+          },
+          {
+            "blue.LanguageCodec.appendExact": 6
+          },
+          {
+            "myos.better.DynamoStore.writeContentBatch": 6
+          },
+          {
+            "blue.LanguageCore.normalize": 5
+          },
+          {
+            "blue.LanguageContext.sameMaterialization": 4
+          },
+          {
+            "blue.LanguageCore.digestBase58": 4
+          },
+          {
+            "blue.LanguageSemantics.lambda$validate$1": 4
+          },
+          {
+            "blue.ContractCache.put": 3
+          },
+          {
+            "blue.LanguageCodec.unicode": 3
+          },
+          {
+            "blue.LanguageSemantics.lambda$strict$2": 3
+          },
+          {
+            "blue.BlueIdSyntax.digest": 2
+          },
+          {
+            "blue.LanguageCodec.read": 2
+          },
+          {
+            "blue.LanguageContext.concreteFact": 2
+          },
+          {
+            "blue.LanguageSemantics.readHead": 2
+          },
+          {
+            "blue.LanguageSemantics.single": 2
+          },
+          {
+            "myos.better.DynamoStore.work": 2
+          },
+          {
+            "myos.better.Json.read": 2
+          },
+          {
+            "myos.better.RecordBodies.known": 2
+          },
+          {
+            "blue.BexValues$FrozenList.get": 1
+          },
+          {
+            "blue.BexValues.freeze": 1
+          }
+        ],
+        "entry": "9w8nmrGuVpdeh9ns4rzfNEcNEaqtBWozDMMjsayWqK4x",
+        "io": {
+          "commit.calls": 23,
+          "commit.failures": 0,
+          "commit.nanos": 393193543,
+          "commit.retryableFailures": 3,
+          "content.calls": 345,
+          "content.failures": 0,
+          "content.nanos": 1217199,
+          "contentAll.calls": 45,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 323312,
+          "get.calls": 203,
+          "get.failures": 0,
+          "get.nanos": 529410412,
+          "getAll.calls": 16,
+          "getAll.failures": 0,
+          "getAll.nanos": 34294655,
+          "publishContent.calls": 12,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 306553813,
+          "query.calls": 3,
+          "query.failures": 0,
+          "query.nanos": 7234352,
+          "work.calls": 8,
+          "work.failures": 0,
+          "work.nanos": 22841372
+        },
+        "operation": "reportTransfer",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 133.773633,
+            "commitMillis": 91.207455,
+            "entry": "9w8nmrGuVpdeh9ns4rzfNEcNEaqtBWozDMMjsayWqK4x",
+            "executionMillis": 138.891631,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-421597f5604f133143a281bfb696f3fe2ad60e7b9a9a49d0",
+            "preparationMillis": 373.481175,
+            "restoreMillis": 3.285983,
+            "status": "APPLIED",
+            "totalMillis": 740.801617
+          },
+          {
+            "admissionMillis": 123.205632,
+            "commitMillis": 91.755763,
+            "entry": "9w8nmrGuVpdeh9ns4rzfNEcNEaqtBWozDMMjsayWqK4x",
+            "executionMillis": 53.806597,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-91fb1e7d268c9326049b84214f698736461fed990867c205",
+            "preparationMillis": 159.315113,
+            "restoreMillis": 35.346057,
+            "status": "APPLIED",
+            "totalMillis": 463.558467
+          },
+          {
+            "admissionMillis": 147.080559,
+            "commitMillis": 83.116617,
+            "entry": "9w8nmrGuVpdeh9ns4rzfNEcNEaqtBWozDMMjsayWqK4x",
+            "executionMillis": 76.580528,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 828.624083,
+            "restoreMillis": 20.103789,
+            "status": "APPLIED",
+            "totalMillis": 1155.595797
+          }
+        ],
+        "parentObservedMillis": 2980.00587,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 5,
+        "stateObservedMillis": 1266.012235,
+        "submitMillis": 74.815439,
+        "waitedForRootReceipt": true
+      },
+      {
+        "cpuSamples": [
+          {
+            "blue.LanguageTrie.find": 7
+          },
+          {
+            "blue.LanguageCore.hashBytes": 6
+          },
+          {
+            "blue.LanguageCore.digestBase58": 4
+          },
+          {
+            "myos.better.Json.read": 3
+          },
+          {
+            "blue.ContractCache.put": 2
+          },
+          {
+            "blue.ExactNode$Value.<init>": 2
+          },
+          {
+            "blue.ExactNode$Value.has": 2
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 2
+          },
+          {
+            "blue.LanguageCodec.read": 2
+          },
+          {
+            "blue.LanguageContext$ValidationKey.equals": 2
+          },
+          {
+            "blue.LanguageContext.retainedBody": 2
+          },
+          {
+            "blue.LanguageContext.sameMaterialization": 2
+          },
+          {
+            "blue.LanguageCore.identity": 2
+          },
+          {
+            "blue.LanguageCore.normalize": 2
+          },
+          {
+            "blue.LanguageSemantics.lambda$validate$1": 2
+          },
+          {
+            "blue.LanguageSemantics.merge": 2
+          },
+          {
+            "blue.LanguageTrie.union": 2
+          },
+          {
+            "blue.LanguageTrie.with": 2
+          },
+          {
+            "blue.ProviderSignatures.verifySignature": 2
+          },
+          {
+            "myos.better.DynamoStore.decompress": 2
+          },
+          {
+            "myos.better.DynamoStore.readItem": 2
+          },
+          {
+            "myos.better.DynamoStore.readItems": 2
+          },
+          {
+            "myos.better.DynamoStore.writeContentBatch": 2
+          },
+          {
+            "blue.BexValues$FrozenList.size": 1
+          },
+          {
+            "blue.ContractCache.weight": 1
+          }
+        ],
+        "entry": "B2Zj67pbddsRSZDRg8yppoPNZeAazvVuX1AXJr1cjgjA",
+        "io": {
+          "commit.calls": 22,
+          "commit.failures": 0,
+          "commit.nanos": 394512062,
+          "commit.retryableFailures": 2,
+          "content.calls": 326,
+          "content.failures": 0,
+          "content.nanos": 1033351,
+          "contentAll.calls": 5,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 70987,
+          "get.calls": 196,
+          "get.failures": 0,
+          "get.nanos": 383067076,
+          "getAll.calls": 16,
+          "getAll.failures": 0,
+          "getAll.nanos": 32699418,
+          "publishContent.calls": 12,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 101603479,
+          "query.calls": 3,
+          "query.failures": 0,
+          "query.nanos": 6249957,
+          "work.calls": 5,
+          "work.failures": 0,
+          "work.nanos": 9666925
+        },
+        "operation": "acknowledgeTransfer",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 134.525685,
+            "commitMillis": 36.468535,
+            "entry": "B2Zj67pbddsRSZDRg8yppoPNZeAazvVuX1AXJr1cjgjA",
+            "executionMillis": 35.01178,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-421597f5604f133143a281bfb696f3fe2ad60e7b9a9a49d0",
+            "preparationMillis": 22.837781,
+            "restoreMillis": 2.805534,
+            "status": "APPLIED",
+            "totalMillis": 231.987901
+          },
+          {
+            "admissionMillis": 174.525554,
+            "commitMillis": 41.299259,
+            "entry": "B2Zj67pbddsRSZDRg8yppoPNZeAazvVuX1AXJr1cjgjA",
+            "executionMillis": 91.350893,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-91fb1e7d268c9326049b84214f698736461fed990867c205",
+            "preparationMillis": 18.159831,
+            "restoreMillis": 5.04887,
+            "status": "APPLIED",
+            "totalMillis": 330.612254
+          },
+          {
+            "admissionMillis": 128.912523,
+            "commitMillis": 40.908511,
+            "entry": "B2Zj67pbddsRSZDRg8yppoPNZeAazvVuX1AXJr1cjgjA",
+            "executionMillis": 89.745996,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 14.597866,
+            "restoreMillis": 3.423415,
+            "status": "APPLIED",
+            "totalMillis": 277.865307
+          }
+        ],
+        "parentObservedMillis": 1465.851504,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 6,
+        "stateObservedMillis": 1465.848248,
+        "submitMillis": 60.821751,
+        "waitedForRootReceipt": true
+      },
+      {
+        "cpuSamples": [
+          {
+            "myos.better.RadixIndex.load": 82
+          },
+          {
+            "myos.better.Json.hash": 24
+          },
+          {
+            "blue.LanguageTrie.find": 15
+          },
+          {
+            "blue.LanguageCore.hashBytes": 8
+          },
+          {
+            "blue.LanguageCore.normalize": 7
+          },
+          {
+            "myos.better.CanonicalSnapshots.closure": 6
+          },
+          {
+            "myos.better.Json.bytes": 6
+          },
+          {
+            "blue.LanguageSemantics.lambda$validate$1": 5
+          },
+          {
+            "blue.LanguageTrie.union": 5
+          },
+          {
+            "blue.ContractCache.put": 4
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 4
+          },
+          {
+            "blue.LanguageCodec.unicode": 4
+          },
+          {
+            "blue.LanguageModel$Recipe.key": 4
+          },
+          {
+            "blue.LanguageOperations.records": 4
+          },
+          {
+            "blue.LanguageSemantics.lambda$strict$2": 4
+          },
+          {
+            "blue.BexPlanCompiler.hostBounds": 3
+          },
+          {
+            "blue.BlueIdSyntax.digest": 3
+          },
+          {
+            "blue.ContractEvidenceCache.key": 3
+          },
+          {
+            "blue.LanguageSemantics.merge": 3
+          },
+          {
+            "blue.LanguageTrie.insertCollision": 3
+          },
+          {
+            "myos.better.DynamoStore.readItem": 3
+          },
+          {
+            "myos.better.RadixIndex$Page.<init>": 3
+          },
+          {
+            "myos.better.RecordBodies.put": 3
+          },
+          {
+            "blue.ContractCache.weight": 2
+          },
+          {
+            "blue.ContractIdentityMap$Branch.find": 2
+          }
+        ],
+        "entry": "9m6jqY6ozzZtPuiuA5wFBt7iskxjrYyyRerUf3UaKFwG",
+        "io": {
+          "commit.calls": 22,
+          "commit.failures": 0,
+          "commit.nanos": 455363614,
+          "commit.retryableFailures": 1,
+          "content.calls": 274,
+          "content.failures": 0,
+          "content.nanos": 875867,
+          "contentAll.calls": 38,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 1766796,
+          "get.calls": 206,
+          "get.failures": 0,
+          "get.nanos": 477893140,
+          "getAll.calls": 22,
+          "getAll.failures": 0,
+          "getAll.nanos": 91100576,
+          "publishContent.calls": 10,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 146912263,
+          "query.calls": 4,
+          "query.failures": 0,
+          "query.nanos": 8357244,
+          "work.calls": 12,
+          "work.failures": 0,
+          "work.nanos": 36012690
+        },
+        "operation": "placeOrder",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 24.369332,
+            "commitMillis": 50.586562,
+            "entry": "9m6jqY6ozzZtPuiuA5wFBt7iskxjrYyyRerUf3UaKFwG",
+            "executionMillis": 233.859946,
+            "fallback": "LOCAL_EXECUTION_UNAVAILABLE: {diagnostic={code=LOCAL_EXECUTION_UNAVAILABLE, path=/orders/order-2, reason=PATCH_REQUIRES_GRAPH}}",
+            "mode": "graph",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 796.380592,
+            "restoreMillis": 536.646107,
+            "status": "APPLIED",
+            "totalMillis": 1642.456948
+          }
+        ],
+        "parentObservedMillis": 3156.648977,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 7,
+        "stateObservedMillis": 3156.646467,
+        "submitMillis": 107.965388,
+        "waitedForRootReceipt": true
+      },
+      {
+        "cpuSamples": [
+          {
+            "myos.better.RadixIndex.load": 115
+          },
+          {
+            "blue.LanguageTrie.find": 19
+          },
+          {
+            "myos.better.DynamoStore.readItem": 13
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 12
+          },
+          {
+            "myos.better.CanonicalSnapshots.closure": 12
+          },
+          {
+            "myos.better.Json.hash": 11
+          },
+          {
+            "blue.LanguageCore.hashBytes": 6
+          },
+          {
+            "myos.better.Json.bytes": 6
+          },
+          {
+            "blue.LanguageCodec.read": 5
+          },
+          {
+            "blue.ContractCache.put": 4
+          },
+          {
+            "blue.LanguageCore.digestBase58": 4
+          },
+          {
+            "blue.LanguageCore.normalize": 4
+          },
+          {
+            "blue.LanguageModel$Head.<init>": 4
+          },
+          {
+            "blue.LanguageModel$Head.copy": 4
+          },
+          {
+            "blue.LanguageSemantics.child": 4
+          },
+          {
+            "myos.better.RadixIndex.getAll": 4
+          },
+          {
+            "blue.ContractCache.get": 3
+          },
+          {
+            "blue.ContractData.copy": 3
+          },
+          {
+            "blue.ContractLanguage.addEvidence": 3
+          },
+          {
+            "blue.ContractRun.lambda$overlays$0": 3
+          },
+          {
+            "blue.ExactNode$Value.<init>": 3
+          },
+          {
+            "blue.ExactNode$Value.has": 3
+          },
+          {
+            "blue.LanguageOperations.records": 3
+          },
+          {
+            "blue.LanguageSemantics.lambda$strict$2": 3
+          },
+          {
+            "blue.LanguageSemantics.merge": 3
+          }
+        ],
+        "entry": "6kpucU8VpEiCnditzhT1HjfSFY3Z98sRPrBf2D6d4qGb",
+        "io": {
+          "commit.calls": 23,
+          "commit.failures": 0,
+          "commit.nanos": 465276388,
+          "commit.retryableFailures": 3,
+          "content.calls": 304,
+          "content.failures": 0,
+          "content.nanos": 1348814,
+          "contentAll.calls": 39,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 719236,
+          "get.calls": 197,
+          "get.failures": 0,
+          "get.nanos": 584235349,
+          "getAll.calls": 33,
+          "getAll.failures": 0,
+          "getAll.nanos": 89525228,
+          "publishContent.calls": 10,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 121128085,
+          "query.calls": 3,
+          "query.failures": 0,
+          "query.nanos": 7937581,
+          "work.calls": 14,
+          "work.failures": 0,
+          "work.nanos": 80013441
+        },
+        "operation": "preparePayment",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 19.59704,
+            "commitMillis": 115.333994,
+            "entry": "6kpucU8VpEiCnditzhT1HjfSFY3Z98sRPrBf2D6d4qGb",
+            "executionMillis": 348.132582,
+            "fallback": "LOCAL_EXECUTION_UNAVAILABLE: {diagnostic={code=LOCAL_EXECUTION_UNAVAILABLE, path=/payment, reason=PATCH_REQUIRES_GRAPH}}",
+            "mode": "graph",
+            "owner": "graph-fast-474b0807b7525777c4de7e04888e8d931759d58df61cdeaf",
+            "preparationMillis": 498.590559,
+            "restoreMillis": 365.17775,
+            "status": "APPLIED",
+            "totalMillis": 1347.370861
+          },
+          {
+            "admissionMillis": 93.590958,
+            "commitMillis": 42.290645,
+            "entry": "6kpucU8VpEiCnditzhT1HjfSFY3Z98sRPrBf2D6d4qGb",
+            "executionMillis": 1414.183412,
+            "fallback": "NO_LOCAL_COMPLETION",
+            "mode": "graph",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 51.585398,
+            "restoreMillis": 4.536964,
+            "status": "APPLIED",
+            "totalMillis": 1606.417916
+          }
+        ],
+        "parentObservedMillis": 3812.373937,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 8,
+        "stateObservedMillis": 3484.801128,
+        "submitMillis": 228.38459,
+        "waitedForRootReceipt": true
+      },
+      {
+        "cpuSamples": [
+          {
+            "myos.better.DynamoStore.readItem": 14
+          },
+          {
+            "blue.LanguageTrie.find": 6
+          },
+          {
+            "myos.better.Json.read": 5
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 4
+          },
+          {
+            "blue.LanguageCore.digestBase58": 4
+          },
+          {
+            "blue.LanguageCore.normalize": 4
+          },
+          {
+            "myos.better.RadixIndex.load": 4
+          },
+          {
+            "blue.LanguageCodec.read": 3
+          },
+          {
+            "blue.LanguageSemantics.lambda$strict$2": 3
+          },
+          {
+            "blue.LanguageSemantics.lambda$validate$1": 3
+          },
+          {
+            "myos.better.DynamoStore.writeContentBatch": 3
+          },
+          {
+            "myos.better.Json.bytes": 3
+          },
+          {
+            "blue.ExactNode$Value.get": 2
+          },
+          {
+            "blue.ExactNode$Value.has": 2
+          },
+          {
+            "blue.LanguageCodec.unicode": 2
+          },
+          {
+            "blue.LanguageContext.bound": 2
+          },
+          {
+            "blue.LanguageContext.sameMaterialization": 2
+          },
+          {
+            "blue.LanguageContext.step": 2
+          },
+          {
+            "blue.LanguageCore.hashBytes": 2
+          },
+          {
+            "blue.LanguageCore.identity": 2
+          },
+          {
+            "blue.LanguageSemantics.concreteNodeUncached": 2
+          },
+          {
+            "blue.LanguageSemantics.readHead": 2
+          },
+          {
+            "blue.ContractCache.get": 1
+          },
+          {
+            "blue.ContractCache.put": 1
+          },
+          {
+            "blue.ContractCanonical.write": 1
+          }
+        ],
+        "entry": "31WFo6Q6pujxEUvGovjBWS6URRcqfiXBT6P9GfCcCjVV",
+        "io": {
+          "commit.calls": 25,
+          "commit.failures": 0,
+          "commit.nanos": 417356376,
+          "commit.retryableFailures": 3,
+          "content.calls": 317,
+          "content.failures": 0,
+          "content.nanos": 1170773,
+          "contentAll.calls": 24,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 241618,
+          "get.calls": 203,
+          "get.failures": 0,
+          "get.nanos": 439463254,
+          "getAll.calls": 16,
+          "getAll.failures": 0,
+          "getAll.nanos": 31711582,
+          "publishContent.calls": 12,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 133770596,
+          "query.calls": 3,
+          "query.failures": 0,
+          "query.nanos": 8171805,
+          "work.calls": 6,
+          "work.failures": 0,
+          "work.nanos": 13800487
+        },
+        "operation": "acceptPaymentInstruction",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 46.792663,
+            "commitMillis": 42.258669,
+            "entry": "31WFo6Q6pujxEUvGovjBWS6URRcqfiXBT6P9GfCcCjVV",
+            "executionMillis": 173.475356,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-3e4e41d30fa0867e2cbe342d5ec6a3e8ac4a22d9af4c761b",
+            "preparationMillis": 44.346816,
+            "restoreMillis": 2.398441,
+            "status": "APPLIED",
+            "totalMillis": 309.426593
+          },
+          {
+            "admissionMillis": 145.448707,
+            "commitMillis": 44.287401,
+            "entry": "31WFo6Q6pujxEUvGovjBWS6URRcqfiXBT6P9GfCcCjVV",
+            "executionMillis": 59.534461,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-474b0807b7525777c4de7e04888e8d931759d58df61cdeaf",
+            "preparationMillis": 23.161818,
+            "restoreMillis": 4.064256,
+            "status": "APPLIED",
+            "totalMillis": 276.634665
+          },
+          {
+            "admissionMillis": 109.116448,
+            "commitMillis": 43.888602,
+            "entry": "31WFo6Q6pujxEUvGovjBWS6URRcqfiXBT6P9GfCcCjVV",
+            "executionMillis": 75.088522,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 20.286373,
+            "restoreMillis": 4.042496,
+            "status": "APPLIED",
+            "totalMillis": 252.500131
+          }
+        ],
+        "parentObservedMillis": 1557.822305,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 9,
+        "stateObservedMillis": 1046.450106,
+        "submitMillis": 204.945499,
+        "waitedForRootReceipt": true
+      },
+      {
+        "cpuSamples": [
+          {
+            "myos.better.DynamoStore.readItem": 12
+          },
+          {
+            "blue.LanguageTrie.find": 10
+          },
+          {
+            "myos.better.Json.bytes": 10
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 8
+          },
+          {
+            "blue.LanguageCore.normalize": 8
+          },
+          {
+            "myos.better.Json.hash": 5
+          },
+          {
+            "myos.better.RadixIndex.load": 5
+          },
+          {
+            "myos.better.DynamoStore.writeContentBatch": 4
+          },
+          {
+            "blue.ContractCache.put": 3
+          },
+          {
+            "blue.LanguageCore.digestBase58": 3
+          },
+          {
+            "myos.better.Json.read": 3
+          },
+          {
+            "blue.ExactNode$Value.get": 2
+          },
+          {
+            "blue.LanguageCodec.read": 2
+          },
+          {
+            "blue.LanguageContext.retainedBody": 2
+          },
+          {
+            "blue.LanguageContext.sameMaterialization": 2
+          },
+          {
+            "blue.LanguageCore.helperBytes": 2
+          },
+          {
+            "blue.LanguageCore.lambda$normalize$4": 2
+          },
+          {
+            "blue.LanguageSchema.conjoin": 2
+          },
+          {
+            "blue.LanguageSemantics.lambda$strict$2": 2
+          },
+          {
+            "blue.LanguageSemantics.lambda$validate$1": 2
+          },
+          {
+            "blue.LanguageTrie.union": 2
+          },
+          {
+            "blue.LanguageTrie.with": 2
+          },
+          {
+            "myos.better.OrderedIndex.load": 2
+          },
+          {
+            "myos.better.PageCache.get": 2
+          },
+          {
+            "myos.better.PageCache.put": 2
+          }
+        ],
+        "entry": "5sUKJtkWdrVC2iX5YVrZVexDo1ZWpbSJP3L2YfdRJVSy",
+        "io": {
+          "commit.calls": 25,
+          "commit.failures": 0,
+          "commit.nanos": 473386406,
+          "commit.retryableFailures": 3,
+          "content.calls": 420,
+          "content.failures": 0,
+          "content.nanos": 1353387,
+          "contentAll.calls": 23,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 246512,
+          "get.calls": 214,
+          "get.failures": 0,
+          "get.nanos": 475784148,
+          "getAll.calls": 16,
+          "getAll.failures": 0,
+          "getAll.nanos": 33573866,
+          "publishContent.calls": 12,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 234350924,
+          "query.calls": 3,
+          "query.failures": 0,
+          "query.nanos": 7199273,
+          "work.calls": 9,
+          "work.failures": 0,
+          "work.nanos": 21500844
+        },
+        "operation": "reportTransfer",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 149.037931,
+            "commitMillis": 84.50114,
+            "entry": "5sUKJtkWdrVC2iX5YVrZVexDo1ZWpbSJP3L2YfdRJVSy",
+            "executionMillis": 98.244408,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-3e4e41d30fa0867e2cbe342d5ec6a3e8ac4a22d9af4c761b",
+            "preparationMillis": 290.523538,
+            "restoreMillis": 2.244619,
+            "status": "APPLIED",
+            "totalMillis": 624.674461
+          },
+          {
+            "admissionMillis": 146.137557,
+            "commitMillis": 80.685393,
+            "entry": "5sUKJtkWdrVC2iX5YVrZVexDo1ZWpbSJP3L2YfdRJVSy",
+            "executionMillis": 52.044883,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-474b0807b7525777c4de7e04888e8d931759d58df61cdeaf",
+            "preparationMillis": 152.050447,
+            "restoreMillis": 28.490192,
+            "status": "APPLIED",
+            "totalMillis": 459.50438
+          },
+          {
+            "admissionMillis": 111.244895,
+            "commitMillis": 126.453468,
+            "entry": "5sUKJtkWdrVC2iX5YVrZVexDo1ZWpbSJP3L2YfdRJVSy",
+            "executionMillis": 132.746905,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 51.52963,
+            "restoreMillis": 19.855847,
+            "status": "APPLIED",
+            "totalMillis": 441.916306
+          }
+        ],
+        "parentObservedMillis": 2169.950475,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 10,
+        "stateObservedMillis": 1217.026343,
+        "submitMillis": 69.021768,
+        "waitedForRootReceipt": true
+      },
+      {
+        "cpuSamples": [
+          {
+            "blue.LanguageTrie.find": 10
+          },
+          {
+            "myos.better.DynamoStore.readItem": 8
+          },
+          {
+            "blue.LanguageCodec.appendQuote": 5
+          },
+          {
+            "myos.better.DynamoStore.writeContentBatch": 4
+          },
+          {
+            "blue.LanguageCore.digestBase58": 3
+          },
+          {
+            "blue.LanguageCore.normalize": 3
+          },
+          {
+            "blue.LanguageTrie.union": 3
+          },
+          {
+            "blue.LanguageCodec.read": 2
+          },
+          {
+            "blue.LanguageContext$ValidationKey.hashCode": 2
+          },
+          {
+            "blue.LanguageContext.sameMaterialization": 2
+          },
+          {
+            "blue.LanguageSemantics.readHead": 2
+          },
+          {
+            "blue.LanguageTrie.size": 2
+          },
+          {
+            "myos.better.Json.bytes": 2
+          },
+          {
+            "blue.BexValues$FrozenMap.get": 1
+          },
+          {
+            "blue.BlueIdSyntax.digest": 1
+          },
+          {
+            "blue.ContractBridge.presentActual": 1
+          },
+          {
+            "blue.ContractCache.get": 1
+          },
+          {
+            "blue.ContractCache.put": 1
+          },
+          {
+            "blue.ContractPreparations.decode": 1
+          },
+          {
+            "blue.ContractPrograms$Key.<init>": 1
+          },
+          {
+            "blue.ExactNode$Value.<init>": 1
+          },
+          {
+            "blue.ExactNode$Value.get": 1
+          },
+          {
+            "blue.ExactNode$Value.kind": 1
+          },
+          {
+            "blue.LanguageCodec.appendRendered": 1
+          },
+          {
+            "blue.LanguageCodec.quote": 1
+          }
+        ],
+        "entry": "HgYQqLgDSPhXEHkNhSExRbHrLLpbC9DnqCqqd8aPyeSe",
+        "io": {
+          "commit.calls": 25,
+          "commit.failures": 0,
+          "commit.nanos": 422653523,
+          "commit.retryableFailures": 3,
+          "content.calls": 402,
+          "content.failures": 0,
+          "content.nanos": 1249427,
+          "contentAll.calls": 6,
+          "contentAll.failures": 0,
+          "contentAll.nanos": 60519,
+          "get.calls": 209,
+          "get.failures": 0,
+          "get.nanos": 421467989,
+          "getAll.calls": 16,
+          "getAll.failures": 0,
+          "getAll.nanos": 33343941,
+          "publishContent.calls": 12,
+          "publishContent.failures": 0,
+          "publishContent.nanos": 100757948,
+          "query.calls": 3,
+          "query.failures": 0,
+          "query.nanos": 6942973,
+          "work.calls": 5,
+          "work.failures": 0,
+          "work.nanos": 9883897
+        },
+        "operation": "acknowledgeTransfer",
+        "ownerAttempts": [
+          {
+            "admissionMillis": 127.59507,
+            "commitMillis": 34.586288,
+            "entry": "HgYQqLgDSPhXEHkNhSExRbHrLLpbC9DnqCqqd8aPyeSe",
+            "executionMillis": 100.124041,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-474b0807b7525777c4de7e04888e8d931759d58df61cdeaf",
+            "preparationMillis": 14.748551,
+            "restoreMillis": 3.22972,
+            "status": "APPLIED",
+            "totalMillis": 280.444837
+          },
+          {
+            "admissionMillis": 110.397598,
+            "commitMillis": 35.63206,
+            "entry": "HgYQqLgDSPhXEHkNhSExRbHrLLpbC9DnqCqqd8aPyeSe",
+            "executionMillis": 127.546906,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+            "preparationMillis": 16.573935,
+            "restoreMillis": 3.166305,
+            "status": "APPLIED",
+            "totalMillis": 293.480627
+          },
+          {
+            "admissionMillis": 162.970482,
+            "commitMillis": 34.464468,
+            "entry": "HgYQqLgDSPhXEHkNhSExRbHrLLpbC9DnqCqqd8aPyeSe",
+            "executionMillis": 53.882636,
+            "fallback": "",
+            "mode": "owner-local",
+            "owner": "graph-fast-3e4e41d30fa0867e2cbe342d5ec6a3e8ac4a22d9af4c761b",
+            "preparationMillis": 18.531639,
+            "restoreMillis": 1.953127,
+            "status": "APPLIED",
+            "totalMillis": 272.114417
+          }
+        ],
+        "parentObservedMillis": 1417.895122,
+        "root": "graph-fast-b096ae525d62130d0c56250f6612dda39593494f7f7a5b00",
+        "rootVersion": 11,
+        "stateObservedMillis": 1410.558605,
+        "submitMillis": 55.811219,
+        "waitedForRootReceipt": true
+      }
+    ],
+    "nativeParity": {
+      "calculationsReused": false,
+      "comparison": "document BlueId, status, gas, gasByMember, ordered events, publicEvents, diagnostic, rejection",
+      "exactWholeRootComparisons": 10,
+      "physicalReceiptEquality": false,
+      "protectedPreparationsReused": false,
+      "sourceResultsReused": false,
+      "throughVersion": 11
+    },
+    "orders": 2,
+    "paidTotal": 400,
+    "passed": true,
+    "scenario": "published-clause-console-journey"
+  }
+}

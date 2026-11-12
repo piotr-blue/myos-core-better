@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineServiceIsolationTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:59.185Z" hostname="MacBook-Pro-5.local" time="0.628">
+  <properties />
+  <testcase name="[1] &quot;another-runtime&quot;, &quot;bob&quot;, &quot;false&quot;" classname="myos.better.TimelineServiceIsolationTest" time="0.218" />
+  <testcase name="[2] &quot;timeline-http-test&quot;, &quot;bob&quot;, &quot;false&quot;" classname="myos.better.TimelineServiceIsolationTest" time="0.201" />
+  <testcase name="[3] &quot;timeline-http-test&quot;, &quot;alice&quot;, &quot;true&quot;" classname="myos.better.TimelineServiceIsolationTest" time="0.208" />
+  </testsuite>

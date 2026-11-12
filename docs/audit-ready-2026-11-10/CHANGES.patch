@@ -1,0 +1,1498 @@
+--- a/myos-aws-test-better/scripts/qualify_owner_restart.py
++++ b/myos-aws-test-better/scripts/qualify_owner_restart.py
+@@ -0,0 +1,92 @@
++#!/usr/bin/env python3
++"""Restart the verified preview, then time one existing private Payment and capture owner phases.
++
++Requires the QA account file created by qualify_owner_preview.py. No credentials are exported.
++"""
++import argparse
++import json
++from pathlib import Path
++import time
++import urllib.parse
++import uuid
++from aws import aws, verify
++from qualify_preview import Client, prepared_users, wait_for_entry
++
++
++def command(instance, commands, destination):
++    identifier = aws('ssm', 'send-command', '--document-name', 'AWS-RunShellScript',
++                     '--instance-ids', instance, '--parameters', json.dumps({'commands': commands, 'executionTimeout': ['120']}))['Command']['CommandId']
++    deadline = time.monotonic() + 150
++    time.sleep(2)
++    while time.monotonic() < deadline:
++        result = aws('ssm', 'get-command-invocation', '--command-id', identifier, '--instance-id', instance)
++        if result['Status'] not in ('Pending', 'InProgress', 'Delayed'):
++            destination.write_text(json.dumps(result, indent=2)+'\n')
++            if result['Status'] != 'Success':
++                raise RuntimeError('Restart/profile command failed: '+identifier)
++            return result
++        time.sleep(2)
++    raise TimeoutError('Restart/profile command did not finish')
++
++
++def main():
++    parser = argparse.ArgumentParser(description=__doc__)
++    parser.add_argument('prior_report', type=Path)
++    args = parser.parse_args()
++    verify()
++    prior = json.loads(args.prior_report.read_text())
++    if not prior['passed']: raise ValueError('A completed HTTPS run is required')
++    root = Path(__file__).resolve().parents[1]
++    reports = root/'reports'
++    outputs = {r['OutputKey']:r['OutputValue'] for r in aws('cloudformation','describe-stacks','--stack-name','myos-better-canonical-20261108')['Stacks'][0]['Outputs']}
++    console = {r['OutputKey']:r['OutputValue'] for r in aws('cloudformation','describe-stacks','--stack-name','myos-better-canonical-console-20261108')['Stacks'][0]['Outputs']}
++    if prior['url'] != console['Url']: raise ValueError('Preview origin mismatch')
++    client = Client(prior['url'])
++    client.ok('/api/auth/login', prepared_users(reports, console)[0])
++    if client.ok('/api/session')['account'] != prior['account']: raise ValueError('Account mismatch')
++    selected = prior['results'][-1]
++    instance = outputs['Instance']
++    before = selected['calls'][-1]['parentVersion']
++    # Login and selection happen before restart so they cannot warm the measured execution.
++    restart = command(instance, ['set -euo pipefail', 'systemctl restart myos-better.service',
++        'for i in $(seq 1 40); do if curl --fail --silent http://127.0.0.1:8080/health >/dev/null; then break; fi; sleep 1; done',
++        'curl --fail --silent http://127.0.0.1:8080/health >/dev/null',
++        'readlink -f /opt/myos-better/current',
++        'pid=$(systemctl show myos-better.service --property MainPID --value)',
++        'runuser -u myos-better -- jcmd "$pid" JFR.start name=owner-audit settings=profile maxsize=32m >/dev/null'], reports/'owner-audit-restart-command.json')
++    key = 'audit-restart-'+uuid.uuid4().hex
++    intent = {'timeline':selected['timeline'],'channel':'input','operation':'record','request':{}}
++    start = time.perf_counter()
++    submitted = client.ok('/api/documents/'+selected['payment']+'/operations', intent, key=key)
++    submit = (time.perf_counter()-start)*1000
++    version = wait_for_entry(client, selected['agreement'], submitted['entry'], before)
++    elapsed = (time.perf_counter()-start)*1000
++    history = client.ok(f"/api/documents/{selected['agreement']}/history/{version}")
++    assert history['input']['mode']=='owner-local'
++    expected = 42*(len(selected['calls'])+1)
++    for owner, path in ((selected['payment'],'/recordedAmount'), (selected['order'],'/paidTotal'), (selected['agreement'],'/paidTotal')):
++        actual = client.ok('/api/documents/'+owner+'/value?'+urllib.parse.urlencode({'path':path}))['value']
++        assert actual==expected, (owner,actual,expected)
++    assert client.ok('/api/documents/'+selected['payment']+'/operations', intent, key=key)==submitted
++    profile = command(instance, ['set -euo pipefail', 'pid=$(systemctl show myos-better.service --property MainPID --value)',
++        'runuser -u myos-better -- jcmd "$pid" JFR.dump name=owner-audit filename=/var/lib/myos-better/owner-audit.jfr >/dev/null',
++        'runuser -u myos-better -- jcmd "$pid" JFR.stop name=owner-audit >/dev/null',
++        'jfr print --json --events myos.OwnerExecution /var/lib/myos-better/owner-audit.jfr',
++        'rm /var/lib/myos-better/owner-audit.jfr'], reports/'owner-audit-profile-command.json')
++    events = json.loads(profile['StandardOutputContent'])['recording']['events']
++    selected_events = [event['values'] for event in events if event['values'].get('entry') == submitted['entry']]
++    # Old captures may repeat an identical exported chunk after dump + stop to the same file.
++    # Preserve distinct execution timestamps; collapse only byte-identical event records.
++    phases = list({json.dumps(event, sort_keys=True): event for event in selected_events}.values())
++    assert len(phases) == 3 and len({event['owner'] for event in phases}) == 3
++    assert all(event['status'] == 'APPLIED' for event in phases)
++    result = {'passed':True, 'orders':selected['orders'],'agreement':selected['agreement'], 'entry':submitted['entry'],
++              'beforeVersion':before,'afterVersion':version,'expectedTotal':expected,
++              'submitMillis':submit,'parentObservedMillis':elapsed,'result':history['outcome'],
++              'restartCommand':restart['CommandId'],'profileCommand':profile['CommandId'],'ownerPhases':phases, 'profileOccurrenceCount':len(selected_events),
++              'duplicateExportCount':len(selected_events)-len(phases),
++              'boundary':'First existing-graph operation after a whole-service restart; JFR profiling enabled; network and client polling included'}
++    (reports/'owner-audit-restart.json').write_text(json.dumps(result,indent=2)+'\n')
++    print(json.dumps(result))
++
++if __name__=='__main__':main()
+--- a/myos-aws-test-better/scripts/qualify_owners.py
++++ b/myos-aws-test-better/scripts/qualify_owners.py
+@@ -8,20 +8,25 @@
+ def main():
+     parser=argparse.ArgumentParser(description=__doc__)
+     parser.add_argument('--stack', default=STACK)
++    parser.add_argument('--report-dir',type=Path,help='Separate output directory for this qualification run')
+     parser.add_argument('--samples', type=int, default=5)
+     parser.add_argument('--orders',default='1,128')
+     parser.add_argument('--gas-schedule',choices=['PUBLISHED','COMPOSITIONAL_V1','ADDITIVE_PROTOTYPE_V2','ADDITIVE_PROTOTYPE'],default='PUBLISHED')
+     parser.add_argument('--instance',help='Existing dedicated worker; otherwise create and terminate a temporary 8 GiB worker')
+     parser.add_argument('--profile',action='store_true',help='Capture a bounded JFR of the final payment per size')
++    parser.add_argument('--observable-root',action='store_true',help='Emit two equal-valued public Agreement events and verify both ordered occurrences')
++    parser.add_argument('--separate-timelines',action='store_true',help='One external timeline per Order; quiet providers certify a prefix beyond the active inputs')
++    parser.add_argument('--rotate-targets',action='store_true',help='Select a different Order by a deterministic stride on every input')
+     parser.add_argument('--cold',action='store_true',help='Reopen bounded owner storage caches before every input')
+     args=parser.parse_args()
++    if args.separate_timelines and args.rotate_targets: parser.error('Separate timelines reserve quiet prefixes; rotating targets require the shared timeline')
+     if not 1 <= args.samples <= 20: parser.error('Samples must be 1..20')
+     counts=[int(v) for v in args.orders.split(',')]
+     if not counts or any(v<1 or v>1024 for v in counts):parser.error('Use counts between 1 and 1024')
+     verify()
+-    root=Path(__file__).resolve().parents[1];reports=root/'reports';reports.mkdir(exist_ok=True)
++    root=Path(__file__).resolve().parents[1];reports=args.report_dir or root/'reports';reports.mkdir(parents=True,exist_ok=True)
+     outputs={o['OutputKey']:o['OutputValue'] for o in aws('cloudformation','describe-stacks','--stack-name',args.stack)['Stacks'][0]['Outputs']}
+-    archive=root/'build/owner-qualification.tar.gz'
++    archive=reports/'owner-qualification.tar.gz'
+     jars=list((root/'build/libs').glob('*-qualification.jar'))
+     if len(jars)!=1:raise RuntimeError('Build installDist qualificationJar first')
+     def readable(info):
+@@ -44,7 +49,7 @@
+         shlex.join(['systemd-run','--quiet','--wait','--pipe','--collect','--unit='+account,
+             '--uid=myos-better','--property=MemoryMax=1536M','--property=MemorySwapMax=0',
+             '--property=CPUQuota=200%','--setenv=AWS_REGION=eu-west-1','java','-Xmx1g','-XX:ActiveProcessorCount=2',
+-            '-Dblue.probe.cold='+str(args.cold).lower(),'-Dblue.probe.gasSchedule='+args.gas_schedule,*profiling,
++            '-Dblue.probe.cold='+str(args.cold).lower(),'-Dblue.probe.observableRoot='+str(args.observable_root).lower(),'-Dblue.probe.rotateTargets='+str(args.rotate_targets).lower(),'-Dblue.probe.separateTimelines='+str(args.separate_timelines).lower(),'-Dblue.probe.gasSchedule='+args.gas_schedule,*profiling,
+             '-Dblue.probe.samples='+str(args.samples),'-Dblue.probe.orders='+','.join(map(str,counts)),'-cp',remote+'/lib/*:'+remote+'/qualification.jar',
+             'myos.better.OwnerScaleProbe',outputs['Table'],account])]
+     with worker(outputs, reports, args.instance) as identity:
+@@ -55,7 +60,9 @@
+             'Comment':'Isolated independent owner DynamoDB parity and bounded latency qualification'}
+         request_file=reports/'owners-qualification-request.json';request_file.write_text(json.dumps(request))
+         command=aws('ssm','send-command','--cli-input-json','file://'+str(request_file))['Command']['CommandId']
+-        result={'commandId':command,'instance':identity,'table':outputs['Table'],'account':account,'digest':digest,'counts':counts,'cold':args.cold,'profileSummaries':args.profile,'gasSchedule':args.gas_schedule}
++        result={'commandId':command,'instance':identity,'table':outputs['Table'],'account':account,'digest':digest,'counts':counts,'cold':args.cold,'profileSummaries':args.profile,'gasSchedule':args.gas_schedule,'rotateTargets':args.rotate_targets,'separateTimelines':args.separate_timelines,'observableRoot':args.observable_root}
++        selected_jars = [jars[0], *[p for p in (root/'build/install/myos-core-better/lib').glob('*.jar') if p.name.startswith(('blue-java-better-', 'myos-core-better-'))]]
++        result['artifacts'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in selected_jars}
+         (reports/'owners-qualification-command.json').write_text(json.dumps(result,indent=2)+'\n')
+         print(json.dumps(result),flush=True)
+         wait(command, identity, reports/'owners-qualification-current-result.json',
+--- a/myos-aws-test-better/src/main/java/myos/better/OrderedIndex.java
++++ b/myos-aws-test-better/src/main/java/myos/better/OrderedIndex.java
+@@ -67,6 +67,38 @@
+       root = page.branches().get(position).page();
+     }
+     return null;
++  }
++
++  /** Breadth-first lookup of selected keys; unrelated branches are never fetched. */
++  Map<String, String> getAll(String root, Collection<String> keys) {
++    Map<String, String> result = new HashMap<>();
++    Map<String, Set<String>> level = new LinkedHashMap<>();
++    if (!root.isEmpty() && !keys.isEmpty()) level.put(root, new LinkedHashSet<>(keys));
++    while (!level.isEmpty()) {
++      List<String> pages = new ArrayList<>(level.keySet());
++      for (int offset = 0; offset < pages.size(); offset += BlobStore.READ_BATCH_SIZE)
++        store.prefetch(
++            pages.subList(offset, Math.min(pages.size(), offset + BlobStore.READ_BATCH_SIZE)));
++      Map<String, Set<String>> next = new LinkedHashMap<>();
++      for (var selected : level.entrySet()) {
++        Page page = load(selected.getKey());
++        for (String key : selected.getValue()) {
++          if (page.branches().isEmpty()) {
++            int position = lower(page.entries().stream().map(Entry::key).toList(), key);
++            if (position < page.entries().size() && page.entries().get(position).key().equals(key))
++              result.put(key, page.entries().get(position).value());
++          } else {
++            int position = branch(page.branches(), key);
++            if (position < page.branches().size())
++              next.computeIfAbsent(
++                      page.branches().get(position).page(), ignored -> new LinkedHashSet<>())
++                  .add(key);
++          }
++        }
++      }
++      level = next;
++    }
++    return Map.copyOf(result);
+   }
+ 
+   /** One rewrite per affected path; null values delete entries. Prior roots remain readable. */
+--- a/myos-aws-test-better/src/main/java/myos/better/OwnerFrontiers.java
++++ b/myos-aws-test-better/src/main/java/myos/better/OwnerFrontiers.java
+@@ -66,14 +66,17 @@
+ 
+   void interest(OwnerMetadata.Transaction tx, String owner, String binding, boolean observed) {
+     tx.put(key("interest", owner, binding), Boolean.toString(observed));
++    indexInterest(tx, owner, binding);
+   }
+ 
+   void coverageOnly(OwnerMetadata.Transaction tx, String owner, String binding) {
+     tx.put(key("interest", owner, binding), "coverage");
++    indexInterest(tx, owner, binding);
+   }
+ 
+   void target(OwnerMetadata.Transaction tx, String owner, String identity) {
+     tx.put(key("target", owner, identity), "1");
++    tx.put(key("target-owner", identity, owner), owner);
+   }
+ 
+   private static boolean relevant(
+@@ -194,8 +197,7 @@
+     put(tx, occurrence, new Accepted(position, original));
+     put(tx, key("entry", order.timeline(), number(position)), original);
+     Set<String> changed = new LinkedHashSet<>();
+-    for (Reverse consumer :
+-        scan(tx, prefix("timeline-consumer", order.timeline()), Reverse.class)) {
++    for (Reverse consumer : consumers(tx, order)) {
+       refresh(tx, consumer.owner(), consumer.binding());
+       changed.add(consumer.owner());
+     }
+@@ -219,7 +221,10 @@
+       String evidence) {
+     component(timeline);
+     component(evidence);
++    ensureRouting(tx, timeline);
++    ensureCoverageCatalog(tx);
+     Coverage previous = get(tx, key("source-coverage", timeline), Coverage.class);
++    boolean newAuthority = previous == null;
+     if (previous == null) {
+       if (get(tx, key("timeline", timeline), Timeline.class) != null)
+         throw new IllegalStateException("Local source cannot become external");
+@@ -233,14 +238,12 @@
+         throw new IllegalArgumentException("Original is outside its source prefix");
+       accept(tx, entry);
+     }
++    updateCoverageCatalog(tx, timeline, new Coverage(bound, false));
+     put(tx, key("source-coverage", timeline), new Coverage(bound, false));
+     tx.put(key("source-evidence", timeline), evidence);
+-    Set<String> changed = new LinkedHashSet<>();
+-    for (Reverse consumer : scan(tx, prefix("timeline-consumer", timeline), Reverse.class)) {
+-      refreshCoverage(tx, consumer.owner(), consumer.binding());
+-      changed.add(consumer.owner());
+-    }
+-    propagate(tx, changed, Set.of());
++    // An existing source advances one shared bound. Only changing its authority alters
++    // dependency topology; ordinary imports never rewrite subscriber coverage.
++    if (newAuthority) refreshAuthority(tx, timeline);
+   }
+ 
+   boolean local(String timeline) {
+@@ -257,13 +260,10 @@
+     if (before == null)
+       throw new IllegalStateException("Acquire the existing prefix before local enrollment");
+     if (before.local()) return;
++    ensureCoverageCatalog(tx);
++    updateCoverageCatalog(tx, timeline, new Coverage(UNBOUNDED, true));
+     put(tx, key("source-coverage", timeline), new Coverage(UNBOUNDED, true));
+-    Set<String> changed = new LinkedHashSet<>();
+-    for (Reverse consumer : scan(tx, prefix("timeline-consumer", timeline), Reverse.class)) {
+-      refreshCoverage(tx, consumer.owner(), consumer.binding());
+-      changed.add(consumer.owner());
+-    }
+-    propagate(tx, changed, Set.of());
++    refreshAuthority(tx, timeline);
+   }
+ 
+   void sealLocal(OwnerMetadata.Transaction tx, long bound) {
+@@ -293,9 +293,7 @@
+     for (var candidate : tx.page(prefix("ready"), null, limit)) {
+       String owner = candidate.value();
+       Frontier frontier = get(tx, key("frontier", owner), Frontier.class);
+-      if (frontier != null
+-          && frontier.order().timestamp() >= before
+-          && ownerCoverage(tx, owner).local()) {
++      if (frontier != null && frontier.order().timestamp() >= before && hasLocal(tx, owner)) {
+         demand = Math.max(demand, frontier.order().timestamp());
+       }
+     }
+@@ -309,21 +307,12 @@
+       String owner = candidate.value();
+       Frontier frontier = get(tx, key("frontier", owner), Frontier.class);
+       if (frontier == null || covered(tx, owner, frontier.order().timestamp())) continue;
+-      ArrayDeque<String> pending = new ArrayDeque<>();
+-      Set<String> visited = new HashSet<>();
+-      pending.add(owner);
+-      while (!pending.isEmpty()) {
+-        String next = pending.removeFirst();
+-        if (!visited.add(next)) continue;
+-        for (Binding binding : scan(tx, prefix("source", next), Binding.class)) {
+-          Source source = binding.source();
+-          if (source.kind() == Kind.TIMELINE) {
+-            Coverage coverage = timelineCoverage(tx, source.source());
+-            if (!coverage.local() && coverage.before() <= frontier.order().timestamp())
+-              result.merge(source.source(), frontier.order().timestamp(), Math::max);
+-          } else if (ownerCoverage(tx, source.source()).before() <= frontier.order().timestamp())
+-            pending.add(source.source());
+-        }
++      for (String dependency : dependencies(tx, owner)) {
++        if (dependency.equals("L")) continue;
++        String timeline = dependency.substring(1);
++        Coverage coverage = timelineCoverage(tx, timeline);
++        if (!coverage.local() && coverage.before() <= frontier.order().timestamp())
++          result.merge(timeline, frontier.order().timestamp(), Math::max);
+       }
+     }
+     return Map.copyOf(result);
+@@ -387,6 +376,13 @@
+     String token = UUID.randomUUID().toString();
+     return change(
+         tx -> {
++          tx.prefetch(
++              List.of(
++                  key("head", owner),
++                  key("deferred", owner),
++                  key("frontier", owner),
++                  key("coverage-set", owner),
++                  OwnerRecords.key("publication", owner)));
+           Head head = required(tx, owner);
+           Deferred deferred = get(tx, key("deferred", owner), Deferred.class);
+           Frontier frontier = get(tx, key("frontier", owner), Frontier.class);
+@@ -558,6 +554,7 @@
+             for (Binding binding : scan(tx, prefix("source", claim.owner()), Binding.class)) {
+               if (binding.candidate() != null) tx.remove(binding.candidate());
+               tx.remove(reverse(binding.source(), claim.owner()));
++              unindexInterest(tx, claim.owner(), binding.source());
+               removeCoverage(tx, claim.owner(), binding.source().id());
+             }
+           }
+@@ -713,6 +710,7 @@
+       if (old.candidate() != null) tx.remove(old.candidate());
+       tx.remove(key("source", owner, id));
+       tx.remove(reverse(old.source(), owner));
++      unindexInterest(tx, owner, old.source());
+       removeCoverage(tx, owner, id);
+     }
+     Set<String> unique = new HashSet<>();
+@@ -739,9 +737,11 @@
+         if (source.position() > (timeline == null ? 0 : timeline.position()))
+           throw new IllegalArgumentException("Unestablished timeline position");
+       }
++      if (source.kind() == Kind.TIMELINE) ensureRouting(tx, source.source());
+       put(tx, key("source", owner, source.id()), new Binding(source, null));
+       if (source.kind() != Kind.OWNER || !source.source().equals(owner))
+         put(tx, reverse(source, owner), new Reverse(owner, source.id()));
++      indexInterest(tx, owner, source.id());
+       refresh(tx, owner, source.id());
+       refreshCoverage(tx, owner, source.id());
+     }
+@@ -801,6 +801,7 @@
+           source =
+               new Source(
+                   source.id(), source.kind(), source.source(), source.generation(), position);
++          if (source.kind() == Kind.TIMELINE) ensureRouting(tx, source.source());
+           put(tx, key("source", owner, source.id()), new Binding(source, null));
+         }
+         if (original != null)
+@@ -855,16 +856,16 @@
+     while (!queue.isEmpty()) {
+       String owner = queue.removeFirst();
+       queued.remove(owner);
++      tx.prefetch(
++          List.of(
++              key("frontier", owner), key("coverage-set", owner), key("coverage-dirty", owner)));
+       Frontier before = get(tx, key("frontier", owner), Frontier.class);
+       var minimum = tx.page(prefix("input", owner), null, 1);
+       Candidate candidate =
+           minimum.isEmpty() ? null : decode(minimum.getFirst().value(), Candidate.class);
+       Frontier after =
+           candidate == null ? null : new Frontier(candidate.order(), candidate.ready());
+-      Coverage previousCoverage = get(tx, key("coverage", owner), Coverage.class);
+-      Coverage nextCoverage = summarizeCoverage(tx, owner);
+-      boolean coverageChanged = !Objects.equals(previousCoverage, nextCoverage);
+-      if (coverageChanged) put(tx, key("coverage", owner), nextCoverage);
++      boolean coverageChanged = publishDependencies(tx, owner);
+       boolean different = !Objects.equals(before, after);
+       if (different) {
+         if (before != null) tx.remove(prefix("ready") + before.order().key() + "\0" + owner);
+@@ -888,17 +889,104 @@
+     return result == null ? new Coverage(UNBOUNDED, true) : result;
+   }
+ 
++  /** Resolve each distinct external authority once, regardless of its embedding multiplicity. */
+   private static Coverage ownerCoverage(OwnerMetadata.Transaction tx, String owner) {
+-    Coverage result = get(tx, key("coverage", owner), Coverage.class);
+-    return result == null ? new Coverage(UNBOUNDED, false) : result;
++    long before = UNBOUNDED;
++    boolean local = false;
++    for (String dependency : dependencies(tx, owner)) {
++      if (dependency.equals("L")) local = true;
++      else {
++        Coverage source = timelineCoverage(tx, dependency.substring(1));
++        before = Math.min(before, source.before());
++        local |= source.local();
++      }
++    }
++    return new Coverage(before, local);
++  }
++
++  private static boolean hasLocal(OwnerMetadata.Transaction tx, String owner) {
++    String value = tx.get(key("coverage-local", owner));
++    if (value == null) {
++      dependencies(tx, owner);
++      value = tx.get(key("coverage-local", owner));
++    }
++    return Boolean.parseBoolean(value);
+   }
+ 
+   private static boolean covered(OwnerMetadata.Transaction tx, String owner, long time) {
++    if (hasLocal(tx, owner) && time >= completeness(tx)) return false;
++    String external = tx.get(key("coverage-external", owner));
++    if ("0".equals(external)) return true;
++    if (tx.get("coverage-catalog") != null) {
++      var minimum = tx.page(prefix("external-bound"), null, 1);
++      if (minimum.isEmpty() || time < Long.parseLong(minimum.getFirst().value())) return true;
++    }
++    // A lagging unrelated provider never blocks this owner: the account-wide minimum
++    // is only a sufficient fast certificate, not a necessary condition.
+     Coverage coverage = ownerCoverage(tx, owner);
+     return time < coverage.before() && (!coverage.local() || time < completeness(tx));
+   }
+ 
++  private static void ensureCoverageCatalog(OwnerMetadata.Transaction tx) {
++    if (tx.get("coverage-catalog") != null) return;
++    String prefix = prefix("source-coverage"), after = null;
++    while (true) {
++      var page = tx.page(prefix, after, 128);
++      for (var row : page)
++        updateCoverageCatalog(
++            tx, row.key().substring(prefix.length()), decode(row.value(), Coverage.class));
++      if (page.size() < 128) break;
++      after = page.getLast().key();
++    }
++    tx.put("coverage-catalog", "1");
++  }
++
++  private static void updateCoverageCatalog(
++      OwnerMetadata.Transaction tx, String timeline, Coverage coverage) {
++    String location = key("external-bound-key", timeline);
++    String old = tx.get(location);
++    if (old != null) tx.remove(old);
++    tx.remove(location);
++    if (!coverage.local()) {
++      String next = key("external-bound", number(coverage.before()), timeline);
++      tx.put(next, Long.toString(coverage.before()));
++      tx.put(location, next);
++    }
++  }
++
++  private static List<String> dependencies(OwnerMetadata.Transaction tx, String owner) {
++    String stored = tx.get(key("coverage-set", owner));
++    if (stored == null) {
++      // One-time migration of a pre-indexed owner, within the same conditional cut.
++      for (Binding binding : scan(tx, prefix("source", owner), Binding.class))
++        refreshCoverage(tx, owner, binding.source().id());
++      publishDependencies(tx, owner);
++      stored = tx.get(key("coverage-set", owner));
++    }
++    return strings(stored);
++  }
++
++  private static List<String> strings(String value) {
++    if (value == null) return List.of();
++    return Arrays.asList(decode(value, String[].class));
++  }
++
++  private static void adjustDependency(
++      OwnerMetadata.Transaction tx, String owner, String dependency, int delta) {
++    String key = key("coverage-reference", owner, dependency);
++    String previous = tx.get(key);
++    long next = Math.addExact(previous == null ? 0 : Long.parseLong(previous), delta);
++    if (next < 0) throw new IllegalStateException("Negative coverage reference count");
++    if (next == 0) tx.remove(key);
++    else tx.put(key, Long.toString(next));
++    tx.put(key("coverage-dirty", owner), "1");
++  }
++
+   private static void removeCoverage(OwnerMetadata.Transaction tx, String owner, String binding) {
++    String saved = key("coverage-binding", owner, binding);
++    for (String dependency : strings(tx.get(saved))) adjustDependency(tx, owner, dependency, -1);
++    tx.remove(saved);
++    // Legacy projections may still be present in old histories; remove on replacement.
+     String old = tx.get(key("coverage-key", owner, binding));
+     if (old != null) tx.remove(old);
+     tx.remove(key("coverage-key", owner, binding));
+@@ -911,21 +999,101 @@
+     if (binding == null || required(tx, owner).closed()) return;
+     Source source = binding.source();
+     if (source.kind() == Kind.OWNER && source.source().equals(owner)) return;
+-    Coverage coverage =
+-        source.kind() == Kind.TIMELINE
+-            ? timelineCoverage(tx, source.source())
+-            : ownerCoverage(tx, source.source());
+-    String selected = key("external-coverage", owner, number(coverage.before()), id);
+-    tx.put(selected, Long.toString(coverage.before()));
+-    tx.put(key("coverage-key", owner, id), selected);
+-    if (coverage.local()) tx.put(key("local-coverage", owner, id), "1");
+-  }
+-
+-  private static Coverage summarizeCoverage(OwnerMetadata.Transaction tx, String owner) {
+-    var first = tx.page(prefix("external-coverage", owner), null, 1);
+-    return new Coverage(
+-        first.isEmpty() ? UNBOUNDED : Long.parseLong(first.getFirst().value()),
+-        !tx.page(prefix("local-coverage", owner), null, 1).isEmpty());
++    List<String> selected =
++        source.kind() == Kind.OWNER
++            ? dependencies(tx, source.source())
++            : List.of(timelineCoverage(tx, source.source()).local() ? "L" : "T" + source.source());
++    put(tx, key("coverage-binding", owner, id), selected);
++    for (String dependency : selected) adjustDependency(tx, owner, dependency, 1);
++  }
++
++  private static boolean publishDependencies(OwnerMetadata.Transaction tx, String owner) {
++    String key = key("coverage-set", owner);
++    String before = tx.get(key);
++    if (before != null && tx.get(key("coverage-dirty", owner)) == null) return false;
++    List<String> selected = new ArrayList<>();
++    String prefix = prefix("coverage-reference", owner), after = null;
++    while (true) {
++      var page = tx.page(prefix, after, 128);
++      for (var entry : page) selected.add(entry.key().substring(prefix.length()));
++      if (page.size() < 128) break;
++      after = page.getLast().key();
++    }
++    String next = JsonText.of(selected);
++    tx.put(key, next);
++    boolean local = selected.contains("L");
++    tx.put(key("coverage-local", owner), Boolean.toString(local));
++    tx.put(key("coverage-external", owner), Integer.toString(selected.size() - (local ? 1 : 0)));
++    tx.remove(key("coverage-dirty", owner));
++    return !Objects.equals(before, next);
++  }
++
++  private static void refreshAuthority(OwnerMetadata.Transaction tx, String timeline) {
++    Set<String> changed = new LinkedHashSet<>();
++    for (Reverse consumer : scan(tx, prefix("timeline-consumer", timeline), Reverse.class)) {
++      refreshCoverage(tx, consumer.owner(), consumer.binding());
++      changed.add(consumer.owner());
++    }
++    propagate(tx, changed, Set.of());
++  }
++
++  private static void unindexInterest(OwnerMetadata.Transaction tx, String owner, Source source) {
++    if (source.kind() == Kind.TIMELINE)
++      tx.remove(key("timeline-observer", source.source(), owner, source.id()));
++  }
++
++  private static void indexInterest(OwnerMetadata.Transaction tx, String owner, String binding) {
++    Binding selected = get(tx, key("source", owner, binding), Binding.class);
++    if (selected == null || selected.source().kind() != Kind.TIMELINE) return;
++    String interest = tx.get(key("interest", owner, binding));
++    String key = key("timeline-observer", selected.source().source(), owner, binding);
++    if (interest == null || Boolean.parseBoolean(interest))
++      put(tx, key, new Reverse(owner, binding));
++    else tx.remove(key);
++  }
++
++  private static void ensureRouting(OwnerMetadata.Transaction tx, String timeline) {
++    String marker = key("timeline-routing", timeline);
++    if (tx.get(marker) != null) return;
++    Set<String> changed = new LinkedHashSet<>();
++    for (Reverse consumer : scan(tx, prefix("timeline-consumer", timeline), Reverse.class)) {
++      indexInterest(tx, consumer.owner(), consumer.binding());
++      String prefix = prefix("target", consumer.owner()), after = null;
++      while (true) {
++        var page = tx.page(prefix, after, 128);
++        for (var row : page)
++          tx.put(
++              key("target-owner", row.key().substring(prefix.length()), consumer.owner()),
++              consumer.owner());
++        if (page.size() < 128) break;
++        after = page.getLast().key();
++      }
++      refreshCoverage(tx, consumer.owner(), consumer.binding());
++      changed.add(consumer.owner());
++    }
++    propagate(tx, changed, Set.of());
++    tx.put(marker, "1");
++  }
++
++  private static List<Reverse> consumers(OwnerMetadata.Transaction tx, Order order) {
++    ensureRouting(tx, order.timeline());
++    Input input = get(tx, key("classification", order.timeline(), order.entry()), Input.class);
++    if (input == null || input.operation() && input.target() == null)
++      return scan(tx, prefix("timeline-consumer", order.timeline()), Reverse.class);
++    Set<Reverse> selected =
++        new LinkedHashSet<>(scan(tx, prefix("timeline-observer", order.timeline()), Reverse.class));
++    if (input.operation()) {
++      String after = null;
++      while (true) {
++        var page = tx.page(prefix("target-owner", input.target()), after, 128);
++        for (var row : page)
++          selected.addAll(
++              scan(tx, prefix("timeline-consumer", order.timeline(), row.value()), Reverse.class));
++        if (page.size() < 128) break;
++        after = page.getLast().key();
++      }
++    }
++    return List.copyOf(selected);
+   }
+ 
+   <T> T change(Function<OwnerMetadata.Transaction, T> edit) {
+--- a/myos-aws-test-better/src/main/java/myos/better/OwnerLocal.java
++++ b/myos-aws-test-better/src/main/java/myos/better/OwnerLocal.java
+@@ -37,6 +37,14 @@
+     String previousPage = (String) publication.get("page");
+     if (!previousPage.equals(claim.snapshot()))
+       throw new IllegalStateException("Stale local claim");
++    records.read.prefetch(
++        claim.sources().stream()
++            .filter(
++                source ->
++                    source.binding().kind() == OwnerFrontiers.Kind.OWNER
++                        && source.receipt() != null)
++            .map(source -> OwnerRecords.key("local-completion", source.receipt()))
++            .toList());
+     List<Map<String, Object>> attachments = new ArrayList<>();
+     Map<String, Object> changedMembers = new LinkedHashMap<>(),
+         changedContent = new LinkedHashMap<>(),
+--- a/myos-aws-test-better/src/main/java/myos/better/OwnerMetadata.java
++++ b/myos-aws-test-better/src/main/java/myos/better/OwnerMetadata.java
+@@ -55,6 +55,34 @@
+       return changes.containsKey(key) ? changes.get(key) : decode(index.get(root, key));
+     }
+ 
++    /** Load only requested index paths and their bounded values in network batches. */
++    void prefetch(Collection<String> keys) {
++      check();
++      var selected = keys.stream().filter(key -> !changes.containsKey(key)).toList();
++      prefetchValues(index.getAll(root, selected).values());
++    }
++
++    private void prefetchValues(Collection<String> values) {
++      var direct =
++          values.stream()
++              .filter(v -> v.startsWith("2"))
++              .map(v -> v.substring(1))
++              .distinct()
++              .toList();
++      var chunked =
++          values.stream()
++              .filter(v -> v.startsWith("1"))
++              .map(v -> v.substring(1))
++              .distinct()
++              .toList();
++      for (int offset = 0; offset < direct.size(); offset += BlobStore.READ_BATCH_SIZE)
++        blobs.prefetch(
++            direct.subList(offset, Math.min(direct.size(), offset + BlobStore.READ_BATCH_SIZE)));
++      for (int offset = 0; offset < chunked.size(); offset += BlobStore.READ_BATCH_SIZE)
++        blocks.prefetch(
++            chunked.subList(offset, Math.min(chunked.size(), offset + BlobStore.READ_BATCH_SIZE)));
++    }
++
+     void put(String key, String value) {
+       check();
+       changes.put(key, Objects.requireNonNull(value));
+@@ -75,6 +103,11 @@
+       while (selected.size() < limit) {
+         List<OrderedIndex.Entry> base = index.page(root, prefix, cursor, limit);
+         if (base.isEmpty()) break;
++        prefetchValues(
++            base.stream()
++                .filter(e -> !changes.containsKey(e.key()))
++                .map(OrderedIndex.Entry::value)
++                .toList());
+         for (var entry : base) {
+           String value =
+               changes.containsKey(entry.key()) ? changes.get(entry.key()) : decode(entry.value());
+@@ -127,12 +160,16 @@
+     private String encode(String value) {
+       if (value == null) return null;
+       byte[] bytes = value.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+-      return bytes.length <= 1024 ? "0" + value : "1" + blocks.put(bytes);
++      if (bytes.length <= 1024) return "0" + value;
++      // Small protected records fit one authenticated page; no extra chunk manifest read.
++      return bytes.length <= 64 * 1024 ? "2" + blobs.put(bytes) : "1" + blocks.put(bytes);
+     }
+ 
+     private String decode(String stored) {
+       if (stored == null) return null;
+       if (stored.startsWith("0")) return stored.substring(1);
++      if (stored.startsWith("2"))
++        return new String(blobs.get(stored.substring(1)), java.nio.charset.StandardCharsets.UTF_8);
+       if (stored.startsWith("1"))
+         return new String(blocks.get(stored.substring(1)), java.nio.charset.StandardCharsets.UTF_8);
+       throw new IllegalStateException("Invalid owner metadata value");
+--- a/myos-aws-test-better/src/main/java/myos/better/TimelineService.java
++++ b/myos-aws-test-better/src/main/java/myos/better/TimelineService.java
+@@ -456,32 +456,45 @@
+               expected.put(new AtomicStore.Key(partition, "SOURCE#" + key.name()), declaration);
+             }
+           });
+-      boolean bound = false;
+-      for (int attempt = 0; attempt < 3 && !bound; attempt++) {
+-        Map<AtomicStore.Key, AtomicStore.Row> found =
+-            repository.store.getAll(List.copyOf(expected.keySet()));
+-        List<AtomicStore.Write> writes = new ArrayList<>();
+-        List<AtomicStore.Check> checks = new ArrayList<>();
+-        expected.forEach(
+-            (key, value) -> {
+-              AtomicStore.Row prior = found.get(key);
+-              if (prior == null) writes.add(AtomicStore.Write.put(key, 0, value));
+-              else {
+-                if (prior.version() != 1
+-                    || !prior.key().equals(key)
+-                    || !prior.value().equals(value))
+-                  throw new IllegalArgumentException(
+-                      "Stored Timeline configuration differs; explicit migration required");
+-                checks.add(new AtomicStore.Check(key, 1));
+-              }
+-            });
+-        bound = writes.isEmpty() || repository.store.commit(writes, checks);
++      // Namespace and alias declarations are immutable. Each bounded page is guarded by
++      // the same namespace; workers start only after all requested aliases are bound.
++      var namespaceKey = new AtomicStore.Key(partition, "STATE");
++      List<AtomicStore.Key> aliases =
++          expected.keySet().stream().filter(k -> !k.equals(namespaceKey)).toList();
++      for (int offset = 0; offset < aliases.size(); offset += 99) {
++        Map<AtomicStore.Key, Map<String, Object>> page = new LinkedHashMap<>();
++        page.put(namespaceKey, binding);
++        for (var key : aliases.subList(offset, Math.min(aliases.size(), offset + 99)))
++          page.put(key, expected.get(key));
++        bindPage(page);
+       }
+-      if (!bound) throw new IllegalStateException("Concurrent Timeline configuration publication");
+       accounts
+           .get(account)
+           .forEach(source -> work.recover(account, source.source().timeline().value()));
+     }
++  }
++
++  private void bindPage(Map<AtomicStore.Key, Map<String, Object>> expected) {
++    boolean bound = false;
++    for (int attempt = 0; attempt < 3 && !bound; attempt++) {
++      Map<AtomicStore.Key, AtomicStore.Row> found =
++          repository.store.getAll(List.copyOf(expected.keySet()));
++      List<AtomicStore.Write> writes = new ArrayList<>();
++      List<AtomicStore.Check> checks = new ArrayList<>();
++      expected.forEach(
++          (key, value) -> {
++            AtomicStore.Row prior = found.get(key);
++            if (prior == null) writes.add(AtomicStore.Write.put(key, 0, value));
++            else {
++              if (prior.version() != 1 || !prior.key().equals(key) || !prior.value().equals(value))
++                throw new IllegalArgumentException(
++                    "Stored Timeline configuration differs; explicit migration required");
++              checks.add(new AtomicStore.Check(key, 1));
++            }
++          });
++      bound = writes.isEmpty() || repository.store.commit(writes, checks);
++    }
++    if (!bound) throw new IllegalStateException("Concurrent Timeline configuration publication");
+   }
+ 
+   Map<String, Object> acquire(
+--- a/myos-aws-test-better/src/main/java/myos/better/TimelineWork.java
++++ b/myos-aws-test-better/src/main/java/myos/better/TimelineWork.java
+@@ -158,7 +158,7 @@
+     writes.add(AtomicStore.Write.put(key, version(before), value));
+   }
+ 
+-  /** Included in the same transaction as the document and its receiving declarations. */
++  /** The authoritative receiver is committed with the document and its receiving declarations. */
+   void subscribe(
+       List<AtomicStore.Write> writes, String account, String document, List<String> sources) {
+     subscribe(writes, account, document, sources, null);
+@@ -204,20 +204,11 @@
+     if (!supported.test(account, next))
+       throw new IllegalArgumentException("Runtime does not support all receiver sources");
+     requireScope(before, scope);
+-    for (String timeline : previous) {
+-      if (next.contains(timeline)) continue;
+-      AtomicStore.Row subscription = store.get(subscription(account, timeline, document));
+-      if (subscription == null) throw new IllegalStateException("Missing Timeline subscription");
+-      writes.add(AtomicStore.Write.delete(subscription));
+-    }
+-    for (String timeline : next) {
+-      if (previous.contains(timeline)) continue;
+-      writes.add(
+-          AtomicStore.Write.put(
+-              subscription(account, timeline, document),
+-              0,
+-              Map.of("account", account, "document", document)));
+-    }
++    // These immutable reverse pointers are candidates, never subscription authority. Publish
++    // them before the receiver CAS so large source sets do not exceed DynamoDB's item limit.
++    // A crash leaves harmless pointers: fanout checks the receiver's committed source set.
++    // The receiver is scheduled on publication, including arrivals during preparation.
++    indexSources(account, document, next.stream().filter(t -> !previous.contains(t)).toList());
+     Map<String, Object> value = copy(before);
+     value.put("scope", scope);
+     value.put("kind", "receiver");
+@@ -237,6 +228,33 @@
+       schedule(key, value);
+     }
+     writes.add(AtomicStore.Write.put(key, version(before), value));
++  }
++
++  private void indexSources(String account, String document, List<String> sources) {
++    Map<String, Object> value = Map.of("account", account, "document", document);
++    for (int start = 0; start < sources.size(); start += 100) {
++      List<AtomicStore.Key> keys =
++          sources.subList(start, Math.min(start + 100, sources.size())).stream()
++              .map(t -> subscription(account, t, document))
++              .toList();
++      boolean published = false;
++      for (int attempt = 0; attempt < 16; attempt++) {
++        Map<AtomicStore.Key, AtomicStore.Row> existing = store.getAll(keys);
++        List<AtomicStore.Write> additions = new ArrayList<>();
++        for (var key : keys) {
++          var row = existing.get(key);
++          if (row == null) additions.add(AtomicStore.Write.put(key, 0, value));
++          else if (row.version() != 1 || !row.value().equals(value))
++            throw new IllegalStateException("Invalid immutable Timeline subscriber pointer");
++        }
++        if (additions.isEmpty() || store.commit(additions, List.of())) {
++          published = true;
++          break;
++        }
++      }
++      if (!published)
++        throw new IllegalStateException("Timeline subscriber indexing remains contended");
++    }
+   }
+ 
+   void hint(AtomicStore.Key key) {
+@@ -331,7 +349,7 @@
+       AtomicStore.Row subscription = page.rows().get(index);
+       AtomicStore.Key key = receiver(account, text(subscription, "document"));
+       AtomicStore.Row target = receivers.get(key);
+-      // The receiver record fences removal of a subscription while a fanout page is in flight.
++      // The receiver record fences uncommitted additions and removed subscriptions.
+       if (target == null
+           || !sources(target).contains(timeline)
+           || Boolean.TRUE.equals(target.value().get("blocked"))) continue;
+--- a/myos-aws-test-better/src/qualification/java/myos/better/OwnerScaleProbe.java
++++ b/myos-aws-test-better/src/qualification/java/myos/better/OwnerScaleProbe.java
+@@ -36,30 +36,31 @@
+                     args[0], System.getenv().getOrDefault("AWS_REGION", "eu-west-1")))) {
+       for (int count : sizes) {
+         String account = args[1] + "-" + count;
+-        var timeline = new QualificationTimeline("owner-scale-" + count);
+-        var archive =
+-            new TimelineArchive(
+-                new Repository(store),
+-                account,
+-                QualificationTimeline.COORDINATION,
+-                timeline.provider,
+-                timeline.timeline,
+-                new TimelineMetrics(),
+-                PublicPackages.EMPTY,
+-                TimelineArchive.Recovery.PROTECTED_STORAGE);
+-        var language =
++        int timelineCount = Boolean.getBoolean("blue.probe.separateTimelines") ? count : 1;
++        if (timelineCount > 1 && Boolean.getBoolean("blue.probe.rotateTargets"))
++          throw new IllegalArgumentException(
++              "Separate-source probe reserves quiet source prefixes; use fixed target");
++        List<QualificationTimeline> sources = new ArrayList<>();
++        for (int i = 0; i < timelineCount; i++)
++          sources.add(new QualificationTimeline("owner-scale-" + count + "-" + i));
++        var timeline = sources.getFirst();
++        var archives = archives(store, account, sources);
++        var archive = archives.getFirst();
++        var builder =
+             Language.newBuilder()
+                 .mount("Contracts", Contracts.publication())
+-                .mount("Coordination", QualificationTimeline.COORDINATION)
+-                .content(timeline.provider)
+-                .content(timeline.timeline)
+-                .build();
++                .mount("Coordination", QualificationTimeline.COORDINATION);
++        for (var source : sources) builder.content(source.provider).content(source.timeline);
++        var language = builder.build();
++        long setupStarted = System.nanoTime();
++        seedQuiet(archives, sources);
++        double quietSetup = (System.nanoTime() - setupStarted) / 1e6;
+         try (var service =
+             new TimelineService(
+                 new Repository(store),
+                 QualificationTimeline.COORDINATION,
+                 "owner-scale",
+-                List.of(new TimelineService.Adopted(account, "source", archive)))) {
++                adopted(account, archives))) {
+           service.bind();
+           var ingress = service.graphIngress();
+           var contracts =
+@@ -70,7 +71,7 @@
+                   .build();
+           var engine = new OwnerGraphs(store, contracts, service, ingress);
+           String root = "graph-fast-scale-" + UUID.randomUUID();
+-          var document = language.readJson(JsonText.of(source(count, timeline)));
++          var document = language.readJson(JsonText.of(source(count, sources)));
+           long start = System.nanoTime();
+           var created = engine.create(account, root, "create", document);
+           double initialization = (System.nanoTime() - start) / 1e6;
+@@ -94,7 +95,10 @@
+               var publication = inspection.records(account).head(root).value();
+               String page = (String) publication.get("page");
+               String order =
+-                  inspection.snapshots.embedding(account, page, root, "/orders/order-0").target();
++                  inspection
++                      .snapshots
++                      .embedding(account, page, root, "/orders/order-" + selectedIndex(n, count))
++                      .target();
+               String member =
+                   inspection.snapshots.embedding(account, page, order, "/payments/p0").target();
+               var target = inspection.snapshots.member(account, page, member, language);
+@@ -106,12 +110,12 @@
+                           Language.Input.yaml(
+                               """
+                               type: Contracts/Operation Request
+-                              channel: payment-order-0
++                              channel: payment-order-%d
+                               operation: record
+                               document: {blueId: '%s'}
+                               request: {sequence: %d}
+                               """
+-                                  .formatted(target.blueId(), n)));
++                                  .formatted(selectedIndex(n, count), target.blueId(), n)));
+               long time = n + 1;
+               var entry =
+                   timeline.typed(
+@@ -176,6 +180,7 @@
+                     "Owner-local qualification silently used full graph execution");
+               replays.add(
+                   new Replay(
++                      selectedIndex(n, count),
+                       entry,
+                       range,
+                       request.records(),
+@@ -211,6 +216,9 @@
+                           "parity",
+                           "pending"));
+               row.put("gasSchedule", gasSchedule().id());
++              row.put("observableRoot", Boolean.getBoolean("blue.probe.observableRoot"));
++              row.put("orderIndex", selectedIndex(n, count));
++              row.put("sourceMode", timelineCount == 1 ? "shared-external" : "separate-external");
+               row.put(
+                   "parityScope",
+                   gasSchedule() == GasSchedule.PUBLISHED
+@@ -229,7 +237,7 @@
+               previous = entry.blueId();
+             }
+           }
+-          verify(account, root, document, language, timeline, created.receipt(), replays);
++          verify(account, root, document, language, sources, created.receipt(), replays);
+           for (Object call : calls)
+             RuntimeConfiguration.object(call, "measurement").put("parity", true);
+           System.out.println(
+@@ -241,6 +249,10 @@
+                   count,
+                   "documents",
+                   count * 2 + 1,
++                  "timelineCount",
++                  timelineCount,
++                  "quietSourceSetupMillis",
++                  quietSetup,
+                   "initializationMillis",
+                   initialization,
+                   "initialPrepareAdmissionMillis",
+@@ -269,7 +281,12 @@
+                 results)));
+   }
+ 
++  private static int selectedIndex(int sample, int count) {
++    return Boolean.getBoolean("blue.probe.rotateTargets") ? (sample * 37) % count : 0;
++  }
++
+   private record Replay(
++      int orderIndex,
+       LanguageContent entry,
+       String range,
+       Map<BlueId, LanguageRecord> content,
+@@ -354,26 +371,24 @@
+       String root,
+       LanguageDocument document,
+       Language language,
+-      QualificationTimeline timeline,
++      List<QualificationTimeline> sources,
+       String initializationReceipt,
+       List<Replay> inputs) {
+     try (var storage = new MemoryStore()) {
+-      var archive =
+-          new TimelineArchive(
+-              new Repository(storage),
+-              account,
+-              QualificationTimeline.COORDINATION,
+-              timeline.provider,
+-              timeline.timeline,
+-              new TimelineMetrics(),
+-              PublicPackages.EMPTY,
+-              TimelineArchive.Recovery.PROTECTED_STORAGE);
++      var timeline = sources.getFirst();
++      var archives = archives(storage, account, sources);
++      var archive = archives.getFirst();
++      try {
++        seedQuiet(archives, sources);
++      } catch (java.security.GeneralSecurityException failure) {
++        throw new IllegalStateException(failure);
++      }
+       try (var service =
+           new TimelineService(
+               new Repository(storage),
+               QualificationTimeline.COORDINATION,
+               "owner-scale-oracle",
+-              List.of(new TimelineService.Adopted(account, "source", archive)))) {
++              adopted(account, archives))) {
+         service.bind();
+         var ingress = service.graphIngress();
+         var contracts =
+@@ -392,7 +407,10 @@
+             archive.acquire(input.range(), input.content());
+             String order =
+                 whole.embeddings().stream()
+-                    .filter(e -> e.source().equals(root) && e.path().equals("/orders/order-0"))
++                    .filter(
++                        e ->
++                            e.source().equals(root)
++                                && e.path().equals("/orders/order-" + input.orderIndex()))
+                     .findFirst()
+                     .orElseThrow()
+                     .target();
+@@ -419,6 +437,43 @@
+                       .process(whole, input.entry(), n + 1, scope.request.evidence())
+                       .requireApplied();
+               whole = expected.after();
++              if (Boolean.getBoolean("blue.probe.observableRoot")
++                  && ((List<?>) input.publicEvents()).size() != 2)
++                throw new AssertionError(
++                    "Expected two distinct public event occurrences, even with identical values");
++              System.out.println(
++                  JsonText.of(
++                      Map.of(
++                          "phase",
++                          "comparison",
++                          "sample",
++                          n,
++                          "orderIndex",
++                          input.orderIndex(),
++                          "root",
++                          root,
++                          "input",
++                          input.entry().blueId().value(),
++                          "actual",
++                          Map.of(
++                              "blueId",
++                              input.blueId(),
++                              "gas",
++                              input.gas(),
++                              "publicEvents",
++                              input.publicEvents(),
++                              "receipt",
++                              input.receipt()),
++                          "expected",
++                          Map.of(
++                              "blueId",
++                              whole.blueId(),
++                              "gas",
++                              expected.transition().gas(),
++                              "publicEvents",
++                              expected.transition().observations().get("publicEvents"),
++                              "receipt",
++                              expected.transition().receipt()))));
+               if (!whole.blueId().equals(input.blueId())
+                   || (gasSchedule() == GasSchedule.PUBLISHED
+                       && !expected.transition().receipt().equals(input.receipt()))
+@@ -433,6 +488,50 @@
+     }
+   }
+ 
++  private static List<TimelineArchive> archives(
++      AtomicStore store, String account, List<QualificationTimeline> sources) {
++    return sources.stream()
++        .map(
++            source ->
++                new TimelineArchive(
++                    new Repository(store),
++                    account,
++                    QualificationTimeline.COORDINATION,
++                    source.provider,
++                    source.timeline,
++                    new TimelineMetrics(),
++                    PublicPackages.EMPTY,
++                    TimelineArchive.Recovery.PROTECTED_STORAGE))
++        .toList();
++  }
++
++  private static List<TimelineService.Adopted> adopted(
++      String account, List<TimelineArchive> archives) {
++    List<TimelineService.Adopted> result = new ArrayList<>();
++    for (int i = 0; i < archives.size(); i++)
++      result.add(new TimelineService.Adopted(account, "source-" + i, archives.get(i)));
++    return List.copyOf(result);
++  }
++
++  private static void seedQuiet(List<TimelineArchive> archives, List<QualificationTimeline> sources)
++      throws java.security.GeneralSecurityException {
++    // The quiet providers have already certified a prefix beyond the measured active inputs.
++    // No later append is allowed behind that prefix. Their acquisition cost is reported separately.
++    for (int i = 1; i < archives.size(); i++)
++      archives
++          .get(i)
++          .acquire(
++              sources
++                  .get(i)
++                  .range(
++                      null,
++                      null,
++                      Integer.getInteger("blue.probe.samples", 5) + 1,
++                      List.of(),
++                      false),
++              Map.of());
++  }
++
+   private static long gcMillis() {
+     return ManagementFactory.getGarbageCollectorMXBeans().stream()
+         .mapToLong(bean -> Math.max(0, bean.getCollectionTime()))
+@@ -444,10 +543,12 @@
+   }
+ 
+   @SuppressWarnings("unchecked")
+-  private static Object source(int count, QualificationTimeline timeline) {
++  private static Object source(int count, List<QualificationTimeline> sources) {
+     var source = Json.object(Json.bytes(CanonicalGraphProbe.source(count, false)));
+     for (var raw : ((Map<?, ?>) source.get("orders")).entrySet()) {
+       String key = (String) raw.getKey();
++      var timeline =
++          sources.get(sources.size() == 1 ? 0 : Integer.parseInt(key.substring("order-".length())));
+       var order = (Map<String, Object>) raw.getValue();
+       var payment = (Map<String, Object>) ((Map<?, ?>) order.get("payments")).get("p0");
+       ((Map<String, Object>) payment.get("contracts"))
+@@ -461,6 +562,20 @@
+                   "url",
+                   timeline.url));
+     }
++    if (Boolean.getBoolean("blue.probe.observableRoot")) {
++      var contracts = (Map<String, Object>) source.get("contracts");
++      var react = (Map<String, Object>) contracts.get("react");
++      List<Object> steps = new ArrayList<>((List<?>) react.get("steps"));
++      Map<String, Object> emission =
++          Map.of(
++              "type",
++              "Contracts/Trigger Event",
++              "event",
++              Map.of("kind", "Agreement Payment Recorded", "amount", 42));
++      steps.add(emission);
++      steps.add(emission);
++      react.put("steps", steps);
++    }
+     return source;
+   }
+ }
+--- a/myos-aws-test-better/src/test/java/myos/better/CanonicalClauseTutorialTest.java
++++ b/myos-aws-test-better/src/test/java/myos/better/CanonicalClauseTutorialTest.java
+@@ -71,9 +71,8 @@
+           for (var row : frontiers.metadata.begin().page("head\0", null, 100))
+             for (var source : frontiers.sources(row.key().substring("head\0".length())))
+               if (source.id().endsWith(":provider:1")) {
+-                assertTrue(
+-                    source.position() >= 32,
+-                    "Verified unrelated history must not execute in a new access document");
++                // Target-indexed delivery leaves unrelated cursors untouched. The semantic
++                // invariant is that old unrelated messages do not cause native owner turns.
+                 assertTrue(
+                     frontiers.head(row.key().substring("head\0".length())).position() < 4,
+                     "Unrelated old messages must be routed without native owner turns");
+--- a/myos-aws-test-better/src/test/java/myos/better/OrderedIndexTest.java
++++ b/myos-aws-test-better/src/test/java/myos/better/OrderedIndexTest.java
+@@ -58,7 +58,11 @@
+             });
+         assertEquals(matching, actual);
+       }
+-      for (String key : edits.keySet()) assertEquals(expected.get(key), cold.get(root, key));
++      Map<String, String> selected = new OrderedIndex(content).getAll(root, edits.keySet());
++      for (String key : edits.keySet()) {
++        assertEquals(expected.get(key), cold.get(root, key));
++        assertEquals(expected.get(key), selected.get(key));
++      }
+     }
+     TreeMap<String, String> removals = new TreeMap<>();
+     expected.keySet().forEach(key -> removals.put(key, null));
+--- a/myos-aws-test-better/src/test/java/myos/better/OwnerCycleTest.java
++++ b/myos-aws-test-better/src/test/java/myos/better/OwnerCycleTest.java
+@@ -6,7 +6,7 @@
+ import java.util.*;
+ import org.junit.jupiter.api.*;
+ import org.junit.jupiter.params.ParameterizedTest;
+-import org.junit.jupiter.params.provider.ValueSource;
++import org.junit.jupiter.params.provider.CsvSource;
+ 
+ /** A cyclic component has one fenced native publication, including chords and cold recovery. */
+ class OwnerCycleTest {
+@@ -21,8 +21,8 @@
+   }
+ 
+   @ParameterizedTest
+-  @ValueSource(ints = {4, 8})
+-  void aCycleWithAChordMatchesWholeNativeExecution(int count) {
++  @CsvSource({"4,PUBLISHED", "8,PUBLISHED", "4,ADDITIVE_PROTOTYPE", "8,ADDITIVE_PROTOTYPE"})
++  void aCycleWithAChordMatchesWholeNativeExecution(int count, GasSchedule schedule) {
+     var store = new JsonBoundaryStore();
+     var repository = new Repository(store);
+     var timeline = new TimelineFixture("https://provider.example/cycle");
+@@ -72,7 +72,11 @@
+       service.bind();
+       var ingress = service.graphIngress();
+       var contracts =
+-          Contracts.newBuilder().language(language).timelineChannels(ingress.channels()).build();
++          Contracts.newBuilder()
++              .language(language)
++              .gasSchedule(schedule)
++              .timelineChannels(ingress.channels())
++              .build();
+       var engine = new OwnerGraphs(store, contracts, service, ingress);
+       String root = "graph-fast-cycle";
+       engine.create("alice", root, "create", document);
+--- a/myos-aws-test-better/src/test/java/myos/better/OwnerMetadataTest.java
++++ b/myos-aws-test-better/src/test/java/myos/better/OwnerMetadataTest.java
+@@ -6,6 +6,30 @@
+ import org.junit.jupiter.api.Test;
+ 
+ class OwnerMetadataTest {
++  @Test
++  void selectedRecordsUseBatchedReadsAndRemainIsolatedAcrossTenantsAndFailedCommits() {
++    var store = new MeasuredStore(new JsonBoundaryStore());
++    var metadata = new OwnerMetadata(store, "tenant");
++    var tx = metadata.begin();
++    for (int i = 0; i < 80; i++) tx.put("owner/" + i, "protected".repeat(700) + i);
++    assertTrue(tx.commit());
++    var cold = new OwnerMetadata(store, "tenant").begin();
++    var before = store.statistics();
++    cold.prefetch(List.of("owner/2", "owner/40", "owner/79", "owner/absent"));
++    long directAfterPrefetch = store.statistics().get("content.calls");
++    assertEquals("protected".repeat(700) + 40, cold.get("owner/40"));
++    assertEquals(directAfterPrefetch, store.statistics().get("content.calls"));
++    assertTrue(store.statistics().get("contentAll.calls") > before.get("contentAll.calls"));
++    assertNull(cold.get("owner/absent"));
++    assertNull(new OwnerMetadata(store, "another").begin().get("owner/40"));
++    var stale = new OwnerMetadata(store, "tenant").begin();
++    cold.put("owner/40", "winner".repeat(900));
++    assertTrue(cold.commit());
++    stale.put("owner/40", "loser".repeat(900));
++    assertFalse(stale.commit());
++    assertEquals("winner".repeat(900), new OwnerMetadata(store, "tenant").begin().get("owner/40"));
++  }
++
+   @Test
+   void largeSelectedEvidenceUsesImmutableBlocksInsteadOfOversizedIndexPages() {
+     var metadata = new OwnerMetadata(new JsonBoundaryStore(), "tenant");
+--- a/myos-aws-test-better/src/test/java/myos/better/OwnerRoutingTest.java
++++ b/myos-aws-test-better/src/test/java/myos/better/OwnerRoutingTest.java
+@@ -0,0 +1,161 @@
++package myos.better;
++
++import static org.junit.jupiter.api.Assertions.*;
++
++import java.util.*;
++import org.junit.jupiter.api.Test;
++import org.junit.jupiter.params.ParameterizedTest;
++import org.junit.jupiter.params.provider.ValueSource;
++
++/** Delivery locality and shared completeness are independent invariants. */
++class OwnerRoutingTest {
++  private static OwnerFrontiers.Source timeline(String id) {
++    return new OwnerFrontiers.Source(id, OwnerFrontiers.Kind.TIMELINE, id, 1, 0);
++  }
++
++  private static OwnerFrontiers.Source child(String id) {
++    return new OwnerFrontiers.Source(id, OwnerFrontiers.Kind.OWNER, id, 1, 0);
++  }
++
++  private static OwnerFrontiers.Original entry(long time, String timeline, String id) {
++    return new OwnerFrontiers.Original(new OwnerFrontiers.Order(time, timeline, id), id);
++  }
++
++  private static void complete(OwnerFrontiers f, String owner) {
++    var claim = f.claim(owner, 0, 1000).orElseThrow();
++    f.complete(claim, 0, owner + "1", owner + "-receipt", false, List.of(), Set.of());
++  }
++
++  @ParameterizedTest
++  @ValueSource(ints = {10, 1000})
++  void targetedImportLeavesUnrelatedSubscribersUntouchedAcrossReopen(int count) {
++    var store = new JsonBoundaryStore();
++    var f = new OwnerFrontiers(store, "tenant");
++    f.acquire("external", List.of(), 0, "initial");
++    f.change(
++        tx -> {
++          List<OwnerFrontiers.Source> children = new ArrayList<>();
++          for (int i = 0; i < count; i++) {
++            String owner = "child-" + i;
++            f.interest(tx, owner, "external", false);
++            f.target(tx, owner, "identity-" + i);
++            f.register(tx, owner, owner + "0", List.of(timeline("external")));
++            children.add(child(owner));
++          }
++          f.register(tx, "parent", "parent0", children);
++          return null;
++        });
++    f.change(
++        tx -> {
++          f.classify(tx, "external", "event", true, "identity-0");
++          f.acquire(tx, "external", List.of(entry(10, "external", "event")), 11, "verified-11");
++          return null;
++        });
++    var reopened = new OwnerFrontiers(store, "tenant");
++    assertEquals(List.of("child-0"), reopened.ready(0, 10));
++    assertEquals(new OwnerFrontiers.Coverage(11, false), reopened.coverage("parent"));
++    // In the old fan-out path every nonparticipant's source cursor was rewritten to 1.
++    assertEquals(0, reopened.sources("child-" + (count - 1)).getFirst().position());
++    assertEquals(1, reopened.head("child-" + (count - 1)).version());
++    complete(reopened, "child-0");
++    complete(reopened, "parent");
++    assertTrue(reopened.ready(0, 10).isEmpty());
++    assertEquals(1, reopened.head("parent").position());
++  }
++
++  @Test
++  void observersBroadcastsUnknownInputsAndHistoricalTargetsRemainConservative() {
++    var f = new OwnerFrontiers(new JsonBoundaryStore(), "tenant");
++    f.acquire("external", List.of(), 0, "initial");
++    f.change(
++        tx -> {
++          for (String owner : List.of("target", "other", "observer")) {
++            f.interest(tx, owner, "external", owner.equals("observer"));
++            f.target(tx, owner, owner + "-old");
++            f.target(tx, owner, owner + "-new");
++            f.register(tx, owner, owner + "0", List.of(timeline("external")));
++          }
++          f.classify(tx, "external", "targeted", true, "target-old");
++          f.acquire(tx, "external", List.of(entry(1, "external", "targeted")), 2, "two");
++          return null;
++        });
++    assertEquals(Set.of("target", "observer"), new HashSet<>(f.ready(0, 10)));
++    complete(f, "target");
++    complete(f, "observer");
++    f.change(
++        tx -> {
++          f.classify(tx, "external", "broadcast", false, null);
++          f.acquire(tx, "external", List.of(entry(2, "external", "broadcast")), 3, "three");
++          return null;
++        });
++    assertEquals(List.of("observer"), f.ready(0, 10));
++    complete(f, "observer");
++    f.acquire("external", List.of(entry(3, "external", "unknown")), 4, "four");
++    assertEquals(Set.of("target", "other", "observer"), new HashSet<>(f.ready(0, 10)));
++  }
++
++  @Test
++  void sharedDependencyRemovalKeepsOtherOccurrencesAndLocalAuthorityIndependent() {
++    var f = new OwnerFrontiers(new JsonBoundaryStore(), "tenant");
++    f.acquire("remote", List.of(), 10, "ten");
++    f.acquire("slow", List.of(), 0, "zero");
++    f.register("left", "l0", List.of(timeline("remote")));
++    f.register("right", "r0", List.of(timeline("remote")));
++    f.register("root", "a0", List.of(child("left"), child("right"), timeline("own")));
++    f.register("unrelated", "u0", List.of(timeline("slow")));
++    f.accept(entry(10, "own", "change"));
++    f.sealLocalBefore(11);
++    assertTrue(f.claim("root", 0, 1000).isEmpty());
++    assertEquals(Map.of("remote", 10L), f.refreshNeeded(10));
++    f.acquire("remote", List.of(), 11, "eleven");
++    var claim = f.claim("root", 0, 1000).orElseThrow();
++    f.complete(claim, 0, "a1", "removed-left", false, List.of(), Set.of("left"));
++    assertEquals(new OwnerFrontiers.Coverage(11, true), f.coverage("root"));
++    f.acquire("remote", List.of(), 12, "twelve");
++    assertEquals(new OwnerFrontiers.Coverage(12, true), f.coverage("root"));
++    f.change(
++        tx -> {
++          f.enrollLocal(tx, "remote");
++          return null;
++        });
++    assertEquals(new OwnerFrontiers.Coverage(Long.MAX_VALUE, true), f.coverage("root"));
++    assertEquals(0, f.coverage("unrelated").before());
++  }
++
++  @Test
++  void legacyMetadataBuildsIndexesAtomicallyAndRetainsBlockedAncestors() {
++    var store = new JsonBoundaryStore();
++    var f = new OwnerFrontiers(store, "tenant");
++    f.acquire("remote", List.of(), 0, "zero");
++    f.change(
++        tx -> {
++          f.target(tx, "child", "identity");
++          f.interest(tx, "child", "remote", false);
++          f.register(tx, "child", "c0", List.of(timeline("remote")));
++          f.register(tx, "root", "r0", List.of(child("child")));
++          // Simulate a committed pre-index host snapshot; authored documents are unchanged.
++          for (String prefix :
++              List.of(
++                  "timeline-routing",
++                  "timeline-observer",
++                  "target-owner",
++                  "coverage-set",
++                  "coverage-binding",
++                  "coverage-reference")) {
++            for (var row : tx.page(prefix + "\0", null, 1024)) tx.remove(row.key());
++          }
++          return null;
++        });
++    f.change(
++        tx -> {
++          f.classify(tx, "remote", "event", true, "identity");
++          f.acquire(tx, "remote", List.of(entry(10, "remote", "event")), 11, "eleven");
++          return null;
++        });
++    var reopened = new OwnerFrontiers(store, "tenant");
++    assertEquals(List.of("child"), reopened.ready(0, 10));
++    complete(reopened, "child");
++    complete(reopened, "root");
++    assertEquals(2, reopened.head("root").version());
++  }
++}
+--- a/myos-aws-test-better/src/test/java/myos/better/TimelineBindingTest.java
++++ b/myos-aws-test-better/src/test/java/myos/better/TimelineBindingTest.java
+@@ -0,0 +1,36 @@
++package myos.better;
++
++import static org.junit.jupiter.api.Assertions.*;
++
++import java.util.*;
++import org.junit.jupiter.api.Test;
++
++/** Static source configuration respects DynamoDB's 100-item read and transaction boundaries. */
++class TimelineBindingTest {
++  @Test
++  void moreThanNinetyNineAliasesBindAndReopenUnderOneImmutableNamespace() {
++    var store = new JsonBoundaryStore();
++    var repository = new Repository(store);
++    List<TimelineService.Adopted> sources = new ArrayList<>();
++    for (int n = 0; n < 101; n++) {
++      var fixture = new TimelineFixture("https://provider.example/source-" + n);
++      sources.add(
++          new TimelineService.Adopted(
++              "alice", "source-" + n, fixture.archive(repository, "alice")));
++    }
++    try (var first =
++            new TimelineService(repository, TimelineFixture.COORDINATION, "bindings", sources);
++        var reopened =
++            new TimelineService(
++                new Repository(store), TimelineFixture.COORDINATION, "bindings", sources);
++        var wrong =
++            new TimelineService(
++                new Repository(store), TimelineFixture.COORDINATION, "other", sources)) {
++      first.bind();
++      reopened.bind();
++      assertEquals(102, store.query("A#alice#TIMELINE_CONFIG", "", null, 200).rows().size());
++      assertThrows(IllegalArgumentException.class, wrong::bind);
++      reopened.bind();
++    }
++  }
++}
+--- a/myos-aws-test-better/src/test/java/myos/better/TimelineWorkTest.java
++++ b/myos-aws-test-better/src/test/java/myos/better/TimelineWorkTest.java
+@@ -10,6 +10,48 @@
+ 
+ /** Scheduling owns liveness; source cursors and document transactions own exactly-once effects. */
+ class TimelineWorkTest {
++  @Nested
++  class LargeSourceSets {
++    @Test
++    void abandonedPreparationCannotWakeReceiverAndRetryCatchesUpAfterReopen() {
++      Fixture f = new Fixture();
++      f.bind("alice");
++      List<String> sources =
++          java.util.stream.IntStream.range(0, 201).mapToObj(n -> "feed-" + n).toList();
++      List<AtomicStore.Write> abandoned = new ArrayList<>();
++      f.work.subscribe(abandoned, "alice", "doc", sources);
++      assertEquals(1, abandoned.size());
++      assertNull(f.store.get(TimelineWork.receiver("alice", "doc")));
++      f.acquire("alice", "feed-200", 1);
++      f.settle();
++      assertTrue(f.seen.isEmpty());
++      f.work = f.newWorker();
++      f.subscribe("alice", "doc", sources);
++      f.settle();
++      assertEquals(Set.of("alice/doc"), f.seen);
++      assertEquals(sources.size(), ((List<?>) f.work.status("alice", "doc").get("sources")).size());
++      assertTrue(f.store.maximumWrites <= 100);
++    }
++
++    @Test
++    void removalFencesHistoricalPointersAndReadditionReusesThem() {
++      Fixture f = new Fixture();
++      List<String> sources =
++          java.util.stream.IntStream.range(0, 201).mapToObj(n -> "feed-" + n).toList();
++      f.subscribe("alice", "doc", sources);
++      f.settle();
++      f.subscribe("alice", "doc", List.of());
++      f.seen.clear();
++      f.acquire("alice", "feed-200", 1);
++      f.work = f.newWorker();
++      f.settle();
++      assertTrue(f.seen.isEmpty());
++      f.subscribe("alice", "doc", sources);
++      f.settle();
++      assertEquals(Set.of("alice/doc"), f.seen);
++    }
++  }
++
+   @Nested
+   class AddressedNotifications {
+     @Test

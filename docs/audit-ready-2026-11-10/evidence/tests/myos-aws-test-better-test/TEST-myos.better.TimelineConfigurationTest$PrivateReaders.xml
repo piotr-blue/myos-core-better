@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineConfigurationTest$PrivateReaders" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:38.951Z" hostname="MacBook-Pro-5.local" time="0.064">
+  <properties />
+  <testcase name="historicalPolicyIsExplicitAndCannotChangeAnExistingNamespace()" classname="myos.better.TimelineConfigurationTest$PrivateReaders" time="0.033" />
+  <testcase name="configuredPrivateReaderLoadsOnceAndRemainsPinnedAcrossStartup()" classname="myos.better.TimelineConfigurationTest$PrivateReaders" time="0.021" />
+  <testcase name="wrongSecretScopePublishesNoSourceBinding()" classname="myos.better.TimelineConfigurationTest$PrivateReaders" time="0.009" />
+  </testsuite>

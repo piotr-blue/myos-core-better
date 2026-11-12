@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.HistoricalBoundaryTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:46.793Z" hostname="MacBook-Pro-5.local" time="0.115">
+  <properties />
+  <testcase name="attachingAnExactCurrentViewLoadsOnlyItsDemandedHistoryAndReusesLaterResults()" classname="myos.local.HistoricalBoundaryTest" time="0.061" />
+  <testcase name="reattachingARetiredOldViewCannotReclassifyPastSourceHistoryAsLiveInput()" classname="myos.local.HistoricalBoundaryTest" time="0.054" />
+  </testsuite>

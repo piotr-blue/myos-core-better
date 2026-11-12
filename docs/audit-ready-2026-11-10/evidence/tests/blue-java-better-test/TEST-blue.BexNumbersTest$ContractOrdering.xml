@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.BexNumbersTest$ContractOrdering" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:06.936Z" hostname="MacBook-Pro-5.local" time="0.003">
+  <properties />
+  <testcase name="mixedRepresentationsKeepTheirOrderAndMetering()" classname="blue.BexNumbersTest$ContractOrdering" time="0.003" />
+  <testcase name="sharedAndLocalBudgetsRejectTheSameFirstUnaffordableCharge()" classname="blue.BexNumbersTest$ContractOrdering" time="0.0" />
+  </testsuite>

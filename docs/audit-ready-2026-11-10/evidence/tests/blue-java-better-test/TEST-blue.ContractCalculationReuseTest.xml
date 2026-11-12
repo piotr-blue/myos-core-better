@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractCalculationReuseTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:12.867Z" hostname="MacBook-Pro-5.local" time="42.057">
+  <properties />
+  <testcase name="everySharedGasBoundaryHasIdenticalOutcomeAndFirstRejectedCharge()" classname="blue.ContractCalculationReuseTest" time="11.693" />
+  <testcase name="standaloneChildCalculationsAreReusableInsideOneCanonicalRootedAttempt()" classname="blue.ContractCalculationReuseTest" time="0.023" />
+  <testcase name="nativeFunctionMatchingFallsBackWithoutChangingAnyGasBoundary()" classname="blue.ContractCalculationReuseTest" time="6.403" />
+  <testcase name="memberLocalCapsPreserveExactRejectionAndSharedPrefix()" classname="blue.ContractCalculationReuseTest" time="23.906" />
+  <testcase name="changedCauseOrDocumentDoesNotReuseThePreviousCalculation()" classname="blue.ContractCalculationReuseTest" time="0.031" />
+  </testsuite>

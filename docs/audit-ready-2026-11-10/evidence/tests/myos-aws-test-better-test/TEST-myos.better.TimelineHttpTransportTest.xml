@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineHttpTransportTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:50.780Z" hostname="MacBook-Pro-5.local" time="2.12">
+  <properties />
+  <testcase name="bodyCollectionIsBoundedAndDeadlineIncludesAnUnfinishedBody()" classname="myos.better.TimelineHttpTransportTest" time="2.04" />
+  <testcase name="verifiedPagesTraverseRealHttpsAndRestoreTheSameSource()" classname="myos.better.TimelineHttpTransportTest" time="0.062" />
+  <testcase name="httpsPreservesExactPublicRequestsAndNeverFollowsRedirects()" classname="myos.better.TimelineHttpTransportTest" time="0.011" />
+  <testcase name="invalidTargetsAndCredentialBearingClientsAreRejectedBeforeTransport()" classname="myos.better.TimelineHttpTransportTest" time="0.005" />
+  </testsuite>

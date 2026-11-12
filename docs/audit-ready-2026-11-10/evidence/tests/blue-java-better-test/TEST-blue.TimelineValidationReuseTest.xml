@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.TimelineValidationReuseTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.482Z" hostname="MacBook-Pro-5.local" time="0.114">
+  <properties />
+  <testcase name="completedPresenceFactsReuseAbstractClosuresWithoutExportingThem()" classname="blue.TimelineValidationReuseTest" time="0.002" />
+  <testcase name="snapshotsCarryContentButNeverThePreviousRequestsVerificationBudget()" classname="blue.TimelineValidationReuseTest" time="0.001" />
+  <testcase name="verifierFactsReuseUnchangedSubtreesButNotChangedConstraintsOrPublicSnapshots()" classname="blue.TimelineValidationReuseTest" time="0.001" />
+  <testcase name="operationGrammarRetainsTheCurrentAttemptsLazyTypeResolver()" classname="blue.TimelineValidationReuseTest" time="0.001" />
+  <testcase name="repeatedClosureChecksReuseOnlyCompletedWorkWithinOneEvidenceView()" classname="blue.TimelineValidationReuseTest" time="0.001" />
+  <testcase name="publisherSharesOnlyCompletedSourceBoundSemanticChecks()" classname="blue.TimelineValidationReuseTest" time="0.108" />
+  </testsuite>

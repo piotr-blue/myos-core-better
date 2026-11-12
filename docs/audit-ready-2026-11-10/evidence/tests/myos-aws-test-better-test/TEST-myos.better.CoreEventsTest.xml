@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreEventsTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:40.112Z" hostname="MacBook-Pro-5.local" time="0.005">
+  <properties />
+  <testcase name="lostProjectionCommitResponseRecoversTheSameSequenceAndEvents()" classname="myos.better.CoreEventsTest" time="0.001" />
+  <testcase name="followCursorsObserveLaterFactsWhileDescendingHistoryStaysPinned()" classname="myos.better.CoreEventsTest" time="0.001" />
+  <testcase name="admissionFactsAreDurableImmutableAndReplaysDoNotDuplicateThem()" classname="myos.better.CoreEventsTest" time="0.001" />
+  <testcase name="anEmptyOutboxRereadsTheSequenceCommittedByAnotherProjector()" classname="myos.better.CoreEventsTest" time="0.0" />
+  <testcase name="projectionIsBoundedAndConcurrentReadersCannotDuplicateFacts()" classname="myos.better.CoreEventsTest" time="0.001" />
+  </testsuite>

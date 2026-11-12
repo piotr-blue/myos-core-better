@@ -1,0 +1,18 @@
+{
+  "projects": [
+    "blue-java-better",
+    "myos-simplified",
+    "myos-aws-test-better",
+    "blue-packages"
+  ],
+  "includedSourceFiles": 1678,
+  "excludedFileCount": 3464,
+  "exclusionPolicy": [
+    "Project build/report/cache/local-data directories",
+    "VCS/IDE/dependency caches",
+    "Compiled classes, raw JFR, local databases, archives and environment files"
+  ],
+  "essentialRuntimeResourcesPreserved": true,
+  "consoleDistIncluded": true,
+  "packageInputSubset": true
+}

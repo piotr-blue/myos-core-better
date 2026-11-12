@@ -1,0 +1,36 @@
+{
+  "name": "myos-core-console",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "vite --host 127.0.0.1",
+    "typecheck": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "pretypecheck": "npm --prefix ../sdk/typescript run build",
+    "predev": "npm --prefix ../sdk/typescript run build",
+    "prebuild": "npm --prefix ../sdk/typescript run build",
+    "pretest": "npm --prefix ../sdk/typescript run build"
+  },
+  "dependencies": {
+    "@blue-labs/account-ui": "file:../account-ui/blue-labs-account-ui-0.1.0.tgz",
+    "@blue-labs/myos-sdk": "file:../sdk/typescript",
+    "@datadog/browser-rum": "7.15.0",
+    "lucide-react": "0.468.0",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "swagger-ui-dist": "5.33.2",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "4.4.1",
+    "esbuild": "0.25.12",
+    "jsdom": "26.1.0",
+    "playwright": "1.63.0",
+    "typescript": "5.8.3",
+    "vite": "6.4.4"
+  }
+}

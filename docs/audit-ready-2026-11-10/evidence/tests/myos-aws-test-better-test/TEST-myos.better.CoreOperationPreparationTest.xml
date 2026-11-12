@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreOperationPreparationTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:42.098Z" hostname="MacBook-Pro-5.local" time="0.517">
+  <properties />
+  <testcase name="strictSyntaxAndDecimalPrecisionCannotBecomeValidThroughHostCoercion()" classname="myos.better.CoreOperationPreparationTest" time="0.005" />
+  <testcase name="customTypesAndConstraintsUseNativeMatchingWithoutOperationNameBranches()" classname="myos.better.CoreOperationPreparationTest" time="0.004" />
+  <testcase name="diagnosticsUseTypedListDictionaryAndPositionalRequestLocations()" classname="myos.better.CoreOperationPreparationTest" time="0.006" />
+  <testcase name="canonicalTypedListsKeepTheirShapeAndOriginalRequestBytes()" classname="myos.better.CoreOperationPreparationTest" time="0.003" />
+  <testcase name="inheritedFieldsKeepNativePresenceAndNestedDictionaryValidation()" classname="myos.better.CoreOperationPreparationTest" time="0.008" />
+  <testcase name="noMatcherEmptyObjectMissingInputAndUnvaluedDefinitionsRemainDistinct()" classname="myos.better.CoreOperationPreparationTest" time="0.002" />
+  <testcase name="formBudgetPaginationAndCollapsedViewsDoNotChangeValidationOrDigest()" classname="myos.better.CoreOperationPreparationTest" time="0.468" />
+  <testcase name="inheritedRequiredFieldsHaveCanonicalIssuePathsAndFixedScalarsUseSourceValues()" classname="myos.better.CoreOperationPreparationTest" time="0.003" />
+  <testcase name="invalidDefinitionSelectorsFailWithoutPreparingDifferentInput()" classname="myos.better.CoreOperationPreparationTest" time="0.001" />
+  <testcase name="missingEvidenceIsUnresolvedAndEnumFormsOnlyOfferAcceptedValues()" classname="myos.better.CoreOperationPreparationTest" time="0.011" />
+  <testcase name="requiredFieldsAreNotFilledFromDocumentMetadataOrDefaults()" classname="myos.better.CoreOperationPreparationTest" time="0.002" />
+  <testcase name="cyclicRequestsRemainValidWhileFormExpansionIsBounded()" classname="myos.better.CoreOperationPreparationTest" time="0.001" />
+  <testcase name="publicationEpochRemainsAnExactNonnegativeInt64()" classname="myos.better.CoreOperationPreparationTest" time="0.001" />
+  </testsuite>

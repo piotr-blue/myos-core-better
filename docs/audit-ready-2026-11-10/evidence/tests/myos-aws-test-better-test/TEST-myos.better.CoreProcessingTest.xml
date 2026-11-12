@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreProcessingTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:46.134Z" hostname="MacBook-Pro-5.local" time="0.057">
+  <properties />
+  <testcase name="sourceWaitDoesNotMaskExecutionFailureAndPauseRetainsTheUnderlyingState()" classname="myos.better.CoreProcessingTest" time="0.0" />
+  <testcase name="healthyIdleAndUnconfiguredDocumentsHaveNoSpuriousWait()" classname="myos.better.CoreProcessingTest" time="0.001" />
+  <testcase name="anOwnedDocumentReportsOnlyItsRequiredSourceFailuresAndClearsThemAfterRecovery()" classname="myos.better.CoreProcessingTest" time="0.056" />
+  </testsuite>

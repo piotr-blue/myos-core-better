@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.PackageIntegrityTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.168Z" hostname="MacBook-Pro-5.local" time="0.01">
+  <properties />
+  <testcase name="sortsKeysByUnicodeScalarAndPreservesText()" classname="blue.PackageIntegrityTest" time="0.0" />
+  <testcase name="[1] &quot;0.0&quot;, &quot;0.0&quot;" classname="blue.PackageIntegrityTest" time="0.003" />
+  <testcase name="[2] &quot;-0.0&quot;, &quot;-0.0&quot;" classname="blue.PackageIntegrityTest" time="0.0" />
+  <testcase name="[3] &quot;1.0&quot;, &quot;1.0&quot;" classname="blue.PackageIntegrityTest" time="0.0" />
+  <testcase name="[4] &quot;0.0001&quot;, &quot;0.0001&quot;" classname="blue.PackageIntegrityTest" time="0.001" />
+  <testcase name="[5] &quot;0.00001&quot;, &quot;1e-05&quot;" classname="blue.PackageIntegrityTest" time="0.001" />
+  <testcase name="[6] &quot;1e15&quot;, &quot;1000000000000000.0&quot;" classname="blue.PackageIntegrityTest" time="0.0" />
+  <testcase name="[7] &quot;1e16&quot;, &quot;1e+16&quot;" classname="blue.PackageIntegrityTest" time="0.0" />
+  <testcase name="[8] &quot;1e20&quot;, &quot;1e+20&quot;" classname="blue.PackageIntegrityTest" time="0.0" />
+  <testcase name="[9] &quot;1.2345e-10&quot;, &quot;1.2345e-10&quot;" classname="blue.PackageIntegrityTest" time="0.001" />
+  <testcase name="[10] &quot;4.9e-324&quot;, &quot;5e-324&quot;" classname="blue.PackageIntegrityTest" time="0.001" />
+  <testcase name="[11] &quot;1.7976931348623157e308&quot;, &quot;1.7976931348623157e+308&quot;" classname="blue.PackageIntegrityTest" time="0.001" />
+  <testcase name="[12] &quot;1000000000000000128.0&quot;, &quot;1.0000000000000001e+18&quot;" classname="blue.PackageIntegrityTest" time="0.001" />
+  </testsuite>

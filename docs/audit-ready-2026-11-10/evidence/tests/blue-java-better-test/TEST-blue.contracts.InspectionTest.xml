@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.contracts.InspectionTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.605Z" hostname="MacBook-Pro-5.local" time="0.006">
+  <properties />
+  <testcase name="readableLiteralsInlineOnlyVerifiedScalarLeavesAndKeepReferenceBoundaries()" classname="blue.contracts.InspectionTest" time="0.001" />
+  <testcase name="cyclesAndExistingReferencesAreNotRecursivelyExpanded()" classname="blue.contracts.InspectionTest" time="0.001" />
+  <testcase name="boundedReadsPreserveLiteralsAndDoNotConsumeTheNextReadsAllowance()" classname="blue.contracts.InspectionTest" time="0.001" />
+  <testcase name="projectedValuesMatchSessionReadsWithoutFetchingUnrelatedContent()" classname="blue.contracts.InspectionTest" time="0.002" />
+  <testcase name="readableLiteralsKeepCyclicEdgesAndScalarMetadata()" classname="blue.contracts.InspectionTest" time="0.0" />
+  </testsuite>

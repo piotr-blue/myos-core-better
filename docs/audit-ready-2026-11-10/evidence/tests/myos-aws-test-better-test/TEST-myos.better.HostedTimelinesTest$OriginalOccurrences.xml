@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.HostedTimelinesTest$OriginalOccurrences" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:58.967Z" hostname="MacBook-Pro-5.local" time="0.114">
+  <properties />
+  <testcase name="referencedTypesAndDefinitionMessagesSurviveRestartAndOperationsKeepExactPayload()" classname="myos.better.HostedTimelinesTest$OriginalOccurrences" time="0.004" />
+  <testcase name="unavailableOrOversizedContentCannotAdvanceHistoryOrConsumeItsCommand()" classname="myos.better.HostedTimelinesTest$OriginalOccurrences" time="0.005" />
+  <testcase name="lostResponsesAndCompetingSameCommandRecoverTheWinningOccurrence()" classname="myos.better.HostedTimelinesTest$OriginalOccurrences" time="0.004" />
+  <testcase name="freshPublishersNeedNoEarlierEntryBodiesForAppendOrCheckpoint()" classname="myos.better.HostedTimelinesTest$OriginalOccurrences" time="0.047" />
+  <testcase name="everyPublicationIsSignedOrderedAndReplaysThroughTheExistingVerifier()" classname="myos.better.HostedTimelinesTest$OriginalOccurrences" time="0.014" />
+  <testcase name="independentPublishersCannotForkTheChain()" classname="myos.better.HostedTimelinesTest$OriginalOccurrences" time="0.038" />
+  </testsuite>

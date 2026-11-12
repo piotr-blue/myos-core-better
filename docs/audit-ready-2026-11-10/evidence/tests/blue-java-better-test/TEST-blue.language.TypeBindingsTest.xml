@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.TypeBindingsTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.489Z" hostname="MacBook-Pro-5.local" time="0.001">
+  <properties />
+  <testcase name="nameIsNotAnAliasOrPackageRegistration()" classname="blue.language.TypeBindingsTest" time="0.001" />
+  <testcase name="multipleQualifiedExportNamesIdentifyTheSameUnmodifiedContent()" classname="blue.language.TypeBindingsTest" time="0.0" />
+  </testsuite>

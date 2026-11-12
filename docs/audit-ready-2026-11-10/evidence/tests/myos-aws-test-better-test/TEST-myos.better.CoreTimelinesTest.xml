@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreTimelinesTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:53.730Z" hostname="MacBook-Pro-5.local" time="0.054">
+  <properties />
+  <testcase name="aPostPublicationProjectionFailureStaysPendingAndRecoversTheSameEntry()" classname="myos.better.CoreTimelinesTest" time="0.005" />
+  <testcase name="nativeEntriesSurviveProjectionAndResolveThroughTheContentsEndpoint()" classname="myos.better.CoreTimelinesTest" time="0.005" />
+  <testcase name="predecessorAssertionsAndRetrySafetyAreEnforcedAtPublication()" classname="myos.better.CoreTimelinesTest" time="0.004" />
+  <testcase name="pagesPinTheOriginalPrefixAndBindTimelineAccountAndFilters()" classname="myos.better.CoreTimelinesTest" time="0.006" />
+  <testcase name="accessChangesReuseNativeGrantHistoryAndRejectAnotherOwnersGrant()" classname="myos.better.CoreTimelinesTest" time="0.033" />
+  </testsuite>

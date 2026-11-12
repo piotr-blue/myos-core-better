@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.LanguageNormalizationTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:01.563Z" hostname="MacBook-Pro-5.local" time="0.001">
+  <properties />
+  <testcase name="repeatedInlineStructureSharesValuesWithoutSkippingNormalizationWork()" classname="blue.LanguageNormalizationTest" time="0.001" />
+  <testcase name="equalIdentityDoesNotReplaceInlineContentWithAReferenceOrChangeTheLastPresentation()" classname="blue.LanguageNormalizationTest" time="0.0" />
+  <testcase name="typedListsKeepTheSamePayloadRecordWithoutRewritingItsMaterialization()" classname="blue.LanguageNormalizationTest" time="0.0" />
+  <testcase name="equalityOfReferenceIdsCannotImportAnEstablishedCyclicBodyHint()" classname="blue.LanguageNormalizationTest" time="0.0" />
+  </testsuite>

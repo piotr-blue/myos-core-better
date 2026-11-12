@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.HostedAccessTest$ExecutedState" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:58.178Z" hostname="MacBook-Pro-5.local" time="0.226">
+  <properties />
+  <testcase name="warmDecodedBodiesCannotHideAnotherPublishersRevocationOrKeyChange()" classname="myos.better.HostedAccessTest$ExecutedState" time="0.042" />
+  <testcase name="originalPublicationAndEveryReplacementMatchIndependentConsumerReplay()" classname="myos.better.HostedAccessTest$ExecutedState" time="0.069" />
+  <testcase name="revokeAndRegrantAreImmediateWhileControlHistoryStaysPublic()" classname="myos.better.HostedAccessTest$ExecutedState" time="0.047" />
+  <testcase name="overlappingDocumentsFormAUnionAndRemovingOneDoesNotRevokeTheOther()" classname="myos.better.HostedAccessTest$ExecutedState" time="0.042" />
+  <testcase name="identicalInitialContentHasOnePublicationAndItsOriginalResultIsStable()" classname="myos.better.HostedAccessTest$ExecutedState" time="0.026" />
+  </testsuite>

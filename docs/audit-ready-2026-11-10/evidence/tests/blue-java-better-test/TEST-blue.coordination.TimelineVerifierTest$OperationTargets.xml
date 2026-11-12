@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineVerifierTest$OperationTargets" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.150Z" hostname="MacBook-Pro-5.local" time="0.024">
+  <properties />
+  <testcase name="publisherAdmittedValueReusesOnlyTheExactTargetWithoutGrantingSourceAuthority()" classname="blue.coordination.TimelineVerifierTest$OperationTargets" time="0.003" />
+  <testcase name="repeatedTargetsReuseSchemaButNotSourceAuthorityOrOrdinaryAdmission()" classname="blue.coordination.TimelineVerifierTest$OperationTargets" time="0.005" />
+  <testcase name="anotherTargetDoesNotBorrowThePriorTargetsValidation()" classname="blue.coordination.TimelineVerifierTest$OperationTargets" time="0.005" />
+  <testcase name="publisherSchemaReuseStillRequiresSignaturesAndTheExactOperationMarker()" classname="blue.coordination.TimelineVerifierTest$OperationTargets" time="0.004" />
+  <testcase name="operationInspectionReusesOnlyTheExactOccurrencesTemporaryValueFacts()" classname="blue.coordination.TimelineVerifierTest$OperationTargets" time="0.004" />
+  <testcase name="protectedRoutingInspectionDoesNotReadUnrelatedTargetBodiesOrGrantAdmission()" classname="blue.coordination.TimelineVerifierTest$OperationTargets" time="0.003" />
+  </testsuite>

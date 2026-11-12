@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.AdditiveCompositionTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:02.872Z" hostname="MacBook-Pro-5.local" time="4.043">
+  <properties />
+  <testcase name="realFanoutStillCostsGasForEveryExecutedDocument()" classname="blue.AdditiveCompositionTest" time="0.086" />
+  <testcase name="affectedAttachmentLookupMatchesTheFullScan()" classname="blue.AdditiveCompositionTest" time="0.105" />
+  <testcase name="quietSiblingsContributeNoGas()" classname="blue.AdditiveCompositionTest" time="1.503" />
+  <testcase name="inlineAndCollapsedBodiesHaveEqualGasAndResults()" classname="blue.AdditiveCompositionTest" time="0.016" />
+  <testcase name="receivingPreservesBudgetThresholdAndFirstRejectedCharge()" classname="blue.AdditiveCompositionTest" time="0.23" />
+  <testcase name="inheritedDeclarationsDoNotChargeForTypeExpansion()" classname="blue.AdditiveCompositionTest" time="0.006" />
+  <testcase name="sparseLocalExecutionPreservesTheExistingPortableChunkSequenceAndReceipt()" classname="blue.AdditiveCompositionTest" time="1.686" />
+  <testcase name="failedChildCannotBeAdoptedAsSuccessfulWork()" classname="blue.AdditiveCompositionTest" time="0.004" />
+  <testcase name="overflowCannotWrapACharge()" classname="blue.AdditiveCompositionTest" time="0.001" />
+  <testcase name="persistedCutHasIdenticalMemberCapFailureAndNoBudgetReset()" classname="blue.AdditiveCompositionTest" time="0.319" />
+  <testcase name="exactLimitSucceedsAndOneLessRollsBack()" classname="blue.AdditiveCompositionTest" time="0.023" />
+  <testcase name="admissionWorkExhaustionIsRetryableNotSemanticFailure()" classname="blue.AdditiveCompositionTest" time="0.0" />
+  <testcase name="scheduleIsBoundToSnapshotsAndCannotSilentlyChange()" classname="blue.AdditiveCompositionTest" time="0.013" />
+  <testcase name="childPlusParentEqualsWholeRootAndKeepsEvents()" classname="blue.AdditiveCompositionTest" time="0.008" />
+  <testcase name="portableInvocationRetainsTheAccountingSchedule()" classname="blue.AdditiveCompositionTest" time="0.022" />
+  <testcase name="cyclicFeedbackExhaustsGasAndRollsBackInsteadOfRunningForever()" classname="blue.AdditiveCompositionTest" time="0.018" />
+  </testsuite>

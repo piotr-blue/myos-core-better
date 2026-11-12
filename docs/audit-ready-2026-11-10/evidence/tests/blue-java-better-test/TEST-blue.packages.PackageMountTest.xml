@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.packages.PackageMountTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.809Z" hostname="MacBook-Pro-5.local" time="0.016">
+  <properties />
+  <testcase name="plainProviderAccessNeedsNoAliasAndPreservesCyclicEvidence()" classname="blue.packages.PackageMountTest" time="0.003" />
+  <testcase name="invalidSelectionsAndConflictsDoNotPartiallyMutateTheBuilder()" classname="blue.packages.PackageMountTest" time="0.002" />
+  <testcase name="importsSupplyContentButOnlyExplicitMountsSupplyNames()" classname="blue.packages.PackageMountTest" time="0.002" />
+  <testcase name="versionsCoexistWithoutRetargetingInheritedDefinitions()" classname="blue.packages.PackageMountTest" time="0.004" />
+  <testcase name="aliasesAreScopedAndTheSameDefinitionCanBelongToDifferentPackages()" classname="blue.packages.PackageMountTest" time="0.004" />
+  </testsuite>

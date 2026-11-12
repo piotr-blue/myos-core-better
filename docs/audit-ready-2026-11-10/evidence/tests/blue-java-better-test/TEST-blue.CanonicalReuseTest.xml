@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.CanonicalReuseTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:08.957Z" hostname="MacBook-Pro-5.local" time="0.075">
+  <properties />
+  <testcase name="physicalReuseChangesNeitherGasNorReceipts()" classname="blue.CanonicalReuseTest" time="0.057" />
+  <testcase name="cachedComputeUsesTheCurrentlySelectedDefinition()" classname="blue.CanonicalReuseTest" time="0.003" />
+  <testcase name="cyclicGraphsFinalizeAndColdRestoreWithoutLosingMemberIdentities()" classname="blue.CanonicalReuseTest" time="0.013" />
+  </testsuite>

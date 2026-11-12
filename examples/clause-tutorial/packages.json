@@ -1,0 +1,56 @@
+[
+  {
+    "archive": "clause-tutorial/packages/documents.bluepkg",
+    "blueId": "CtGNX2EA7RndTVJuDnT4HtrvxYmdR9uD6LZ3EsDr2jeq",
+    "mounts": {
+      "Documents": []
+    },
+    "source": "clause-documents",
+    "sha256": "e038b5588d40d463aafcf19c5007e5737499796ee554c437c51522d17421c1be"
+  },
+  {
+    "archive": "clause-tutorial/packages/payment.bluepkg",
+    "blueId": "9R3k6v5r1NY5JJqGaFx3yqqosXXbyQHLj7BrfhrvMizZ",
+    "mounts": {
+      "Payment": []
+    },
+    "source": "clause-payment",
+    "sha256": "6bf6c4fb9bd1385164d290c7d53615c43788173fdcfbc48f00c5a85a43fbcf5f"
+  },
+  {
+    "archive": "clause-tutorial/packages/manualpayments.bluepkg",
+    "blueId": "4jsxkYNn8LAHTaYVm9SyC6yaViQdNJkdxa6mnM24xc8o",
+    "mounts": {
+      "ManualPayments": []
+    },
+    "source": "manual-payments",
+    "sha256": "b9b6e38c285b84d8b48dbb99a595f9a8b7a8067a994562b99e583f79a12f19be"
+  },
+  {
+    "archive": "clause-tutorial/packages/orders.bluepkg",
+    "blueId": "jdYoDcS4q8oWs6Ma9NfysBX3mVg7moenTwLVTKzP428",
+    "mounts": {
+      "Orders": []
+    },
+    "source": "blue-orders",
+    "sha256": "a80f4c82662ab2fb6f9ebbac93173ad71e22ccdb3891443aa00aa167a3f77a56"
+  },
+  {
+    "archive": "clause-tutorial/packages/incremental-documents.bluepkg",
+    "blueId": "67SMChJ95B6AJJZz3iKnsa6rxGJzGhvpbNTJv8U8s838",
+    "mounts": {
+      "IncrementalDocuments": []
+    },
+    "source": "clause-documents-incremental",
+    "sha256": "f9c56df30c8cf1331c1929224003678da07e21f1a91f376a4e44c6c2c50ed0a7"
+  },
+  {
+    "archive": "clause-tutorial/packages/time.bluepkg",
+    "blueId": "6QHd1RcXJnddfLyePbtHouNYEpis6CXe4mMu4pNBqZrU",
+    "mounts": {
+      "Time": []
+    },
+    "source": "blue-time",
+    "sha256": "1481cdf0ba15d01b04a36fae9d49dc772661aff3d1fde0bb199c34e9e606d564"
+  }
+]

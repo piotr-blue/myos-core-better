@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.ChannelActivationOrderTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:13.778Z" hostname="MacBook-Pro-5.local" time="0.304">
+  <properties />
+  <testcase name="[1] false" classname="myos.local.ChannelActivationOrderTest" time="0.147" />
+  <testcase name="[2] true" classname="myos.local.ChannelActivationOrderTest" time="0.144" />
+  </testsuite>

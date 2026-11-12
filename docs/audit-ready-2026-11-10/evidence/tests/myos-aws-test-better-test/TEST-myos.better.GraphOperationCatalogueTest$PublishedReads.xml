@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.GraphOperationCatalogueTest$PublishedReads" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:57.079Z" hostname="MacBook-Pro-5.local" time="0.034">
+  <properties />
+  <testcase name="coldDescriptionsMatchExecutionWhileBodyAndTopologyReadsAreUnavailable()" classname="myos.better.GraphOperationCatalogueTest$PublishedReads" time="0.006" />
+  <testcase name="updatesDetachAndTerminationKeepOldPublicationsAndExactChannelVisibility()" classname="myos.better.GraphOperationCatalogueTest$PublishedReads" time="0.027" />
+  </testsuite>

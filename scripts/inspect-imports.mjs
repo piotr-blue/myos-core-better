@@ -1,0 +1,44 @@
+// Original import form and Timeline details over a real signed, separately owned source.
+import {chromium} from '../core-ui/node_modules/playwright/index.mjs';
+import {mkdir,writeFile} from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const url=process.argv[2],fixture=JSON.parse(process.argv[3]);
+assert.match(url,/^http:\/\/localhost:\d+$/);
+const output=process.env.DASHBOARD_REPORTS||'reports/imports-browser';await mkdir(output,{recursive:true});
+const browser=await chromium.launch({headless:true});
+try{
+ const page=await browser.newPage({viewport:{width:1440,height:1100}}),errors=[];let signedIn=false;
+ page.on('pageerror',e=>errors.push({type:'page',message:e.message}));
+ page.on('response',r=>{if(r.status()>=400&&r.url().startsWith(url))errors.push({status:r.status(),path:new URL(r.url()).pathname,beforeLogin:!signedIn});});
+ await page.goto(url);await page.getByLabel('Email').fill('sdk@example.invalid');await page.getByLabel('Password',{exact:true}).fill('loopback-test-only');
+ await page.getByRole('button',{name:'Sign in',exact:true}).click();await page.getByRole('heading',{name:'Documents',exact:true}).waitFor();signedIn=true;
+ const administrator = page.waitForResponse(r => new URL(r.url()).pathname === '/api/blue/v1/admin/session');
+ await page.goto(url+'/#accounts');
+ const deniedAdministrator = await administrator;
+ assert.equal(deniedAdministrator.status(),403);
+ assert.equal((await deniedAdministrator.json()).code,'ADMIN_REQUIRED');
+ assert.equal(await page.getByRole('link',{name:'Admin Panel',exact:true}).count(),0);
+ await page.getByRole('button',{name:/Personal/}).click();
+ await page.getByRole('heading',{name:'Documents',exact:true}).waitFor();
+ await page.goto(url+'/#timelines/import');await page.getByRole('heading',{name:'Import timeline',exact:true}).waitFor();
+ await page.getByLabel('Name',{exact:true}).fill('Partner payments');
+ await page.getByLabel('Provider endpoint',{exact:true}).fill(fixture.endpoint);
+ await page.getByLabel('Timeline BlueId',{exact:true}).fill(fixture.timelineId);
+ await page.getByLabel('Existing reader ID',{exact:true}).fill(fixture.readerKeyId);
+ await page.screenshot({path:output+'/form.png',fullPage:true});
+ const imported=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname==='/api/blue/v1/timelines/import');
+ await page.getByRole('button',{name:'Import timeline',exact:true}).click();assert.equal((await imported).status(),201);
+ await page.getByRole('heading',{name:'Timeline Details',exact:true}).waitFor();
+ await page.getByText('No — read only',{exact:false}).waitFor();
+ assert.equal(await page.getByRole('button',{name:'Append entry',exact:true}).count(),0);
+ const checked=page.waitForResponse(r=>r.request().method()==='POST'&&new URL(r.url()).pathname.endsWith('/retry'));
+ await page.getByRole('button',{name:'Check now',exact:true}).click();assert.equal((await checked).status(),200);
+ await page.getByRole('button',{name:'Expand all',exact:true}).click();
+ await page.getByRole('button',{name:'Show message only',exact:true}).click();
+ await page.locator('.entry-card').getByText('Partner payment',{exact:false}).first().waitFor();
+ assert.match(await page.locator('.entry-card').innerText(), /17/);
+ await page.screenshot({path:output+'/history.png',fullPage:true});
+ assert.deepEqual(errors.filter(e=>!(e.status===401&&e.beforeLogin&&['/api/blue/v1/me','/api/auth/refresh'].includes(e.path))&&!(e.status===403&&e.path==='/api/blue/v1/admin/session')),[]);
+ const report={passed:true,screens:2,actions:['import form','verified read-only Timeline','retry','original entry content'],errors};
+ await writeFile(output+'/report.json',JSON.stringify(report,null,2)+'\n');console.log(JSON.stringify(report));
+}finally{await browser.close();}

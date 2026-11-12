@@ -1,0 +1,22 @@
+{
+  "CommandId": "bd5e98dd-68ef-417b-9243-696168c09486",
+  "InstanceId": "i-052007ebaf704c0ad",
+  "Comment": "",
+  "DocumentName": "AWS-RunShellScript",
+  "DocumentVersion": "$DEFAULT",
+  "PluginName": "aws:runShellScript",
+  "ResponseCode": 0,
+  "ExecutionStartDateTime": "2026-11-10T02:04:58.121Z",
+  "ExecutionElapsedTime": "PT2.017S",
+  "ExecutionEndDateTime": "2026-11-10T02:05:00.121Z",
+  "Status": "Success",
+  "StatusDetails": "Success",
+  "StandardOutputContent": "{\"bindings\":100,\"owners\":100,\"timeline\":\"G5X8XYzw7pGRRrSuqZFMZ24RhUC5fyhkCqznmoGsy6eN\"}\n",
+  "StandardOutputUrl": "",
+  "StandardErrorContent": "SLF4J: Failed to load class \"org.slf4j.impl.StaticLoggerBinder\".\nSLF4J: Defaulting to no-operation (NOP) logger implementation\nSLF4J: See http://www.slf4j.org/codes.html#StaticLoggerBinder for further details.\n",
+  "StandardErrorUrl": "",
+  "CloudWatchOutputConfig": {
+    "CloudWatchLogGroupName": "",
+    "CloudWatchOutputEnabled": false
+  }
+}

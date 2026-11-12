@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractTopologyTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:59.038Z" hostname="MacBook-Pro-5.local" time="0.015">
+  <properties />
+  <testcase name="sparseScheduleKeepsWorkingAncestorsButDoesNotQueueQuietBranches()" classname="blue.ContractTopologyTest" time="0.011" />
+  <testcase name="outgoingRangeIsOrderedAndStableAcrossRemovalWithoutScanningSiblingEdges()" classname="blue.ContractTopologyTest" time="0.0" />
+  <testcase name="entryMutationAndIteratorRemovalInvalidateOnlyTheAffectedFork()" classname="blue.ContractTopologyTest" time="0.0" />
+  <testcase name="containingReferenceOrderIsDecodedAndUnaffectedByOtherMembers()" classname="blue.ContractTopologyTest" time="0.0" />
+  <testcase name="componentOrderIsStableAcrossInputPermutationsDuplicateLinksAndLongCycles()" classname="blue.ContractTopologyTest" time="0.001" />
+  <testcase name="schedulePlansAreSharedButCompletionAndCyclicPromotionRemainPrivate()" classname="blue.ContractTopologyTest" time="0.001" />
+  <testcase name="sparseScheduleRetainsCyclicUnitsAndTheirWaitingAncestors()" classname="blue.ContractTopologyTest" time="0.0" />
+  <testcase name="snapshotCopiesShareTopologyButKeepDocumentsAndEdgesIndependent()" classname="blue.ContractTopologyTest" time="0.0" />
+  <testcase name="historicalDeliveryToAQuietBranchRestoresOrdinaryDependencyOrdering()" classname="blue.ContractTopologyTest" time="0.0" />
+  <testcase name="changedTopologyReconsidersPreviouslyQuietAncestors()" classname="blue.ContractTopologyTest" time="0.0" />
+  <testcase name="lookupIndexTracksAllMutationPathsAndComparatorAliases()" classname="blue.ContractTopologyTest" time="0.0" />
+  <testcase name="localTurnsIsolateTheirWriterAndGraphStructureWhileBorrowingSealedDependencies()" classname="blue.ContractTopologyTest" time="0.0" />
+  </testsuite>

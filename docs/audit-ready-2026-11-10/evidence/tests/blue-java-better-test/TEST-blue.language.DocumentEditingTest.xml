@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.DocumentEditingTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.448Z" hostname="MacBook-Pro-5.local" time="0.005">
+  <properties />
+  <testcase name="nativeEditingEnforcesInputLimitsAndKeepsOriginalOnFailure()" classname="blue.language.DocumentEditingTest" time="0.0" />
+  <testcase name="nativeScalarEditsRetainNumberCategoriesAndLargeIntegers()" classname="blue.language.DocumentEditingTest" time="0.0" />
+  <testcase name="editingCollapsedAncestorsUsesCopyOnWriteAndKeepsOtherBranchesCollapsed()" classname="blue.language.DocumentEditingTest" time="0.001" />
+  <testcase name="invalidPathsAndNewMissingReferencesCannotCreateAnAdmittedDocument()" classname="blue.language.DocumentEditingTest" time="0.0" />
+  <testcase name="editsAreAtomicAndMustRespectInheritedRestrictions()" classname="blue.language.DocumentEditingTest" time="0.004" />
+  </testsuite>

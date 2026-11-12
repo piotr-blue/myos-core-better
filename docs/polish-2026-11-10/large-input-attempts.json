@@ -1,0 +1,25 @@
+{
+  "fixture": "OrderScale: Agreement with 10000 Orders, one Payment per Order, initialization emissions consumed by Agreement",
+  "attempts": [
+    {
+      "form": "fully expanded authoring input",
+      "result": "REJECTED",
+      "stage": "Language input decoding",
+      "error": "LanguageException: values",
+      "runtimeProcessingMeasured": false,
+      "logSha256": "e6583cbcf8b4e58b464a5c01443a549f76a93b3b30933cd20c63a276b10e23d8"
+    },
+    {
+      "form": "individual child sources admitted/stored, root containing BlueId references",
+      "result": "TIMEOUT",
+      "timeoutSeconds": 360,
+      "preparedChildren": 10000,
+      "completedInitialization": false,
+      "runtimeProcessingMeasured": false,
+      "logSha256": "d2c3044f0fe042d80d02cc7b34b615d3a4461545b60d7c84495c7cccd47a3d0a"
+    }
+  ],
+  "productionLimitsChanged": false,
+  "temporaryQualificationSourceRestored": true,
+  "candidate": "before the startup follow-up changes; not repeated after them"
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreReaderKeysTest$Custody" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:46.210Z" hostname="MacBook-Pro-5.local" time="0.006">
+  <properties />
+  <testcase name="restartRetainsOneEncryptedKeyAndItsNativeSignatureStillVerifies()" classname="myos.better.CoreReaderKeysTest$Custody" time="0.005" />
+  <testcase name="tamperedAndCrossResourceCiphertextsFailWithoutSecretDiagnostics()" classname="myos.better.CoreReaderKeysTest$Custody" time="0.001" />
+  <testcase name="unavailableCustodyAndInvalidNamesCannotAllocateKeys()" classname="myos.better.CoreReaderKeysTest$Custody" time="0.0" />
+  </testsuite>

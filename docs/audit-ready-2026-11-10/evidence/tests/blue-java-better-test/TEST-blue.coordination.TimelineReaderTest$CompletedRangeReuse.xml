@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineReaderTest$CompletedRangeReuse" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:09.546Z" hostname="MacBook-Pro-5.local" time="0.029">
+  <properties />
+  <testcase name="anIncompleteReadDoesNotSeedACompletedRange()" classname="blue.coordination.TimelineReaderTest$CompletedRangeReuse" time="0.007" />
+  <testcase name="successivePagesReuseOnlyPreviouslyCheckedExactSubtrees()" classname="blue.coordination.TimelineReaderTest$CompletedRangeReuse" time="0.012" />
+  <testcase name="aCompletedReadReusesOnlyItsExactRangeAndOriginalPrefix()" classname="blue.coordination.TimelineReaderTest$CompletedRangeReuse" time="0.01" />
+  </testsuite>

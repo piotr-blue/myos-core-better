@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineWorkQueueTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:59.814Z" hostname="MacBook-Pro-5.local" time="0.001">
+  <properties />
+  <testcase name="priorityBurstsCannotStarveOrdinaryWork()" classname="myos.better.TimelineWorkQueueTest" time="0.0" />
+  <testcase name="capacityDropsOnlyHintsAndAllowsPriorityToDisplaceBackgroundWork()" classname="myos.better.TimelineWorkQueueTest" time="0.0" />
+  <testcase name="arrivalDuringExecutionIsCoalescedAndCannotBeClaimedByAnotherWorker()" classname="myos.better.TimelineWorkQueueTest" time="0.0" />
+  <testcase name="backgroundContinuationDropsItsOldUrgency()" classname="myos.better.TimelineWorkQueueTest" time="0.0" />
+  <testcase name="addressedWorkPassesQueuedBackgroundWorkWithoutDuplicatingIt()" classname="myos.better.TimelineWorkQueueTest" time="0.001" />
+  <testcase name="newArrivalWinsOverDemotionOfTheSameRunningSource()" classname="myos.better.TimelineWorkQueueTest" time="0.0" />
+  <testcase name="catchUpKeepsPriorityButStillYieldsToBackgroundWork()" classname="myos.better.TimelineWorkQueueTest" time="0.0" />
+  </testsuite>

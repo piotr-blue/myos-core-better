@@ -1,0 +1,12 @@
+Calculating task graph as no cached configuration is available for tasks: classes testClasses
+> Task :processResources NO-SOURCE
+> Task :processTestResources NO-SOURCE
+> Task :blue-java-better:compileJava UP-TO-DATE
+> Task :compileJava FROM-CACHE
+> Task :classes UP-TO-DATE
+> Task :compileTestJava FROM-CACHE
+> Task :testClasses UP-TO-DATE
+
+BUILD SUCCESSFUL in 513ms
+3 actionable tasks: 2 from cache, 1 up-to-date
+Configuration cache entry stored.

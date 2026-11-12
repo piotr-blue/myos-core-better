@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.SourceInspectionTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:50.301Z" hostname="MacBook-Pro-5.local" time="0.19">
+  <properties />
+  <testcase name="olderStoredResultsDoNotPretendTheirDependencyDeltasWereRecorded()" classname="myos.local.SourceInspectionTest" time="0.028" />
+  <testcase name="historicalIdentityDoesNotDependOnTheMutableRetainedLookupIndex()" classname="myos.local.SourceInspectionTest" time="0.026" />
+  <testcase name="removingAnAttachmentPublishesTheOldGenerationAndKeepsTheChildIndependent()" classname="myos.local.SourceInspectionTest" time="0.028" />
+  <testcase name="executionTracingIsOptInAndDoesNotAlterTheNativeReceipt()" classname="myos.local.SourceInspectionTest" time="0.037" />
+  <testcase name="newExternalSourceIsAnImmutableResultDeltaAndBlocksOnlyTheLaterPrefix()" classname="myos.local.SourceInspectionTest" time="0.069" />
+  </testsuite>

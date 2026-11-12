@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreAgentsTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:39.537Z" hostname="MacBook-Pro-5.local" time="0.005">
+  <properties />
+  <testcase name="malformedInputAndNonAdminOrKeyCallersCannotCreateAuthority()" classname="myos.better.CoreAgentsTest" time="0.001" />
+  <testcase name="defaultsReplaySettingsAndNoOpMatchTheOriginalAccountContract()" classname="myos.better.CoreAgentsTest" time="0.001" />
+  <testcase name="authorityChangeFencesPublicationAndLostReplyReplaysTheCommittedResult()" classname="myos.better.CoreAgentsTest" time="0.0" />
+  <testcase name="builtInAgentOnlyChangesInclusionAndConnectionsHidePrivateFields()" classname="myos.better.CoreAgentsTest" time="0.001" />
+  <testcase name="concurrentCreationCannotExceedSixteenExternalAgents()" classname="myos.better.CoreAgentsTest" time="0.001" />
+  </testsuite>

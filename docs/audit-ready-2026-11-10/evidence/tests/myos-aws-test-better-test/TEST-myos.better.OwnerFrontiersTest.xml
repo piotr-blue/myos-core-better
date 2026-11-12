@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.OwnerFrontiersTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:05.577Z" hostname="MacBook-Pro-5.local" time="0.14">
+  <properties />
+  <testcase name="replacementLifetimeDoesNotInheritTheRetiredInputsCursor()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  <testcase name="expiryFencesADeadWorkerAndIdempotentAcceptanceDoesNotDuplicateAResult()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  <testcase name="coverageOnlyDependenciesDoNotDeliverHistoryButStillGateTheNextInput()" classname="myos.better.OwnerFrontiersTest" time="0.004" />
+  <testcase name="failedManifestPublicationExposesNeitherTheEntryNorPartialFanout()" classname="myos.better.OwnerFrontiersTest" time="0.033" />
+  <testcase name="aDeferredChildKeepsItsWaitingAncestorsRunnableWithoutBlockingAnotherGraph()" classname="myos.better.OwnerFrontiersTest" time="0.002" />
+  <testcase name="failedOwnerDoesNotBlockUnrelatedOwnersAndRetryKeepsOriginal()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  <testcase name="historicalAttachmentCannotStarveIndependentOwnersAfterRestart()" classname="myos.better.OwnerFrontiersTest" time="0.002" />
+  <testcase name="lostPublicationResponseReconcilesTheExactClaimWithoutRepeatingIt()" classname="myos.better.OwnerFrontiersTest" time="0.0" />
+  <testcase name="newConsumerCatchesUpButAnExistingConsumerCannotInjectHistoryAsNewLiveInput()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  <testcase name="tiedOriginalsUseFullKeyAndRemovingAnOccurrenceDoesNotStopItsOwner()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  <testcase name="ownershipCyclesMustBeNativeUnitsAndTheirFourTimelinesAreMergedCanonically()" classname="myos.better.OwnerFrontiersTest" time="0.003" />
+  <testcase name="additiveHostAllowanceSurvivesReopenAndManualRetry()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  <testcase name="oneAppendPublishesMoreThanOneHundredDirectFrontiersAtomically()" classname="myos.better.OwnerFrontiersTest" time="0.084" />
+  <testcase name="independentWorkersRetainBothPublicationsOnManifestContention()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  <testcase name="attachingNonparticipatingHistoryDoesNotRequireNativeHistoryMigration()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  <testcase name="positiveTerminalPublicationRetiresLiveInputsWithoutBlockingItsSource()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  <testcase name="sourceAdvancesWhileConsumerRunsAndOtherConsumersReuseExactHistoryAfterReopen()" classname="myos.better.OwnerFrontiersTest" time="0.002" />
+  <testcase name="lateNonparticipationCannotReintroduceAnAlreadyProcessedOriginal()" classname="myos.better.OwnerFrontiersTest" time="0.001" />
+  </testsuite>

@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreDocumentsTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:39.913Z" hostname="MacBook-Pro-5.local" time="0.123">
+  <properties />
+  <testcase name="operationContextPinsTheAuthorizedCurrentPublicationAndRejectsInvalidSelectors()" classname="myos.better.CoreDocumentsTest" time="0.018" />
+  <testcase name="historyPinsVersionsAndPredecessorsSurviveSubsequentExecution()" classname="myos.better.CoreDocumentsTest" time="0.03" />
+  <testcase name="initializationHistoryAndContentReferencesRemainDistinctAndDurable()" classname="myos.better.CoreDocumentsTest" time="0.012" />
+  <testcase name="epochPagesUseDistinctScopedCursorsAndKeepTheFirstReadBoundary()" classname="myos.better.CoreDocumentsTest" time="0.027" />
+  <testcase name="storedPrivateTypesRemainAvailableWhenReadingOriginalDocumentSources()" classname="myos.better.CoreDocumentsTest" time="0.007" />
+  <testcase name="legacyPublicationWithoutAdmissionSourceDoesNotBreakAccountListing()" classname="myos.better.CoreDocumentsTest" time="0.007" />
+  <testcase name="nativeExactContentRetainsTheReturnedPresentationAcrossContentReads()" classname="myos.better.CoreDocumentsTest" time="0.012" />
+  <testcase name="exactDocumentSubmissionPreservesIdentityAndListingsFilterMetadata()" classname="myos.better.CoreDocumentsTest" time="0.01" />
+  </testsuite>

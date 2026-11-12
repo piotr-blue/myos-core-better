@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.CoverageTreeTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:14.139Z" hostname="MacBook-Pro-5.local" time="3.365">
+  <properties />
+  <testcase name="changingOneOfTenThousandSourcesCopiesOnlyALogarithmicPath()" classname="myos.local.CoverageTreeTest" time="3.171" />
+  <testcase name="randomReplacementsAndRemovalsPreserveMinimaBalanceAndHistoricalRoots()" classname="myos.local.CoverageTreeTest" time="0.194" />
+  </testsuite>

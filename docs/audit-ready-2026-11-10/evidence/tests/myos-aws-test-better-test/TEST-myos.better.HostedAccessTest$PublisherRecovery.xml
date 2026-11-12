@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.HostedAccessTest$PublisherRecovery" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:57.567Z" hostname="MacBook-Pro-5.local" time="0.256">
+  <properties />
+  <testcase name="aCorruptProtectedCheckpointCannotPublishOrChangePermissions()" classname="myos.better.HostedAccessTest$PublisherRecovery" time="0.024" />
+  <testcase name="coldUpdatesWithInterleavedDocumentsNeverReadHistoricalEntryBodies()" classname="myos.better.HostedAccessTest$PublisherRecovery" time="0.232" />
+  </testsuite>

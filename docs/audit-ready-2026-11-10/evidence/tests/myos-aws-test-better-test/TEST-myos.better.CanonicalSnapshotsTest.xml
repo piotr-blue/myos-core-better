@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CanonicalSnapshotsTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:35.399Z" hostname="MacBook-Pro-5.local" time="0.277">
+  <properties />
+  <testcase name="coldPreparationDeltaReadsOnlyChangedIndexPathsAndPreservesItsBase()" classname="myos.better.CanonicalSnapshotsTest" time="0.014" />
+  <testcase name="[1] 1" classname="myos.better.CanonicalSnapshotsTest" time="0.005" />
+  <testcase name="[2] 32" classname="myos.better.CanonicalSnapshotsTest" time="0.012" />
+  <testcase name="pagedPreparationRetainsOldHistoryAndWritesOnlyChangedMemberPaths()" classname="myos.better.CanonicalSnapshotsTest" time="0.014" />
+  <testcase name="earlierBlobMetadataRemainsReadableAndCanPublishANewVersion()" classname="myos.better.CanonicalSnapshotsTest" time="0.011" />
+  <testcase name="deltaCataloguesPreserveOldVersionsAndRestoreCurrentPortableContent()" classname="myos.better.CanonicalSnapshotsTest" time="0.049" />
+  <testcase name="executionClosureDoesNotEnumerateTheHistoricalCatalogue()" classname="myos.better.CanonicalSnapshotsTest" time="0.044" />
+  <testcase name="smallMetadataSharesRadixPagesWithoutOneBlobReadPerMember()" classname="myos.better.CanonicalSnapshotsTest" time="0.005" />
+  <testcase name="cacheMissesUseSelectedMembershipAndDeltaPathsInsteadOfEnumeratingHistory()" classname="myos.better.CanonicalSnapshotsTest" time="0.061" />
+  <testcase name="executionCanReuseInstalledDefinitionsWithoutChangingPortableExports()" classname="myos.better.CanonicalSnapshotsTest" time="0.001" />
+  <testcase name="cachedAndColdPagesReproduceExactSnapshotsAfterFurtherChanges()" classname="myos.better.CanonicalSnapshotsTest" time="0.041" />
+  <testcase name="coldExecutionDoesNotDecodeObsoleteCatalogueContent()" classname="myos.better.CanonicalSnapshotsTest" time="0.017" />
+  </testsuite>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.OrderedIndexTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:04.543Z" hostname="MacBook-Pro-5.local" time="0.13">
+  <properties />
+  <testcase name="batchUpdatesPrefixPaginationAndDeletesMatchOrderedMapAcrossColdReads()" classname="myos.better.OrderedIndexTest" time="0.063" />
+  <testcase name="coldMinimumAndOneUpdateTouchOnlyAPathInOneHundredThousandEntries()" classname="myos.better.OrderedIndexTest" time="0.067" />
+  </testsuite>

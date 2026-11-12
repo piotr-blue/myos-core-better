@@ -1,0 +1,43 @@
+{
+  "name": "@blue-labs/myos-sdk",
+  "version": "0.3.1",
+  "license": "UNLICENSED",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org",
+    "access": "public"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bluecontract/myos-core.git",
+    "directory": "sdk/typescript"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "generation.json"
+  ],
+  "scripts": {
+    "generate": "node scripts/generate.mjs",
+    "check:generated": "node scripts/generate.mjs --check",
+    "check:backend": "npm run build && node scripts/check-backend.mjs",
+    "build": "node scripts/build.mjs",
+    "typecheck:tests": "tsc -p tsconfig.tests.json",
+    "test": "npm run build && npm run typecheck:tests && node --test tests/*.test.mjs",
+    "check": "npm run check:generated && npm test"
+  },
+  "devDependencies": {
+    "typescript": "5.8.3"
+  }
+}

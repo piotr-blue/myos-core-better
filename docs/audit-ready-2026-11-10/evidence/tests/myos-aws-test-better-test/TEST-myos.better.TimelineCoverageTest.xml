@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineCoverageTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:41.706Z" hostname="MacBook-Pro-5.local" time="0.102">
+  <properties />
+  <testcase name="demandsAreExclusiveMonotonicAccountScopedAndNotCoverageEvidence()" classname="myos.better.TimelineCoverageTest" time="0.0" />
+  <testcase name="remoteRefreshAdvancesQuietCoverageWithoutPretendingToSatisfyFutureDemand()" classname="myos.better.TimelineCoverageTest" time="0.037" />
+  <testcase name="automaticPollingReusesQuietCoverageButNoticesNewEntriesAndRechecksPrivateAccess()" classname="myos.better.TimelineCoverageTest" time="0.065" />
+  </testsuite>

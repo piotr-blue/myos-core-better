@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.ClauseValidationTest" tests="14" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:24.349Z" hostname="MacBook-Pro-5.local" time="10.391">
+  <properties />
+  <testcase name="repetition 1 of 3" classname="myos.local.ClauseValidationTest" time="0.406" />
+  <testcase name="repetition 2 of 3" classname="myos.local.ClauseValidationTest" time="0.399" />
+  <testcase name="repetition 3 of 3" classname="myos.local.ClauseValidationTest" time="0.38" />
+  <testcase name="duplicateQuoteKeepsDistinctEventOccurrencesWithoutChangingTheBusinessValue()" classname="myos.local.ClauseValidationTest" time="0.176" />
+  <testcase name="&quot;zero price&quot;" classname="myos.local.ClauseValidationTest" time="0.193" />
+  <testcase name="&quot;normal&quot;" classname="myos.local.ClauseValidationTest" time="0.154" />
+  <testcase name="&quot;upper bounds&quot;" classname="myos.local.ClauseValidationTest" time="0.161" />
+  <testcase name="&quot;extra business context&quot;" classname="myos.local.ClauseValidationTest" time="0.161" />
+  <testcase name="&quot;negative price&quot;" classname="myos.local.ClauseValidationTest" time="0.166" />
+  <testcase name="&quot;excessive price&quot;" classname="myos.local.ClauseValidationTest" time="0.174" />
+  <testcase name="&quot;zero quantity&quot;" classname="myos.local.ClauseValidationTest" time="0.166" />
+  <testcase name="&quot;excessive quantity&quot;" classname="myos.local.ClauseValidationTest" time="0.174" />
+  <testcase name="&quot;text price&quot;" classname="myos.local.ClauseValidationTest" time="0.175" />
+  <testcase name="&quot;missing quantity&quot;" classname="myos.local.ClauseValidationTest" time="0.173" />
+  </testsuite>

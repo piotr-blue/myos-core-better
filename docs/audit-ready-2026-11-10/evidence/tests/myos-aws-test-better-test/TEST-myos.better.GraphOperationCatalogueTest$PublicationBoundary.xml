@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.GraphOperationCatalogueTest$PublicationBoundary" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:57.114Z" hostname="MacBook-Pro-5.local" time="0.048">
+  <properties />
+  <testcase name="unchangedSiblingsAreReusedWhileChannelLifetimesAndRemovalsArePublished()" classname="myos.better.GraphOperationCatalogueTest$PublicationBoundary" time="0.002" />
+  <testcase name="legacyFallbackMigratesOnlyOnSuccessfulPublicationAndFailedCandidatesStayPrivate()" classname="myos.better.GraphOperationCatalogueTest$PublicationBoundary" time="0.046" />
+  </testsuite>

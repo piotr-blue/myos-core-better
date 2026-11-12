@@ -1,0 +1,16 @@
+{
+  "passed": true,
+  "restartCommand": "2dc518b2-c4ed-43b1-91ec-a8798f1d03b4",
+  "artifactSha256": "bd8bec84c288aae90e63d29ecb23d035ecb1802423c83dde85277588f9526fcc",
+  "orders": 100,
+  "beforeVersion": 6,
+  "afterVersion": 7,
+  "values": {
+    "payment": 252,
+    "order": 252,
+    "agreement": 252
+  },
+  "parentObservedMillis": 7257.453042000002,
+  "mode": "owner-local",
+  "gas": 224
+}

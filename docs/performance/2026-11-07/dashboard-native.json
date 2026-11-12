@@ -1,0 +1,167 @@
+{
+  "release": "faff53ae0e20fdf2fa88ebc551b4716690031bdded4b413c6a63a68dfc7853db",
+  "samples": [
+    {
+      "agreement": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957",
+      "ordersBefore": 11,
+      "ordersAfter": 14,
+      "paidBefore": 600,
+      "paidAfter": 800,
+      "lastOrder": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.3b8c45bbf62d32aa88b745076207ab49",
+      "lastPayment": "graph-0464b702957e04068682bcf6c5a13b03201fd734e0dba957.286d600d4d772d3cf85b632b2bd7fdef",
+      "calls": [
+        {
+          "operation": "placeOrder",
+          "engineMillis": 1220.4095,
+          "observedTotalMillis": 3704.0133750000005,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 1367350363,
+            "engineNanos": 1220409500,
+            "signedEntryThroughCommitMicros": 2434763
+          }
+        },
+        {
+          "operation": "placeOrder",
+          "engineMillis": 609.945221,
+          "observedTotalMillis": 1680.5508749999997,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 789504893,
+            "engineNanos": 609945221,
+            "signedEntryThroughCommitMicros": 1072567
+          }
+        },
+        {
+          "operation": "placeOrder",
+          "engineMillis": 528.890201,
+          "observedTotalMillis": 1642.8874170000008,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 672351398,
+            "engineNanos": 528890201,
+            "signedEntryThroughCommitMicros": 926415
+          }
+        },
+        {
+          "operation": "preparePayment",
+          "engineMillis": 715.107823,
+          "observedTotalMillis": 2605.8106249999983,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 842625004,
+            "engineNanos": 715107823,
+            "signedEntryThroughCommitMicros": 1798133
+          }
+        },
+        {
+          "operation": "acceptPaymentInstruction",
+          "engineMillis": 155.796047,
+          "observedTotalMillis": 2152.1498329999995,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 280513781,
+            "engineNanos": 155796047,
+            "signedEntryThroughCommitMicros": 1304030
+          }
+        },
+        {
+          "operation": "reportTransfer",
+          "engineMillis": 211.209892,
+          "observedTotalMillis": 1634.9424999999976,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 338452455,
+            "engineNanos": 211209892,
+            "signedEntryThroughCommitMicros": 1095192
+          }
+        },
+        {
+          "operation": "acknowledgeTransfer",
+          "engineMillis": 337.187818,
+          "observedTotalMillis": 1329.8962499999973,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 462247885,
+            "engineNanos": 337187818,
+            "signedEntryThroughCommitMicros": 694086
+          }
+        }
+      ]
+    },
+    {
+      "agreement": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270",
+      "ordersBefore": 211,
+      "ordersAfter": 214,
+      "paidBefore": 2200,
+      "paidAfter": 2400,
+      "lastOrder": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.5f5254706a05d3d2f7498673f2e89bf1",
+      "lastPayment": "graph-a3795cde70d9cca1a179871662c6a57ef1222a11c633b270.b803bc2d0718494475365fad9ff4b2b5",
+      "calls": [
+        {
+          "operation": "placeOrder",
+          "engineMillis": 722.121365,
+          "observedTotalMillis": 2630.450332999999,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 915720832,
+            "engineNanos": 722121365,
+            "signedEntryThroughCommitMicros": 1884591
+          }
+        },
+        {
+          "operation": "placeOrder",
+          "engineMillis": 1068.342725,
+          "observedTotalMillis": 2544.5540830000014,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 1260598731,
+            "engineNanos": 1068342725,
+            "signedEntryThroughCommitMicros": 1597292
+          }
+        },
+        {
+          "operation": "placeOrder",
+          "engineMillis": 649.043074,
+          "observedTotalMillis": 1633.4548339999983,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 833398024,
+            "engineNanos": 649043074,
+            "signedEntryThroughCommitMicros": 1078207
+          }
+        },
+        {
+          "operation": "preparePayment",
+          "engineMillis": 1131.277746,
+          "observedTotalMillis": 3124.5337080000013,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 1331940402,
+            "engineNanos": 1131277746,
+            "signedEntryThroughCommitMicros": 2349958
+          }
+        },
+        {
+          "operation": "acceptPaymentInstruction",
+          "engineMillis": 268.946767,
+          "observedTotalMillis": 2148.6398330000043,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 423533258,
+            "engineNanos": 268946767,
+            "signedEntryThroughCommitMicros": 1336282
+          }
+        },
+        {
+          "operation": "reportTransfer",
+          "engineMillis": 378.341236,
+          "observedTotalMillis": 2020.9333750000055,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 524656165,
+            "engineNanos": 378341236,
+            "signedEntryThroughCommitMicros": 1339928
+          }
+        },
+        {
+          "operation": "acknowledgeTransfer",
+          "engineMillis": 476.023542,
+          "observedTotalMillis": 1575.0633749999993,
+          "serverPerformance": {
+            "admissionThroughCommitNanos": 699732570,
+            "engineNanos": 476023542,
+            "signedEntryThroughCommitMicros": 1008005
+          }
+        }
+      ]
+    }
+  ]
+}

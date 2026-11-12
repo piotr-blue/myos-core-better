@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreReaderKeysTest$Selection" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:46.216Z" hostname="MacBook-Pro-5.local" time="0.001">
+  <properties />
+  <testcase name="publicAndIdSelectorsRequireTheSameLiveAccountOwnedKey()" classname="myos.better.CoreReaderKeysTest$Selection" time="0.001" />
+  <testcase name="missingAmbiguousEmptyAndNonTextSelectorsAreRejected()" classname="myos.better.CoreReaderKeysTest$Selection" time="0.0" />
+  </testsuite>

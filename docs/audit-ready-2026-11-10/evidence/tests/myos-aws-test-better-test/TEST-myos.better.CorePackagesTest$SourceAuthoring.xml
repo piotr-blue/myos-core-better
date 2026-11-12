@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CorePackagesTest$SourceAuthoring" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:45.742Z" hostname="MacBook-Pro-5.local" time="0.367">
+  <properties />
+  <testcase name="removedAliasesFailButRetainedExactDocumentsStayValid()" classname="myos.better.CorePackagesTest$SourceAuthoring" time="0.365" />
+  <testcase name="nestedTypesResolveWithoutRewritingNamesOrOrdinaryStrings()" classname="myos.better.CorePackagesTest$SourceAuthoring" time="0.001" />
+  </testsuite>

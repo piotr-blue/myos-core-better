@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.TimelineChannelBindingTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.377Z" hostname="MacBook-Pro-5.local" time="0.105">
+  <properties />
+  <testcase name="bothBindingsMatchThePublishedProfileWithoutGenericInvocationOrAdmissionCharges()" classname="blue.TimelineChannelBindingTest" time="0.001" />
+  <testcase name="closedCommitmentBindsOriginalPayloadAndRetainsNegativeAssessmentsInCodePointOrder()" classname="blue.TimelineChannelBindingTest" time="0.001" />
+  <testcase name="admissionRefusesAnyDifferentRuntimeBeforeCallingTheHost()" classname="blue.TimelineChannelBindingTest" time="0.001" />
+  </testsuite>

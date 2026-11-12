@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.NativeTimelineHttpTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:04.400Z" hostname="MacBook-Pro-5.local" time="0.143">
+  <properties />
+  <testcase name="consoleSharingControlsRealSignedReaderAccessAndRemainOwnerOnly()" classname="myos.better.NativeTimelineHttpTest" time="0.068" />
+  <testcase name="nativeLifecycleNeedsAnOwnerOnlyForMutationsAndExecutesRealAccessChanges()" classname="myos.better.NativeTimelineHttpTest" time="0.062" />
+  <testcase name="badSignaturesRouteConfusionAndOwnerCsrfFailWithTypedFailures()" classname="myos.better.NativeTimelineHttpTest" time="0.009" />
+  </testsuite>

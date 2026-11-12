@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractWitnessesTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:59.112Z" hostname="MacBook-Pro-5.local" time="0.0">
+  <properties />
+  <testcase name="repeatedOpenRetainsChildrenButNewInvocationEstablishesItsOwnInventory()" classname="blue.ContractWitnessesTest" time="0.0" />
+  <testcase name="forksKeepInventoriesTogetherAndEvictionRevokesTheShortcut()" classname="blue.ContractWitnessesTest" time="0.0" />
+  </testsuite>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreWorkspacesTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:54.383Z" hostname="MacBook-Pro-5.local" time="0.001">
+  <properties />
+  <testcase name="readyReceiptIncludesRuntimeMembershipAndDisabledAgentAndSurvivesRestart()" classname="myos.better.CoreWorkspacesTest" time="0.001" />
+  <testcase name="simultaneousSameIntentCreatesExactlyOneWorkspaceAndRejectedInputCreatesNone()" classname="myos.better.CoreWorkspacesTest" time="0.0" />
+  </testsuite>

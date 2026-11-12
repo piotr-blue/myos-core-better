@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CorePackagesTest$Installation" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:46.109Z" hostname="MacBook-Pro-5.local" time="0.003">
+  <properties />
+  <testcase name="dependenciesManagedBindingsAndAccountIsolationSurviveRestart()" classname="myos.better.CorePackagesTest$Installation" time="0.002" />
+  <testcase name="explicitBootstrapSelectionRestoresItsWholeExactClosure()" classname="myos.better.CorePackagesTest$Installation" time="0.001" />
+  </testsuite>

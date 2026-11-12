@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.HttpDeadlineTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:59.131Z" hostname="MacBook-Pro-5.local" time="0.47">
+  <properties />
+  <testcase name="saturationAndShutdownUseAdmittedOwnersWithoutBlockingTheDeadlineClock()" classname="myos.better.HttpDeadlineTest" time="0.142" />
+  <testcase name="failedCleanupCannotBeReportedAsSuccessfulQuiescence()" classname="myos.better.HttpDeadlineTest" time="0.0" />
+  <testcase name="aFailedSharedCloseRemainsFailedForEveryOwner()" classname="myos.better.HttpDeadlineTest" time="0.001" />
+  <testcase name="expiryInterruptsButDoesNotDuplicateAnOwnersBlockingClose()" classname="myos.better.HttpDeadlineTest" time="0.105" />
+  <testcase name="nestedResponseAndRequestExpiryJoinOneTransportClose()" classname="myos.better.HttpDeadlineTest" time="0.109" />
+  <testcase name="admissionCannotReturnWhileAnOffloadedCloseIsStillRunning()" classname="myos.better.HttpDeadlineTest" time="0.112" />
+  </testsuite>

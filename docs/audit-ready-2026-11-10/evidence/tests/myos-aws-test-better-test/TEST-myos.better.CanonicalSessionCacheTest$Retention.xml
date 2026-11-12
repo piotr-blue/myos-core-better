@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CanonicalSessionCacheTest$Retention" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:35.089Z" hostname="MacBook-Pro-5.local" time="0.029">
+  <properties />
+  <testcase name="coreAppliesItsConfiguredLimitToTheCanonicalGraphEngine()" classname="myos.better.CanonicalSessionCacheTest$Retention" time="0.006" />
+  <testcase name="theConfiguredLimitRebuildsWorkingHistoryButKeepsBorrowedContentValid()" classname="myos.better.CanonicalSessionCacheTest$Retention" time="0.012" />
+  <testcase name="immutableViewsDoNotAcquireActiveLeasesOrReturnAnotherPublication()" classname="myos.better.CanonicalSessionCacheTest$Retention" time="0.006" />
+  <testcase name="invalidOrLateReconfigurationIsRejected()" classname="myos.better.CanonicalSessionCacheTest$Retention" time="0.004" />
+  </testsuite>

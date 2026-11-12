@@ -1,0 +1,22 @@
+{
+  "commandId": "58a7be65-67ba-4f79-92e3-bacd297babac",
+  "instance": "i-067c1bd568577e5ba",
+  "table": "myos-better-canonical-20261108-documents",
+  "account": "owner-qa-e8ff3830edb8",
+  "digest": "b4b3cbfed8dc553927fe0846998a5aa4bf5a3a357dc39e4560472ea089030375",
+  "counts": [
+    10,
+    100
+  ],
+  "cold": true,
+  "profileSummaries": false,
+  "gasSchedule": "ADDITIVE_PROTOTYPE",
+  "rotateTargets": false,
+  "separateTimelines": true,
+  "observableRoot": true,
+  "artifacts": {
+    "myos-core-better-0.1.0-experiment-qualification.jar": "a3450025cf3be05d3d2a5336e666290a1216605c2865fa818e31b971e3bcf4f6",
+    "myos-core-better-0.1.0-experiment.jar": "e948009c3dc6fe93435ccc0922f746b64f19cb1ea4f93ffbf6574e823a3b043a",
+    "blue-java-better-0.1.0-SNAPSHOT.jar": "3ef25e2fd16a1d1d128760de362c042e4506c97e1a7165b1d1a040ab58e60581"
+  }
+}

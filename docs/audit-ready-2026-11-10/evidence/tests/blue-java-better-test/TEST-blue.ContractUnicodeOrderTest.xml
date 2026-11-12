@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractUnicodeOrderTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:59.053Z" hostname="MacBook-Pro-5.local" time="0.054">
+  <properties />
+  <testcase name="commonPrefixesAndSupplementaryCharactersKeepScalarOrder()" classname="blue.ContractUnicodeOrderTest" time="0.021" />
+  <testcase name="everyBmpScalarSortsBeforeSupplementaryScalarsEvenAtSurrogateBoundaries()" classname="blue.ContractUnicodeOrderTest" time="0.033" />
+  </testsuite>

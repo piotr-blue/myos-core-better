@@ -1,0 +1,9 @@
+Calculating task graph as no cached configuration is available for tasks: javadoc
+> Task :processResources UP-TO-DATE
+> Task :compileJava UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :javadoc FROM-CACHE
+
+BUILD SUCCESSFUL in 428ms
+3 actionable tasks: 1 from cache, 2 up-to-date
+Configuration cache entry stored.

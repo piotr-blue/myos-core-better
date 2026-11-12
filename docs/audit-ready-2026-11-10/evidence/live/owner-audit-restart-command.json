@@ -1,0 +1,22 @@
+{
+  "CommandId": "883407ba-56bb-48f9-bf4f-166062478214",
+  "InstanceId": "i-052007ebaf704c0ad",
+  "Comment": "",
+  "DocumentName": "AWS-RunShellScript",
+  "DocumentVersion": "$DEFAULT",
+  "PluginName": "aws:runShellScript",
+  "ResponseCode": 0,
+  "ExecutionStartDateTime": "2026-11-10T01:29:09.034Z",
+  "ExecutionElapsedTime": "PT20.538S",
+  "ExecutionEndDateTime": "2026-11-10T01:29:29.034Z",
+  "Status": "Success",
+  "StatusDetails": "Success",
+  "StandardOutputContent": "/opt/myos-better/releases/beb5e840f3803b363ce1bece2099f008f736772861108188ca0ccfcd3ac4694b\n",
+  "StandardOutputUrl": "",
+  "StandardErrorContent": "",
+  "StandardErrorUrl": "",
+  "CloudWatchOutputConfig": {
+    "CloudWatchLogGroupName": "",
+    "CloudWatchOutputEnabled": false
+  }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelinePullTest$DurableCatchup" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:55.911Z" hostname="MacBook-Pro-5.local" time="0.421">
+  <properties />
+  <testcase name="everyChunkSurvivesColdRestartAndASingleEntryPageLimitStillMakesProgress()" classname="myos.better.TimelinePullTest$DurableCatchup" time="0.301" />
+  <testcase name="invalidAcceptanceAndLostTransportCannotCommitAChunk()" classname="myos.better.TimelinePullTest$DurableCatchup" time="0.032" />
+  <testcase name="standardAcquisitionStopsAtEightPagesInsteadOfAccumulatingTheWholeBacklog()" classname="myos.better.TimelinePullTest$DurableCatchup" time="0.087" />
+  </testsuite>

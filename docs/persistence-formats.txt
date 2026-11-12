@@ -1,0 +1,54 @@
+CANONICAL SNAPSHOT FORMAT 4
+
+A snapshot has one local content radix root and optional timelineContent entries.
+Each entry identifies an acquired timeline position and its immutable content root.
+The owner retains bytes by reference; it does not inherit another document's
+processing authority. Native input admission, account permissions, source
+completeness and receipt validation remain unchanged.
+
+The timeline archive root is selected from the verified original input's acquired
+batch. Its storage account and AtomicStore instance must match the receiving
+snapshot. Source-specific provider and timeline definitions, which are outside the
+archive index, are retained with the owner's actual new records. Installed package
+records are retained through the shared definition catalogues described below.
+
+For each timeline, the highest already retained acquisition position wins. An older
+applicable input cannot remove content inherited by a newer snapshot. Equal
+positions with different catalogue roots are rejected. Point reads capture these
+immutable roots and never follow a mutable latest head. Full portable export still
+enumerates the selected union explicitly.
+
+COMPATIBILITY
+New readers accept canonical-pages formats 1, 2, 3 and 4. New publications use
+format 4. The previous service binary does not support format 4. After the first
+new publication, rolling back the binary alone is unsupported; retain the upgraded
+reader or restore a coherent pre-upgrade storage backup. Deployment must continue
+to respect the single active owner for a journal.
+
+COMPLEXITY
+A static update records its actual changed content and one bounded reference per
+retained source, rather than copying all intervening input history into each owner.
+Source catalogues are monotone and replace older roots for the same timeline.
+Point reads search local content and retained source catalogues. Cost can therefore
+still depend on the number of distinct retained timelines; this change alone does
+not establish constant cost across arbitrarily many sources or structural changes.
+
+VALIDATION
+SharedTimelineContentTest covers 1/64/1024-history catalogues, cold reads, exact
+portable content unions, derived snapshots, forward/older source cuts, conflicting
+cuts, cross-account/store rejection and legacy-format upgrades.
+IdleOwnerGrowthTest uses the published IncrementalDocuments fixture with two
+children and varies updates to the active child before incrementing the idle one.
+Ordinary tests use small cases; the idleGrowth task exposes the larger matrix.
+
+Shared definition catalogues
+---------------------------
+Format 4 also retains definitionContent, a set of immutable catalogue roots for
+installed public definitions. Timeline acquisition excludes those definitions
+from its per-source content root. The catalogue is persisted once per account and
+exact package-set identity. It supplies bytes only, never admission or authority.
+Previously retained definition roots remain available after package-set upgrades.
+Publication flushes immutable pages before the conditional definition row, including
+when called within an outer content batch. Concurrent creators must agree on the
+same deterministic root. Source-specific provider and timeline definitions remain
+in the owner's local catalogue.

@@ -1,0 +1,22 @@
+{
+  "CommandId": "450024c5-8e4a-4466-a63e-6df181407539",
+  "InstanceId": "i-052007ebaf704c0ad",
+  "Comment": "",
+  "DocumentName": "AWS-RunShellScript",
+  "DocumentVersion": "$DEFAULT",
+  "PluginName": "aws:runShellScript",
+  "ResponseCode": 0,
+  "ExecutionStartDateTime": "2026-11-10T01:57:15.903Z",
+  "ExecutionElapsedTime": "PT0.312S",
+  "ExecutionEndDateTime": "2026-11-10T01:57:15.903Z",
+  "Status": "Success",
+  "StatusDetails": "Success",
+  "StandardOutputContent": "{\"canonicalGraphs\":true,\"combinedAcknowledgements\":true,\"durable\":true,\"edition\":\"AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup\",\"nativeAdmission\":true,\"newOwnerGasSchedule\":\"contracts-compositional-gas-1\",\"status\":\"ok\",\"supportedEditions\":[\"AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup\"],\"timelineAutomatic\":true,\"timelineProcessing\":true,\"workers\":2}",
+  "StandardOutputUrl": "https://s3.eu-west-1.amazonaws.com/myos-better-canonical-20261108-artifacts-y9kcxxg2eyvc/reports/cold-trace/cold-trace-0e2fe3014562/cleanup/450024c5-8e4a-4466-a63e-6df181407539/i-052007ebaf704c0ad/awsrunShellScript/0.awsrunShellScript/stdout",
+  "StandardErrorContent": "",
+  "StandardErrorUrl": "https://s3.eu-west-1.amazonaws.com/myos-better-canonical-20261108-artifacts-y9kcxxg2eyvc/reports/cold-trace/cold-trace-0e2fe3014562/cleanup/450024c5-8e4a-4466-a63e-6df181407539/i-052007ebaf704c0ad/awsrunShellScript/0.awsrunShellScript/stderr",
+  "CloudWatchOutputConfig": {
+    "CloudWatchLogGroupName": "",
+    "CloudWatchOutputEnabled": false
+  }
+}

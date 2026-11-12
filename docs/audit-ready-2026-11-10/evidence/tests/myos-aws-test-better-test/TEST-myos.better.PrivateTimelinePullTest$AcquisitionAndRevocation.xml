@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.PrivateTimelinePullTest$AcquisitionAndRevocation" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:19.921Z" hostname="MacBook-Pro-5.local" time="0.127">
+  <properties />
+  <testcase name="signedPaginationRetainsOriginalEvidenceButNotReplayableReaderEnvelopes()" classname="myos.better.PrivateTimelinePullTest$AcquisitionAndRevocation" time="0.051" />
+  <testcase name="revokedReadsPublishNoProgressAndLaterRestorationContinuesTheSameHistory()" classname="myos.better.PrivateTimelinePullTest$AcquisitionAndRevocation" time="0.076" />
+  </testsuite>

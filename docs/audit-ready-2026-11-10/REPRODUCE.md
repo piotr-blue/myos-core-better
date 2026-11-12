@@ -1,0 +1,75 @@
+# Reproduce the audit candidate
+
+## Local checks
+
+Unzip the bundle with the three projects as siblings. Use JDK 25 and run:
+
+```bash
+export JAVA_HOME=$(/usr/libexec/java_home -v 25) # macOS; use your JDK 25 path elsewhere
+bash audit/reproduce-local.sh
+python3 audit/summarize.py
+```
+
+The reproduction script runs the full library/application checks, tagged local clause/scale tests, and two fresh SQLite OrderScale runs. Those newly produced test results stay in each project's build directory; `summarize.py` reads the **retained audit evidence**, not your fresh build outputs. Use `--offline` on Gradle only if the dependencies are already cached. No original Python implementation checkout is required. Initial dependency downloads need network access. The included package input subset supplies the example publications.
+
+The recorded SQLite benchmarks use no resident document sessions. Their repeated-input measurements retain common package definitions and a warm JVM. Fresh whole-process startup is a separate measurement.
+
+## Dedicated AWS storage qualification
+
+These commands require authorized AWS credentials for the existing isolated deployment. `scripts/aws.py` verifies the expected account and region. `MYOS_AWS_PROPERTIES` points to an existing local properties file; that credential file is intentionally absent from this archive.
+
+```bash
+cd myos-aws-test-better
+export MYOS_AWS_PROPERTIES=/absolute/path/to/your/aws-access.properties
+./gradlew --no-parallel check installDist qualificationJar
+python3 scripts/qualify_owners.py --stack myos-better-canonical-20261108 \
+  --orders 10,100,1000 --samples 10 --cold --gas-schedule ADDITIVE_PROTOTYPE \
+  --report-dir reports/reproduce-fixed
+python3 scripts/qualify_owners.py --stack myos-better-canonical-20261108 \
+  --orders 10,1000 --samples 5 --cold --gas-schedule ADDITIVE_PROTOTYPE \
+  --rotate-targets --observable-root --report-dir reports/reproduce-rotating
+python3 scripts/qualify_owners.py --stack myos-better-canonical-20261108 \
+  --orders 10,100 --samples 5 --cold --gas-schedule ADDITIVE_PROTOTYPE \
+  --separate-timelines --observable-root --report-dir reports/reproduce-separate
+```
+
+Each invocation launches and terminates a dedicated worker, uses a unique synthetic account namespace and keeps its command/artifact digest, per-input comparisons and raw results. AWS charges apply to those resources. Final audit runs were concurrent on three separate workers against the same DynamoDB table, with separate namespaces; the live HTTP checks also ran during qualification. Workers share neither CPU nor JVM. The commands above run sequentially for simpler reproduction. Separate-source fixtures advance the quiet providers beyond the active timestamps before timing; do not combine that mode with target rotation.
+
+The fixture is authored by `src/qualification/java/myos/better/OwnerScaleProbe.java`. Whole-root comparison runs after timed execution against independent storage. Expected and actual documents are compared by canonical BlueId; gas and every ordered public event occurrence are also checked. Literal fixture IDs vary between runs because timeline identities are freshly generated.
+
+## Your account in the deployed console
+
+Open https://d2buikczdox1rt.cloudfront.net and sign in. Create an API key using the console, then run:
+
+```bash
+cd myos-aws-test-better
+read -s MYOS_API_KEY
+export MYOS_API_KEY
+python3 scripts/qualify_owner_preview.py --orders 10,100 --samples 5
+unset MYOS_API_KEY
+```
+
+The hidden `read` avoids putting the key in shell history. The script creates a private native timeline, an Agreement and its Orders/Payments in **your account**. It prints their document handles and the report filename. It calls `record` on the first Payment five times; every call adds 42 to that Payment's `recordedAmount`, its Order's `paidTotal` and the Agreement's `paidTotal`. All three finish at 210. The same idempotency key is retried and must not add 42 twice. The exact entry must appear in the Agreement history with `owner-local` mode. These client-observed times include HTTPS and polling.
+
+The script explicitly creates new histories with `ADDITIVE_PROTOTYPE`. It does not alter your existing documents or the deployment's default `COMPOSITIONAL_V1` edition. Without an API key, the operator-only path uses AWS to prepare suppressed-email QA identities; private credentials remain in the local reports directory.
+
+## Operator-only restart and compatibility checks
+
+```bash
+python3 scripts/qualify_owner_restart.py reports/owner-http-REPLACE_WITH_REPORT_ID.json
+python3 scripts/qualify_preview.py --orders 1
+```
+
+The restart command deliberately restarts the shared isolated preview service. Use it only during an agreed test window. It logs in before restart, then invokes an existing graph, verifies durable progression/idempotency and records bounded JFR owner-phase summaries. It requires the QA identity generated by the maintainer HTTPS path, not an arbitrary API-key account. The published-clause script verifies bootstrap, five business operations, private timelines, account isolation and API-key lifecycle under the normal default policy. These are compatibility checks, not scalar fast-path benchmarks.
+
+## Inspect the evidence
+
+- `TEST-RESULTS.json`: every retained Java case, verdict and duration.
+- `AWS-RESULTS.json`: all final worker samples, I/O observations, exact expected/actual comparisons, initialization/setup and timing distributions.
+- `evidence/local`: both SQLite sample sets, clause journey and scheduler scale observations.
+- `evidence/aws-*`: final AWS command metadata, complete command output and termination request results.
+- `evidence/live`: deployment, HTTPS, restart, published-clause and cleanup verification.
+- `evidence/pre-subscription-fix`, `discovery-*`, `pilot-aws`, `rejected-read-pack`: development evidence, explicitly excluded from final-release sample counts.
+- `CHANGES.patch`, `CHANGES.json`, `COMPATIBILITY.md`: code changes and semantic/storage boundaries.
+
+No credential file, local application database or raw JFR recording is part of the archive. File hashes are in the root `SHA256SUMS`.

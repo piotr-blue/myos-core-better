@@ -1,0 +1,17 @@
+{
+  "account": "581571886327",
+  "region": "eu-west-1",
+  "stack": "myos-better-canonical-20261108",
+  "instance": "i-052007ebaf704c0ad",
+  "table": "myos-better-canonical-20261108-documents",
+  "artifactSha256": "bd8bec84c288aae90e63d29ecb23d035ecb1802423c83dde85277588f9526fcc",
+  "commandId": "bbaa0cdb-84a1-47cd-9021-d0fd03b88aa8",
+  "runtimeProfile": "console-native",
+  "ownerGasSchedule": "COMPOSITIONAL_V1",
+  "workers": 2,
+  "url": "https://d2buikczdox1rt.cloudfront.net",
+  "ssmStatus": "Success",
+  "qualificationInstance": "i-0c80fc3c15af6fe9e",
+  "qualificationInstanceState": "terminated",
+  "qualificationCommandId": "a541baaf-b300-42bc-9da2-bdfe7bd52bf7"
+}

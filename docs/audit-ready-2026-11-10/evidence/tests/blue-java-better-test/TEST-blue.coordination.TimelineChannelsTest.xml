@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineChannelsTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:06.169Z" hostname="MacBook-Pro-5.local" time="0.142">
+  <properties />
+  <testcase name="negativeAssessmentsChangeTheReceiptButTransportDetailsDoNot()" classname="blue.coordination.TimelineChannelsTest" time="0.008" />
+  <testcase name="registrationConflictLeavesBothBuildersUnchanged()" classname="blue.coordination.TimelineChannelsTest" time="0.0" />
+  <testcase name="exactProfileExecutesAcceptedChannelsAndRestoresWithTheSameBindings()" classname="blue.coordination.TimelineChannelsTest" time="0.017" />
+  <testcase name="[1] &quot;missing&quot;" classname="blue.coordination.TimelineChannelsTest" time="0.005" />
+  <testcase name="[2] &quot;duplicate&quot;" classname="blue.coordination.TimelineChannelsTest" time="0.004" />
+  <testcase name="[3] &quot;generation&quot;" classname="blue.coordination.TimelineChannelsTest" time="0.004" />
+  <testcase name="[4] &quot;audience&quot;" classname="blue.coordination.TimelineChannelsTest" time="0.004" />
+  <testcase name="missingOrRejectingHistoryCannotBeReplacedByCallerSuppliedAcceptance()" classname="blue.coordination.TimelineChannelsTest" time="0.002" />
+  </testsuite>

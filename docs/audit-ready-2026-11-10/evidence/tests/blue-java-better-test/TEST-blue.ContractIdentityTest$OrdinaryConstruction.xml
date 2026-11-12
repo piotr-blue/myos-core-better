@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractIdentityTest$OrdinaryConstruction" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:55.301Z" hostname="MacBook-Pro-5.local" time="0.002">
+  <properties />
+  <testcase name="[1] 0" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.001" />
+  <testcase name="[2] 1" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.0" />
+  <testcase name="[3] 55" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.0" />
+  <testcase name="[4] 56" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.0" />
+  <testcase name="[5] 57" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.0" />
+  <testcase name="[6] 63" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.001" />
+  <testcase name="[7] 64" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.0" />
+  <testcase name="[8] 65" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.0" />
+  <testcase name="[9] 128" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.0" />
+  <testcase name="typedListsObjectsAndMergePolicyUseTheirOrdinaryHelperSize()" classname="blue.ContractIdentityTest$OrdinaryConstruction" time="0.0" />
+  </testsuite>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreAdmissionListingTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:39.501Z" hostname="MacBook-Pro-5.local" time="0.023">
+  <properties />
+  <testcase name="newestFirstFiltersInclusiveTimesAndScopedCursorsSurviveRestart()" classname="myos.better.CoreAdmissionListingTest" time="0.002" />
+  <testcase name="pendingOperationIsDiscoverableBySessionBeforeItsResultExists()" classname="myos.better.CoreAdmissionListingTest" time="0.001" />
+  <testcase name="historicalIndexingIsBoundedAndNeverReturnsAPartialFirstListingAsComplete()" classname="myos.better.CoreAdmissionListingTest" time="0.005" />
+  <testcase name="sparseFiltersReturnAResumableBoundedPageAndKeepTimestampTieOrder()" classname="myos.better.CoreAdmissionListingTest" time="0.014" />
+  <testcase name="metadataMigrationRecoversFromLostCommitAcknowledgement()" classname="myos.better.CoreAdmissionListingTest" time="0.001" />
+  <testcase name="malformedSelectorsAreRejectedBeforeStorageQueries()" classname="myos.better.CoreAdmissionListingTest" time="0.0" />
+  </testsuite>

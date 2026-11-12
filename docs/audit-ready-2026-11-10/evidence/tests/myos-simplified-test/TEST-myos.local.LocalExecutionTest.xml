@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.LocalExecutionTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:47.094Z" hostname="MacBook-Pro-5.local" time="0.254">
+  <properties />
+  <testcase name="appendIsIdempotentAndDifferentPayloadWithSameCommandIsRejected()" classname="myos.local.LocalExecutionTest" time="0.016" />
+  <testcase name="schemaOneIsRejectedWithoutRewritingItsOriginalEntries()" classname="myos.local.LocalExecutionTest" time="0.004" />
+  <testcase name="changingPackageProfileRequiresExplicitMigrationAndReleasesTheLock()" classname="myos.local.LocalExecutionTest" time="0.02" />
+  <testcase name="restartRetainsBacklogAndParentCannotOvertakePausedChild()" classname="myos.local.LocalExecutionTest" time="0.053" />
+  <testcase name="actualCycleCommitsAsOneNativeUnitAndRecovers()" classname="myos.local.LocalExecutionTest" time="0.052" />
+  <testcase name="[1] PUBLISHED" classname="myos.local.LocalExecutionTest" time="0.052" />
+  <testcase name="[2] COMPOSITIONAL_V1" classname="myos.local.LocalExecutionTest" time="0.055" />
+  </testsuite>

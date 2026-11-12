@@ -1,0 +1,53 @@
+{
+  "reason": "Removed detached document-local execution, command-derived identities and experimental checkpoint editions. These are not canonical conformance cases. CanonicalGraph, Owner, Timeline and remaining Core suites cover the supported execution paths.",
+  "files": [
+    "FreshInitializationTest",
+    "ClauseTutorialTest",
+    "DocumentReadTest",
+    "EventHistoryTest",
+    "ProjectionConcurrencyTest",
+    "PropagationConcurrencyTest",
+    "PropagationFailureTest",
+    "PropagationPublicationTest",
+    "PropagationQueueTest",
+    "PropagationSnapshotTest",
+    "SchedulingTest",
+    "WorkflowReadPropagationTest",
+    "WorkflowReadTest",
+    "WorkflowSnapshotTest"
+  ],
+  "methods": {
+    "CoreTest": [
+      "durableChildToParentPropagationSurvivesHostRecreationAndDuplicateCommands"
+    ],
+    "ConsoleHttpTest": [
+      "exampleUsesNestedDocumentsAndPropagatesOnlyRealWorkflowEvents"
+    ],
+    "ContentPublicationTest": [
+      "lostReplyRecoversReceiptAndCompleteEmbeddingPagesAfterRestart"
+    ],
+    "DocumentLineageTest": [
+      "independentlyCreatedChildrenWithIdenticalContentKeepTheirOwnLineages"
+    ],
+    "NativeAdmissionTest": [
+      "trustedChildPropagationDoesNotRequireAnExternalPermitAndCannotExecuteNativeChannels"
+    ],
+    "TimelineIngressTest": [
+      "aTimelineDrivenChildPropagatesItsEventToAnIndependentParentCommit",
+      "parentAcknowledgementConflictsReselectWithoutLosingOrDuplicatingAnOccurrence",
+      "anAuthenticatedForkRetainsCheckpointOrderAcrossRestartWithoutReplayingOldInput"
+    ],
+    "ServerTest": [
+      "workflowReadRefusalHasADistinctResourceCodeAndDoesNotPublishState"
+    ],
+    "PropagationReadTest": [
+      "sourceAdvanceAfterBatchReadCannotLoseOrPrematurelyAcknowledgeAParentUpdate",
+      "aPeerCanCompletePrefetchedWorkWithoutRepeatingItsEffects"
+    ]
+  },
+  "tools": [
+    "MigrationProbe: automatic relabelling between retired document-local editions is not supported",
+    "run_migration.py and its MigrationGenerationTest: automatic edition relabelling is not a canonical migration",
+    "demo_fresh.py: retired fresh-subtrees execution example"
+  ]
+}

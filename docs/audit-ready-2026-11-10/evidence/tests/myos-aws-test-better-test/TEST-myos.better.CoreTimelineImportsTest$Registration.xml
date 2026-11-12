@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreTimelineImportsTest$Registration" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:53.487Z" hostname="MacBook-Pro-5.local" time="0.116">
+  <properties />
+  <testcase name="denialRetainsNoImportAndRetryRecoversDurableFailureWithoutChangingPins()" classname="myos.better.CoreTimelineImportsTest$Registration" time="0.055" />
+  <testcase name="importReplayAndPublicSelectorUseOneSourceAndPreserveOriginalMetadata()" classname="myos.better.CoreTimelineImportsTest$Registration" time="0.06" />
+  </testsuite>

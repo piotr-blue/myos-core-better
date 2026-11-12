@@ -1,0 +1,4498 @@
+{
+  "aws-fixed": {
+    "cases": [
+      {
+        "orders": 10,
+        "documents": 21,
+        "timelineCount": 1,
+        "initializationMillis": 1447.860624,
+        "quietSourceSetupMillis": 0.007423,
+        "processingMillis": {
+          "n": 10,
+          "minimum": 794.018682,
+          "median": 853.573885,
+          "p95NearestRank": 987.357264,
+          "maximum": 987.357264
+        },
+        "acquisitionMillis": {
+          "n": 10,
+          "minimum": 152.553977,
+          "median": 166.7520125,
+          "p95NearestRank": 354.801927,
+          "maximum": 354.801927
+        },
+        "combinedMillis": {
+          "n": 10,
+          "minimum": 950.8346230000001,
+          "median": 1020.8557844999999,
+          "p95NearestRank": 1342.159191,
+          "maximum": 1342.159191
+        },
+        "samples": [
+          {
+            "acquisitionMillis": 354.801927,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 987.357264,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 113059312,
+            "heapBeforeBytes": 58888536,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 99.892407,
+            "sample": 0,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 175.037805,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 964.313229,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 93166680,
+            "heapBeforeBytes": 108011696,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 101.019275,
+            "sample": 1,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 165.711113,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 917.174293,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 6,
+            "heapAfterBytes": 68796096,
+            "heapBeforeBytes": 80014280,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 74.886861,
+            "sample": 2,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 177.395367,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 909.657514,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 112486992,
+            "heapBeforeBytes": 122226832,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 81.220079,
+            "sample": 3,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 167.792912,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 873.995191,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 3,
+            "heapAfterBytes": 94641640,
+            "heapBeforeBytes": 104774968,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 70.648002,
+            "sample": 4,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 156.093148,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 833.152579,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 3,
+            "heapAfterBytes": 81144288,
+            "heapBeforeBytes": 87078680,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 76.993803,
+            "sample": 5,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 165.639072,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 828.625515,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 76681688,
+            "heapBeforeBytes": 76126024,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 72.315448,
+            "sample": 6,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 152.553977,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 798.280646,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 75522736,
+            "heapBeforeBytes": 73364888,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 80.369961,
+            "sample": 7,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 168.55392,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 831.369546,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 5,
+            "heapAfterBytes": 75505136,
+            "heapBeforeBytes": 72747736,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 69.820711,
+            "sample": 8,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 164.91829,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 794.018682,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 80473696,
+            "heapBeforeBytes": 75564232,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 64.044016,
+            "sample": 9,
+            "sourceMode": "shared-external"
+          }
+        ],
+        "io": [
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 138509905,
+              "commit.retryableFailures": 0,
+              "content.calls": 48,
+              "content.failures": 0,
+              "content.nanos": 261048596,
+              "contentAll.calls": 16,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 92878797,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 184546177,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 86405687,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 0
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 151847998,
+              "commit.retryableFailures": 0,
+              "content.calls": 78,
+              "content.failures": 0,
+              "content.nanos": 334487078,
+              "contentAll.calls": 22,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 101376351,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 165558211,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 81196834,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 1
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 139110326,
+              "commit.retryableFailures": 0,
+              "content.calls": 84,
+              "content.failures": 0,
+              "content.nanos": 326072027,
+              "contentAll.calls": 24,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 115109317,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 147142677,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 77868278,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 2
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 128591067,
+              "commit.retryableFailures": 0,
+              "content.calls": 89,
+              "content.failures": 0,
+              "content.nanos": 327959354,
+              "contentAll.calls": 24,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 104874879,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 141032464,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 84439381,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 3
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 132758400,
+              "commit.retryableFailures": 0,
+              "content.calls": 94,
+              "content.failures": 0,
+              "content.nanos": 323271418,
+              "contentAll.calls": 24,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 88741713,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 133558474,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 94071272,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 4
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 130882645,
+              "commit.retryableFailures": 0,
+              "content.calls": 100,
+              "content.failures": 0,
+              "content.nanos": 334002219,
+              "contentAll.calls": 24,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 89437605,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 127717461,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 64577997,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 5
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 123854908,
+              "commit.retryableFailures": 0,
+              "content.calls": 102,
+              "content.failures": 0,
+              "content.nanos": 345289060,
+              "contentAll.calls": 24,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 87379088,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 119292989,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 58805103,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 6
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 124076139,
+              "commit.retryableFailures": 0,
+              "content.calls": 113,
+              "content.failures": 0,
+              "content.nanos": 320598301,
+              "contentAll.calls": 24,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 77398001,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 116159726,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 56366689,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 7
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 132186618,
+              "commit.retryableFailures": 0,
+              "content.calls": 116,
+              "content.failures": 0,
+              "content.nanos": 338891986,
+              "contentAll.calls": 24,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 101308518,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 115535998,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 59731184,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 8
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 124574214,
+              "commit.retryableFailures": 0,
+              "content.calls": 125,
+              "content.failures": 0,
+              "content.nanos": 341709064,
+              "contentAll.calls": 24,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 76138355,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 103781441,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 63377566,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 9
+          }
+        ]
+      },
+      {
+        "orders": 100,
+        "documents": 201,
+        "timelineCount": 1,
+        "initializationMillis": 2848.36492,
+        "quietSourceSetupMillis": 0.001222,
+        "processingMillis": {
+          "n": 10,
+          "minimum": 745.68079,
+          "median": 800.2526399999999,
+          "p95NearestRank": 880.058968,
+          "maximum": 880.058968
+        },
+        "acquisitionMillis": {
+          "n": 10,
+          "minimum": 171.605516,
+          "median": 201.905263,
+          "p95NearestRank": 223.967563,
+          "maximum": 223.967563
+        },
+        "combinedMillis": {
+          "n": 10,
+          "minimum": 924.430246,
+          "median": 1016.481773,
+          "p95NearestRank": 1104.026531,
+          "maximum": 1104.026531
+        },
+        "samples": [
+          {
+            "acquisitionMillis": 178.749456,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 745.68079,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 8,
+            "heapAfterBytes": 223562952,
+            "heapBeforeBytes": 213609184,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 87.773972,
+            "sample": 0,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 176.824748,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 783.004205,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 6,
+            "heapAfterBytes": 235318400,
+            "heapBeforeBytes": 233526504,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 77.705767,
+            "sample": 1,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 171.605516,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 789.024306,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 2,
+            "heapAfterBytes": 206123416,
+            "heapBeforeBytes": 201400928,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 91.006098,
+            "sample": 2,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 173.167207,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 766.3007,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 3,
+            "heapAfterBytes": 241072424,
+            "heapBeforeBytes": 242259792,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 65.732845,
+            "sample": 3,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 193.586626,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 834.271164,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 3,
+            "heapAfterBytes": 219829576,
+            "heapBeforeBytes": 209775680,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 84.986123,
+            "sample": 4,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 221.570344,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 815.458119,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 201827440,
+            "heapBeforeBytes": 193017320,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 69.880674,
+            "sample": 5,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 210.2239,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 802.250043,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 251525368,
+            "heapBeforeBytes": 243821224,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 70.588254,
+            "sample": 6,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 222.234366,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 798.255237,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 2,
+            "heapAfterBytes": 242734976,
+            "heapBeforeBytes": 224809192,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 78.895708,
+            "sample": 7,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 211.155737,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 838.497015,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 3,
+            "heapAfterBytes": 239434272,
+            "heapBeforeBytes": 218206240,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 75.852828,
+            "sample": 8,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 223.967563,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 880.058968,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 239185368,
+            "heapBeforeBytes": 216675280,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 77.478491,
+            "sample": 9,
+            "sourceMode": "shared-external"
+          }
+        ],
+        "io": [
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 119325828,
+              "commit.retryableFailures": 0,
+              "content.calls": 90,
+              "content.failures": 0,
+              "content.nanos": 273956283,
+              "contentAll.calls": 24,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 88162531,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 103177618,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 69951719,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 0
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 131261212,
+              "commit.retryableFailures": 0,
+              "content.calls": 117,
+              "content.failures": 0,
+              "content.nanos": 325608279,
+              "contentAll.calls": 27,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 84031313,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 100926644,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 61722462,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 1
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 119031132,
+              "commit.retryableFailures": 0,
+              "content.calls": 130,
+              "content.failures": 0,
+              "content.nanos": 344283796,
+              "contentAll.calls": 29,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 86673132,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 97202732,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 60318595,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 2
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 109793888,
+              "commit.retryableFailures": 0,
+              "content.calls": 129,
+              "content.failures": 0,
+              "content.nanos": 342941958,
+              "contentAll.calls": 27,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 80247395,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 97099236,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 57359526,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 3
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 116597383,
+              "commit.retryableFailures": 0,
+              "content.calls": 141,
+              "content.failures": 0,
+              "content.nanos": 391741431,
+              "contentAll.calls": 29,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 90863944,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 97185775,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 62391755,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 4
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 116371942,
+              "commit.retryableFailures": 0,
+              "content.calls": 146,
+              "content.failures": 0,
+              "content.nanos": 386390770,
+              "contentAll.calls": 27,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 81856066,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 96884105,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 57641779,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 5
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 119085652,
+              "commit.retryableFailures": 0,
+              "content.calls": 145,
+              "content.failures": 0,
+              "content.nanos": 358998513,
+              "contentAll.calls": 29,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 81999833,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 88840625,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 77672238,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 6
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 118141478,
+              "commit.retryableFailures": 0,
+              "content.calls": 155,
+              "content.failures": 0,
+              "content.nanos": 367893683,
+              "contentAll.calls": 30,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 84600108,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 90011089,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 58776248,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 7
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 134980189,
+              "commit.retryableFailures": 0,
+              "content.calls": 156,
+              "content.failures": 0,
+              "content.nanos": 384632761,
+              "contentAll.calls": 31,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 88154578,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 88551368,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 58498702,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 8
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 122496797,
+              "commit.retryableFailures": 0,
+              "content.calls": 165,
+              "content.failures": 0,
+              "content.nanos": 420769752,
+              "contentAll.calls": 31,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 90352425,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 93258641,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 57097322,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 9
+          }
+        ]
+      },
+      {
+        "orders": 1000,
+        "documents": 2001,
+        "timelineCount": 1,
+        "initializationMillis": 37940.804073,
+        "quietSourceSetupMillis": 0.00119,
+        "processingMillis": {
+          "n": 10,
+          "minimum": 796.727666,
+          "median": 824.58631,
+          "p95NearestRank": 884.95535,
+          "maximum": 884.95535
+        },
+        "acquisitionMillis": {
+          "n": 10,
+          "minimum": 188.224674,
+          "median": 196.61192599999998,
+          "p95NearestRank": 225.321864,
+          "maximum": 225.321864
+        },
+        "combinedMillis": {
+          "n": 10,
+          "minimum": 993.614377,
+          "median": 1020.3525955,
+          "p95NearestRank": 1109.8580889999998,
+          "maximum": 1109.8580889999998
+        },
+        "samples": [
+          {
+            "acquisitionMillis": 191.491592,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 817.260353,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 36,
+            "heapAfterBytes": 819968880,
+            "heapBeforeBytes": 911231232,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 87.787415,
+            "sample": 0,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 190.704824,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 846.925034,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 14,
+            "heapAfterBytes": 204151200,
+            "heapBeforeBytes": 351652120,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 92.524507,
+            "sample": 1,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 191.951562,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 802.166143,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 13,
+            "heapAfterBytes": 292091496,
+            "heapBeforeBytes": 439591784,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 96.851328,
+            "sample": 2,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 198.72204,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 796.727666,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 398168888,
+            "heapBeforeBytes": 268436664,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 87.014458,
+            "sample": 3,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 194.501812,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 799.112565,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 525258632,
+            "heapBeforeBytes": 406641920,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 87.024396,
+            "sample": 4,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 188.224674,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 831.912267,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 16,
+            "heapAfterBytes": 330738872,
+            "heapBeforeBytes": 476153096,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 96.16659,
+            "sample": 5,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 212.591287,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 807.976963,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 495315536,
+            "heapBeforeBytes": 362595352,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 88.114463,
+            "sample": 6,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 224.902739,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 884.95535,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 644296912,
+            "heapBeforeBytes": 502411328,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 100.295277,
+            "sample": 7,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 203.828144,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 861.680364,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 706617656,
+            "heapBeforeBytes": 564288992,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 102.984727,
+            "sample": 8,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 225.321864,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 868.827802,
+            "gas": 228,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 656307072,
+            "heapBeforeBytes": 509709768,
+            "observableRoot": false,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 95.970056,
+            "sample": 9,
+            "sourceMode": "shared-external"
+          }
+        ],
+        "io": [
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 120059251,
+              "commit.retryableFailures": 0,
+              "content.calls": 122,
+              "content.failures": 0,
+              "content.nanos": 284676380,
+              "contentAll.calls": 29,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 101173193,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 87793568,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 64283757,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 0
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 132291984,
+              "commit.retryableFailures": 0,
+              "content.calls": 151,
+              "content.failures": 0,
+              "content.nanos": 348064968,
+              "contentAll.calls": 35,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 97973609,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 93160493,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 63794827,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 1
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 112010483,
+              "commit.retryableFailures": 0,
+              "content.calls": 152,
+              "content.failures": 0,
+              "content.nanos": 361439383,
+              "contentAll.calls": 36,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 89891434,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 84916911,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 66796130,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 2
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 115370316,
+              "commit.retryableFailures": 0,
+              "content.calls": 151,
+              "content.failures": 0,
+              "content.nanos": 345624972,
+              "contentAll.calls": 35,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 95165429,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 89419062,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 64653996,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 3
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 115055656,
+              "commit.retryableFailures": 0,
+              "content.calls": 156,
+              "content.failures": 0,
+              "content.nanos": 347601963,
+              "contentAll.calls": 36,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 103246344,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 84827628,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 62157783,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 4
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 121889909,
+              "commit.retryableFailures": 0,
+              "content.calls": 160,
+              "content.failures": 0,
+              "content.nanos": 365332590,
+              "contentAll.calls": 36,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 92475756,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 84444268,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 77073955,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 5
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 120402565,
+              "commit.retryableFailures": 0,
+              "content.calls": 157,
+              "content.failures": 0,
+              "content.nanos": 348446285,
+              "contentAll.calls": 35,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 93846895,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 82839890,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 69941544,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 6
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 130010857,
+              "commit.retryableFailures": 0,
+              "content.calls": 171,
+              "content.failures": 0,
+              "content.nanos": 394406716,
+              "contentAll.calls": 37,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 100682904,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 89433899,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 77515010,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 7
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 117178606,
+              "commit.retryableFailures": 0,
+              "content.calls": 176,
+              "content.failures": 0,
+              "content.nanos": 399519168,
+              "contentAll.calls": 35,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 94662751,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 85212925,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 65861832,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 8
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 126902254,
+              "commit.retryableFailures": 0,
+              "content.calls": 182,
+              "content.failures": 0,
+              "content.nanos": 399364740,
+              "contentAll.calls": 37,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 97864118,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 83317084,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 64777600,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 9
+          }
+        ]
+      }
+    ],
+    "comparisons": [
+      {
+        "actual": {
+          "blueId": "FC3bzXaY91vAAeScSqrAvqsAUkUMTJSTLKZMTtHhDjHt",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:d48213eae13ec2b2a9558b5ec65f29923ea31e741e883bcb55d3da5cad671e74"
+        },
+        "expected": {
+          "blueId": "FC3bzXaY91vAAeScSqrAvqsAUkUMTJSTLKZMTtHhDjHt",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:d9ce5a425f972b42bb817c116a3d3793f31b554a6cd06d1e242868a9fb3d5a62"
+        },
+        "input": "7zeDhxgx1Uu8fBsrPinVWYBC5hAaoPo4irDF8fsEUKcG",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 0
+      },
+      {
+        "actual": {
+          "blueId": "6m7i9dx32aopdQpw9bR18LuDDBw9kdJwdzJcTGrY85XB",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:04b84151c1ebf509b09c460947e563cc56c9362801429bae7e0e67fb255881db"
+        },
+        "expected": {
+          "blueId": "6m7i9dx32aopdQpw9bR18LuDDBw9kdJwdzJcTGrY85XB",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:014db08e49a4b3301033d77fcfacc7714a0e1e09a6b3855620c10e880d10e760"
+        },
+        "input": "5D2sMCJwk5iVyo25ogUfKmntMf8B2UmJKntQiarsxXBq",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 1
+      },
+      {
+        "actual": {
+          "blueId": "BdAr8Buzou1Md56LEZDMEpjrpuhd7gHgLm5zgKrrJBwX",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:83a0e7482f7cff1a293e768c1017c9ac14cd0d415b5197732d88e4ec6fc752ad"
+        },
+        "expected": {
+          "blueId": "BdAr8Buzou1Md56LEZDMEpjrpuhd7gHgLm5zgKrrJBwX",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:a04d72a33ed0aa415e0e721392ac399820040d5c5b97cc96a8de69aaa0ce1717"
+        },
+        "input": "2Ue1gbfWaVwimVyoFtKJysagufAJFrLBNYDqeBTR4Hgs",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 2
+      },
+      {
+        "actual": {
+          "blueId": "GpYLeS1XvtMBte8rP1gWnL61kiWT7D296Y6eU3py3XPs",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:fb3522d8741c3e81ed6148c9580db8bb34ae1b12e1449cd5841b744d5c3515ce"
+        },
+        "expected": {
+          "blueId": "GpYLeS1XvtMBte8rP1gWnL61kiWT7D296Y6eU3py3XPs",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:2681c87178b35fe292688d84d0e56d941c2146326948b8e784631b9bd341b4f3"
+        },
+        "input": "4jxfPPArDAPQwTus2hV1PEBom8MwpfLP4tKFpxKtjHCZ",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 3
+      },
+      {
+        "actual": {
+          "blueId": "7RdfoN8XmU8Sr7kSubtSP4JQnfuaXjYNLQq4A3V9isKi",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:63c879cfdc3f164513be3fe8116a48abf3114d703437b3e5f6c28a2cb4aecf1e"
+        },
+        "expected": {
+          "blueId": "7RdfoN8XmU8Sr7kSubtSP4JQnfuaXjYNLQq4A3V9isKi",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:305fc3f4e8b7426c723cac9c68c0ef16262671d98224fb2180f5deecbfafdc30"
+        },
+        "input": "FakHGWbnziDn3sz3TJt61rGVwpWLpvJSB6jJn6VpHBxn",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 4
+      },
+      {
+        "actual": {
+          "blueId": "Bx7HcoodDqkWfCSneNFJHN2gqcdqJDZuxxPiSUZkQSxw",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:dc43336ef3cd82e720e839d0468f373c6df2d9d6801dfd443145ee29ffcee693"
+        },
+        "expected": {
+          "blueId": "Bx7HcoodDqkWfCSneNFJHN2gqcdqJDZuxxPiSUZkQSxw",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:83612f2ecce9d4d2d96bc73073b87743004e388b41d615c28c8b8bcf38a3a4e6"
+        },
+        "input": "FhYi5yzQDgtM5Y2xSE79ztJjhB7Md4ZuuaVxgT4wR9eR",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 5
+      },
+      {
+        "actual": {
+          "blueId": "F81ajA5YND1i5ewqTms5sEuNUu7DjZzMNwG67PpQKNwy",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:b9c078acad658e97247c68d1829374acb03063ed07dd727bba157b20c90051e5"
+        },
+        "expected": {
+          "blueId": "F81ajA5YND1i5ewqTms5sEuNUu7DjZzMNwG67PpQKNwy",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:571d28f66701d1bc55f1b73b0e26d8b67253bd62ed7e92c58c119235992f232c"
+        },
+        "input": "BjCBwdM2Ni2ErBkcCbZAzB9fQMGNuf5FgJzK364ex7QG",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 6
+      },
+      {
+        "actual": {
+          "blueId": "APZJVfaBFpRKJ3rU9DGaixw46jQCcxHikJUN23MePBWX",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:fcff30d99f4e2da46eacc98fe686bcd792c739dfbc5112080ba92dd8b199b7e1"
+        },
+        "expected": {
+          "blueId": "APZJVfaBFpRKJ3rU9DGaixw46jQCcxHikJUN23MePBWX",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:f2ed5045bb43d1e3b331d6a2699653c63eec96ceb014e4aac756438cc44920f8"
+        },
+        "input": "DNTouHPyjzMwbh4AQy3QnxiMtpB9r5hWxudvqMm9FYM3",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 7
+      },
+      {
+        "actual": {
+          "blueId": "2YHwvNXEVgK5b9vtRhpTqQbD97rfd9w7WZhwwhqd3fdS",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:d5b3dac6c59fe7f05ea53cabaff02e349f12a4f1b248b4ddd3ddf4478e488d79"
+        },
+        "expected": {
+          "blueId": "2YHwvNXEVgK5b9vtRhpTqQbD97rfd9w7WZhwwhqd3fdS",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:4e76aa8dcbab0f723c0b3b6da752983f336d803891f57bebfa951cb3831e3e68"
+        },
+        "input": "G9iprimU1YcRrzwfFH46d9Tdgte1K7mBidthcRD7iKVR",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 8
+      },
+      {
+        "actual": {
+          "blueId": "6z9GoZasXPBhPNss8T5GU4QFMcJiVnBWFmLyUEubMUN8",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:37a38a1e8f9e95754291762fb33ddb1ea755ea06872cd90dc32b2d01e59c8912"
+        },
+        "expected": {
+          "blueId": "6z9GoZasXPBhPNss8T5GU4QFMcJiVnBWFmLyUEubMUN8",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:dbdf5fe72fb02e5703bb69347ad6d7c32c78328fc6b6d7740f25388b5741ed76"
+        },
+        "input": "BrKjQHfZv7991n7fzP2yAaY6G7qHFnHi7GrJ2TX4S46J",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-74350b51-f193-4b4d-ade8-0295b7e454f2",
+        "sample": 9
+      },
+      {
+        "actual": {
+          "blueId": "5axYSXTNqs7ExWxcg43XZGczE6ES1s2KA9Xsoi9wT4BF",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:4d50ef8bc32e337f1839cab6d2894264d66e1f989cc8efab7e967f2f4f88ead5"
+        },
+        "expected": {
+          "blueId": "5axYSXTNqs7ExWxcg43XZGczE6ES1s2KA9Xsoi9wT4BF",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:5270fdbfaf25e415ec6c2fa6251461452028d7b442e08ec573925fe44c823588"
+        },
+        "input": "6wtxkz4ubvBqXnmH6FxgmxhvNzbmbbtDxZ4ibcCnzgXj",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 0
+      },
+      {
+        "actual": {
+          "blueId": "DmVZjtsfC4RFWs7LdWw1Pdq6uGEFZu8A7kkevtiJvYg5",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:41711daaf6b906b73f80f0ae4ea41585a9c796efdb90a7c6a5ab2a1d029e16f1"
+        },
+        "expected": {
+          "blueId": "DmVZjtsfC4RFWs7LdWw1Pdq6uGEFZu8A7kkevtiJvYg5",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:f161cd90d28bca5c32047d995fc5dd76602df42cdaf7a5eb0c06421b3b482ca0"
+        },
+        "input": "7m1chu3bzmkqiAqcAZzLU4m9fvcyzjpEH78kEDXWVSm2",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 1
+      },
+      {
+        "actual": {
+          "blueId": "p4Yd2cyC1JD9RPPaUJCH3tHQpUkJcQqoKEegKBRjv1M",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:c2771f574250e7246eba92d5ad26ba7800ff5554f791df0d01da28db0fa9fed8"
+        },
+        "expected": {
+          "blueId": "p4Yd2cyC1JD9RPPaUJCH3tHQpUkJcQqoKEegKBRjv1M",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:cdf8ffa1a85c9f98fdaf36eee86b753a8758064f26ce6daf5402c9954955685d"
+        },
+        "input": "BrUCKdjtw547JDbzoMcYt9emVZEdytbGi2ZxABRStz5W",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 2
+      },
+      {
+        "actual": {
+          "blueId": "CToh65Cbcx2muHTrWB3bMMaWg9sttk8RHjszqiqcgJZp",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:86ea23ad69131f154c292430f41c42e227272da94f5452f0e87ee1140ae9cea0"
+        },
+        "expected": {
+          "blueId": "CToh65Cbcx2muHTrWB3bMMaWg9sttk8RHjszqiqcgJZp",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:330d5d94134d490ae9ecd3398a184b0c161cdc804ff6956312aaead57572ae16"
+        },
+        "input": "2xQsyETknPCec6D9XxZAWFumtssJTXEZ8djybFQmTZGJ",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 3
+      },
+      {
+        "actual": {
+          "blueId": "JBoKZipq66LPyF4RSCafCPU5x5BuSyv6QqFNDzWYKdjU",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:dc51764ec0095a9815085eae2434ec8cee0bcdc911c6aa88caafaeab4326c600"
+        },
+        "expected": {
+          "blueId": "JBoKZipq66LPyF4RSCafCPU5x5BuSyv6QqFNDzWYKdjU",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:d81533f124f94a449972fa8e1483ee25cc856eba769bba057497c17fd20ea30b"
+        },
+        "input": "ErypDCaEi3VYwNz79nLp36gTQUQ6n8MFcxnaguWF2xf8",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 4
+      },
+      {
+        "actual": {
+          "blueId": "B3HwfqzHgK58rcAA6BCPej76zUEsgHwa1ghvzPYRAzCr",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:7c52287ee9ce5edfe43798146d19ac3132db8f32d3d0ece21fae808611768c7c"
+        },
+        "expected": {
+          "blueId": "B3HwfqzHgK58rcAA6BCPej76zUEsgHwa1ghvzPYRAzCr",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:b19da7486c511f2d97511cf20b9124cbbc90ec4f1f97dd19bada6d20b038eef2"
+        },
+        "input": "9fwBwZymKQYdG4G7zJyNBz9FA8wsHktniq5u6sXHz8tY",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 5
+      },
+      {
+        "actual": {
+          "blueId": "ZS2W64LC7kb1euMj9JwRF75xaajgS1bDKG9UWLxGMxb",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:a71447201b2a8eff68b95e754542e48d0fae63b28a7a5f08b0488a758131cc4b"
+        },
+        "expected": {
+          "blueId": "ZS2W64LC7kb1euMj9JwRF75xaajgS1bDKG9UWLxGMxb",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:edefaede7186843a9bb96b6517db97a66b88d955b127756279ade393e93a6407"
+        },
+        "input": "Gn1UtfYP1bMtkREffhCUUmi2sQ6Edn5xy6zVQtvvHvLt",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 6
+      },
+      {
+        "actual": {
+          "blueId": "5kphM7d1NcjkkbrpSwuyePo4GUqYefA5XxZqnBkF4ZMs",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:682218a87228aa3398f9de9d706c685d7598309f25bc77cee7f1a8b8f966f8a9"
+        },
+        "expected": {
+          "blueId": "5kphM7d1NcjkkbrpSwuyePo4GUqYefA5XxZqnBkF4ZMs",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:cf1bf27cbf89ca1d129036aa7f96ada3888f435f372d80a408a31e6a5163d94b"
+        },
+        "input": "6qeJMbzgDYytMeVmiqjCL6uFDCm7gaWVeheC5r8vzS7R",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 7
+      },
+      {
+        "actual": {
+          "blueId": "28vNyP1BWsjr2Gk5HuwAag9EPLcdUF7X5fxVaTSz4M7p",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:97778d726d3817a530345147749307176821e6f7c04171f36fdd431e14fce167"
+        },
+        "expected": {
+          "blueId": "28vNyP1BWsjr2Gk5HuwAag9EPLcdUF7X5fxVaTSz4M7p",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:f2219ba71c9bee496d4f1fc70b7000dedb7869c772b57103efba0516adf72828"
+        },
+        "input": "AhQcf7K9stsGzB4y7B582HUHKcntD1ydnjEnbWgLmb3q",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 8
+      },
+      {
+        "actual": {
+          "blueId": "8NGNzH7FNQaCNqHcwezBf14d1X68K2nDxoSsdwyVyoBt",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:670fd32b8da2decbff1ed43a0bbf16b19eaaa423148e72d4b4e038d9d0cfd523"
+        },
+        "expected": {
+          "blueId": "8NGNzH7FNQaCNqHcwezBf14d1X68K2nDxoSsdwyVyoBt",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:e5a294c4f3e0851c41a1a763a21250662774dbee4e51dee23cdef90b44ad0bbb"
+        },
+        "input": "EmKkcnasDD4dm8CuGhf1xTCrfrtYDYEXRKL8CDoQdcYR",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-7916d91f-d76c-4024-bccb-532ac996a464",
+        "sample": 9
+      },
+      {
+        "actual": {
+          "blueId": "7QZetBkfW7L1nH6TxAEHNyGTAuxrGKLDLS6VJLfTfpv",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:ba8a7185b410f67fd3549e6a7ca783555e24958ea07a50e6c8595fa3db6542ef"
+        },
+        "expected": {
+          "blueId": "7QZetBkfW7L1nH6TxAEHNyGTAuxrGKLDLS6VJLfTfpv",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:41246d4f9fd2f5988a285603e84c91ec80574386c9a9277431602075d9ab8ec6"
+        },
+        "input": "CLQ94KZNzghqC7skSpa64n9ApoKRXF1B2453eveCak7M",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 0
+      },
+      {
+        "actual": {
+          "blueId": "GKa3kP3xiAC1CktxQS3CLpD4fw9vGE5MEVArFN6BBF42",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:71fde5b723e698790afa4be767884b1b95be9fc463faeaf4262736522987c90d"
+        },
+        "expected": {
+          "blueId": "GKa3kP3xiAC1CktxQS3CLpD4fw9vGE5MEVArFN6BBF42",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:a6f6ecc4e14b687ebc2a44fc4c8deb7dc23aaadfc4b93194c41439f57f10870b"
+        },
+        "input": "8ryWEvTAQa2JET4j3PDgquXzAs4Xo7tw9k4McR7GmKrr",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 1
+      },
+      {
+        "actual": {
+          "blueId": "14FQgSfo37GUXgHCDeVXEHqXfNsTwRgBcvHfV4AVnh8",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:8e6fa08e2586cb9c4bc9e70cdea8dddda36790a6884a28d9698001841581c253"
+        },
+        "expected": {
+          "blueId": "14FQgSfo37GUXgHCDeVXEHqXfNsTwRgBcvHfV4AVnh8",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:145315ef0e180e470f7f725b851eef9581dec8cc594f28b649405484dee047e8"
+        },
+        "input": "9uWk1rTUbrhxEEp5tyCp9f1yy5cpBTK3DeGUWwCUKsKH",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 2
+      },
+      {
+        "actual": {
+          "blueId": "2GLSoCCs5RQXfqBPZS7SQf3g2m4NWHGqgUhqHH9k1hGp",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:7c3c743d261a4a8d48325f4826ef0e847257f2f4329eb5445a691b2fb5676c2d"
+        },
+        "expected": {
+          "blueId": "2GLSoCCs5RQXfqBPZS7SQf3g2m4NWHGqgUhqHH9k1hGp",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:60f518124c11b81ded337aa80c70b0c84a9860eada85765a12aaa414d0afd661"
+        },
+        "input": "9Q5SzMZUUR2P9k5TUoEXnK8ZmMGuGx9HMEskYfWmryPy",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 3
+      },
+      {
+        "actual": {
+          "blueId": "DeixqfLrJ5MbQ8mQMcDCeib7bEnHtPU6nqwUwx2xLaQA",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:bd37c9186638e817d7ee74a67ba4e05d916cee7b51f4bc7853dcdd95b7581494"
+        },
+        "expected": {
+          "blueId": "DeixqfLrJ5MbQ8mQMcDCeib7bEnHtPU6nqwUwx2xLaQA",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:863c404ddf2870fe4996ee8fabaae6a35b615be4b68432b6876cbe04578d0ed5"
+        },
+        "input": "7V3A2Kb5n9iSY2ZZbMMB84PicKV8feka1F9ea1x2TBLB",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 4
+      },
+      {
+        "actual": {
+          "blueId": "ASKn2UGKX7njvVmBMnHkDF6epusWWYH2gQPBdsRQBt3m",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:7eee04375f2f65f3aa200889af078590e0cf7fa107d334de7c79a8ddc5782282"
+        },
+        "expected": {
+          "blueId": "ASKn2UGKX7njvVmBMnHkDF6epusWWYH2gQPBdsRQBt3m",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:494516c7aaf539b529c5b92f30a3edb213ce818174a92965f528c5ae6dfdd3d9"
+        },
+        "input": "42uLBXwUtRB3MUR6mADZXueQizuqNq7RqiHpD4o1W17W",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 5
+      },
+      {
+        "actual": {
+          "blueId": "5Mgm6KWTuDR59LUk8hyDzFjde1f3aaPyKLXmyxxazKRJ",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:990f09c5984c91e1da04b4a8d62611f23eb529bb8d40393348d8e939d96efb75"
+        },
+        "expected": {
+          "blueId": "5Mgm6KWTuDR59LUk8hyDzFjde1f3aaPyKLXmyxxazKRJ",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:9b9d244a0d836a78bf9e98d6b46f2676b137f392dad6a8eeac472ce928dbb3aa"
+        },
+        "input": "7bvmhSR85sCPsGNjCXitjJk7YrxKEAKSE9saoD9GREuB",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 6
+      },
+      {
+        "actual": {
+          "blueId": "E8H8L58GPUemmw5WFEN1nbbuqKBVNrJqfA8b4rzTAHEa",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:aeefb1a4693fe2215f5b4996edf44f970ffbd2ae6a152bdba1fe718e70c2d838"
+        },
+        "expected": {
+          "blueId": "E8H8L58GPUemmw5WFEN1nbbuqKBVNrJqfA8b4rzTAHEa",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:5a432f45ccebe02129c37121ca3043767485d6f3e413d3681e4f1fa08e99ee31"
+        },
+        "input": "2Tsu5KJeAFf6tqFuQkbEK5M8485E4mVfAbNa3saYLrm9",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 7
+      },
+      {
+        "actual": {
+          "blueId": "939H5CiRxpoinRgdMXeWZaPvvRZGVLS1SWLu1UwqiEhn",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:2df8984ca7f1cf8c1c78e3515362aeef25f1dd0a85a46630c36e105bd2a6ee12"
+        },
+        "expected": {
+          "blueId": "939H5CiRxpoinRgdMXeWZaPvvRZGVLS1SWLu1UwqiEhn",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:6489f41afa0e0971c1ce7bbec15e64aa80b3274fb6798b55ae483cc3ded420b0"
+        },
+        "input": "3gdRYrTF6r79QaVgWYxTvyrNs5Y9ZzCCqhkLooJK5W99",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 8
+      },
+      {
+        "actual": {
+          "blueId": "CX5C4b1yuEPXAXim7ig4Z2pWvsHrJ9j4wBTUuZy8ej51",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:78c41b93b607db1cc838fa3734d892ed79a1b272991b592de467294ca3a75185"
+        },
+        "expected": {
+          "blueId": "CX5C4b1yuEPXAXim7ig4Z2pWvsHrJ9j4wBTUuZy8ej51",
+          "gas": 228,
+          "publicEvents": [],
+          "receipt": "sha256:9f76e81b5e684775d5a762e9aec895aec04153e0ef6a98cfcccf4bc963c5d671"
+        },
+        "input": "BDVziEehxN5uMraBbSkZz8nRGSssXSkBszjXemLTHbC9",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-a66c342f-84b1-4b49-8e8c-66638df4f639",
+        "sample": 9
+      }
+    ],
+    "boundary": {
+      "account": "owner-qa-d7c6a6a7c52b",
+      "comparisonOracleDuringMeasurement": false,
+      "mutableSessionCaching": false,
+      "ownerStorageReopenedPerInput": true,
+      "store": "myos-better-canonical-20261108-documents",
+      "transportCachesDisabled": true
+    }
+  },
+  "aws-rotating": {
+    "cases": [
+      {
+        "orders": 10,
+        "documents": 21,
+        "timelineCount": 1,
+        "initializationMillis": 1300.86752,
+        "quietSourceSetupMillis": 0.005806,
+        "processingMillis": {
+          "n": 5,
+          "minimum": 637.802997,
+          "median": 661.14744,
+          "p95NearestRank": 789.188378,
+          "maximum": 789.188378
+        },
+        "acquisitionMillis": {
+          "n": 5,
+          "minimum": 133.64047,
+          "median": 138.038702,
+          "p95NearestRank": 293.772286,
+          "maximum": 293.772286
+        },
+        "combinedMillis": {
+          "n": 5,
+          "minimum": 786.0396939999999,
+          "median": 799.186142,
+          "p95NearestRank": 1082.960664,
+          "maximum": 1082.960664
+        },
+        "samples": [
+          {
+            "acquisitionMillis": 293.772286,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 789.188378,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 112763992,
+            "heapBeforeBytes": 58982144,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 84.45519,
+            "sample": 0,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 138.038702,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 661.14744,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 3,
+            "heapAfterBytes": 92518128,
+            "heapBeforeBytes": 107187520,
+            "observableRoot": true,
+            "orderIndex": 7,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 78.53442,
+            "sample": 1,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 133.64047,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 691.400142,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 7,
+            "heapAfterBytes": 67859408,
+            "heapBeforeBytes": 77397624,
+            "observableRoot": true,
+            "orderIndex": 4,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 74.71176,
+            "sample": 2,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 136.037115,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 650.002579,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 112947288,
+            "heapBeforeBytes": 117605224,
+            "observableRoot": true,
+            "orderIndex": 1,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 80.888022,
+            "sample": 3,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 160.91464,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 637.802997,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 3,
+            "heapAfterBytes": 97644680,
+            "heapBeforeBytes": 102175912,
+            "observableRoot": true,
+            "orderIndex": 8,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 74.528028,
+            "sample": 4,
+            "sourceMode": "shared-external"
+          }
+        ],
+        "io": [
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 129718149,
+              "commit.retryableFailures": 0,
+              "content.calls": 49,
+              "content.failures": 0,
+              "content.nanos": 182496885,
+              "contentAll.calls": 15,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 67023443,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 117323452,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 104072628,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 0
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 128422153,
+              "commit.retryableFailures": 0,
+              "content.calls": 60,
+              "content.failures": 0,
+              "content.nanos": 177602464,
+              "contentAll.calls": 18,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 63852146,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 96507135,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 81298683,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 1
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 129369385,
+              "commit.retryableFailures": 0,
+              "content.calls": 64,
+              "content.failures": 0,
+              "content.nanos": 185655511,
+              "contentAll.calls": 18,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 65541583,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 95572736,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 105182943,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 2
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 118779176,
+              "commit.retryableFailures": 0,
+              "content.calls": 73,
+              "content.failures": 0,
+              "content.nanos": 194586798,
+              "contentAll.calls": 17,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 52672297,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 83893471,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 87633022,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 3
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 112836040,
+              "commit.retryableFailures": 0,
+              "content.calls": 80,
+              "content.failures": 0,
+              "content.nanos": 217095828,
+              "contentAll.calls": 18,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 54535925,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 83667918,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 75887063,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 4
+          }
+        ]
+      },
+      {
+        "orders": 1000,
+        "documents": 2001,
+        "timelineCount": 1,
+        "initializationMillis": 36423.129349,
+        "quietSourceSetupMillis": 0.001089,
+        "processingMillis": {
+          "n": 5,
+          "minimum": 709.231748,
+          "median": 746.976889,
+          "p95NearestRank": 784.273319,
+          "maximum": 784.273319
+        },
+        "acquisitionMillis": {
+          "n": 5,
+          "minimum": 167.220035,
+          "median": 172.918101,
+          "p95NearestRank": 181.880826,
+          "maximum": 181.880826
+        },
+        "combinedMillis": {
+          "n": 5,
+          "minimum": 891.112574,
+          "median": 914.1969240000001,
+          "p95NearestRank": 957.19142,
+          "maximum": 957.19142
+        },
+        "samples": [
+          {
+            "acquisitionMillis": 171.521391,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 752.489486,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 28,
+            "heapAfterBytes": 602918560,
+            "heapBeforeBytes": 712822112,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 86.667092,
+            "sample": 0,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 181.880826,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 709.231748,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 906153840,
+            "heapBeforeBytes": 734515632,
+            "observableRoot": true,
+            "orderIndex": 37,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 90.931762,
+            "sample": 1,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 173.468553,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 724.245622,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 16,
+            "heapAfterBytes": 729583960,
+            "heapBeforeBytes": 808525384,
+            "observableRoot": true,
+            "orderIndex": 74,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 88.331687,
+            "sample": 2,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 167.220035,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 746.976889,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 17,
+            "heapAfterBytes": 220755584,
+            "heapBeforeBytes": 283018520,
+            "observableRoot": true,
+            "orderIndex": 111,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 86.938137,
+            "sample": 3,
+            "sourceMode": "shared-external"
+          },
+          {
+            "acquisitionMillis": 172.918101,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 784.273319,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 16,
+            "heapAfterBytes": 286376440,
+            "heapBeforeBytes": 352155624,
+            "observableRoot": true,
+            "orderIndex": 148,
+            "orders": 1000,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 101.444961,
+            "sample": 4,
+            "sourceMode": "shared-external"
+          }
+        ],
+        "io": [
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 104279685,
+              "commit.retryableFailures": 0,
+              "content.calls": 127,
+              "content.failures": 0,
+              "content.nanos": 255913640,
+              "contentAll.calls": 32,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 95782621,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 81319185,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 63795250,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 0
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 116916136,
+              "commit.retryableFailures": 0,
+              "content.calls": 131,
+              "content.failures": 0,
+              "content.nanos": 256703820,
+              "contentAll.calls": 31,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 91175419,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 71631057,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 65637531,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 1
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 109769230,
+              "commit.retryableFailures": 0,
+              "content.calls": 137,
+              "content.failures": 0,
+              "content.nanos": 263457847,
+              "contentAll.calls": 32,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 94475871,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 68685138,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 84912171,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 2
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 111517657,
+              "commit.retryableFailures": 0,
+              "content.calls": 136,
+              "content.failures": 0,
+              "content.nanos": 269801489,
+              "contentAll.calls": 31,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 112995965,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 67537280,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 67103539,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 3
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 104514797,
+              "commit.retryableFailures": 0,
+              "content.calls": 140,
+              "content.failures": 0,
+              "content.nanos": 289008211,
+              "contentAll.calls": 31,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 115141692,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 70996572,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 75578667,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 1000,
+            "phase": "io",
+            "sample": 4
+          }
+        ]
+      }
+    ],
+    "comparisons": [
+      {
+        "actual": {
+          "blueId": "FkwNuxKc7XnBB8N1H1hM9nDvHK2JnB66vTtS8SxtXh77",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:fb538f1703caabbf99a7328a949719037d380507d1caaf9e0248f14c864cdfa0",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:6af4dc0fdf444695d72fde1c2de6db9a02e3ca4e2e3cbbb3586f7150e1c49be2"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:f638104725ae1ec60540a04e09507633dded9944548a8a350f241a0adc5d7a4c",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:6af4dc0fdf444695d72fde1c2de6db9a02e3ca4e2e3cbbb3586f7150e1c49be2"
+            }
+          ],
+          "receipt": "sha256:ab0d440d91e63f2bd9e6e004dc66587f31d71b0d15a9c16e1c243fdce0fb767a"
+        },
+        "expected": {
+          "blueId": "FkwNuxKc7XnBB8N1H1hM9nDvHK2JnB66vTtS8SxtXh77",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:fb538f1703caabbf99a7328a949719037d380507d1caaf9e0248f14c864cdfa0",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:6af4dc0fdf444695d72fde1c2de6db9a02e3ca4e2e3cbbb3586f7150e1c49be2"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:f638104725ae1ec60540a04e09507633dded9944548a8a350f241a0adc5d7a4c",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:6af4dc0fdf444695d72fde1c2de6db9a02e3ca4e2e3cbbb3586f7150e1c49be2"
+            }
+          ],
+          "receipt": "sha256:a523234b79ce5c5e0f4d5ae0af686b6e841de633fcdcc6b170914226fc0e0a6f"
+        },
+        "input": "9Z3rSLKpBEun9GVjaRCk2MVn6DPe7rDPsh2LTMc8wgAf",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+        "sample": 0
+      },
+      {
+        "actual": {
+          "blueId": "8RRfDW4PVQ66yKLHeU2MEmMXGcmWmkVtEzoeYjtcVJGa",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:2b0f57bca8e6f71c04423b670ce5354b96c3526b97bb7856e0fe0eb15756b47f",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:c713672db3dd4619ca8fe7b051a6c6af476b9d7dc7d21a5a4bf98ea6c6c259c1"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:f9e77f23b2b1d4f70380dc6efa227a989836bf1a4841b37c7b64d5261d4ae62e",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:c713672db3dd4619ca8fe7b051a6c6af476b9d7dc7d21a5a4bf98ea6c6c259c1"
+            }
+          ],
+          "receipt": "sha256:ba0002d6c318951bf0269f1383636a798e443d0149c7cbeaa37b246f7e0f2c0d"
+        },
+        "expected": {
+          "blueId": "8RRfDW4PVQ66yKLHeU2MEmMXGcmWmkVtEzoeYjtcVJGa",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:2b0f57bca8e6f71c04423b670ce5354b96c3526b97bb7856e0fe0eb15756b47f",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:c713672db3dd4619ca8fe7b051a6c6af476b9d7dc7d21a5a4bf98ea6c6c259c1"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:f9e77f23b2b1d4f70380dc6efa227a989836bf1a4841b37c7b64d5261d4ae62e",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:c713672db3dd4619ca8fe7b051a6c6af476b9d7dc7d21a5a4bf98ea6c6c259c1"
+            }
+          ],
+          "receipt": "sha256:8d046fb177c5418dfc2ebddc4008a0861cac31d21267a6c8e6ea27a3495a8360"
+        },
+        "input": "28ymEkbBXgpWHr5YNJCbK1L6YD9qMLR3xZ7Btc9hg5x2",
+        "orderIndex": 7,
+        "phase": "comparison",
+        "root": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+        "sample": 1
+      },
+      {
+        "actual": {
+          "blueId": "9V8v4kApxDNEAuhVQyxm8tdVepS2JYSJTXxF33XzayX3",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:4f1c176ce9ba9d33f3de42145ec4d83dfa4b5bd657f928f40d6f18059b0fbb77",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:ed998dcc862e67886ef5235eafdaffc5654f2d2cf97505a57b1c7e2159c35b11"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:f3000d47d475b16f034a7cf56c535a6f4a7e10064613249a4d21944c78cae52c",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:ed998dcc862e67886ef5235eafdaffc5654f2d2cf97505a57b1c7e2159c35b11"
+            }
+          ],
+          "receipt": "sha256:07c3fd5637ba51774b5af3f08acd860664e9134854182a81e5591bf81005baca"
+        },
+        "expected": {
+          "blueId": "9V8v4kApxDNEAuhVQyxm8tdVepS2JYSJTXxF33XzayX3",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:4f1c176ce9ba9d33f3de42145ec4d83dfa4b5bd657f928f40d6f18059b0fbb77",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:ed998dcc862e67886ef5235eafdaffc5654f2d2cf97505a57b1c7e2159c35b11"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:f3000d47d475b16f034a7cf56c535a6f4a7e10064613249a4d21944c78cae52c",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:ed998dcc862e67886ef5235eafdaffc5654f2d2cf97505a57b1c7e2159c35b11"
+            }
+          ],
+          "receipt": "sha256:b8cf930d8eea8a3ed4aa2eae7a0bceb7a60db06dbec45814094bd522d63a942e"
+        },
+        "input": "CbZt3DYdC5UhtuhihS6WFyJpzi9V95s4o2oUTa6L7jNL",
+        "orderIndex": 4,
+        "phase": "comparison",
+        "root": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+        "sample": 2
+      },
+      {
+        "actual": {
+          "blueId": "BdxBY6DJqVC5p2V2iiAzWty3x7SzeGXjabeW78u3rW1F",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:c5d6b4c78de6336504b152c03043bbe9cf12c74ccd6d5eca15ced777313c28fa",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:6049690c8b72b0c454d529cac53a6897615c2b53ab2a61ff11210873a35efeac"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:c9c9bdb84317179514be2c696d4b965db745512996dafb6063f85eb63928e316",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:6049690c8b72b0c454d529cac53a6897615c2b53ab2a61ff11210873a35efeac"
+            }
+          ],
+          "receipt": "sha256:5491cef8c75c4ff414bb673d3a4e7be9f86ed28e5ec0096e221f91a43b39f4e7"
+        },
+        "expected": {
+          "blueId": "BdxBY6DJqVC5p2V2iiAzWty3x7SzeGXjabeW78u3rW1F",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:c5d6b4c78de6336504b152c03043bbe9cf12c74ccd6d5eca15ced777313c28fa",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:6049690c8b72b0c454d529cac53a6897615c2b53ab2a61ff11210873a35efeac"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:c9c9bdb84317179514be2c696d4b965db745512996dafb6063f85eb63928e316",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:6049690c8b72b0c454d529cac53a6897615c2b53ab2a61ff11210873a35efeac"
+            }
+          ],
+          "receipt": "sha256:3921f6bd7ec252df952c8d6a9970525641391a830ccb90a8b8bf88c48c4ba9f8"
+        },
+        "input": "DFqcph3bz2WMdSnRh2iv2YqqZQMcDwheuuP1VGjCF7AA",
+        "orderIndex": 1,
+        "phase": "comparison",
+        "root": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+        "sample": 3
+      },
+      {
+        "actual": {
+          "blueId": "8z1Mm6Jrt9GR3oXRMk5uK71F93jauBSm1YeM1joLre3H",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:3302ad48c4b8dcec15d49e43dbde37e8d68337d7290a1601049c63a7f9f517fe",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:181772f6778e8f75e0682f9e5502f450493f3588c7c233c2330662291b9286c0"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:1adf34dd9397283f6f64fa8d9d2673d116f0807ae53193ac904a01ce55edd0c6",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:181772f6778e8f75e0682f9e5502f450493f3588c7c233c2330662291b9286c0"
+            }
+          ],
+          "receipt": "sha256:e7af43d13c3576acb7ca28ed5ff7ef51efb84fadcfaad8b8a69b9c1938e2cd9e"
+        },
+        "expected": {
+          "blueId": "8z1Mm6Jrt9GR3oXRMk5uK71F93jauBSm1YeM1joLre3H",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:3302ad48c4b8dcec15d49e43dbde37e8d68337d7290a1601049c63a7f9f517fe",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:181772f6778e8f75e0682f9e5502f450493f3588c7c233c2330662291b9286c0"
+            },
+            {
+              "document": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:1adf34dd9397283f6f64fa8d9d2673d116f0807ae53193ac904a01ce55edd0c6",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:181772f6778e8f75e0682f9e5502f450493f3588c7c233c2330662291b9286c0"
+            }
+          ],
+          "receipt": "sha256:f6f6b97315e0d1e3635b1310a50069d2abeddd1b975bd2938897bd7c13af940a"
+        },
+        "input": "EGtQAXnPkvPLBuW1jwtvhDETT3VKTqiUMZXhBqJkJwzD",
+        "orderIndex": 8,
+        "phase": "comparison",
+        "root": "graph-fast-scale-166c1907-a25e-42ff-b396-ec15f6e65501",
+        "sample": 4
+      },
+      {
+        "actual": {
+          "blueId": "GpMRXZbjYPfJert93Rj3asseH4Ae2WtV3dPS7TzQndcr",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:410c03bb9b7056f9f5977a0fffc2ba9e55fef0a6d79746ca190595231bb8acf8",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:3ac849236e7637b449c17b5a5beb15ec22938e726fcd7744caaeb9ec78affaef"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:ecd58d84cd125a79c438f303f6ccc87eb830ccda327847753b6af325eaabeb20",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:3ac849236e7637b449c17b5a5beb15ec22938e726fcd7744caaeb9ec78affaef"
+            }
+          ],
+          "receipt": "sha256:093f9f27d8c69aaecf95159c4979a719ba2a8281ae8c64744cb9aee1892c3bf0"
+        },
+        "expected": {
+          "blueId": "GpMRXZbjYPfJert93Rj3asseH4Ae2WtV3dPS7TzQndcr",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:410c03bb9b7056f9f5977a0fffc2ba9e55fef0a6d79746ca190595231bb8acf8",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:3ac849236e7637b449c17b5a5beb15ec22938e726fcd7744caaeb9ec78affaef"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:ecd58d84cd125a79c438f303f6ccc87eb830ccda327847753b6af325eaabeb20",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:3ac849236e7637b449c17b5a5beb15ec22938e726fcd7744caaeb9ec78affaef"
+            }
+          ],
+          "receipt": "sha256:935d8ad0b115a956967624a7d9c84f4484d29fea365556f00c23966b1a0e05d0"
+        },
+        "input": "Hmij3caXcJKorSxtLEDUfsvYsoL8RDhPBzi79VKfUAs",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+        "sample": 0
+      },
+      {
+        "actual": {
+          "blueId": "G5YLJZKRGbeCSeipgVAvrwiizjuQQAeCGCHNLBrHSXLh",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:eabffd946b35084978619979aa7454a36a51153bc9be92aafbd255d10fc34d6d",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:9462fb771fca58760c3836bc3fe36074039799d9b45ff9ff5100fdc695c634c9"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:7f277ea42e4859cc801c3153d0ef39114f37b88a67bc70b93d9677926b1ec298",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:9462fb771fca58760c3836bc3fe36074039799d9b45ff9ff5100fdc695c634c9"
+            }
+          ],
+          "receipt": "sha256:b467c83832e5f3b6f0fd79b0037bf065b365fd12d49ae4c3321c4aa4f52ce558"
+        },
+        "expected": {
+          "blueId": "G5YLJZKRGbeCSeipgVAvrwiizjuQQAeCGCHNLBrHSXLh",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:eabffd946b35084978619979aa7454a36a51153bc9be92aafbd255d10fc34d6d",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:9462fb771fca58760c3836bc3fe36074039799d9b45ff9ff5100fdc695c634c9"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:7f277ea42e4859cc801c3153d0ef39114f37b88a67bc70b93d9677926b1ec298",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:9462fb771fca58760c3836bc3fe36074039799d9b45ff9ff5100fdc695c634c9"
+            }
+          ],
+          "receipt": "sha256:2760f015c0b2e568e6a928347b6058298b49693d0be7b9ed8054ebfe169e56f3"
+        },
+        "input": "HMWkeYSr8FWoSqFN2HPqXMcFMWGhPqAnXVC92synuwLm",
+        "orderIndex": 37,
+        "phase": "comparison",
+        "root": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+        "sample": 1
+      },
+      {
+        "actual": {
+          "blueId": "GfB3PtcZKFgxDRTyxtXkrcxAnVBawXwiQ7qAbH2mCwSa",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:005b9b529f9584f4c770ea62f713ad522d0d3135a7478211ea9fc3e501557cdc",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:cf926cd01e32a30c83eaf1ea82355d68a9a3e7c00b1b01b63f1decbef9ee8bc7"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:3adf68b97cab7aa23f0a2e5ea7022b830d95c9b184c8890672f2ca36cda50db6",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:cf926cd01e32a30c83eaf1ea82355d68a9a3e7c00b1b01b63f1decbef9ee8bc7"
+            }
+          ],
+          "receipt": "sha256:28e3589b987db822da17aa24f92d313d412f9ea3f2bd7d8a4322d5e27577ee38"
+        },
+        "expected": {
+          "blueId": "GfB3PtcZKFgxDRTyxtXkrcxAnVBawXwiQ7qAbH2mCwSa",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:005b9b529f9584f4c770ea62f713ad522d0d3135a7478211ea9fc3e501557cdc",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:cf926cd01e32a30c83eaf1ea82355d68a9a3e7c00b1b01b63f1decbef9ee8bc7"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:3adf68b97cab7aa23f0a2e5ea7022b830d95c9b184c8890672f2ca36cda50db6",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:cf926cd01e32a30c83eaf1ea82355d68a9a3e7c00b1b01b63f1decbef9ee8bc7"
+            }
+          ],
+          "receipt": "sha256:743f2b245d28fc564b6c537a89e739c6ec569eabdbe3fd3798f8d9af7a0ebe3d"
+        },
+        "input": "BaBkAp4CPQVxWz1Ff78fdNMMRYvLQdFq3wdvBNuh4QW1",
+        "orderIndex": 74,
+        "phase": "comparison",
+        "root": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+        "sample": 2
+      },
+      {
+        "actual": {
+          "blueId": "Bs44iyZvDreR4fQgVmJjhktCcdVfogtJtQKNLKh1Lajv",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:a0b35aeced76b74d8f76f8e34d6eeffd23acf381d7d8ce08c6dd1f3fceccdab5",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:7670d88654770b9f2b8aca76e63ee0aa0dacd7b6f1cae465c546cc103bc8a9fc"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:c9c24d8c12f4e8db2cf9a4de1179212ea3fa4acf54d0ad5edc556f9fd31e2a70",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:7670d88654770b9f2b8aca76e63ee0aa0dacd7b6f1cae465c546cc103bc8a9fc"
+            }
+          ],
+          "receipt": "sha256:ecabae68ea0988166de2090d4e54311d3cad3357da02e43251e5e4f5c807a272"
+        },
+        "expected": {
+          "blueId": "Bs44iyZvDreR4fQgVmJjhktCcdVfogtJtQKNLKh1Lajv",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:a0b35aeced76b74d8f76f8e34d6eeffd23acf381d7d8ce08c6dd1f3fceccdab5",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:7670d88654770b9f2b8aca76e63ee0aa0dacd7b6f1cae465c546cc103bc8a9fc"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:c9c24d8c12f4e8db2cf9a4de1179212ea3fa4acf54d0ad5edc556f9fd31e2a70",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:7670d88654770b9f2b8aca76e63ee0aa0dacd7b6f1cae465c546cc103bc8a9fc"
+            }
+          ],
+          "receipt": "sha256:4dd77bc82245be5b32c5c83b9dac9492ba08511f7f3fe2ac7f74b8b604239eb1"
+        },
+        "input": "GhJ3VhhMrg1mBd4Kqhixo5PDa2qTs1EbEcGWxk2oVsiW",
+        "orderIndex": 111,
+        "phase": "comparison",
+        "root": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+        "sample": 3
+      },
+      {
+        "actual": {
+          "blueId": "DNdpKB23EmyTLwvLRhCyi3onahNNzHfK2YLU4NZ9Vxrd",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:5123bb1ef4127e096b063e7bbb66279b592df461572e35ad6a1bc704d8b95afa",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:2520a18eb3cd25f14ab333602f05e201ecc9b7475fdec5e7aa1a60102415f53c"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:281888e748ef302a8e81a78c68cbdb4bacfaacc363e74c76f94dfa9503b670cc",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:2520a18eb3cd25f14ab333602f05e201ecc9b7475fdec5e7aa1a60102415f53c"
+            }
+          ],
+          "receipt": "sha256:e65b51f2687c3c077e73f65c7b56dfe4b6cb37e3ea2e3f0add5dc0edbaa5f652"
+        },
+        "expected": {
+          "blueId": "DNdpKB23EmyTLwvLRhCyi3onahNNzHfK2YLU4NZ9Vxrd",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:5123bb1ef4127e096b063e7bbb66279b592df461572e35ad6a1bc704d8b95afa",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:2520a18eb3cd25f14ab333602f05e201ecc9b7475fdec5e7aa1a60102415f53c"
+            },
+            {
+              "document": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:281888e748ef302a8e81a78c68cbdb4bacfaacc363e74c76f94dfa9503b670cc",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:2520a18eb3cd25f14ab333602f05e201ecc9b7475fdec5e7aa1a60102415f53c"
+            }
+          ],
+          "receipt": "sha256:826b3646a07b28796eca2404ba390a2e54a06e1ac5de965dfa97f85963d8b126"
+        },
+        "input": "5q2c18dvKXwt2qm4ZafoEnJhRysHosjTyH63zJWjt9rw",
+        "orderIndex": 148,
+        "phase": "comparison",
+        "root": "graph-fast-scale-5fcfbc54-9447-46d6-8097-800fd4f21954",
+        "sample": 4
+      }
+    ],
+    "boundary": {
+      "account": "owner-qa-d321114b500b",
+      "comparisonOracleDuringMeasurement": false,
+      "mutableSessionCaching": false,
+      "ownerStorageReopenedPerInput": true,
+      "store": "myos-better-canonical-20261108-documents",
+      "transportCachesDisabled": true
+    }
+  },
+  "aws-separate": {
+    "cases": [
+      {
+        "orders": 10,
+        "documents": 21,
+        "timelineCount": 10,
+        "initializationMillis": 1173.456673,
+        "quietSourceSetupMillis": 1363.273141,
+        "processingMillis": {
+          "n": 5,
+          "minimum": 689.053403,
+          "median": 696.17924,
+          "p95NearestRank": 765.523502,
+          "maximum": 765.523502
+        },
+        "acquisitionMillis": {
+          "n": 5,
+          "minimum": 150.557889,
+          "median": 156.886241,
+          "p95NearestRank": 215.27465,
+          "maximum": 215.27465
+        },
+        "combinedMillis": {
+          "n": 5,
+          "minimum": 839.611292,
+          "median": 853.0654810000001,
+          "p95NearestRank": 980.7981520000001,
+          "maximum": 980.7981520000001
+        },
+        "samples": [
+          {
+            "acquisitionMillis": 215.27465,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 765.523502,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 171610344,
+            "heapBeforeBytes": 119536848,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 77.490419,
+            "sample": 0,
+            "sourceMode": "separate-external"
+          },
+          {
+            "acquisitionMillis": 156.886241,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 696.17924,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 6,
+            "heapAfterBytes": 117278560,
+            "heapBeforeBytes": 150374000,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 67.534629,
+            "sample": 1,
+            "sourceMode": "separate-external"
+          },
+          {
+            "acquisitionMillis": 150.557889,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 689.053403,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 141839432,
+            "heapBeforeBytes": 170458536,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 64.995078,
+            "sample": 2,
+            "sourceMode": "separate-external"
+          },
+          {
+            "acquisitionMillis": 178.812814,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 731.451477,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 0,
+            "heapAfterBytes": 172064920,
+            "heapBeforeBytes": 114465648,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 73.661062,
+            "sample": 3,
+            "sourceMode": "separate-external"
+          },
+          {
+            "acquisitionMillis": 154.259237,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 691.497847,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 121750032,
+            "heapBeforeBytes": 145470992,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 10,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 65.214088,
+            "sample": 4,
+            "sourceMode": "separate-external"
+          }
+        ],
+        "io": [
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 128987592,
+              "commit.retryableFailures": 0,
+              "content.calls": 49,
+              "content.failures": 0,
+              "content.nanos": 189063240,
+              "contentAll.calls": 15,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 69120560,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 146185996,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 74658946,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 0
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 138774155,
+              "commit.retryableFailures": 0,
+              "content.calls": 81,
+              "content.failures": 0,
+              "content.nanos": 237803591,
+              "contentAll.calls": 18,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 61160908,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 111606403,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 52849492,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 1
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 117346090,
+              "commit.retryableFailures": 0,
+              "content.calls": 87,
+              "content.failures": 0,
+              "content.nanos": 251373467,
+              "contentAll.calls": 20,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 64871753,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 109453030,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 54919332,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 2
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 134331652,
+              "commit.retryableFailures": 0,
+              "content.calls": 96,
+              "content.failures": 0,
+              "content.nanos": 276225127,
+              "contentAll.calls": 20,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 66401512,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 107086642,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 62313930,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 3
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 118844993,
+              "commit.retryableFailures": 0,
+              "content.calls": 94,
+              "content.failures": 0,
+              "content.nanos": 269537929,
+              "contentAll.calls": 20,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 61361962,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 108206939,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 59010608,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 10,
+            "phase": "io",
+            "sample": 4
+          }
+        ]
+      },
+      {
+        "orders": 100,
+        "documents": 201,
+        "timelineCount": 100,
+        "initializationMillis": 3207.189083,
+        "quietSourceSetupMillis": 8057.683896,
+        "processingMillis": {
+          "n": 5,
+          "minimum": 626.585184,
+          "median": 705.410332,
+          "p95NearestRank": 720.047452,
+          "maximum": 720.047452
+        },
+        "acquisitionMillis": {
+          "n": 5,
+          "minimum": 167.912699,
+          "median": 169.605565,
+          "p95NearestRank": 183.96592,
+          "maximum": 183.96592
+        },
+        "combinedMillis": {
+          "n": 5,
+          "minimum": 794.8572240000001,
+          "median": 875.015897,
+          "p95NearestRank": 904.013372,
+          "maximum": 904.013372
+        },
+        "samples": [
+          {
+            "acquisitionMillis": 168.27204,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 626.585184,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 10,
+            "heapAfterBytes": 640251976,
+            "heapBeforeBytes": 645954256,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 68.833727,
+            "sample": 0,
+            "sourceMode": "separate-external"
+          },
+          {
+            "acquisitionMillis": 169.605565,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 705.410332,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 7,
+            "heapAfterBytes": 606896048,
+            "heapBeforeBytes": 623009328,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 89.727754,
+            "sample": 1,
+            "sourceMode": "separate-external"
+          },
+          {
+            "acquisitionMillis": 167.912699,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 685.4842,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 3,
+            "heapAfterBytes": 613555400,
+            "heapBeforeBytes": 633755032,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 82.443773,
+            "sample": 2,
+            "sourceMode": "separate-external"
+          },
+          {
+            "acquisitionMillis": 175.862198,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 705.500066,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 4,
+            "heapAfterBytes": 626815976,
+            "heapBeforeBytes": 640622168,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 76.241268,
+            "sample": 3,
+            "sourceMode": "separate-external"
+          },
+          {
+            "acquisitionMillis": 183.96592,
+            "appliedOwners": 3,
+            "disposedOwners": 0,
+            "durableProcessingMillis": 720.047452,
+            "gas": 264,
+            "gasSchedule": "contracts-additive-prototype-3",
+            "gcMillis": 3,
+            "heapAfterBytes": 641835808,
+            "heapBeforeBytes": 653519136,
+            "observableRoot": true,
+            "orderIndex": 0,
+            "orders": 100,
+            "parity": true,
+            "parityScope": "document-gas-public-events",
+            "profiled": false,
+            "rootRestoreAdmissionExecutionMillis": 72.060623,
+            "sample": 4,
+            "sourceMode": "separate-external"
+          }
+        ],
+        "io": [
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 118015935,
+              "commit.retryableFailures": 0,
+              "content.calls": 92,
+              "content.failures": 0,
+              "content.nanos": 218827698,
+              "contentAll.calls": 23,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 78233891,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 90000391,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 57405912,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 0
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 112453474,
+              "commit.retryableFailures": 0,
+              "content.calls": 124,
+              "content.failures": 0,
+              "content.nanos": 292633561,
+              "contentAll.calls": 28,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 76744189,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 92069657,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 61323249,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 1
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 117481504,
+              "commit.retryableFailures": 0,
+              "content.calls": 125,
+              "content.failures": 0,
+              "content.nanos": 279375926,
+              "contentAll.calls": 28,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 76486828,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 95567577,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 58818144,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 2
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 120979079,
+              "commit.retryableFailures": 0,
+              "content.calls": 132,
+              "content.failures": 0,
+              "content.nanos": 304087564,
+              "contentAll.calls": 27,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 71274838,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 89681844,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 57940334,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 3
+          },
+          {
+            "io": {
+              "commit.calls": 6,
+              "commit.failures": 0,
+              "commit.nanos": 119250539,
+              "commit.retryableFailures": 0,
+              "content.calls": 134,
+              "content.failures": 0,
+              "content.nanos": 317021629,
+              "contentAll.calls": 28,
+              "contentAll.failures": 0,
+              "contentAll.nanos": 78197924,
+              "get.calls": 36,
+              "get.failures": 0,
+              "get.nanos": 89691902,
+              "getAll.calls": 0,
+              "getAll.failures": 0,
+              "getAll.nanos": 0,
+              "publishContent.calls": 6,
+              "publishContent.failures": 0,
+              "publishContent.nanos": 57828613,
+              "query.calls": 0,
+              "query.failures": 0,
+              "query.nanos": 0,
+              "work.calls": 0,
+              "work.failures": 0,
+              "work.nanos": 0
+            },
+            "orders": 100,
+            "phase": "io",
+            "sample": 4
+          }
+        ]
+      }
+    ],
+    "comparisons": [
+      {
+        "actual": {
+          "blueId": "3jBv6onwi9X96yEEfZs1BKxbfV7rp4bu1q8CMfBKjaCc",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:cc60378edb00cefa3688845575f7d9309fe39440d1f13a9830ac5970e30ebf74",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:7ff2de9ed5d78e2eb9ce88426feaced97d9487123f44df6aaa5e5d3b47820262"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:2e95f2f8af84bb1202cf501beda8bb7bc60e8002c31525374b4759c039b67029",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:7ff2de9ed5d78e2eb9ce88426feaced97d9487123f44df6aaa5e5d3b47820262"
+            }
+          ],
+          "receipt": "sha256:2ddec5877c10ac25d03c7edd90a8d505554c3f46853c98e5437477294d36e23d"
+        },
+        "expected": {
+          "blueId": "3jBv6onwi9X96yEEfZs1BKxbfV7rp4bu1q8CMfBKjaCc",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:cc60378edb00cefa3688845575f7d9309fe39440d1f13a9830ac5970e30ebf74",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:7ff2de9ed5d78e2eb9ce88426feaced97d9487123f44df6aaa5e5d3b47820262"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:2e95f2f8af84bb1202cf501beda8bb7bc60e8002c31525374b4759c039b67029",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:7ff2de9ed5d78e2eb9ce88426feaced97d9487123f44df6aaa5e5d3b47820262"
+            }
+          ],
+          "receipt": "sha256:ec7765ffeca2e150dd4bb121e37dd2a7e94ec049e6ca3dfcd104c93feb9d83a7"
+        },
+        "input": "DgRyh8fnZTCZMyamF65roU8FjtoRXyYPurTUR8eTwCTt",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+        "sample": 0
+      },
+      {
+        "actual": {
+          "blueId": "AenbnLU2RUxwHGZXi4Cc2Kht2i41fGQYtGJaBb98dh2k",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:ed0b321f3103b2221035d58dd5500520427c10c4723c71b118ab9e9bd2616c58",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:aa7c71ed1bfdedeee7597b96e255f5745e3bf7ffa222dedfb9a9df81be3e06e5"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:a50dde869e6ffca129c3e33adbaa94e190c3653f54bff93dd7509b5ac4b4edd3",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:aa7c71ed1bfdedeee7597b96e255f5745e3bf7ffa222dedfb9a9df81be3e06e5"
+            }
+          ],
+          "receipt": "sha256:eb8e2ab1a3702be8e4ed1fb71c3a4ed7061bbb170d8ced200cbd3d1e19748474"
+        },
+        "expected": {
+          "blueId": "AenbnLU2RUxwHGZXi4Cc2Kht2i41fGQYtGJaBb98dh2k",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:ed0b321f3103b2221035d58dd5500520427c10c4723c71b118ab9e9bd2616c58",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:aa7c71ed1bfdedeee7597b96e255f5745e3bf7ffa222dedfb9a9df81be3e06e5"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:a50dde869e6ffca129c3e33adbaa94e190c3653f54bff93dd7509b5ac4b4edd3",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:aa7c71ed1bfdedeee7597b96e255f5745e3bf7ffa222dedfb9a9df81be3e06e5"
+            }
+          ],
+          "receipt": "sha256:14e31a987d60697eb73acb72f9ba378332802586d5c72fae41d39dd601266e94"
+        },
+        "input": "8NP7qqkwXmCeQGzYg7DefHpydQW1DqYTbDpnEYFKA9vK",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+        "sample": 1
+      },
+      {
+        "actual": {
+          "blueId": "aWuNh1m84tZ2PZHfFwNht6FFrxd5WNzAp6wLhDEdL1m",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:203b25ebf9ae77771c4b6ed56952257c566d9a1aaccd0f4f634f5e31c984c19b",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:ce1cd4a93e6a5097df678b3d66666eba91eca87b86ed73d248b5d430e6749f03"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:59b4f255f022ef1dc92f6c791a21f8cdb12b5eb1b310a4c092139d44ae4cc033",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:ce1cd4a93e6a5097df678b3d66666eba91eca87b86ed73d248b5d430e6749f03"
+            }
+          ],
+          "receipt": "sha256:903c1857925fe83a57f286acc3ca7f3a0ea52a475bac1ab2b7c2ed9a17cba4e4"
+        },
+        "expected": {
+          "blueId": "aWuNh1m84tZ2PZHfFwNht6FFrxd5WNzAp6wLhDEdL1m",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:203b25ebf9ae77771c4b6ed56952257c566d9a1aaccd0f4f634f5e31c984c19b",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:ce1cd4a93e6a5097df678b3d66666eba91eca87b86ed73d248b5d430e6749f03"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:59b4f255f022ef1dc92f6c791a21f8cdb12b5eb1b310a4c092139d44ae4cc033",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:ce1cd4a93e6a5097df678b3d66666eba91eca87b86ed73d248b5d430e6749f03"
+            }
+          ],
+          "receipt": "sha256:be74c75d421ad6f0e56ba905799762e90afd98c39e258c7a866d6fbc2bd0552a"
+        },
+        "input": "2vKg2vnEdw52g7GFy8UzhHPxRnAV1Hdv66cEE7qi22kH",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+        "sample": 2
+      },
+      {
+        "actual": {
+          "blueId": "9wTB1Lds5A1Ay1iw88U2roEThn8UQHm1YRJX1g1mQn24",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:30557752559f4d5b2a74d16037dfeb44cb6419a73e07fc64351affcb1cb77a4d",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:5cda91adb3dd60b461f9c5261ea51b8869fe0062b049cbf677f219c0c4894971"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:682b8ec4c848d9529631ffef4d0a2cef27465b68c7e4bd95a837232d90d2dad1",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:5cda91adb3dd60b461f9c5261ea51b8869fe0062b049cbf677f219c0c4894971"
+            }
+          ],
+          "receipt": "sha256:b762683ec64d5cd4c13756e1cc28f34491e8181127bb049765b0ed8bc608c9c3"
+        },
+        "expected": {
+          "blueId": "9wTB1Lds5A1Ay1iw88U2roEThn8UQHm1YRJX1g1mQn24",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:30557752559f4d5b2a74d16037dfeb44cb6419a73e07fc64351affcb1cb77a4d",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:5cda91adb3dd60b461f9c5261ea51b8869fe0062b049cbf677f219c0c4894971"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:682b8ec4c848d9529631ffef4d0a2cef27465b68c7e4bd95a837232d90d2dad1",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:5cda91adb3dd60b461f9c5261ea51b8869fe0062b049cbf677f219c0c4894971"
+            }
+          ],
+          "receipt": "sha256:f5b6882ee6bd6d928b5cf96041267a794af685ae5ecb2462c424cbdf57f195ff"
+        },
+        "input": "GmFpZxzw6KVGTRxbPPMALTMPEFjfPBq327VL3f6Box8g",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+        "sample": 3
+      },
+      {
+        "actual": {
+          "blueId": "6XvZMrG9tAjrVXm6PniQxA3nxM8usXszUGBnwmLg2FsZ",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:12dfe736725d07de15ffdea6093d2b99202c9286bd40654cb8b459dd269c21a6",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:ed9e38fb95dd692e0e44afca86bb0ee5b575609b2c52a5ffd045a1fc8d4b0907"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:61a0e260cc72a3d19ca1137eb1afc5588dd0559ea11a60b66d46ac781abe2105",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:ed9e38fb95dd692e0e44afca86bb0ee5b575609b2c52a5ffd045a1fc8d4b0907"
+            }
+          ],
+          "receipt": "sha256:e7b361ef9ff2a172d19a04c572f16784126259e7a080bccc35fd759e8c3487eb"
+        },
+        "expected": {
+          "blueId": "6XvZMrG9tAjrVXm6PniQxA3nxM8usXszUGBnwmLg2FsZ",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:12dfe736725d07de15ffdea6093d2b99202c9286bd40654cb8b459dd269c21a6",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:ed9e38fb95dd692e0e44afca86bb0ee5b575609b2c52a5ffd045a1fc8d4b0907"
+            },
+            {
+              "document": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:61a0e260cc72a3d19ca1137eb1afc5588dd0559ea11a60b66d46ac781abe2105",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:ed9e38fb95dd692e0e44afca86bb0ee5b575609b2c52a5ffd045a1fc8d4b0907"
+            }
+          ],
+          "receipt": "sha256:9eea267ecf3bb8ee259b8889b7141f3484a693eb9d057fb3e6e2573abc31f723"
+        },
+        "input": "6RJQWnnfdwJCqasaqPX7UJKENZUggEKbgPh7Freex5tH",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-2c5c2942-f717-412a-a07e-f183500500e0",
+        "sample": 4
+      },
+      {
+        "actual": {
+          "blueId": "78WJN8ZzYVQM8momG83R63JmZAD4P1cWPcmXPseb8298",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:2666156d43e15022e183ef4e7cdfe6bdb2c8b9d5ba48e60b28b4eed79ad113a3",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:c6d94ffc82f5a2b65c75387230a7cc3e4147434f2df0686026ecd6e87d6ff5a1"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:4045bf14bba620aa5653695f1a9e9efa7dd7a1a44a30dd330f186245ced570b5",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:c6d94ffc82f5a2b65c75387230a7cc3e4147434f2df0686026ecd6e87d6ff5a1"
+            }
+          ],
+          "receipt": "sha256:fc845a93bc60f20778179f9b2530fa31ade467195902a0715d42341ba802c762"
+        },
+        "expected": {
+          "blueId": "78WJN8ZzYVQM8momG83R63JmZAD4P1cWPcmXPseb8298",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:2666156d43e15022e183ef4e7cdfe6bdb2c8b9d5ba48e60b28b4eed79ad113a3",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:c6d94ffc82f5a2b65c75387230a7cc3e4147434f2df0686026ecd6e87d6ff5a1"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:4045bf14bba620aa5653695f1a9e9efa7dd7a1a44a30dd330f186245ced570b5",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:c6d94ffc82f5a2b65c75387230a7cc3e4147434f2df0686026ecd6e87d6ff5a1"
+            }
+          ],
+          "receipt": "sha256:5ab357f1f9e2307a432b135558a136edaecf0cdb360fcdd9190353949eaa0a48"
+        },
+        "input": "42bXTVDCAAk9HLbFgCT5GkMuG5JLvLvpgqzGFg2YgNH9",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+        "sample": 0
+      },
+      {
+        "actual": {
+          "blueId": "Af1gihm3sV6VLh12nAEbgAv3aEtZUyT3K92eobwSoVsY",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:c195cef63ca9b53a75b8b794aaf134ad103b7d08f7f63a67d1d5cb310b2513cb",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:0e7988dd528a1588f41cbcb017a367203f74ae7cac81ac0c66c32edfe7a15bf9"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:5a5223f9a33b24b86ced6f26a15ba1c8997667f3db0e0e0575d6c5f9e05af183",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:0e7988dd528a1588f41cbcb017a367203f74ae7cac81ac0c66c32edfe7a15bf9"
+            }
+          ],
+          "receipt": "sha256:49e77c75799dbd77544fe7e23f088c4feee522d910228f256140b52194c1e0d1"
+        },
+        "expected": {
+          "blueId": "Af1gihm3sV6VLh12nAEbgAv3aEtZUyT3K92eobwSoVsY",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:c195cef63ca9b53a75b8b794aaf134ad103b7d08f7f63a67d1d5cb310b2513cb",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:0e7988dd528a1588f41cbcb017a367203f74ae7cac81ac0c66c32edfe7a15bf9"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:5a5223f9a33b24b86ced6f26a15ba1c8997667f3db0e0e0575d6c5f9e05af183",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:0e7988dd528a1588f41cbcb017a367203f74ae7cac81ac0c66c32edfe7a15bf9"
+            }
+          ],
+          "receipt": "sha256:de1fb32a6b9e46241009403b6f050b02df12a1e6e19b76b51a5c377f642fc19f"
+        },
+        "input": "8mLsm4ZaboUrR3bfNoQfKhmgoaaBxwZFwQysYNTiVp1i",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+        "sample": 1
+      },
+      {
+        "actual": {
+          "blueId": "7cKeCnWYd2gG5eu1rXML7sY5nrbt9DYzL96bQtn3x7vg",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:521b56971fd24bfd823df319fd6dd42a723472113fd46d38da1b27382e1a0dfd",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:498bde30752a234725d9c93fab604c2883fc94da1772529df8cfd15754ffbf08"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:fb8bada2342cbd79575675668762f4ecf3cbaeb9a486c8c0993c9bc5e775e0e0",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:498bde30752a234725d9c93fab604c2883fc94da1772529df8cfd15754ffbf08"
+            }
+          ],
+          "receipt": "sha256:e6b1b4752edb0718d99ccdf56c9f5445eef9727288dd1555b76b45d12ae74f95"
+        },
+        "expected": {
+          "blueId": "7cKeCnWYd2gG5eu1rXML7sY5nrbt9DYzL96bQtn3x7vg",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:521b56971fd24bfd823df319fd6dd42a723472113fd46d38da1b27382e1a0dfd",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:498bde30752a234725d9c93fab604c2883fc94da1772529df8cfd15754ffbf08"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:fb8bada2342cbd79575675668762f4ecf3cbaeb9a486c8c0993c9bc5e775e0e0",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:498bde30752a234725d9c93fab604c2883fc94da1772529df8cfd15754ffbf08"
+            }
+          ],
+          "receipt": "sha256:240c4cae80f355df85bf87545a602ae1792db9e6d33c617b1c846f5d885a4bbf"
+        },
+        "input": "FrHtFhsz8H6NrbReFyPH4DqDFDaSZFxSsM2FvrdbNytc",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+        "sample": 2
+      },
+      {
+        "actual": {
+          "blueId": "2a6ZGmzCH2T3RfvxdJP6QKWZQDxWRf9xNnVSNy1zU9M7",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:0a64fa92686cb279d75625c5225a891f16259777808a80f2dfe24793926d931b",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:2de86210220d809b76a706df53698cac4291e521d66efd2c503fda7bf1bbf615"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:50e899a37834175e05d6773a17c5ab51cd94be830715da588b533d77bce2884c",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:2de86210220d809b76a706df53698cac4291e521d66efd2c503fda7bf1bbf615"
+            }
+          ],
+          "receipt": "sha256:f4cff18e6c78c99e2711dd67d970b467e1240ab7398fbd3dc732561b7b77cd72"
+        },
+        "expected": {
+          "blueId": "2a6ZGmzCH2T3RfvxdJP6QKWZQDxWRf9xNnVSNy1zU9M7",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:0a64fa92686cb279d75625c5225a891f16259777808a80f2dfe24793926d931b",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:2de86210220d809b76a706df53698cac4291e521d66efd2c503fda7bf1bbf615"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:50e899a37834175e05d6773a17c5ab51cd94be830715da588b533d77bce2884c",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:2de86210220d809b76a706df53698cac4291e521d66efd2c503fda7bf1bbf615"
+            }
+          ],
+          "receipt": "sha256:7d0efeb2847b05b69de9a8770609da0ecbc5612a2f48bb459b0a59ae0ff4353b"
+        },
+        "input": "D4aZrAgYFR6N96DC78fSoE1raJNMYeUp8gHoLjoayYfy",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+        "sample": 3
+      },
+      {
+        "actual": {
+          "blueId": "9ddjVgAhmGwQ698JDyqeZEVL9o11CaPn5PddxgZ13FXU",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:9be6a7db4bc206a9ea5e06b68e90cb20e7c74cd99df2a376b9b66250e6df8377",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:8beae61930f67ff5bbc95fe9993f0535335ef80629fdeea411c963565c416950"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:36ad40d800bcc2a422648cb1e5cfd75a9d57d3db205f22846713caa76c874450",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:8beae61930f67ff5bbc95fe9993f0535335ef80629fdeea411c963565c416950"
+            }
+          ],
+          "receipt": "sha256:25c1f6187a4eb75154bcaba0b374f5ba7948db5d7d474942d5707e1f9539d1fa"
+        },
+        "expected": {
+          "blueId": "9ddjVgAhmGwQ698JDyqeZEVL9o11CaPn5PddxgZ13FXU",
+          "gas": 264,
+          "publicEvents": [
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:9be6a7db4bc206a9ea5e06b68e90cb20e7c74cd99df2a376b9b66250e6df8377",
+              "ordinal": 2,
+              "sourceOrdinal": 0,
+              "sourceTurn": "sha256:8beae61930f67ff5bbc95fe9993f0535335ef80629fdeea411c963565c416950"
+            },
+            {
+              "document": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+              "event": "B9Xsq7fApbCYJjtnwAkoJY6Bv5YyLgR3aBCMaP4jKUmF",
+              "identity": "sha256:36ad40d800bcc2a422648cb1e5cfd75a9d57d3db205f22846713caa76c874450",
+              "ordinal": 3,
+              "sourceOrdinal": 1,
+              "sourceTurn": "sha256:8beae61930f67ff5bbc95fe9993f0535335ef80629fdeea411c963565c416950"
+            }
+          ],
+          "receipt": "sha256:e035db1c8459971f8410e96e2e515be0715011ac39a95159360fcaf104a723d6"
+        },
+        "input": "CocTra6uUuddrgGXZ2xDVBNnxTu6aunt6KDuVGkaYB3J",
+        "orderIndex": 0,
+        "phase": "comparison",
+        "root": "graph-fast-scale-8415c866-4faf-4a61-9dc5-8f1ce55cbc32",
+        "sample": 4
+      }
+    ],
+    "boundary": {
+      "account": "owner-qa-232a4df28f3d",
+      "comparisonOracleDuringMeasurement": false,
+      "mutableSessionCaching": false,
+      "ownerStorageReopenedPerInput": true,
+      "store": "myos-better-canonical-20261108-documents",
+      "transportCachesDisabled": true
+    }
+  }
+}

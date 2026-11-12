@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.contracts.OperationRequestTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.833Z" hostname="MacBook-Pro-5.local" time="0.008">
+  <properties />
+  <testcase name="[1] &quot;operation: ''&quot;" classname="blue.contracts.OperationRequestTest" time="0.001" />
+  <testcase name="[2] &quot;channel: ''&quot;" classname="blue.contracts.OperationRequestTest" time="0.0" />
+  <testcase name="[3] &quot;requireExactDocumentVersion: wrong&quot;" classname="blue.contracts.OperationRequestTest" time="0.0" />
+  <testcase name="[4] &quot;unexpected: 1&quot;" classname="blue.contracts.OperationRequestTest" time="0.0" />
+  <testcase name="recognizesPrivateTargetAndCustomRequestTypeWithoutOpeningASession()" classname="blue.contracts.OperationRequestTest" time="0.001" />
+  <testcase name="distinguishesOtherMessagesAndAllowsAnUnaddressedGrammarWithoutAuthorizingIt()" classname="blue.contracts.OperationRequestTest" time="0.0" />
+  <testcase name="unavailableOrForgedTargetEvidenceCannotBecomeAnAdmissionShortcut()" classname="blue.contracts.OperationRequestTest" time="0.0" />
+  <testcase name="recoveredValuesCanBeBorrowedWithoutGivingAnotherCallTheirAuthority()" classname="blue.contracts.OperationRequestTest" time="0.004" />
+  </testsuite>

@@ -1,0 +1,50 @@
+{
+  "name": "Payment",
+  "state": "pending",
+  "amount": 42,
+  "contracts": {
+    "PAYMENT_CHANNEL": {
+      "type": "Contracts/External Channel"
+    },
+    "settle": {
+      "type": "Contracts/Sequential Workflow Operation",
+      "channel": "PAYMENT_CHANNEL",
+      "steps": [
+        {
+          "type": "Contracts/Compute",
+          "do": [
+            {
+              "$failIf": {
+                "cond": {
+                  "$ne": [
+                    {
+                      "$document": "/state"
+                    },
+                    "pending"
+                  ]
+                },
+                "message": "Payment already settled"
+              }
+            },
+            {
+              "$appendChange": {
+                "op": "replace",
+                "path": "/state",
+                "val": "paid"
+              }
+            }
+          ]
+        },
+        {
+          "type": "Contracts/Trigger Event",
+          "event": {
+            "kind": "Payment Settled",
+            "amount": {
+              "$document": "/amount"
+            }
+          }
+        }
+      ]
+    }
+  }
+}

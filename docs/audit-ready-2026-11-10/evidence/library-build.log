@@ -1,0 +1,20 @@
+Calculating task graph as no cached configuration is available for tasks: check
+> Task :processBenchmarkResources NO-SOURCE
+> Task :processResources UP-TO-DATE
+> Task :processDemoResources
+> Task :processTestResources
+> Task :compileJava UP-TO-DATE
+> Task :classes UP-TO-DATE
+> Task :compileDemoJava FROM-CACHE
+> Task :demoClasses
+> Task :compileBenchmarkJava FROM-CACHE
+> Task :benchmarkClasses UP-TO-DATE
+> Task :compileTestJava FROM-CACHE
+> Task :testClasses
+> Task :checkFormat
+> Task :test
+> Task :check
+
+BUILD SUCCESSFUL in 1m 10s
+9 actionable tasks: 4 executed, 3 from cache, 2 up-to-date
+Configuration cache entry stored.

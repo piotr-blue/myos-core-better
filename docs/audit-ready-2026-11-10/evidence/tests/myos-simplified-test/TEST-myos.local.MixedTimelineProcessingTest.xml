@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.MixedTimelineProcessingTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:47.431Z" hostname="MacBook-Pro-5.local" time="0.483">
+  <properties />
+  <testcase name="externalOnlyOwnerDoesNotWaitForTheUnrelatedInternalClock()" classname="myos.local.MixedTimelineProcessingTest" time="0.041" />
+  <testcase name="crossProviderEqualTimestampsUseCanonicalIdentityOrderEvenWhenImportsArriveLast()" classname="myos.local.MixedTimelineProcessingTest" time="0.068" />
+  <testcase name="parentUsesHistoricalChildCoverageEvenAfterChildAddsANewUncoveredSource()" classname="myos.local.MixedTimelineProcessingTest" time="0.093" />
+  <testcase name="quietExternalSourceBlocksOnlyItsConsumersAndNoRefreshIsNeededWithinExistingCoverage()" classname="myos.local.MixedTimelineProcessingTest" time="0.062" />
+  <testcase name="fourMemberCycleWaitsForExternalCoverageThenUsesNativeAtomicRounds()" classname="myos.local.MixedTimelineProcessingTest" time="0.083" />
+  <testcase name="importedHistoryAndLocalHistoryReplayFromScratchWithIdenticalNativeStateAfterRestart()" classname="myos.local.MixedTimelineProcessingTest" time="0.134" />
+  </testsuite>

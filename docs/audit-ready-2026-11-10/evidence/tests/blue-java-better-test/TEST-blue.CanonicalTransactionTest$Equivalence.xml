@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.CanonicalTransactionTest$Equivalence" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:09.090Z" hostname="MacBook-Pro-5.local" time="0.494">
+  <properties />
+  <testcase name="budgetExhaustionRollsBackTheWholeGraph()" classname="blue.CanonicalTransactionTest$Equivalence" time="0.022" />
+  <testcase name="changingAnEmbeddingBreaksACycleWithoutChangingTheCanonicalResult()" classname="blue.CanonicalTransactionTest$Equivalence" time="0.044" />
+  <testcase name="[1] false" classname="blue.CanonicalTransactionTest$Equivalence" time="0.031" />
+  <testcase name="[2] true" classname="blue.CanonicalTransactionTest$Equivalence" time="0.026" />
+  <testcase name="[1] 1" classname="blue.CanonicalTransactionTest$Equivalence" time="0.024" />
+  <testcase name="[2] 2" classname="blue.CanonicalTransactionTest$Equivalence" time="0.037" />
+  <testcase name="[3] 3" classname="blue.CanonicalTransactionTest$Equivalence" time="0.053" />
+  <testcase name="[1] 1" classname="blue.CanonicalTransactionTest$Equivalence" time="0.029" />
+  <testcase name="[2] 5" classname="blue.CanonicalTransactionTest$Equivalence" time="0.048" />
+  <testcase name="[3] 16" classname="blue.CanonicalTransactionTest$Equivalence" time="0.129" />
+  <testcase name="nonTerminatingFeedbackExhaustsTheSameBudgetWithoutPartialPublication()" classname="blue.CanonicalTransactionTest$Equivalence" time="0.047" />
+  </testsuite>

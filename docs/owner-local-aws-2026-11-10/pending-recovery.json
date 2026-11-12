@@ -1,0 +1,11 @@
+{
+  "passed": true,
+  "version": 6,
+  "values": {
+    "payment": 210,
+    "order": 210,
+    "agreement": 210
+  },
+  "preservedPendingOriginal": true,
+  "newEntry": "6PGKARqZ7zUrdDNN2Uu4HfKy8w2STooZmtA8B8kYBHFo"
+}

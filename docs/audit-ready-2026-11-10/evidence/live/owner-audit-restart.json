@@ -1,0 +1,110 @@
+{
+  "passed": true,
+  "orders": 100,
+  "agreement": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+  "entry": "BkCzyDiXAnv41r8FwQgYPyvp7u2xzsP8Kr6cX2pTFn6y",
+  "beforeVersion": 6,
+  "afterVersion": 7,
+  "expectedTotal": 252,
+  "submitMillis": 1593.503082999998,
+  "parentObservedMillis": 5416.525832999998,
+  "result": {
+    "blueId": "GbLF3HMPcTAefTvmBuwQNJ5S9KjrHwyCGA6x3CDYHtH9",
+    "diagnostic": {},
+    "events": [],
+    "executionNanos": 172500505,
+    "gas": 224,
+    "identity": "sha256:34b8002e5eab38c6fd50935befe9e792907d3e76ebbdb51060423c432d11269d",
+    "receipt": "sha256:3fc868d9b22e74fc4f83fc7f228f1d811101d47501394a2bfaf7ba6c809e7587",
+    "status": "APPLIED",
+    "version": 7
+  },
+  "restartCommand": "883407ba-56bb-48f9-bf4f-166062478214",
+  "profileCommand": "c4242ac7-0c30-49bb-9f4b-aabc33f4d8d8",
+  "ownerPhases": [
+    {
+      "startTime": "2026-11-10T01:29:36.204039845Z",
+      "duration": "PT0.7007508S",
+      "eventThread": {
+        "osName": "pool-8-thread-1",
+        "osThreadId": 92459,
+        "javaName": "pool-8-thread-1",
+        "javaThreadId": 40,
+        "group": {
+          "parent": {
+            "parent": null,
+            "name": "system"
+          },
+          "name": "main"
+        },
+        "virtual": false
+      },
+      "stackTrace": null,
+      "owner": "graph-fast-2990aba049269d5ad98163241c2fd48f2b2e0a9c04ed9a7b",
+      "entry": "BkCzyDiXAnv41r8FwQgYPyvp7u2xzsP8Kr6cX2pTFn6y",
+      "status": "APPLIED",
+      "restoreNanos": "PT0.057617144S",
+      "admissionNanos": "PT0.233172442S",
+      "executionNanos": "PT0.131863565S",
+      "preparationNanos": "PT0.121202419S",
+      "commitNanos": "PT0.156222215S"
+    },
+    {
+      "startTime": "2026-11-10T01:29:36.979969790Z",
+      "duration": "PT0.300688257S",
+      "eventThread": {
+        "osName": "pool-8-thread-1",
+        "osThreadId": 92459,
+        "javaName": "pool-8-thread-1",
+        "javaThreadId": 40,
+        "group": {
+          "parent": {
+            "parent": null,
+            "name": "system"
+          },
+          "name": "main"
+        },
+        "virtual": false
+      },
+      "stackTrace": null,
+      "owner": "graph-fast-1a5c49cdf8e0c99ff1844d9dbded551c489929eda8ce297b",
+      "entry": "BkCzyDiXAnv41r8FwQgYPyvp7u2xzsP8Kr6cX2pTFn6y",
+      "status": "APPLIED",
+      "restoreNanos": "PT0.027536884S",
+      "admissionNanos": "PT0.041532751S",
+      "executionNanos": "PT0.053339362S",
+      "preparationNanos": "PT0.081291012S",
+      "commitNanos": "PT0.096897872S"
+    },
+    {
+      "startTime": "2026-11-10T01:29:37.342547817Z",
+      "duration": "PT0.441940104S",
+      "eventThread": {
+        "osName": "pool-8-thread-1",
+        "osThreadId": 92459,
+        "javaName": "pool-8-thread-1",
+        "javaThreadId": 40,
+        "group": {
+          "parent": {
+            "parent": null,
+            "name": "system"
+          },
+          "name": "main"
+        },
+        "virtual": false
+      },
+      "stackTrace": null,
+      "owner": "graph-fast-f6109efa58eebab8c821cbde5017a8660b2b6ea8188792a6",
+      "entry": "BkCzyDiXAnv41r8FwQgYPyvp7u2xzsP8Kr6cX2pTFn6y",
+      "status": "APPLIED",
+      "restoreNanos": "PT0.034485547S",
+      "admissionNanos": "PT0.038268658S",
+      "executionNanos": "PT0.099740743S",
+      "preparationNanos": "PT0.170917429S",
+      "commitNanos": "PT0.098457791S"
+    }
+  ],
+  "boundary": "First existing-graph operation after a whole-service restart; JFR profiling enabled; network and client polling included",
+  "profileOccurrenceCount": 6,
+  "duplicateExportCount": 3
+}

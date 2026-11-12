@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractExecutionTest" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:55.168Z" hostname="MacBook-Pro-5.local" time="0.081">
+  <properties />
+  <testcase name="frozenStateComponentsAreImmutableAndReuseTheExistingTopology()" classname="blue.ContractExecutionTest" time="0.003" />
+  <testcase name="[1] &quot;false&quot;, &quot;false&quot;, &quot;false&quot;" classname="blue.ContractExecutionTest" time="0.016" />
+  <testcase name="[2] &quot;false&quot;, &quot;true&quot;, &quot;false&quot;" classname="blue.ContractExecutionTest" time="0.008" />
+  <testcase name="[3] &quot;true&quot;, &quot;false&quot;, &quot;false&quot;" classname="blue.ContractExecutionTest" time="0.009" />
+  <testcase name="[4] &quot;true&quot;, &quot;true&quot;, &quot;false&quot;" classname="blue.ContractExecutionTest" time="0.008" />
+  <testcase name="[5] &quot;false&quot;, &quot;false&quot;, &quot;true&quot;" classname="blue.ContractExecutionTest" time="0.01" />
+  <testcase name="[6] &quot;false&quot;, &quot;true&quot;, &quot;true&quot;" classname="blue.ContractExecutionTest" time="0.007" />
+  <testcase name="[7] &quot;true&quot;, &quot;false&quot;, &quot;true&quot;" classname="blue.ContractExecutionTest" time="0.007" />
+  <testcase name="[8] &quot;true&quot;, &quot;true&quot;, &quot;true&quot;" classname="blue.ContractExecutionTest" time="0.008" />
+  <testcase name="durableSemanticFactsAreGoalScopedAndRevokedFromCapturedResolvers()" classname="blue.ContractExecutionTest" time="0.0" />
+  </testsuite>

@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineVerifierTest$OriginalContent" tests="10" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.111Z" hostname="MacBook-Pro-5.local" time="0.039">
+  <properties />
+  <testcase name="inheritedDomainMessageKeepsItsIdentityAndContextualConstraintsStillApply()" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.005" />
+  <testcase name="unvaluedMessageIsSuppliedWhileThePublishedPlaceholderIsNot()" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.003" />
+  <testcase name="validRequestsDoNotHideDistinctMalformedRequestsOrPublishAFailedRange()" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.004" />
+  <testcase name="certifiedPredecessorDoesNotDischargeAnAdditionalContextualConstraint()" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.004" />
+  <testcase name="repeatedRequestGrammarNeverSubstitutesForEntryOrMarkerValidation()" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.005" />
+  <testcase name="actorCategoriesAndOptionalSourceAreValidated()" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.005" />
+  <testcase name="operationMustBeTheSameCompleteRecognizedRequestAndUseContractsValidation()" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.006" />
+  <testcase name="[1] &quot;channel: ''\noperation: pay&quot;" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.003" />
+  <testcase name="[2] &quot;channel: external\noperation: ''&quot;" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.002" />
+  <testcase name="[3] &quot;channel: external\noperation: pay\nrequireExactDocumentVersion: true&quot;" classname="blue.coordination.TimelineVerifierTest$OriginalContent" time="0.002" />
+  </testsuite>

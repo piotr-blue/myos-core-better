@@ -1,0 +1,91 @@
+{
+  "release": "66d9d21516b6c2c1916d48a501a79860d33fb003b1cc0c961c70487f54cf9497",
+  "status": "PASS",
+  "boundary": "HTTPS operation submission through committed Agreement history for the exact entry; includes client network and polling",
+  "cases": [
+    {
+      "orders": 10,
+      "initializationMillis": 1704.789,
+      "samples": [
+        {
+          "sample": 0,
+          "submitMillis": 397.94620800000047,
+          "parentObservedMillis": 1854.058166999998,
+          "rootExecutionMillis": 52.753812,
+          "rootGas": 124,
+          "status": "APPLIED",
+          "entry": "HjRUpeCdfM3NoNSh9g2QVgTTPTYBXfsG6z8rom8cYAGJ",
+          "parentVersion": 2,
+          "receipt": "sha256:3abe3bf5f2f61d15eafbea58c89cbceba561c23751f16fe5d4e910d9fd0e483c"
+        },
+        {
+          "sample": 1,
+          "submitMillis": 320.7059580000014,
+          "parentObservedMillis": 1465.1576659999996,
+          "rootExecutionMillis": 27.841884,
+          "rootGas": 124,
+          "status": "APPLIED",
+          "entry": "AbYgX8KvnCNJH498wbWA9jRmBBd7fTU9T21HXtHjrAjp",
+          "parentVersion": 3,
+          "receipt": "sha256:2ac3a62a20912cd0309de68ad166699d1c0604c2cf6a79adb80d64f6c0490e45"
+        },
+        {
+          "sample": 2,
+          "submitMillis": 313.40687500000183,
+          "parentObservedMillis": 1540.993083,
+          "rootExecutionMillis": 21.220032,
+          "rootGas": 124,
+          "status": "APPLIED",
+          "entry": "HPZbSWSMnhKa5teJxT6dZJ5j3wUgiQK3sTe7CTYWeHQc",
+          "parentVersion": 4,
+          "receipt": "sha256:b883506b794c1fd357417f1b4b25c200ea135e7fdbad0012dee50edc4b1ed49a"
+        }
+      ],
+      "medianObservedMillis": 1540.993083,
+      "medianRootExecutionMillis": 27.841884,
+      "exactEntryAndAllThreeBusinessTotals": true
+    },
+    {
+      "orders": 100,
+      "initializationMillis": 4093.693667,
+      "samples": [
+        {
+          "sample": 0,
+          "submitMillis": 305.2641249999972,
+          "parentObservedMillis": 1524.5418750000006,
+          "rootExecutionMillis": 25.905111,
+          "rootGas": 124,
+          "status": "APPLIED",
+          "entry": "J1xAjHdDHg3GvfWbTShRMRuCmJ7a14g9NtCMR2VwcD9i",
+          "parentVersion": 2,
+          "receipt": "sha256:036029cd713150bd04a96787da39a654c700f7c9fa51581fbe9715ff9d1429ee"
+        },
+        {
+          "sample": 1,
+          "submitMillis": 293.79341599999975,
+          "parentObservedMillis": 1542.1908329999994,
+          "rootExecutionMillis": 21.108101,
+          "rootGas": 124,
+          "status": "APPLIED",
+          "entry": "5DfZsaGkWdDVYjkeeLZ5mskwU39EVHEFA4DY4wTDarSF",
+          "parentVersion": 3,
+          "receipt": "sha256:43acfb8edd3c072ddf61c3535801b5e67dfbb5438d63eff542e085bcff69d368"
+        },
+        {
+          "sample": 2,
+          "submitMillis": 344.1804160000004,
+          "parentObservedMillis": 1535.064124999998,
+          "rootExecutionMillis": 26.697427,
+          "rootGas": 124,
+          "status": "APPLIED",
+          "entry": "6nXfRm5HfPYgqgMefLVduMz7rXeGf9rJz2xtfRhWPgrV",
+          "parentVersion": 4,
+          "receipt": "sha256:fe162a67e781fad01e457297ab8eb869d995f6b3ddfd7234a678e0a7dbd3a6b1"
+        }
+      ],
+      "medianObservedMillis": 1535.064124999998,
+      "medianRootExecutionMillis": 25.905111,
+      "exactEntryAndAllThreeBusinessTotals": true
+    }
+  ]
+}

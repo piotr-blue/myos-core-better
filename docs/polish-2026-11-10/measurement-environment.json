@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-10",
+  "machine": "macOS-26.6.2-arm64-arm-64bit",
+  "javaHome": "/Library/Java/JavaVirtualMachines/jdk-25.jdk/Contents/Home",
+  "samplesPerSize": 7,
+  "sizes": [
+    10,
+    1000
+  ],
+  "measurement": "append through durable parent commit",
+  "restart": "SQLite application reopened before each call; JVM and immutable packages shared",
+  "oracle": "whole graph outside timing; root BlueId, gas and ordered events",
+  "jarSha256": {
+    "original": {
+      "blue-java-better-0.1.0-SNAPSHOT.jar": "cf05f188e18c51a97e22f6f9b097916712c2b883cf35c4b98e913ab5c4e915df"
+    },
+    "candidate": {
+      "blue-java-better-0.1.0-SNAPSHOT.jar": "0db6f732831bb215b5ccf6ded7950208e67dcc6dc9697e60dfabcb5f4b3a46d0"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelinePublisherTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:06.311Z" hostname="MacBook-Pro-5.local" time="0.111">
+  <properties />
+  <testcase name="preparedEntriesReuseTheExactRetainedTargetWithoutTeachingOrdinaryAdmission()" classname="blue.coordination.TimelinePublisherTest" time="0.003" />
+  <testcase name="messageValidationReusesOnlyThisPublishersVerifiedImmutableContent()" classname="blue.coordination.TimelinePublisherTest" time="0.002" />
+  <testcase name="admittedValuesProvideBoundedSchemaEvidenceButDefinitionsAndEditsDoNot()" classname="blue.coordination.TimelinePublisherTest" time="0.002" />
+  </testsuite>

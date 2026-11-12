@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.CanonicalAgreementTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:06.997Z" hostname="MacBook-Pro-5.local" time="0.289">
+  <properties />
+  <testcase name="failedBusinessValidationRollsBackTheWholeInvocationAndPublishesNoEvents()" classname="blue.CanonicalAgreementTest" time="0.019" />
+  <testcase name="independentSessionsShareOnlyImmutableConfiguration()" classname="blue.CanonicalAgreementTest" time="0.046" />
+  <testcase name="[1] 1" classname="blue.CanonicalAgreementTest" time="0.019" />
+  <testcase name="[2] 5" classname="blue.CanonicalAgreementTest" time="0.038" />
+  <testcase name="[3] 16" classname="blue.CanonicalAgreementTest" time="0.115" />
+  <testcase name="opensAnAdmittedLanguageDocumentWithItsVerifiedDependencies()" classname="blue.CanonicalAgreementTest" time="0.009" />
+  <testcase name="closedSessionsRejectFurtherWorkButPreviouslyReturnedDocumentsRemainUsable()" classname="blue.CanonicalAgreementTest" time="0.008" />
+  <testcase name="coldRestoreAndWarmExecutionHaveIdenticalReceiptsAndGas()" classname="blue.CanonicalAgreementTest" time="0.03" />
+  </testsuite>

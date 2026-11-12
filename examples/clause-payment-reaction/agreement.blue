@@ -1,0 +1,348 @@
+name: Clause-only payment reactions · AWS walkthrough · 11 Nov 2026
+type: Agreements/Agreement with Clauses
+description: Acknowledged Payment → paid Order → Agreement summary. Two shared participant Timelines.
+orders: {}
+clauses:
+  activation:
+    type: Activation/Activation Clause
+    parameters:
+      parties:
+        customer:
+          type: Parties/Party
+          displayName: Customer
+        seller:
+          type: Parties/Party
+          displayName: Seller
+      required: []
+  orders:
+    type: IncrementalDocuments/Documents Clause
+    parameters:
+      obtain: create
+      fieldPaths:
+        readerAccess: /timelineReadAccess
+        orderId: /orderId
+      template:
+        name: Supply Order
+        type: Orders/Order with Clauses
+        timelineReadAccess:
+          type: Dictionary
+        clauses:
+          activation:
+            type: Activation/Activation Clause
+            parameters:
+              parties:
+                buyer:
+                  type: Parties/Party
+                supplier:
+                  type: Parties/Party
+              required: []
+          payment:
+            type: Payment/Payment Clause
+            parameters:
+              obtain: create
+              fieldPaths:
+                readerAccess: /timelineReadAccess
+              template:
+                name: Manual payment for the Order
+                type: ManualPayments/Manual Receipt Instruction
+                timelineReadAccess:
+                  type: Dictionary
+                clauses:
+                  activation:
+                    type: Activation/Activation Clause
+                    parameters:
+                      parties:
+                        payer:
+                          type: Parties/Party
+                        payee:
+                          type: Parties/Party
+                        guarantor:
+                          type: Parties/Party
+                      required: []
+                paymentTerms:
+                  amountMinor: 200
+                  limitMinor: 200
+                  currency: EUR
+                  payerChannel: payer
+                  payeeChannel: payee
+                  guarantorChannel: guarantor
+                  allowedPayees:
+                    - payee
+                  recipientApprovalRequired: false
+            bindings:
+              instruction: /payment
+              parties:
+                payer: buyer
+                payee: supplier
+                guarantor: supplier
+              prepare:
+                preparePayment:
+                  on: workflow
+                  party: buyer
+                  params:
+                    values:
+                      readerAccess:
+                        $document: /timelineReadAccess
+          receiptReaction:
+            type:
+              name: Order Receipt Reaction Clause
+              type: clause-connections/Connected Clause
+              actions:
+                record:
+                  do:
+                    - $failIf:
+                        cond:
+                          $ne:
+                            - $var:
+                                name: trigger
+                                path: /amountMinor
+                            - $document: /payment/paymentTerms/amountMinor
+                        message: Receipt amount differs from payment terms
+                    - $failIf:
+                        cond:
+                          $ne:
+                            - $document: /payment/payment/completed
+                            - $var:
+                                name: trigger
+                                path: /amountMinor
+                        message: Payment is not completed for this amount
+                    - $failIf:
+                        cond:
+                          $ne:
+                            - $document: /payment/paymentTerms/currency
+                            - $document: /currency
+                        message: Payment currency differs from order
+                    - $if:
+                        cond:
+                          $eq:
+                            - $document: /lastPaymentRequestId
+                            - $var:
+                                name: trigger
+                                path: /requestId
+                        then:
+                          - $return: {}
+                    - $failIf:
+                        cond:
+                          $ne:
+                            - $document: /paidTotal
+                            - 0
+                        message: Order already credited by another receipt
+                    - $appendChange:
+                        op: replace
+                        path: /paidTotal
+                        val:
+                          $var:
+                            name: trigger
+                            path: /amountMinor
+                    - $appendChange:
+                        op: replace
+                        path: /paymentStatus
+                        val: paid
+                    - $appendChange:
+                        op: replace
+                        path: /lastPaymentRequestId
+                        val:
+                          $var:
+                            name: trigger
+                            path: /requestId
+                    - $appendEvent:
+                        kind: Order Payment Recorded
+                        orderId:
+                          $document: /orderId
+                        requestId:
+                          $var:
+                            name: trigger
+                            path: /requestId
+                        amountMinor:
+                          $var:
+                            name: trigger
+                            path: /amountMinor
+                        currency:
+                          $document: /currency
+            bindings:
+              record:
+                received:
+                  on: embedded
+                  path: /payment
+                  embed: false
+                  event:
+                    type: PaymentInstruction/Payment Event
+                    kind: Manual Receipt Acknowledged
+        orderId:
+          type: Text
+        paidTotal: 0
+        paymentStatus: unpaid
+        lastPaymentRequestId: ""
+        currency: EUR
+    bindings:
+      collection: /orders
+      parties:
+        buyer: customer
+        supplier: seller
+      prepare:
+        placeOrder:
+          on: workflow
+          party: customer
+          params:
+            key:
+              $var:
+                name: trigger
+                path: /orderId
+            values:
+              readerAccess:
+                $document: /timelineReadAccess
+              orderId:
+                $var:
+                  name: trigger
+                  path: /orderId
+  orderReaction:
+    type:
+      name: Agreement Order Reaction Clause
+      type: clause-connections/Connected Clause
+      actions:
+        record:
+          do:
+            - $let:
+                name: escapedOrderId
+                expr:
+                  $join:
+                    separator: ~1
+                    list:
+                      $split:
+                        separator: /
+                        text:
+                          $join:
+                            separator: ~0
+                            list:
+                              $split:
+                                separator: "~"
+                                text:
+                                  $var:
+                                    name: trigger
+                                    path: /orderId
+            - $let:
+                name: orderPath
+                expr:
+                  $concat:
+                    - /orders/
+                    - $var: escapedOrderId
+            - $let:
+                name: summaryPath
+                expr:
+                  $concat:
+                    - /paidOrders/
+                    - $var: escapedOrderId
+            - $failIf:
+                cond:
+                  $ne:
+                    - $event: /sourcePath
+                    - $var: orderPath
+                message: Order event source does not match orderId
+            - $failIf:
+                cond:
+                  $ne:
+                    - $var:
+                        name: trigger
+                        path: /currency
+                    - $document: /currency
+                message: Order currency differs from agreement
+            - $failIf:
+                cond:
+                  $ne:
+                    - $document:
+                        $concat:
+                          - $var: orderPath
+                          - /paidTotal
+                    - $var:
+                        name: trigger
+                        path: /amountMinor
+                message: Order paid total does not match event
+            - $if:
+                cond:
+                  $exists:
+                    $document:
+                      $var: summaryPath
+                then:
+                  - $return: {}
+            - $let:
+                name: nextTotal
+                expr:
+                  $add:
+                    - $document: /paidTotal
+                    - $var:
+                        name: trigger
+                        path: /amountMinor
+            - $let:
+                name: nextCount
+                expr:
+                  $add:
+                    - $document: /paidOrderCount
+                    - 1
+            - $appendChange:
+                op: add
+                path:
+                  $var: summaryPath
+                val:
+                  requestId:
+                    $var:
+                      name: trigger
+                      path: /requestId
+                  amountMinor:
+                    $var:
+                      name: trigger
+                      path: /amountMinor
+                  currency:
+                    $var:
+                      name: trigger
+                      path: /currency
+                  status: paid
+            - $appendChange:
+                op: replace
+                path: /paidTotal
+                val:
+                  $var: nextTotal
+            - $appendChange:
+                op: replace
+                path: /paidOrderCount
+                val:
+                  $var: nextCount
+            - $appendChange:
+                op: replace
+                path: /lastPaidOrder
+                val:
+                  $var:
+                    name: trigger
+                    path: /orderId
+            - $appendEvent:
+                kind: Agreement Payment Recorded
+                orderId:
+                  $var:
+                    name: trigger
+                    path: /orderId
+                requestId:
+                  $var:
+                    name: trigger
+                    path: /requestId
+                amountMinor:
+                  $var:
+                    name: trigger
+                    path: /amountMinor
+                currency:
+                  $document: /currency
+                paidTotal:
+                  $var: nextTotal
+                paidOrderCount:
+                  $var: nextCount
+    bindings:
+      record:
+        received:
+          on: collection
+          path: /orders
+          embed: false
+          event:
+            kind: Order Payment Recorded
+paidTotal: 0
+paidOrderCount: 0
+paidOrders: {}
+currency: EUR
+lastPaidOrder: ""

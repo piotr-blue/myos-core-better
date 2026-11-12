@@ -1,0 +1,100 @@
+name: Incremental counter event growth benchmark
+type: Agreements/Agreement with Clauses
+description: Child counter events update the root; all children reuse the owner's Timeline.
+children: {}
+stats:
+  added: 0
+  total: 0
+  lastAdded: ""
+  lastChild: ""
+  lastProbe: ""
+clauses:
+  activation:
+    type: Activation/Activation Clause
+    parameters:
+      parties:
+        owner: {type: Parties/Party, displayName: Owner}
+      required: []
+  children:
+    type: IncrementalDocuments/Documents Clause
+    parameters:
+      obtain: create
+      fieldPaths:
+        readerAccess: /timelineReadAccess
+        childId: /childId
+      template:
+        name: Event counter
+        type: Agreements/Agreement with Clauses
+        childId: {type: Text}
+        count: 0
+        timelineReadAccess: {type: Dictionary}
+        clauses:
+          activation:
+            type: Activation/Activation Clause
+            parameters:
+              parties:
+                operator: {type: Parties/Party}
+              required: []
+        contracts:
+          increment:
+            type: Contracts/Sequential Workflow Operation
+            channel: operator
+            steps:
+              - type: Contracts/Compute
+                do:
+                  - $appendChange:
+                      op: replace
+                      path: /count
+                      val: {$add: [{$document: /count}, 1]}
+              - type: Contracts/Trigger Event
+                event:
+                  kind: Benchmark Counter Incremented
+                  childId: {$document: /childId}
+                  count: {$document: /count}
+                  delta: 1
+                  probeId: {$binding: call/request/probeId}
+    bindings:
+      collection: /children
+      parties: {operator: owner}
+      prepare:
+        createChild:
+          'on': workflow
+          party: owner
+          params:
+            key: {$var: {name: trigger, path: /childId}}
+            values:
+              readerAccess: {$document: /timelineReadAccess}
+              childId: {$var: {name: trigger, path: /childId}}
+          after:
+            - $appendChange:
+                op: replace
+                path: /stats/added
+                val: {$add: [{$document: /stats/added}, 1]}
+            - $appendChange:
+                op: replace
+                path: /stats/lastAdded
+                val: {$var: {name: trigger, path: /childId}}
+contracts:
+  childIncrement:
+    type: Contracts/Embedded Node Channel
+    event: {kind: Benchmark Counter Incremented}
+  recordIncrement:
+    type: Contracts/Sequential Workflow
+    channel: childIncrement
+    steps:
+      - type: Contracts/Update Document
+        changeset:
+          - op: replace
+            path: /stats/total
+            val: {$add: [{$document: /stats/total}, {$event: /event/delta}]}
+          - op: replace
+            path: /stats/lastChild
+            val: {$event: /event/childId}
+          - op: replace
+            path: /stats/lastProbe
+            val: {$event: /event/probeId}
+      - type: Contracts/Trigger Event
+        event:
+          kind: Benchmark Root Updated
+          total: {$document: /stats/total}
+          probeId: {$event: /event/probeId}

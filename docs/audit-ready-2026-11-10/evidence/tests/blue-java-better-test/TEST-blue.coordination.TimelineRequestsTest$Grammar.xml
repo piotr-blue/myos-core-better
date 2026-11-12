@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineRequestsTest$Grammar" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:09.793Z" hostname="MacBook-Pro-5.local" time="0.007">
+  <properties />
+  <testcase name="[1] &quot;limit: -1&quot;" classname="blue.coordination.TimelineRequestsTest$Grammar" time="0.0" />
+  <testcase name="[2] &quot;limit: 11&quot;" classname="blue.coordination.TimelineRequestsTest$Grammar" time="0.0" />
+  <testcase name="[3] &quot;limit: 0\nafterTimestamp: -1&quot;" classname="blue.coordination.TimelineRequestsTest$Grammar" time="0.0" />
+  <testcase name="[4] &quot;limit: 2\nafterTimestamp: -2&quot;" classname="blue.coordination.TimelineRequestsTest$Grammar" time="0.0" />
+  <testcase name="[5] &quot;limit: 2\nafterTimestamp: 9007199254740991&quot;" classname="blue.coordination.TimelineRequestsTest$Grammar" time="0.0" />
+  <testcase name="[6] &quot;limit: 1\nminimumCompleteBefore: 9007199254740992&quot;" classname="blue.coordination.TimelineRequestsTest$Grammar" time="0.0" />
+  <testcase name="[7] &quot;limit: 2\nnonce: x&quot;" classname="blue.coordination.TimelineRequestsTest$Grammar" time="0.0" />
+  <testcase name="[8] &quot;limit: 2\nrequestId: x&quot;" classname="blue.coordination.TimelineRequestsTest$Grammar" time="0.0" />
+  <testcase name="selectorsAreExclusiveAndCannotChangeAnExistingCheckpointBound()" classname="blue.coordination.TimelineRequestsTest$Grammar" time="0.0" />
+  </testsuite>

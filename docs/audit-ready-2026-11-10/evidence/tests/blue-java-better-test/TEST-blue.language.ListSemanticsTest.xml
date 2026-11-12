@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.ListSemanticsTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.483Z" hostname="MacBook-Pro-5.local" time="0.005">
+  <properties />
+  <testcase name="removingListElementByThreeRoutesHasSameCanonicalForm()" classname="blue.language.ListSemanticsTest" time="0.001" />
+  <testcase name="positionalListsSupportPresentationEditsAndNestedRefinement()" classname="blue.language.ListSemanticsTest" time="0.0" />
+  <testcase name="collapsedListsKeepTheSameEditingPathsAndRejectInvalidIndices()" classname="blue.language.ListSemanticsTest" time="0.001" />
+  <testcase name="exactListEditsDoNotReplaySourceConstructionOrChangeUneditedIds()" classname="blue.language.ListSemanticsTest" time="0.001" />
+  <testcase name="appendOnlyListsCompileOnceAndCompactWireDoesNotAppendAgain()" classname="blue.language.ListSemanticsTest" time="0.0" />
+  <testcase name="listFoldUsesPayloadIdentityAndWorksWithoutFetchingPrefix()" classname="blue.language.ListSemanticsTest" time="0.0" />
+  <testcase name="exportedEvidenceCanRebuildInheritedListsInAnIndependentEngine()" classname="blue.language.ListSemanticsTest" time="0.001" />
+  <testcase name="typedListsAndDictionariesRejectIncompatiblePayloads()" classname="blue.language.ListSemanticsTest" time="0.001" />
+  </testsuite>

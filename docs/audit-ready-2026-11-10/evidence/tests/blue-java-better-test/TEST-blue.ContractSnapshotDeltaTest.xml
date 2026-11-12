@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractSnapshotDeltaTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:58.780Z" hostname="MacBook-Pro-5.local" time="0.015">
+  <properties />
+  <testcase name="claimingRetentionWithoutSupplyingItStillFailsVerification()" classname="blue.ContractSnapshotDeltaTest" time="0.003" />
+  <testcase name="retainedContentAndDeltaRestoreTheSamePortableSnapshotAndNextResult()" classname="blue.ContractSnapshotDeltaTest" time="0.012" />
+  </testsuite>

@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.packages.PackageEvidenceTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.605Z" hostname="MacBook-Pro-5.local" time="0.057">
+  <properties />
+  <testcase name="invalid version=&quot;01.0.0&quot;" classname="blue.packages.PackageEvidenceTest" time="0.005" />
+  <testcase name="invalid version=&quot;1.0.0-01&quot;" classname="blue.packages.PackageEvidenceTest" time="0.005" />
+  <testcase name="invalid version=&quot;1.0.0-a..b&quot;" classname="blue.packages.PackageEvidenceTest" time="0.004" />
+  <testcase name="invalid version=&quot;1.0.0+build&quot;" classname="blue.packages.PackageEvidenceTest" time="0.004" />
+  <testcase name="anInlineChildCannotHideAForgedSeparateRecord()" classname="blue.packages.PackageEvidenceTest" time="0.003" />
+  <testcase name="tampered claim=&quot;witness&quot;" classname="blue.packages.PackageEvidenceTest" time="0.004" />
+  <testcase name="tampered claim=&quot;root&quot;" classname="blue.packages.PackageEvidenceTest" time="0.003" />
+  <testcase name="tampered claim=&quot;repository&quot;" classname="blue.packages.PackageEvidenceTest" time="0.004" />
+  <testcase name="tampered claim=&quot;documentation&quot;" classname="blue.packages.PackageEvidenceTest" time="0.004" />
+  <testcase name="tampered claim=&quot;audit&quot;" classname="blue.packages.PackageEvidenceTest" time="0.004" />
+  <testcase name="tampered claim=&quot;extra-record&quot;" classname="blue.packages.PackageEvidenceTest" time="0.004" />
+  <testcase name="tampered claim=&quot;extra-witness&quot;" classname="blue.packages.PackageEvidenceTest" time="0.003" />
+  <testcase name="tampered claim=&quot;profile&quot;" classname="blue.packages.PackageEvidenceTest" time="0.002" />
+  <testcase name="suppliedCoreRecordsCannotBypassVerificationThroughTheBuiltinRegistry()" classname="blue.packages.PackageEvidenceTest" time="0.004" />
+  <testcase name="missingEvidenceIsIncompleteAndNeverBecomesASuccessfulPackage()" classname="blue.packages.PackageEvidenceTest" time="0.002" />
+  </testsuite>

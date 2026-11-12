@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineExecutionTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:49.035Z" hostname="MacBook-Pro-5.local" time="0.245">
+  <properties />
+  <testcase name="alteredPayloadTimestampOrReceiverCannotConsumeTheSelection()" classname="myos.better.TimelineExecutionTest" time="0.021" />
+  <testcase name="authorizedWorkflowFailureIsConsumedWithoutBusinessEffects()" classname="myos.better.TimelineExecutionTest" time="0.017" />
+  <testcase name="aLostTransactionResponseRecoversBothSourceAndBusinessPublication()" classname="myos.better.TimelineExecutionTest" time="0.021" />
+  <testcase name="twoHostsCannotCommitTheSameOccurrenceUnderDifferentCommands()" classname="myos.better.TimelineExecutionTest" time="0.039" />
+  <testcase name="workflowsReadTheOriginalMessageEvenWhenAcquisitionHasAlreadyAdvanced()" classname="myos.better.TimelineExecutionTest" time="0.03" />
+  <testcase name="validationCacheEvictionKeepsOriginalContentAndOrdinaryExecutionAvailable()" classname="myos.better.TimelineExecutionTest" time="0.062" />
+  <testcase name="sourceAuthenticationDoesNotReplaceNativeBusinessAdmission()" classname="myos.better.TimelineExecutionTest" time="0.022" />
+  <testcase name="originalEntriesExecuteOnceAndProgressRestoresWithTheBusinessResult()" classname="myos.better.TimelineExecutionTest" time="0.032" />
+  </testsuite>

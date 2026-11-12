@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreImagesHttpTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:40.117Z" hostname="MacBook-Pro-5.local" time="0.285">
+  <properties />
+  <testcase name="malformedPartsInvalidRevisionsAndUnsupportedImagesAreBounded()" classname="myos.better.CoreImagesHttpTest" time="0.044" />
+  <testcase name="sessionCookieUploadConditionalGetHeadAndDeletionFollowCore()" classname="myos.better.CoreImagesHttpTest" time="0.224" />
+  <testcase name="workspaceLogoKeepsUserAvatarSeparateAndRejectsForeignMembership()" classname="myos.better.CoreImagesHttpTest" time="0.017" />
+  </testsuite>

@@ -1,0 +1,66 @@
+{
+  "blue-java-better/src/test/java/blue/coordination/TimelineVerifierTest.java": {
+    "before": "1bded46edd685d8bedd670d0e94a7538be7f71c00f6b0b4b054fdd30ceb0ca98",
+    "after": "47a43b4820bd396f73b3d5ee8eb11886713a753d9323226078720c033b953336"
+  },
+  "blue-java-better/src/main/java/blue/Contracts.java": {
+    "before": "561be7080a96831bcc49667d5868c48b20e58bcab545a693a2213b2dda42c9bc",
+    "after": "da3fdd29f22cb793134375ce2f6ac1f439160794dd03d59c54442128c8daa26e"
+  },
+  "blue-java-better/src/main/java/blue/ContractReception.java": {
+    "before": "5aa3f5b0c871ae4018f248e26f892923c7527f48958997fb8784b761d802e0aa",
+    "after": "fd94a9649f66f5982edbf392c78c3db5dcdbff999433561b908f6ad6e9aa2181"
+  },
+  "blue-java-better/src/main/java/blue/ContractLanguage.java": {
+    "before": "92ceb6f3c70b23c3fcaf7ecd9fe63eb2e527a1c2068db5c0174a0a321d9ba402",
+    "after": "b7b557625b44050bf9e8248d40eb18a2243d1ef35699d0a42afc28f06d12a29b"
+  },
+  "myos-aws-test-better/src/test/java/myos/better/CanonicalSnapshotsTest.java": {
+    "before": "eb0365f9bbc5c77b5715d8523e40c695788dc74af89df92bddd3717156b8d3db",
+    "after": "ae2be7c1b009e49ea917c76935760f6e259273b6719ed75e4f7067651f113037"
+  },
+  "myos-aws-test-better/src/test/java/myos/better/OwnerFrontiersTest.java": {
+    "before": "17bc9bbf7eda4fd06261999e55633263bb2451d32f5708f94d176cfe1ce5523a",
+    "after": "38d58ec278784bd98b434f17bc6c1c32b356772c07064dab0373ce352e8a4945"
+  },
+  "myos-aws-test-better/src/test/java/myos/better/OrderedIndexTest.java": {
+    "before": "08e666362c5857f5c8f8cf2208beab5c98ef976f31b09d9609d6b9ac10867280",
+    "after": "48b63b61a3cfbc212dde61ba201058cf8d91e39cc0714246ef6318956a3381fb"
+  },
+  "myos-aws-test-better/src/main/java/myos/better/GraphTimelineIngress.java": {
+    "before": "aa55edcde31ab9d7a68de0edbc7dc1c24996c7cb1aab987b1fadedcb6af2ad09",
+    "after": "8959afd935abe5b2d463935f6c63e8b933e52256d9621f152ebeec7b47fe1328"
+  },
+  "myos-aws-test-better/src/main/java/myos/better/CanonicalSnapshots.java": {
+    "before": "be0a34e6396a70b6451a20fcab3d95e568b1ec5b8497dea2d45ecb9205e164b3",
+    "after": "1e55c99245b6fed0c5f4fdc3d5c547f3fc7d6774b37e138fb140400ce3ecdb6d"
+  },
+  "myos-aws-test-better/src/main/java/myos/better/HostPhaseEvent.java": {
+    "before": "72caa04040eb37263724381b1af460944ba1aa32c8df3c7380bb8574f35266a9",
+    "after": "ddd1a1d1d38b15a902a05efde7c1d2716cda6ca054675206b24f3437c609e76e"
+  },
+  "myos-aws-test-better/src/main/java/myos/better/OwnerLocal.java": {
+    "before": "81fb0d64711f0bfebf5fe411f6df811753c248ed8ad8ed29cdc7bbcfe353b50c",
+    "after": "7cb03ae35fc443dd7fef2c0a1d43ee802a10e9e74b6c78fe1a53dffe0bd4bcf0"
+  },
+  "myos-aws-test-better/src/main/java/myos/better/OwnerGraphs.java": {
+    "before": "cc0c867d05d436a8980f2455dd65fe18f2e6a094e5914f4e8d0af2bb256bf66e",
+    "after": "709159d47c864769ea588c5cf4d4fd2fc9aa52b80aca5495563c299bcd76e81d"
+  },
+  "myos-aws-test-better/src/main/java/myos/better/OwnerFrontiers.java": {
+    "before": "5b474b7735675385f891373700fd959de2b0a656866de62f221c76ffd0f28caf",
+    "after": "ee4d3cbba5e6755a2bf4181b7c5ed67f7ccbc7d31406a19d3d18633b9defb119"
+  },
+  "myos-aws-test-better/src/main/java/myos/better/OrderedIndex.java": {
+    "before": "d2fda2a5682bb683ba0aa182db84c3350c670ee7cc597b28949efbe7022dc54d",
+    "after": "3623b0948d60cfc10f2feda27831c5e62ac592e53b440e02d8b71e978af98f28"
+  },
+  "myos-aws-test-better/src/qualification/java/myos/better/ClauseWorkflowProbe.java": {
+    "before": "e8f8c9ccccf317f1f673a2afcdec37dcf5b249426336e4c04fdb14cb902a1ade",
+    "after": "d45fd5fa73b325bd60a07a6ca777181ad63fb14004de2025ccde1419f8883d41"
+  },
+  "myos-aws-test-better/src/test/java/myos/better/OwnerGraphsTest.java": {
+    "before": "5486798e23360439a3264ecedaffb2ea55a0a129aebe94dd64e5e8dd66788d6c",
+    "after": "153a6e538a034e31543e97a467d8023a96863b764d11d3e4e79a040d20ef5ae2"
+  }
+}

@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.packages.PackageArchiveTest" tests="25" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.490Z" hostname="MacBook-Pro-5.local" time="0.087">
+  <properties />
+  <testcase name="enforcesEveryTransportBoundAndLanguageWorkBound()" classname="blue.packages.PackageArchiveTest" time="0.004" />
+  <testcase name="[1] &quot;readme.MD&quot;" classname="blue.packages.PackageArchiveTest" time="0.008" />
+  <testcase name="[2] &quot;docs/STRASSE.md&quot;" classname="blue.packages.PackageArchiveTest" time="0.004" />
+  <testcase name="[3] &quot;docs/σ.md&quot;" classname="blue.packages.PackageArchiveTest" time="0.004" />
+  <testcase name="[1] &quot;../bad.md&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[2] &quot;/bad.md&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[3] &quot;docs/../bad.md&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[4] &quot;docs//bad.md&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[5] &quot;docs/a:b.md&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[6] &quot;docs/a\\b.md&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[7] &quot;docs/é.md&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[8] &quot;payload.exe&quot;" classname="blue.packages.PackageArchiveTest" time="0.004" />
+  <testcase name="[9] &quot;docs/bad.txt&quot;" classname="blue.packages.PackageArchiveTest" time="0.002" />
+  <testcase name="[1] &quot;utf8&quot;" classname="blue.packages.PackageArchiveTest" time="0.004" />
+  <testcase name="[2] &quot;bom&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[3] &quot;crlf&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[4] &quot;json&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[5] &quot;duplicate-json-key&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[6] &quot;truncated&quot;" classname="blue.packages.PackageArchiveTest" time="0.002" />
+  <testcase name="[7] &quot;executable&quot;" classname="blue.packages.PackageArchiveTest" time="0.002" />
+  <testcase name="[8] &quot;symlink&quot;" classname="blue.packages.PackageArchiveTest" time="0.002" />
+  <testcase name="[9] &quot;local-name&quot;" classname="blue.packages.PackageArchiveTest" time="0.002" />
+  <testcase name="[10] &quot;local-method&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="[11] &quot;encrypted&quot;" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  <testcase name="rejectsSymlinksForArchivesAndDirectoryMembers()" classname="blue.packages.PackageArchiveTest" time="0.003" />
+  </testsuite>

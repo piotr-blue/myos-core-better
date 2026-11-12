@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.HttpApiTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:46.908Z" hostname="MacBook-Pro-5.local" time="0.186">
+  <properties />
+  <testcase name="timelineDocumentOperationAndHistoryWorkThroughHttp()" classname="myos.local.HttpApiTest" time="0.135" />
+  <testcase name="externalImportAndSelectedEvidenceAreAvailableThroughHttp()" classname="myos.local.HttpApiTest" time="0.05" />
+  </testsuite>

@@ -1,0 +1,1247 @@
+[
+  {
+    "orders": 10,
+    "measurement": {
+      "sample": 0,
+      "openMillis": 4.286333,
+      "appendMillis": 16.681375,
+      "drainMillis": 53.250042,
+      "appendThroughCommitMillis": 69.931417,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 1,
+          "restore_ns": 1098209,
+          "execution_ns": 6814250,
+          "prepare_ns": 933083,
+          "engine_nanos": 7912459
+        },
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 1,
+          "restore_ns": 1901292,
+          "execution_ns": 18115250,
+          "prepare_ns": 1738166,
+          "engine_nanos": 20016542
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 1,
+          "restore_ns": 1231375,
+          "execution_ns": 7333166,
+          "prepare_ns": 988792,
+          "engine_nanos": 8564541
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 1,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 1,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 1,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 10,
+    "measurement": {
+      "sample": 1,
+      "openMillis": 3.389625,
+      "appendMillis": 6.009,
+      "drainMillis": 34.750833,
+      "appendThroughCommitMillis": 40.759833,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 2,
+          "restore_ns": 953584,
+          "execution_ns": 6165041,
+          "prepare_ns": 878542,
+          "engine_nanos": 7118625
+        },
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 2,
+          "restore_ns": 933250,
+          "execution_ns": 5654375,
+          "prepare_ns": 1141291,
+          "engine_nanos": 6587625
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 2,
+          "restore_ns": 1041792,
+          "execution_ns": 5187125,
+          "prepare_ns": 984750,
+          "engine_nanos": 6228917
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 2,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 2,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 2,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 10,
+    "measurement": {
+      "sample": 2,
+      "openMillis": 3.232291,
+      "appendMillis": 4.822083,
+      "drainMillis": 32.830625,
+      "appendThroughCommitMillis": 37.652708,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 3,
+          "restore_ns": 878416,
+          "execution_ns": 6337375,
+          "prepare_ns": 848334,
+          "engine_nanos": 7215791
+        },
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 3,
+          "restore_ns": 838166,
+          "execution_ns": 6141792,
+          "prepare_ns": 1152125,
+          "engine_nanos": 6979958
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 3,
+          "restore_ns": 1101916,
+          "execution_ns": 5576084,
+          "prepare_ns": 817125,
+          "engine_nanos": 6678000
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 3,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 3,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 3,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 10,
+    "measurement": {
+      "sample": 3,
+      "openMillis": 2.703291,
+      "appendMillis": 4.664916,
+      "drainMillis": 31.484541,
+      "appendThroughCommitMillis": 36.149457,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 4,
+          "restore_ns": 948459,
+          "execution_ns": 6098916,
+          "prepare_ns": 897625,
+          "engine_nanos": 7047375
+        },
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 4,
+          "restore_ns": 784459,
+          "execution_ns": 5555083,
+          "prepare_ns": 1136375,
+          "engine_nanos": 6339542
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 4,
+          "restore_ns": 779125,
+          "execution_ns": 5075958,
+          "prepare_ns": 865500,
+          "engine_nanos": 5855083
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 4,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 4,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 4,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 10,
+    "measurement": {
+      "sample": 4,
+      "openMillis": 2.369791,
+      "appendMillis": 3.523959,
+      "drainMillis": 29.026583,
+      "appendThroughCommitMillis": 32.550542,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 5,
+          "restore_ns": 992250,
+          "execution_ns": 6666083,
+          "prepare_ns": 785667,
+          "engine_nanos": 7658333
+        },
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 5,
+          "restore_ns": 708875,
+          "execution_ns": 4938625,
+          "prepare_ns": 818958,
+          "engine_nanos": 5647500
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 5,
+          "restore_ns": 580083,
+          "execution_ns": 4177458,
+          "prepare_ns": 740959,
+          "engine_nanos": 4757541
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:bdbcfb5fcd3cb220e4c242c7598fd4a4abfa490eb7769fad5a860136b349827d",
+          "sequence": 5,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:c69df5d2ac70ce1216ec9f8fe13808c3d35cbb16a464b665248be57aeaca7a2d",
+          "sequence": 5,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-455208d5-d0aa-47f2-be2a-abeaebfb2129",
+          "sequence": 5,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 100,
+    "measurement": {
+      "sample": 0,
+      "openMillis": 2.776666,
+      "appendMillis": 3.616916,
+      "drainMillis": 26.29175,
+      "appendThroughCommitMillis": 29.908666,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 1,
+          "restore_ns": 723500,
+          "execution_ns": 4312750,
+          "prepare_ns": 752625,
+          "engine_nanos": 5036250
+        },
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 1,
+          "restore_ns": 461875,
+          "execution_ns": 4502500,
+          "prepare_ns": 924875,
+          "engine_nanos": 4964375
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 1,
+          "restore_ns": 532958,
+          "execution_ns": 2763750,
+          "prepare_ns": 700333,
+          "engine_nanos": 3296708
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 1,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 1,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 1,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 100,
+    "measurement": {
+      "sample": 1,
+      "openMillis": 2.231042,
+      "appendMillis": 3.357333,
+      "drainMillis": 22.6135,
+      "appendThroughCommitMillis": 25.970833,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 2,
+          "restore_ns": 546834,
+          "execution_ns": 4217666,
+          "prepare_ns": 609292,
+          "engine_nanos": 4764500
+        },
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 2,
+          "restore_ns": 440125,
+          "execution_ns": 3485167,
+          "prepare_ns": 674000,
+          "engine_nanos": 3925292
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 2,
+          "restore_ns": 543750,
+          "execution_ns": 2606166,
+          "prepare_ns": 589459,
+          "engine_nanos": 3149916
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 2,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 2,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 2,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 100,
+    "measurement": {
+      "sample": 2,
+      "openMillis": 2.06125,
+      "appendMillis": 3.232375,
+      "drainMillis": 23.570792,
+      "appendThroughCommitMillis": 26.803167000000002,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 3,
+          "restore_ns": 529208,
+          "execution_ns": 4124083,
+          "prepare_ns": 638667,
+          "engine_nanos": 4653291
+        },
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 3,
+          "restore_ns": 446500,
+          "execution_ns": 3863084,
+          "prepare_ns": 673833,
+          "engine_nanos": 4309584
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 3,
+          "restore_ns": 524333,
+          "execution_ns": 2875625,
+          "prepare_ns": 604875,
+          "engine_nanos": 3399958
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 3,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 3,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 3,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 100,
+    "measurement": {
+      "sample": 3,
+      "openMillis": 1.983417,
+      "appendMillis": 3.32925,
+      "drainMillis": 22.867125,
+      "appendThroughCommitMillis": 26.196375000000003,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 4,
+          "restore_ns": 521542,
+          "execution_ns": 4334167,
+          "prepare_ns": 595041,
+          "engine_nanos": 4855709
+        },
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 4,
+          "restore_ns": 501583,
+          "execution_ns": 3566500,
+          "prepare_ns": 662417,
+          "engine_nanos": 4068083
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 4,
+          "restore_ns": 517209,
+          "execution_ns": 2913000,
+          "prepare_ns": 561583,
+          "engine_nanos": 3430209
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 4,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 4,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 4,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 100,
+    "measurement": {
+      "sample": 4,
+      "openMillis": 2.00725,
+      "appendMillis": 3.016667,
+      "drainMillis": 23.613458,
+      "appendThroughCommitMillis": 26.630125,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 5,
+          "restore_ns": 481084,
+          "execution_ns": 4583041,
+          "prepare_ns": 658209,
+          "engine_nanos": 5064125
+        },
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 5,
+          "restore_ns": 395958,
+          "execution_ns": 3705500,
+          "prepare_ns": 657292,
+          "engine_nanos": 4101458
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 5,
+          "restore_ns": 449125,
+          "execution_ns": 3204583,
+          "prepare_ns": 580333,
+          "engine_nanos": 3653708
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:0bbaaeefc9315869f9213f1b6650216fe8f9456e17c73bfaba40b7d93236a174",
+          "sequence": 5,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:8c244846533be2ee0d535919c59e3401e66d41dfa1c4dbc9b190d42bb72ab590",
+          "sequence": 5,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-2db0a2c8-76ea-41df-b573-ffbc656a3be6",
+          "sequence": 5,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 1000,
+    "measurement": {
+      "sample": 0,
+      "openMillis": 2.215958,
+      "appendMillis": 3.382333,
+      "drainMillis": 31.560083,
+      "appendThroughCommitMillis": 34.942416,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 1,
+          "restore_ns": 536417,
+          "execution_ns": 8983292,
+          "prepare_ns": 1344000,
+          "engine_nanos": 9519709
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 1,
+          "restore_ns": 467542,
+          "execution_ns": 2532458,
+          "prepare_ns": 627417,
+          "engine_nanos": 3000000
+        },
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 1,
+          "restore_ns": 397292,
+          "execution_ns": 3712708,
+          "prepare_ns": 1040667,
+          "engine_nanos": 4110000
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 1,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 1,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 1,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 1000,
+    "measurement": {
+      "sample": 1,
+      "openMillis": 1.979292,
+      "appendMillis": 3.01575,
+      "drainMillis": 28.681208,
+      "appendThroughCommitMillis": 31.696958000000002,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 2,
+          "restore_ns": 545125,
+          "execution_ns": 8930625,
+          "prepare_ns": 1207917,
+          "engine_nanos": 9475750
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 2,
+          "restore_ns": 434834,
+          "execution_ns": 2302875,
+          "prepare_ns": 577375,
+          "engine_nanos": 2737709
+        },
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 2,
+          "restore_ns": 371416,
+          "execution_ns": 2918834,
+          "prepare_ns": 689875,
+          "engine_nanos": 3290250
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 2,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 2,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 2,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 1000,
+    "measurement": {
+      "sample": 2,
+      "openMillis": 1.917625,
+      "appendMillis": 3.00925,
+      "drainMillis": 28.877875,
+      "appendThroughCommitMillis": 31.887125,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 3,
+          "restore_ns": 548500,
+          "execution_ns": 9226875,
+          "prepare_ns": 1262291,
+          "engine_nanos": 9775375
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 3,
+          "restore_ns": 488084,
+          "execution_ns": 2468458,
+          "prepare_ns": 558750,
+          "engine_nanos": 2956542
+        },
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 3,
+          "restore_ns": 489291,
+          "execution_ns": 3297292,
+          "prepare_ns": 680125,
+          "engine_nanos": 3786583
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 3,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 3,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 3,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 1000,
+    "measurement": {
+      "sample": 3,
+      "openMillis": 4.762833,
+      "appendMillis": 4.072834,
+      "drainMillis": 31.2945,
+      "appendThroughCommitMillis": 35.367334,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 4,
+          "restore_ns": 551333,
+          "execution_ns": 9467042,
+          "prepare_ns": 1210458,
+          "engine_nanos": 10018375
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 4,
+          "restore_ns": 451667,
+          "execution_ns": 2794375,
+          "prepare_ns": 605791,
+          "engine_nanos": 3246042
+        },
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 4,
+          "restore_ns": 448542,
+          "execution_ns": 4674542,
+          "prepare_ns": 761666,
+          "engine_nanos": 5123084
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 4,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 4,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 4,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  },
+  {
+    "orders": 1000,
+    "measurement": {
+      "sample": 4,
+      "openMillis": 2.145125,
+      "appendMillis": 3.134583,
+      "drainMillis": 32.015208,
+      "appendThroughCommitMillis": 35.149791,
+      "jobs": 3,
+      "gasByOwner": [
+        {
+          "gas": 273,
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4"
+        },
+        {
+          "gas": 182,
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023"
+        },
+        {
+          "gas": 59,
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27"
+        }
+      ],
+      "gasSchedule": "contracts-additive-prototype-3",
+      "profiled": false,
+      "phases": [
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 5,
+          "restore_ns": 563458,
+          "execution_ns": 9994625,
+          "prepare_ns": 1267708,
+          "engine_nanos": 10558083
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 5,
+          "restore_ns": 477125,
+          "execution_ns": 3064250,
+          "prepare_ns": 595625,
+          "engine_nanos": 3541375
+        },
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 5,
+          "restore_ns": 369958,
+          "execution_ns": 3860959,
+          "prepare_ns": 672583,
+          "engine_nanos": 4230917
+        }
+      ],
+      "calculations": [
+        {
+          "owner": "sha256:a4615c7df4ee6b23387d4f5a95df17c3d050e2ee5656627caa71710d494d6c27",
+          "sequence": 5,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "sha256:49dd8355e2d2a76b683e9ce6b99dfd0e7c1745007c54ad9aa53fd90da95f5023",
+          "sequence": 5,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        },
+        {
+          "owner": "doc-544177f2-dfbf-497e-ae52-b23583f8c3b4",
+          "sequence": 5,
+          "executed": 2,
+          "reused": 0,
+          "budget_fallback": 0
+        }
+      ],
+      "physicalCounters": {
+        "storage.sqlQueries": 0,
+        "storage.sqlRowsRead": 0,
+        "storage.sqlUpdates": 0
+      },
+      "exactUncachedReceiptParity": false,
+      "uncachedDocumentGasPublicEventParity": true
+    }
+  }
+]

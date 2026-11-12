@@ -1,0 +1,12 @@
+[
+  {
+    "from": "better/ExportExamples.class",
+    "to": "build/cleanup/2026-11-10/ExportExamples.class",
+    "sha256": "a57e02f6ce4656f34d3e26aa40577ba94215a2603f10b13ed614a15712bd5178"
+  },
+  {
+    "from": "better/StoreProbe.class",
+    "to": "build/cleanup/2026-11-10/StoreProbe.class",
+    "sha256": "13396721ce3516c2f25fb5eff4526b26f963140cfac1c0bbccc500eb51c4d1b3"
+  }
+]

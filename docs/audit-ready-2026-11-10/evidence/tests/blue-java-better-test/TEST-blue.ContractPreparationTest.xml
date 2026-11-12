@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractPreparationTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:58.240Z" hostname="MacBook-Pro-5.local" time="0.269">
+  <properties />
+  <testcase name="retainedInputCatalogueSurvivesProcessingUntilItsCheckpointIsPublished()" classname="blue.ContractPreparationTest" time="0.011" />
+  <testcase name="[1] &quot;false&quot;, &quot;20&quot;" classname="blue.ContractPreparationTest" time="0.005" />
+  <testcase name="[2] &quot;false&quot;, &quot;200&quot;" classname="blue.ContractPreparationTest" time="0.004" />
+  <testcase name="[3] &quot;false&quot;, &quot;2000&quot;" classname="blue.ContractPreparationTest" time="0.006" />
+  <testcase name="[4] &quot;false&quot;, &quot;1000000&quot;" classname="blue.ContractPreparationTest" time="0.007" />
+  <testcase name="[5] &quot;true&quot;, &quot;20&quot;" classname="blue.ContractPreparationTest" time="0.015" />
+  <testcase name="[6] &quot;true&quot;, &quot;200&quot;" classname="blue.ContractPreparationTest" time="0.013" />
+  <testcase name="[7] &quot;true&quot;, &quot;2000&quot;" classname="blue.ContractPreparationTest" time="0.017" />
+  <testcase name="[8] &quot;true&quot;, &quot;1000000&quot;" classname="blue.ContractPreparationTest" time="0.022" />
+  <testcase name="coldPreparationCanInspectInlineTimelineDeclarationsWithoutLoadingMemberBodies()" classname="blue.ContractPreparationTest" time="0.108" />
+  <testcase name="protectedMutationDoesNotRevalidateTheUnchangedInitializationHistory()" classname="blue.ContractPreparationTest" time="0.007" />
+  <testcase name="memberFactsNeedNoGlobalFactLookupAndPreserveOrdinaryColdReceipts()" classname="blue.ContractPreparationTest" time="0.042" />
+  <testcase name="retainedContentOwnsResponsesAndStillVerifiesDemandedIdentities()" classname="blue.ContractPreparationTest" time="0.001" />
+  <testcase name="semanticPreparationIsRevokedFromEveryCapturedResolverAtScopeClose()" classname="blue.ContractPreparationTest" time="0.0" />
+  <testcase name="anotherRuntimePreparationFallsBackAndAnotherSnapshotIsRejected()" classname="blue.ContractPreparationTest" time="0.004" />
+  <testcase name="protectedRestoreDefersUnusedBodiesButPortableRestoreChecksTheWholeEnvelope()" classname="blue.ContractPreparationTest" time="0.005" />
+  </testsuite>

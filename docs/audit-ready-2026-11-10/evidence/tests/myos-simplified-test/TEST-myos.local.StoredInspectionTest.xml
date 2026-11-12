@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.StoredInspectionTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:50.492Z" hostname="MacBook-Pro-5.local" time="0.437">
+  <properties />
+  <testcase name="ordinaryAndProtectedReadsAgreeAcrossNestedAndMissingFieldsAfterRestart()" classname="myos.local.StoredInspectionTest" time="0.061" />
+  <testcase name="ordinaryAndProtectedReadsAgreeForCyclicFamiliesAndDoNotPublishAnything()" classname="myos.local.StoredInspectionTest" time="0.375" />
+  </testsuite>

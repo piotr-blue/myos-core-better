@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineWorkTest$ScopedDiscovery" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:59.841Z" hostname="MacBook-Pro-5.local" time="0.007">
+  <properties />
+  <testcase name="unrelatedRuntimeInventoryDoesNotAddMetadataReadsOrFanout()" classname="myos.better.TimelineWorkTest$ScopedDiscovery" time="0.007" />
+  <testcase name="establishedSourceAndReceiverBindingsAddNoPerOccurrenceAccountReads()" classname="myos.better.TimelineWorkTest$ScopedDiscovery" time="0.0" />
+  <testcase name="policyBindingsWithinOneNamespaceHaveDifferentWorkIndexes()" classname="myos.better.TimelineWorkTest$ScopedDiscovery" time="0.0" />
+  </testsuite>

@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.NativeAdmissionOwnershipTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:03.135Z" hostname="MacBook-Pro-5.local" time="0.497">
+  <properties />
+  <testcase name="[1] 2" classname="blue.NativeAdmissionOwnershipTest" time="0.004" />
+  <testcase name="[2] 128" classname="blue.NativeAdmissionOwnershipTest" time="0.493" />
+  </testsuite>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelinePullTest$RefusalAndBounds" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:55.651Z" hostname="MacBook-Pro-5.local" time="0.136">
+  <properties />
+  <testcase name="invalidSignatureOrChangingCheckpointCannotPublishEvenAnEarlierValidPage()" classname="myos.better.TimelinePullTest$RefusalAndBounds" time="0.034" />
+  <testcase name="onDemandContentFailureKeepsItsOriginalCategoryAndCannotPublish()" classname="myos.better.TimelinePullTest$RefusalAndBounds" time="0.026" />
+  <testcase name="signedCorrelatedFailuresAndHttpErrorSuccessBodiesCannotAdvance()" classname="myos.better.TimelinePullTest$RefusalAndBounds" time="0.017" />
+  <testcase name="interruptedTransportPrivateSourcesAndHttpErrorsDoNotAdvance()" classname="myos.better.TimelinePullTest$RefusalAndBounds" time="0.012" />
+  <testcase name="missingReferencedContentNeverBecomesAnEmptyHistory()" classname="myos.better.TimelinePullTest$RefusalAndBounds" time="0.012" />
+  <testcase name="pageEntryRecordWireAndTimeBoundsNeverPublishPartialProgress()" classname="myos.better.TimelinePullTest$RefusalAndBounds" time="0.035" />
+  </testsuite>

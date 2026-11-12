@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.CompositionalGasTest" tests="15" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:09.584Z" hostname="MacBook-Pro-5.local" time="3.279">
+  <properties />
+  <testcase name="realFanoutStillCostsGasForEveryExecutedDocument()" classname="blue.CompositionalGasTest" time="0.009" />
+  <testcase name="quietSiblingsContributeNoGas()" classname="blue.CompositionalGasTest" time="1.305" />
+  <testcase name="inlineAndCollapsedBodiesHaveEqualGasAndResults()" classname="blue.CompositionalGasTest" time="0.011" />
+  <testcase name="receivingPreservesBudgetThresholdAndFirstRejectedCharge()" classname="blue.CompositionalGasTest" time="0.195" />
+  <testcase name="inheritedDeclarationsDoNotChargeForTypeExpansion()" classname="blue.CompositionalGasTest" time="0.003" />
+  <testcase name="sparseLocalExecutionPreservesTheExistingPortableChunkSequenceAndReceipt()" classname="blue.CompositionalGasTest" time="1.672" />
+  <testcase name="failedChildCannotBeAdoptedAsSuccessfulWork()" classname="blue.CompositionalGasTest" time="0.003" />
+  <testcase name="overflowCannotWrapACharge()" classname="blue.CompositionalGasTest" time="0.0" />
+  <testcase name="overflowingNativeAdmissionCostCannotBecomeABusinessGasFailure()" classname="blue.CompositionalGasTest" time="0.0" />
+  <testcase name="exactLimitSucceedsAndOneLessRollsBack()" classname="blue.CompositionalGasTest" time="0.024" />
+  <testcase name="admissionWorkExhaustionIsRetryableNotSemanticFailure()" classname="blue.CompositionalGasTest" time="0.0" />
+  <testcase name="scheduleIsBoundToSnapshotsAndCannotSilentlyChange()" classname="blue.CompositionalGasTest" time="0.013" />
+  <testcase name="childPlusParentEqualsWholeRootAndKeepsEvents()" classname="blue.CompositionalGasTest" time="0.006" />
+  <testcase name="portableInvocationRetainsTheAccountingSchedule()" classname="blue.CompositionalGasTest" time="0.023" />
+  <testcase name="cyclicFeedbackExhaustsGasAndRollsBackInsteadOfRunningForever()" classname="blue.CompositionalGasTest" time="0.01" />
+  </testsuite>

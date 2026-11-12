@@ -1,0 +1,48 @@
+// Reused MyOS Core Webhooks UI; no callback is sent outside the isolated fixture.
+import { chromium } from '../core-ui/node_modules/playwright/index.mjs';
+import { mkdir, writeFile } from 'node:fs/promises';
+import assert from 'node:assert/strict';
+const url=process.argv[2]; assert.match(url,/^http:\/\/localhost:\d+$/);
+const output=process.env.DASHBOARD_REPORTS||'reports/webhooks-browser';
+await mkdir(output,{recursive:true});
+const browser=await chromium.launch({headless:true});
+try {
+ const page=await browser.newPage({viewport:{width:1440,height:1000}});
+ const errors=[];let signedIn=false,removedPath;
+ page.on('pageerror',error=>errors.push({type:'page',message:error.message}));
+ page.on('response',response=>{if(response.status()>=400&&response.url().startsWith(url))errors.push({status:response.status(),path:new URL(response.url()).pathname,beforeLogin:!signedIn});});
+ await page.goto(url);
+ await page.getByLabel('Email').fill('sdk@example.invalid');
+ await page.getByLabel('Password',{exact:true}).fill('loopback-test-only');
+ await page.getByRole('button',{name:'Sign in',exact:true}).click();
+ await page.getByRole('heading',{name:'Documents',exact:true}).waitFor();signedIn=true;
+ await page.goto(url+'/#webhooks');
+ await page.getByRole('heading',{name:'Webhooks',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Add new',exact:true}).click();
+ await page.getByLabel('Name',{exact:true}).fill('Browser callback');
+ await page.getByLabel('HTTPS endpoint',{exact:true}).fill('https://receiver.invalid/callback');
+ await page.getByLabel('Document session ID (optional)',{exact:true}).fill('nonexistent-browser-test-session');
+ await page.screenshot({path:output+'/create-webhook.png',fullPage:true});
+ await page.getByRole('button',{name:'Create webhook',exact:true}).click();
+ await page.getByRole('heading',{name:'Save your signing secret',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Dismiss',exact:true}).click();
+ await page.getByRole('link',{name:'Browser callback',exact:true}).click();
+ await page.getByRole('heading',{name:'Browser callback',exact:true}).waitFor();
+ await page.getByRole('heading',{name:'Deliveries',exact:true}).waitFor();
+ await page.getByRole('button',{name:'Pause delivery',exact:true}).click();
+ await page.getByRole('button',{name:'Resume delivery',exact:true}).waitFor();
+ await page.screenshot({path:output+'/paused-webhook.png',fullPage:true});
+ await page.getByRole('button',{name:'Resume delivery',exact:true}).click();
+ await page.getByRole('button',{name:'Pause delivery',exact:true}).waitFor();
+ await page.getByRole('combobox',{name:/^Status/}).selectOption('FAILED');
+ removedPath='/api/blue/v1/'+new URL(page.url()).hash.slice(1);
+ page.once('dialog',dialog=>dialog.accept());
+ await page.getByRole('button',{name:'Remove',exact:true}).click();
+ await page.getByRole('heading',{name:'Webhooks',exact:true}).waitFor();
+ assert.equal(await page.getByRole('link',{name:'Browser callback',exact:true}).count(),0);
+ await page.getByRole('alert').waitFor({state:'hidden',timeout:3000});
+ await page.screenshot({path:output+'/removed-webhook.png',fullPage:true});
+ assert.deepEqual(errors.filter(error=>!(error.status===401&&error.beforeLogin&&['/api/blue/v1/me','/api/auth/refresh'].includes(error.path))&&!(error.status===404&&error.path===removedPath)),[]);
+ const result={passed:true,screens:3,actions:['create','dismiss secret','details','pause','resume','status filter','remove'],errors};
+ await writeFile(output+'/report.json',JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result));
+} finally {await browser.close();}

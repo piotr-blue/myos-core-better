@@ -1,0 +1,118 @@
+{
+  "00-hello": [
+    "Agree on a small process before anyone uses it.",
+    "Activation approvals and a validated action produce an inspectable result."
+  ],
+  "01-order-payment": [
+    "Offer customers a payment they can trust, without giving up clear settlement rules.",
+    "The customer requests capture in the Payment Instruction after delivery; each instruction keeps its own approvals and settlement state."
+  ],
+  "02-reseller-ledger": [
+    "Pay partners for money actually collected, including later corrections.",
+    "Independent orders feed confirmed net payments into a commission ledger."
+  ],
+  "03-milestone-payments": [
+    "Release money as each part of a project is accepted.",
+    "Each milestone has its own payment and explicit readiness checks."
+  ],
+  "04-bundle-order": [
+    "Sell a package while keeping each supplier’s service independent.",
+    "A Documents clause creates multiple orders from one agreed template."
+  ],
+  "05-smart-home": [
+    "Connect a verified check-in to the rental’s payment conditions.",
+    "A matching event from a separate property document requests capture; unrelated events do not."
+  ],
+  "06-membership": [
+    "Turn a trial into a membership only when the customer chooses it.",
+    "Separate period obligations and a termination lifecycle keep ongoing work explicit."
+  ],
+  "07-booking-amendment": [
+    "Change a booking without silently replacing its existing payment.",
+    "Both parties approve the same amendment before the terms change."
+  ],
+  "08-participants-agents": [
+    "Give a representative one job without giving them the principal’s powers.",
+    "A frozen party roster binds a real representative identity to explicitly assigned actions."
+  ],
+  "10-net-settlement": [
+    "Settle the corrected net amount across approved statements.",
+    "Statements determine the obligation; a separate confirmed payment settles it."
+  ],
+  "11-hello-events": [
+    "React automatically to a specific business event.",
+    "An event binding invokes a reusable action only for a matching event."
+  ],
+  "12-hello-change": [
+    "Keep a reaction close to the state it depends on.",
+    "A change binding observes a property update and runs the connected action."
+  ],
+  "13-hello-embedded": [
+    "Let one process react to work completed in another.",
+    "The parent listens to events emitted by an embedded child document."
+  ],
+  "14-hello-collection": [
+    "Apply one reaction to every order created under an agreement.",
+    "A collection binding listens to matching events from multiple independent children."
+  ],
+  "15-product": [
+    "Keep quotes valid when quantities or prices change.",
+    "Product actions validate their inputs before updating the agreed product."
+  ],
+  "16-ledger": [
+    "Track an obligation through corrections, reservation and settlement.",
+    "Ledger entries distinguish what is owed, reserved and confirmed as settled."
+  ],
+  "17-termination": [
+    "End a relationship without abandoning outstanding work.",
+    "The document winds down first and terminates only after its obligations finish."
+  ],
+  "18-amendments": [
+    "Give both parties control over changes to agreed terms.",
+    "Amendments collect approvals for one exact proposed revision."
+  ],
+  "19-instruction-with-clauses": [
+    "Add business-specific behavior to an ordinary payment document.",
+    "A standard Payment Instruction composes with a reusable clause while preserving its party roster."
+  ],
+  "20-status-branch": [
+    "Make the permitted next actions clear in a repair process.",
+    "State transitions follow the agreed graph and reject invalid paths."
+  ],
+  "21-myos-customer": [
+    "Describe a customer payment and its business conditions in one shared process.",
+    "The customer-payment specialization uses the same correlated request and guarantor-confirmation protocol."
+  ],
+  "22-myos-account": [
+    "Coordinate a payment between distinct MyOS accounts.",
+    "Customer, seller and test guarantor act through their own authorized routes."
+  ],
+  "23-manual-bank": [
+    "Record a bank transfer without claiming an unverified request is a payment.",
+    "The designated recipient confirms receipt explicitly."
+  ],
+  "24-acme-bank": [
+    "Connect a bank-specific preparation flow to common payment rules.",
+    "The example separates preparation, capture and refund requests from provider outcomes."
+  ],
+  "25-shipping": [
+    "Keep order delivery and carrier confirmation in agreement.",
+    "A separate shipping document distinguishes shipment and address-change requests from confirmed outcomes."
+  ],
+  "26-timers": [
+    "Schedule follow-ups and cancel reminders when the process changes.",
+    "Signed time drives first-event and latest-event timers; it is not a browser animation."
+  ],
+  "27-payment-protocol": [
+    "Handle uncertain and failed payment outcomes without losing the request history.",
+    "Correlated requests, retries and reconciliation keep intent separate from confirmation."
+  ],
+  "28-payment-controls": [
+    "Apply payment limits and cancellation rules consistently.",
+    "The protocol checks policy while retaining the distinction between requests and authoritative results."
+  ],
+  "29-payment-rejection": [
+    "Stop an unacceptable payment before its normal flow can proceed.",
+    "Instruction rejection prevents later payment operations from continuing."
+  ]
+}

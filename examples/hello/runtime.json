@@ -1,0 +1,32 @@
+{
+  "format": "myos.runtime/1",
+  "features": [
+    "document-dispatch"
+  ],
+  "packages": [
+    {
+      "archive": "packages/activation.bluepkg",
+      "blueId": "4jsSnzpfSjT7MNhJkUaSjr6j1Pv7pzqFaMfBRgpW66Yk",
+      "mounts": {
+        "Activation": [],
+        "Parties": [
+          "Parties"
+        ]
+      }
+    },
+    {
+      "archive": "packages/connections.bluepkg",
+      "blueId": "CT3bxHmCN2FnB6XVkqC87kiccqCBYGRSvQwLbJTVKqpu",
+      "mounts": {
+        "Connections": [],
+        "Agreements": [
+          "Agreements"
+        ]
+      }
+    }
+  ],
+  "editions": [
+    "AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup"
+  ],
+  "creationEdition": "AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup"
+}

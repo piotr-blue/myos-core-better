@@ -1,0 +1,13 @@
+orders: {}
+seen: false
+contracts:
+  input: {type: Contracts/External Channel}
+  embedded: {type: Contracts/Process Embedded, collectionPaths: [/orders]}
+  add:
+    type: Contracts/Sequential Workflow Operation
+    channel: input
+    steps:
+      - type: Contracts/Update Document
+        changeset: [{op: add, path: /orders/a, val: {$event: /request/child}}]
+      - type: Contracts/Update Document
+        changeset: [{op: replace, path: /seen, val: {$document: /orders/a/ready}}]

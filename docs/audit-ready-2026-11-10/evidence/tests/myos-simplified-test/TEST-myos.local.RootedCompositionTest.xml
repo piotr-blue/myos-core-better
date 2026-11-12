@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.RootedCompositionTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:49.982Z" hostname="MacBook-Pro-5.local" time="0.269">
+  <properties />
+  <testcase name="legacyReceivingHistoryRequiresExplicitReplayAndIsNotRelabelled()" classname="myos.local.RootedCompositionTest" time="0.041" />
+  <testcase name="anExistingHistoryRejectsAnotherGasSchedule()" classname="myos.local.RootedCompositionTest" time="0.019" />
+  <testcase name="[1] PUBLISHED" classname="myos.local.RootedCompositionTest" time="0.076" />
+  <testcase name="[2] COMPOSITIONAL_V1" classname="myos.local.RootedCompositionTest" time="0.08" />
+  <testcase name="parentReusesCommittedChildCalculationsAfterAColdRestart()" classname="myos.local.RootedCompositionTest" time="0.052" />
+  </testsuite>

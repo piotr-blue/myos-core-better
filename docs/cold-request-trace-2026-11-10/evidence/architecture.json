@@ -1,0 +1,483 @@
+{
+  "myos-better-canonical-20261108": {
+    "status": "CREATE_COMPLETE",
+    "outputs": [
+      {
+        "OutputKey": "SecretArn",
+        "OutputValue": "arn:aws:secretsmanager:eu-west-1:581571886327:secret:ProviderIdentity-YqbaoJVpTT3m-yjaKn2"
+      },
+      {
+        "OutputKey": "Artifacts",
+        "OutputValue": "myos-better-canonical-20261108-artifacts-y9kcxxg2eyvc"
+      },
+      {
+        "OutputKey": "Table",
+        "OutputValue": "myos-better-canonical-20261108-documents"
+      },
+      {
+        "OutputKey": "Instance",
+        "OutputValue": "i-052007ebaf704c0ad"
+      }
+    ],
+    "resources": [
+      {
+        "LogicalResourceId": "Artifacts",
+        "PhysicalResourceId": "myos-better-canonical-20261108-artifacts-y9kcxxg2eyvc",
+        "ResourceType": "AWS::S3::Bucket",
+        "LastUpdatedTimestamp": "2026-11-08T17:58:10.749000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      },
+      {
+        "LogicalResourceId": "Documents",
+        "PhysicalResourceId": "myos-better-canonical-20261108-documents",
+        "ResourceType": "AWS::DynamoDB::Table",
+        "LastUpdatedTimestamp": "2026-11-08T17:58:30.360000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      },
+      {
+        "LogicalResourceId": "Host",
+        "PhysicalResourceId": "i-052007ebaf704c0ad",
+        "ResourceType": "AWS::EC2::Instance",
+        "LastUpdatedTimestamp": "2026-11-08T18:01:15.644000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      },
+      {
+        "LogicalResourceId": "Profile",
+        "PhysicalResourceId": "myos-better-canonical-20261108-Profile-oTfUH8bvTRBS",
+        "ResourceType": "AWS::IAM::InstanceProfile",
+        "LastUpdatedTimestamp": "2026-11-08T18:01:01.671000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      },
+      {
+        "LogicalResourceId": "ProviderIdentity",
+        "PhysicalResourceId": "arn:aws:secretsmanager:eu-west-1:581571886327:secret:ProviderIdentity-YqbaoJVpTT3m-yjaKn2",
+        "ResourceType": "AWS::SecretsManager::Secret",
+        "LastUpdatedTimestamp": "2026-11-08T17:57:59.518000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      },
+      {
+        "LogicalResourceId": "Role",
+        "PhysicalResourceId": "myos-better-canonical-20261108-Role-IvObHaHgdlB7",
+        "ResourceType": "AWS::IAM::Role",
+        "LastUpdatedTimestamp": "2026-11-08T17:58:49.668000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      },
+      {
+        "LogicalResourceId": "SecurityGroup",
+        "PhysicalResourceId": "sg-0a17615dd6dcce8f2",
+        "ResourceType": "AWS::EC2::SecurityGroup",
+        "LastUpdatedTimestamp": "2026-11-08T17:58:04.096000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      }
+    ]
+  },
+  "myos-better-canonical-console-20261108": {
+    "status": "CREATE_COMPLETE",
+    "outputs": [
+      {
+        "OutputKey": "UserPool",
+        "OutputValue": "eu-west-1_sWm7zJJEO"
+      },
+      {
+        "OutputKey": "UserClient",
+        "OutputValue": "4qja6n3otf2nkt753ai44lgkep"
+      },
+      {
+        "OutputKey": "Distribution",
+        "OutputValue": "E1CK41T06GCWTM"
+      },
+      {
+        "OutputKey": "Url",
+        "OutputValue": "https://d2buikczdox1rt.cloudfront.net"
+      }
+    ],
+    "resources": [
+      {
+        "LogicalResourceId": "ConsoleIngress",
+        "PhysicalResourceId": "sgr-044f0f4593cf93824",
+        "ResourceType": "AWS::EC2::SecurityGroupIngress",
+        "LastUpdatedTimestamp": "2026-11-08T18:04:37.004000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      },
+      {
+        "LogicalResourceId": "Distribution",
+        "PhysicalResourceId": "E1CK41T06GCWTM",
+        "ResourceType": "AWS::CloudFront::Distribution",
+        "LastUpdatedTimestamp": "2026-11-08T18:09:45.691000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      },
+      {
+        "LogicalResourceId": "VpcOrigin",
+        "PhysicalResourceId": "vo_EalaNggyRXYB5DLgaEFGEq",
+        "ResourceType": "AWS::CloudFront::VpcOrigin",
+        "LastUpdatedTimestamp": "2026-11-08T18:06:41.357000+00:00",
+        "ResourceStatus": "CREATE_COMPLETE",
+        "DriftInformation": {
+          "StackResourceDriftStatus": "NOT_CHECKED"
+        }
+      }
+    ]
+  },
+  "host": {
+    "InstanceId": "i-052007ebaf704c0ad",
+    "InstanceType": "m7i.large",
+    "State": {
+      "Code": 16,
+      "Name": "running"
+    },
+    "Placement": {
+      "AvailabilityZone": "eu-west-1a",
+      "GroupName": "",
+      "Tenancy": "default"
+    },
+    "VpcId": "vpc-0f07b96be67f4b4d1",
+    "SubnetId": "subnet-086427905c9f20d26",
+    "SecurityGroups": [
+      {
+        "GroupName": "myos-better-canonical-20261108-SecurityGroup-XAAdZ6MuDQ2c",
+        "GroupId": "sg-0a17615dd6dcce8f2"
+      }
+    ]
+  },
+  "storage": {
+    "TableName": "myos-better-canonical-20261108-documents",
+    "TableStatus": "ACTIVE",
+    "BillingModeSummary": {
+      "BillingMode": "PAY_PER_REQUEST",
+      "LastUpdateToPayPerRequestDateTime": "2026-11-09T00:57:58.474000+07:00"
+    },
+    "KeySchema": [
+      {
+        "AttributeName": "pk",
+        "KeyType": "HASH"
+      },
+      {
+        "AttributeName": "sk",
+        "KeyType": "RANGE"
+      }
+    ],
+    "GlobalSecondaryIndexes": [
+      {
+        "IndexName": "work",
+        "KeySchema": [
+          {
+            "AttributeName": "work",
+            "KeyType": "HASH"
+          },
+          {
+            "AttributeName": "position",
+            "KeyType": "RANGE"
+          }
+        ],
+        "Projection": {
+          "ProjectionType": "ALL"
+        },
+        "IndexStatus": "ACTIVE",
+        "ProvisionedThroughput": {
+          "NumberOfDecreasesToday": 0,
+          "ReadCapacityUnits": 0,
+          "WriteCapacityUnits": 0
+        },
+        "IndexSizeBytes": 45997,
+        "ItemCount": 48,
+        "IndexArn": "arn:aws:dynamodb:eu-west-1:581571886327:table/myos-better-canonical-20261108-documents/index/work"
+      }
+    ]
+  },
+  "edge": {
+    "CallerReference": "72100f26-6f80-e607-2ea4-bf748c7b8504",
+    "Aliases": {
+      "Quantity": 0
+    },
+    "DefaultRootObject": "",
+    "Origins": {
+      "Quantity": 1,
+      "Items": [
+        {
+          "Id": "Better",
+          "DomainName": "ip-172-31-18-53.eu-west-1.compute.internal",
+          "OriginPath": "",
+          "CustomHeaders": {
+            "Quantity": 0
+          },
+          "ConnectionAttempts": 3,
+          "ConnectionTimeout": 10,
+          "OriginShield": {
+            "Enabled": false
+          },
+          "OriginAccessControlId": ""
+        }
+      ]
+    },
+    "OriginGroups": {
+      "Quantity": 0
+    },
+    "DefaultCacheBehavior": {
+      "TargetOriginId": "Better",
+      "TrustedSigners": {
+        "Enabled": false,
+        "Quantity": 0
+      },
+      "TrustedKeyGroups": {
+        "Enabled": false,
+        "Quantity": 0
+      },
+      "ViewerProtocolPolicy": "redirect-to-https",
+      "AllowedMethods": {
+        "Quantity": 7,
+        "Items": [
+          "HEAD",
+          "DELETE",
+          "POST",
+          "GET",
+          "OPTIONS",
+          "PUT",
+          "PATCH"
+        ],
+        "CachedMethods": {
+          "Quantity": 2,
+          "Items": [
+            "HEAD",
+            "GET"
+          ]
+        }
+      },
+      "SmoothStreaming": false,
+      "Compress": true,
+      "LambdaFunctionAssociations": {
+        "Quantity": 0
+      },
+      "FunctionAssociations": {
+        "Quantity": 0
+      },
+      "FieldLevelEncryptionId": "",
+      "CachePolicyId": "4135ea2d-6df8-44a3-9df3-4b5a84be39ad",
+      "OriginRequestPolicyId": "b689b0a8-53d0-40ab-baf2-68738e2966ac"
+    },
+    "CacheBehaviors": {
+      "Quantity": 0
+    },
+    "CustomErrorResponses": {
+      "Quantity": 8,
+      "Items": [
+        {
+          "ErrorCode": 400,
+          "ResponsePagePath": "",
+          "ResponseCode": "",
+          "ErrorCachingMinTTL": 0
+        },
+        {
+          "ErrorCode": 403,
+          "ResponsePagePath": "",
+          "ResponseCode": "",
+          "ErrorCachingMinTTL": 0
+        },
+        {
+          "ErrorCode": 404,
+          "ResponsePagePath": "",
+          "ResponseCode": "",
+          "ErrorCachingMinTTL": 0
+        },
+        {
+          "ErrorCode": 405,
+          "ResponsePagePath": "",
+          "ResponseCode": "",
+          "ErrorCachingMinTTL": 0
+        },
+        {
+          "ErrorCode": 500,
+          "ResponsePagePath": "",
+          "ResponseCode": "",
+          "ErrorCachingMinTTL": 0
+        },
+        {
+          "ErrorCode": 502,
+          "ResponsePagePath": "",
+          "ResponseCode": "",
+          "ErrorCachingMinTTL": 0
+        },
+        {
+          "ErrorCode": 503,
+          "ResponsePagePath": "",
+          "ResponseCode": "",
+          "ErrorCachingMinTTL": 0
+        },
+        {
+          "ErrorCode": 504,
+          "ResponsePagePath": "",
+          "ResponseCode": "",
+          "ErrorCachingMinTTL": 0
+        }
+      ]
+    },
+    "Comment": "MyOS canonical preview \u2014 isolated application storage",
+    "Logging": {
+      "Enabled": false,
+      "IncludeCookies": false,
+      "Bucket": "",
+      "Prefix": ""
+    },
+    "PriceClass": "PriceClass_100",
+    "Enabled": true,
+    "ViewerCertificate": {
+      "CloudFrontDefaultCertificate": true,
+      "SSLSupportMethod": "vip",
+      "MinimumProtocolVersion": "TLSv1",
+      "CertificateSource": "cloudfront"
+    },
+    "Restrictions": {
+      "GeoRestriction": {
+        "RestrictionType": "none",
+        "Quantity": 0
+      }
+    },
+    "WebACLId": "",
+    "HttpVersion": "http2and3",
+    "IsIPV6Enabled": true,
+    "ContinuousDeploymentPolicyId": "",
+    "Staging": false
+  },
+  "identity": {
+    "Id": "eu-west-1_sWm7zJJEO",
+    "Name": "myos-better-console-20261105",
+    "MfaConfiguration": "OFF"
+  },
+  "compute": {
+    "InstanceType": "m7i.large",
+    "CurrentGeneration": true,
+    "FreeTierEligible": false,
+    "SupportedUsageClasses": [
+      "on-demand",
+      "spot"
+    ],
+    "SupportedRootDeviceTypes": [
+      "ebs"
+    ],
+    "SupportedVirtualizationTypes": [
+      "hvm"
+    ],
+    "BareMetal": false,
+    "Hypervisor": "nitro",
+    "ProcessorInfo": {
+      "SupportedArchitectures": [
+        "x86_64"
+      ],
+      "SustainedClockSpeedInGhz": 3.2,
+      "SupportedFeatures": [
+        "nested-virtualization",
+        "metal-compatibility"
+      ]
+    },
+    "VCpuInfo": {
+      "DefaultVCpus": 2,
+      "DefaultCores": 1,
+      "DefaultThreadsPerCore": 2,
+      "ValidCores": [
+        1
+      ],
+      "ValidThreadsPerCore": [
+        1,
+        2
+      ]
+    },
+    "MemoryInfo": {
+      "SizeInMiB": 8192
+    },
+    "InstanceStorageSupported": false,
+    "EbsInfo": {
+      "EbsOptimizedSupport": "default",
+      "EncryptionSupport": "supported",
+      "EbsOptimizedInfo": {
+        "BaselineBandwidthInMbps": 650,
+        "BaselineThroughputInMBps": 81.25,
+        "BaselineIops": 3600,
+        "MaximumBandwidthInMbps": 10000,
+        "MaximumThroughputInMBps": 1250.0,
+        "MaximumIops": 40000
+      },
+      "NvmeSupport": "required"
+    },
+    "NetworkInfo": {
+      "NetworkPerformance": "Up to 12.5 Gigabit",
+      "MaximumNetworkInterfaces": 3,
+      "MaximumNetworkCards": 1,
+      "DefaultNetworkCardIndex": 0,
+      "NetworkCards": [
+        {
+          "NetworkCardIndex": 0,
+          "NetworkPerformance": "Up to 12.5 Gigabit",
+          "MaximumNetworkInterfaces": 3
+        }
+      ],
+      "Ipv4AddressesPerInterface": 10,
+      "Ipv6AddressesPerInterface": 10,
+      "Ipv6Supported": true,
+      "EnaSupport": "required",
+      "EfaSupported": false,
+      "EncryptionInTransitSupported": true,
+      "EnaSrdSupported": false
+    },
+    "PlacementGroupInfo": {
+      "SupportedStrategies": [
+        "cluster",
+        "partition",
+        "spread"
+      ]
+    },
+    "HibernationSupported": true,
+    "BurstablePerformanceSupported": false,
+    "DedicatedHostsSupported": true,
+    "AutoRecoverySupported": true,
+    "SupportedBootModes": [
+      "legacy-bios",
+      "uefi"
+    ]
+  },
+  "edgeCachePolicy": {
+    "Comment": "Policy with caching disabled",
+    "Name": "Managed-CachingDisabled",
+    "DefaultTTL": 0,
+    "MaxTTL": 0,
+    "MinTTL": 0,
+    "ParametersInCacheKeyAndForwardedToOrigin": {
+      "EnableAcceptEncodingGzip": false,
+      "EnableAcceptEncodingBrotli": false,
+      "HeadersConfig": {
+        "HeaderBehavior": "none"
+      },
+      "CookiesConfig": {
+        "CookieBehavior": "none"
+      },
+      "QueryStringsConfig": {
+        "QueryStringBehavior": "none"
+      }
+    }
+  }
+}

@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.RepositoryBatchTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:24.151Z" hostname="MacBook-Pro-5.local" time="0.001">
+  <properties />
+  <testcase name="conditionalPublicationCannotPrecedePendingContent()" classname="myos.better.RepositoryBatchTest" time="0.0" />
+  <testcase name="outboxPublicationCannotExposeAnUnflushedOwnerIndex()" classname="myos.better.RepositoryBatchTest" time="0.0" />
+  <testcase name="onlyAcknowledgedPagesEnterTheSharedCache()" classname="myos.better.RepositoryBatchTest" time="0.001" />
+  </testsuite>

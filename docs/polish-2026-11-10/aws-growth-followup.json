@@ -1,0 +1,637 @@
+{
+  "status": "COMPLETE",
+  "runId": "growth-71a3ed4ec9be",
+  "fixture": "IncrementalDocuments/Documents Clause",
+  "requestSemantics": "stable-initial-lineage",
+  "targetChildren": 10,
+  "origin": "https://d2buikczdox1rt.cloudfront.net",
+  "release": "66d9d21516b6c2c1916d48a501a79860d33fb003b1cc0c961c70487f54cf9497",
+  "startedAt": "2026-11-10T09:05:25.552514+00:00",
+  "sourceSha256": "2abca4066abd607110f02e0b8f31f077748599d3ec784df2b14eed756c552c8c",
+  "verifiedAdditions": 10,
+  "verifiedProbes": 6,
+  "root": "graph-fast-e21aeee8c1b752c554d12a23e9334fcf4dda9c4384234d52",
+  "bootstrapMillis": 1784.978792000004,
+  "timeline": "GVYakK89ZiqB3VJ1oJfLDeFg4Hvyqgw29VWGtEpoqbQL",
+  "verifiedChildPaths": 10,
+  "finalStats": {
+    "added": 10,
+    "lastAdded": "counter-10",
+    "lastChild": "counter-10",
+    "lastProbe": "growth-71a3ed4ec9be-probe-10-10-1",
+    "total": 6
+  },
+  "finishedAt": "2026-11-10T09:06:27.949622+00:00",
+  "checkpoints": [
+    {
+      "population": 10,
+      "samples": 6,
+      "medianMillis": 1553.6718955000026,
+      "minimumMillis": 1396.5462079999895,
+      "maximumMillis": 1633.5657499999884,
+      "memoryBytes": 2158055424,
+      "fullGCDelta": 0.0
+    }
+  ],
+  "additionSamples": [
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:33.360119+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 258.683750000003,
+      "population": 1,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 434.19270800000476,
+      "submitServerTiming": "app;dur=181.818",
+      "entry": "66MLr7JY3WWRjgjosRZWPf9eHAxAJuBzFSMt9Fn3kbLf",
+      "parentObservedMillis": 1707.2601250000048,
+      "polls": 3,
+      "rootBefore": 1,
+      "rootAfter": 2,
+      "targetBefore": 1,
+      "targetAfter": 2,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1984.3325420000042,
+      "rootServer": {
+        "executionMillis": 357.568144,
+        "gas": 102209,
+        "inputToPublishMillis": 807.4531555175781
+      },
+      "targetServer": {
+        "executionMillis": 357.568144,
+        "gas": 102209,
+        "inputToPublishMillis": 807.4531555175781
+      },
+      "finishedAt": "2026-11-10T09:05:35.345364+00:00",
+      "stats": {
+        "added": 1,
+        "lastAdded": "counter-1",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:35.890269+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 234.58475000000334,
+      "population": 2,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 319.2312500000014,
+      "submitServerTiming": "app;dur=90.760",
+      "entry": "5pK6UYixSdLwPj8P8VXSbfBbiq4H7gcpr3x2VFWr8j9t",
+      "parentObservedMillis": 1472.3074170000032,
+      "polls": 3,
+      "rootBefore": 2,
+      "rootAfter": 3,
+      "targetBefore": 2,
+      "targetAfter": 3,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1733.3084580000034,
+      "rootServer": {
+        "executionMillis": 263.915239,
+        "gas": 102209,
+        "inputToPublishMillis": 568.5291290283203
+      },
+      "targetServer": {
+        "executionMillis": 263.915239,
+        "gas": 102209,
+        "inputToPublishMillis": 568.5291290283203
+      },
+      "finishedAt": "2026-11-10T09:05:37.624826+00:00",
+      "stats": {
+        "added": 2,
+        "lastAdded": "counter-2",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:38.191133+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 240.58649999999915,
+      "population": 3,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 337.6359579999999,
+      "submitServerTiming": "app;dur=96.740",
+      "entry": "5UgDWXvN7JCwZ1D9bM47mHWkfMk2wwRvjGSkwYvztXwW",
+      "parentObservedMillis": 1175.5854580000005,
+      "polls": 2,
+      "rootBefore": 3,
+      "rootAfter": 4,
+      "targetBefore": 3,
+      "targetAfter": 4,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1434.8312080000055,
+      "rootServer": {
+        "executionMillis": 231.634708,
+        "gas": 102209,
+        "inputToPublishMillis": 494.0910339355469
+      },
+      "targetServer": {
+        "executionMillis": 231.634708,
+        "gas": 102209,
+        "inputToPublishMillis": 494.0910339355469
+      },
+      "finishedAt": "2026-11-10T09:05:39.627413+00:00",
+      "stats": {
+        "added": 3,
+        "lastAdded": "counter-3",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:40.126984+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 258.8736659999995,
+      "population": 4,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 313.3992079999999,
+      "submitServerTiming": "app;dur=88.299",
+      "entry": "TKb5jGtKJCMerw6kuU6r169gRxHnefJuEeREnYsS572",
+      "parentObservedMillis": 1563.4662080000012,
+      "polls": 3,
+      "rootBefore": 4,
+      "rootAfter": 5,
+      "targetBefore": 4,
+      "targetAfter": 5,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1851.679125000004,
+      "rootServer": {
+        "executionMillis": 277.743387,
+        "gas": 102208,
+        "inputToPublishMillis": 577.1651268005371
+      },
+      "targetServer": {
+        "executionMillis": 277.743387,
+        "gas": 102208,
+        "inputToPublishMillis": 577.1651268005371
+      },
+      "finishedAt": "2026-11-10T09:05:41.979512+00:00",
+      "stats": {
+        "added": 4,
+        "lastAdded": "counter-4",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:42.450009+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 231.5253749999968,
+      "population": 5,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 318.34629099999745,
+      "submitServerTiming": "app;dur=93.616",
+      "entry": "6kNsuJoALzGC6bujF9TxNMHfA3zv5GFwkoXAEE9kZzqH",
+      "parentObservedMillis": 1190.2738749999955,
+      "polls": 2,
+      "rootBefore": 5,
+      "rootAfter": 6,
+      "targetBefore": 5,
+      "targetAfter": 6,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1422.0940829999975,
+      "rootServer": {
+        "executionMillis": 252.510038,
+        "gas": 102209,
+        "inputToPublishMillis": 533.2651138305664
+      },
+      "targetServer": {
+        "executionMillis": 252.510038,
+        "gas": 102209,
+        "inputToPublishMillis": 533.2651138305664
+      },
+      "finishedAt": "2026-11-10T09:05:43.872926+00:00",
+      "stats": {
+        "added": 5,
+        "lastAdded": "counter-5",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:44.412673+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 258.56504200000074,
+      "population": 6,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 314.56112500000444,
+      "submitServerTiming": "app;dur=89.874",
+      "entry": "3LosAxs726swHp5ntvVrjfWqbNhPaUB4agwf5E2fksvH",
+      "parentObservedMillis": 1201.3782499999977,
+      "polls": 2,
+      "rootBefore": 6,
+      "rootAfter": 7,
+      "targetBefore": 6,
+      "targetAfter": 7,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1457.7608330000019,
+      "rootServer": {
+        "executionMillis": 243.386029,
+        "gas": 102209,
+        "inputToPublishMillis": 537.1220111846924
+      },
+      "targetServer": {
+        "executionMillis": 243.386029,
+        "gas": 102209,
+        "inputToPublishMillis": 537.1220111846924
+      },
+      "finishedAt": "2026-11-10T09:05:45.871928+00:00",
+      "stats": {
+        "added": 6,
+        "lastAdded": "counter-6",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:46.351988+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 240.3303749999992,
+      "population": 7,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 316.12604099999686,
+      "submitServerTiming": "app;dur=91.214",
+      "entry": "DXELok1a8q62p7QNB9T8LHZwqh4yyE8KA6QjdWjMwbb5",
+      "parentObservedMillis": 1163.616458,
+      "polls": 2,
+      "rootBefore": 7,
+      "rootAfter": 8,
+      "targetBefore": 7,
+      "targetAfter": 8,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1394.661707999994,
+      "rootServer": {
+        "executionMillis": 219.957235,
+        "gas": 102209,
+        "inputToPublishMillis": 509.92798805236816
+      },
+      "targetServer": {
+        "executionMillis": 219.957235,
+        "gas": 102209,
+        "inputToPublishMillis": 509.92798805236816
+      },
+      "finishedAt": "2026-11-10T09:05:47.747857+00:00",
+      "stats": {
+        "added": 7,
+        "lastAdded": "counter-7",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:48.349744+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 349.85108300000434,
+      "population": 8,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 310.24450000000314,
+      "submitServerTiming": "app;dur=84.941",
+      "entry": "PQevv9Yu62WmyxSCaNuotwhSxkVmhTTipGiBswrLwgf",
+      "parentObservedMillis": 1228.3641659999987,
+      "polls": 2,
+      "rootBefore": 8,
+      "rootAfter": 9,
+      "targetBefore": 8,
+      "targetAfter": 9,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1486.6192910000038,
+      "rootServer": {
+        "executionMillis": 234.277684,
+        "gas": 102209,
+        "inputToPublishMillis": 498.02398681640625
+      },
+      "targetServer": {
+        "executionMillis": 234.277684,
+        "gas": 102209,
+        "inputToPublishMillis": 498.02398681640625
+      },
+      "finishedAt": "2026-11-10T09:05:49.837413+00:00",
+      "stats": {
+        "added": 8,
+        "lastAdded": "counter-8",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:50.309538+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 232.70758299999983,
+      "population": 9,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 317.44941699999885,
+      "submitServerTiming": "app;dur=87.901",
+      "entry": "7csgrPnxED7pg4BuYM61q7TWe58m2LRh6sTXnv4KsbQb",
+      "parentObservedMillis": 1287.4072090000013,
+      "polls": 2,
+      "rootBefore": 9,
+      "rootAfter": 10,
+      "targetBefore": 9,
+      "targetAfter": 10,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1529.7059170000011,
+      "rootServer": {
+        "executionMillis": 236.495451,
+        "gas": 102209,
+        "inputToPublishMillis": 525.7759094238281
+      },
+      "targetServer": {
+        "executionMillis": 236.495451,
+        "gas": 102209,
+        "inputToPublishMillis": 525.7759094238281
+      },
+      "finishedAt": "2026-11-10T09:05:51.840398+00:00",
+      "stats": {
+        "added": 9,
+        "lastAdded": "counter-9",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:52.387078+00:00",
+      "operation": "createChild",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 260.22066600000215,
+      "population": 10,
+      "kind": "addition",
+      "attempts": 1,
+      "submitMillis": 314.9772919999947,
+      "submitServerTiming": "app;dur=88.588",
+      "entry": "dUQewpeUtJe64WHUr5BvD4pFXv9SPXmaMi6Gt8AU5ru",
+      "parentObservedMillis": 1688.2812500000027,
+      "polls": 3,
+      "rootBefore": 10,
+      "rootAfter": 11,
+      "targetBefore": 10,
+      "targetAfter": 11,
+      "rootInputMode": "fast",
+      "verifiedMillis": 1920.8203339999982,
+      "rootServer": {
+        "executionMillis": 267.662834,
+        "gas": 102244,
+        "inputToPublishMillis": 731.4560413360596
+      },
+      "targetServer": {
+        "executionMillis": 267.662834,
+        "gas": 102244,
+        "inputToPublishMillis": 731.4560413360596
+      },
+      "finishedAt": "2026-11-10T09:05:54.309502+00:00",
+      "stats": {
+        "added": 10,
+        "lastAdded": "counter-10",
+        "lastChild": "",
+        "lastProbe": "",
+        "total": 0
+      }
+    }
+  ],
+  "probeSamples": [
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:05:59.990979+00:00",
+      "operation": "increment",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 525.9528750000015,
+      "population": 10,
+      "childIndex": 1,
+      "repeat": 0,
+      "kind": "probe",
+      "attempts": 1,
+      "submitMillis": 588.092582999991,
+      "submitServerTiming": "app;dur=100.008",
+      "entry": "5EqXJiJ943FKodufHm25WX795DaoC4oFcsf2HVCmezTf",
+      "parentObservedMillis": 1396.5462079999895,
+      "polls": 2,
+      "rootBefore": 11,
+      "rootAfter": 12,
+      "targetBefore": 1,
+      "targetAfter": 2,
+      "rootInputMode": "owner-local",
+      "verifiedMillis": 2387.588791999988,
+      "rootServer": {
+        "executionMillis": 108.68701,
+        "gas": 3291,
+        "inputToPublishMillis": 677.8287887573242
+      },
+      "targetServer": {
+        "executionMillis": 41.554325,
+        "gas": 988,
+        "inputToPublishMillis": 489.8498058319092
+      },
+      "finishedAt": "2026-11-10T09:06:02.379793+00:00"
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:06:03.407036+00:00",
+      "operation": "increment",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 521.120707999998,
+      "population": 10,
+      "childIndex": 1,
+      "repeat": 1,
+      "kind": "probe",
+      "attempts": 1,
+      "submitMillis": 353.7297499999994,
+      "submitServerTiming": "app;dur=69.305",
+      "entry": "86sxjvss3mAMkqdEEHaLiQ8eJNjbYfrvVMvBNb2FuEtG",
+      "parentObservedMillis": 1633.5657499999884,
+      "polls": 3,
+      "rootBefore": 12,
+      "rootAfter": 13,
+      "targetBefore": 2,
+      "targetAfter": 3,
+      "rootInputMode": "owner-local",
+      "verifiedMillis": 2638.5093329999877,
+      "rootServer": {
+        "executionMillis": 146.292312,
+        "gas": 3283,
+        "inputToPublishMillis": 728.7969589233398
+      },
+      "targetServer": {
+        "executionMillis": 61.149881,
+        "gas": 988,
+        "inputToPublishMillis": 501.79100036621094
+      },
+      "finishedAt": "2026-11-10T09:06:06.047077+00:00"
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:06:07.845199+00:00",
+      "operation": "increment",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 490.93583299999466,
+      "population": 10,
+      "childIndex": 5,
+      "repeat": 0,
+      "kind": "probe",
+      "attempts": 1,
+      "submitMillis": 350.374875,
+      "submitServerTiming": "app;dur=77.715",
+      "entry": "E2DsAQiyCGJCuyFirtHtw5YjyWGmMssvfy5dUP9Pq558",
+      "parentObservedMillis": 1553.4731249999963,
+      "polls": 3,
+      "rootBefore": 13,
+      "rootAfter": 14,
+      "targetBefore": 1,
+      "targetAfter": 2,
+      "rootInputMode": "owner-local",
+      "verifiedMillis": 2606.5257080000065,
+      "rootServer": {
+        "executionMillis": 116.300624,
+        "gas": 3291,
+        "inputToPublishMillis": 737.5268936157227
+      },
+      "targetServer": {
+        "executionMillis": 50.268061,
+        "gas": 988,
+        "inputToPublishMillis": 542.6819324493408
+      },
+      "finishedAt": "2026-11-10T09:06:10.452850+00:00"
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:06:11.426693+00:00",
+      "operation": "increment",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 490.53612500000554,
+      "population": 10,
+      "childIndex": 5,
+      "repeat": 1,
+      "kind": "probe",
+      "attempts": 1,
+      "submitMillis": 294.8537080000051,
+      "submitServerTiming": "app;dur=66.498",
+      "entry": "4sF9fcLKBAFJiZgHHComMBfXgTxeVzCAnp9bKkQ2ikAn",
+      "parentObservedMillis": 1600.2818750000074,
+      "polls": 3,
+      "rootBefore": 14,
+      "rootAfter": 15,
+      "targetBefore": 2,
+      "targetAfter": 3,
+      "rootInputMode": "owner-local",
+      "verifiedMillis": 2623.0556659999993,
+      "rootServer": {
+        "executionMillis": 99.668039,
+        "gas": 3283,
+        "inputToPublishMillis": 672.1608638763428
+      },
+      "targetServer": {
+        "executionMillis": 65.334623,
+        "gas": 988,
+        "inputToPublishMillis": 495.87106704711914
+      },
+      "finishedAt": "2026-11-10T09:06:14.051363+00:00"
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:06:16.005715+00:00",
+      "operation": "increment",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 519.1924169999993,
+      "population": 10,
+      "childIndex": 10,
+      "repeat": 0,
+      "kind": "probe",
+      "attempts": 1,
+      "submitMillis": 339.67258300000935,
+      "submitServerTiming": "app;dur=77.243",
+      "entry": "uzzQbw3wRaphp1pBBtaPFrx5WASuWz5g7YNygXRdvLD",
+      "parentObservedMillis": 1553.870666000009,
+      "polls": 3,
+      "rootBefore": 15,
+      "rootAfter": 16,
+      "targetBefore": 1,
+      "targetAfter": 2,
+      "rootInputMode": "owner-local",
+      "verifiedMillis": 2659.7295830000007,
+      "rootServer": {
+        "executionMillis": 106.61818,
+        "gas": 3294,
+        "inputToPublishMillis": 688.6160373687744
+      },
+      "targetServer": {
+        "executionMillis": 42.131045,
+        "gas": 988,
+        "inputToPublishMillis": 505.4168701171875
+      },
+      "finishedAt": "2026-11-10T09:06:18.666971+00:00"
+    },
+    {
+      "status": "COMPLETE",
+      "startedAt": "2026-11-10T09:06:19.639462+00:00",
+      "operation": "increment",
+      "requestSemantics": "stable-initial-lineage",
+      "lookupMillis": 467.27829200000315,
+      "population": 10,
+      "childIndex": 10,
+      "repeat": 1,
+      "kind": "probe",
+      "attempts": 1,
+      "submitMillis": 285.79508299999645,
+      "submitServerTiming": "app;dur=61.382",
+      "entry": "AWqs7HgqMxvmpoC7e8sekvWyBSPBg48jr9FLphkCwc4u",
+      "parentObservedMillis": 1514.540291000003,
+      "polls": 3,
+      "rootBefore": 16,
+      "rootAfter": 17,
+      "targetBefore": 2,
+      "targetAfter": 3,
+      "rootInputMode": "owner-local",
+      "verifiedMillis": 2495.006458000006,
+      "rootServer": {
+        "executionMillis": 138.69117,
+        "gas": 3286,
+        "inputToPublishMillis": 679.9449920654297
+      },
+      "targetServer": {
+        "executionMillis": 84.203738,
+        "gas": 988,
+        "inputToPublishMillis": 469.8820114135742
+      },
+      "finishedAt": "2026-11-10T09:06:22.136064+00:00"
+    }
+  ],
+  "additionMedianMillis": 1257.8856875000001,
+  "rootCreationExecutionMedianMillis": 247.9480335,
+  "rootProbeExecutionMedianMillis": 112.493817
+}

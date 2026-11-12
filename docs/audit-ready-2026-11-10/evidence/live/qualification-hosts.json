@@ -1,0 +1,42 @@
+[
+  {
+    "instance": "i-022490dc48270e2a6",
+    "state": "terminated"
+  },
+  {
+    "instance": "i-0be667c0fd9ffc419",
+    "state": "terminated"
+  },
+  {
+    "instance": "i-090d0064ee0e14ec3",
+    "state": "terminated"
+  },
+  {
+    "instance": "i-096ead00bbc678440",
+    "state": "terminated"
+  },
+  {
+    "instance": "i-087bf293df7d5c4e8",
+    "state": "terminated"
+  },
+  {
+    "instance": "i-0798a400cf9c319df",
+    "state": "terminated"
+  },
+  {
+    "instance": "i-0118b8c98fd971b0e",
+    "state": "terminated"
+  },
+  {
+    "instance": "i-0bd7f42c8db3516bb",
+    "state": "terminated"
+  },
+  {
+    "instance": "i-0fc9423e311416e22",
+    "state": "terminated"
+  },
+  {
+    "instance": "i-067c1bd568577e5ba",
+    "state": "terminated"
+  }
+]

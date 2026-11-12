@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.NativeReceivingTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:47.914Z" hostname="MacBook-Pro-5.local" time="0.024">
+  <properties />
+  <testcase name="committedChildIsReceivedAfterProcessorRestartWithoutExecutingItAgain()" classname="myos.local.NativeReceivingTest" time="0.023" />
+  </testsuite>

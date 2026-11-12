@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractIntegerTest" tests="13" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:55.354Z" hostname="MacBook-Pro-5.local" time="0.006">
+  <properties />
+  <testcase name="nonIntegerRecordsAndOversizedIntegersRetainTheirDistinctFailures()" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[1] false" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[2] true" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[1] &quot;-1&quot;, &quot;0&quot;, &quot;-1&quot;" classname="blue.ContractIntegerTest" time="0.002" />
+  <testcase name="[2] &quot;11&quot;, &quot;0&quot;, &quot;10&quot;" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[3] &quot;5&quot;, &quot;6&quot;, &quot;10&quot;" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[4] &quot;0&quot;, &quot;1&quot;, &quot;0&quot;" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[1] 0, 0, 0" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[2] 10, 10, 10" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[3] 9007199254740991, 0, 9007199254740991" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[4] 9223372036854775807, 0, -1" classname="blue.ContractIntegerTest" time="0.001" />
+  <testcase name="[5] 9223372036854775807, -9223372036854775808, 9223372036854775807" classname="blue.ContractIntegerTest" time="0.0" />
+  <testcase name="[6] -9223372036854775808, -9223372036854775808, -1" classname="blue.ContractIntegerTest" time="0.0" />
+  </testsuite>

@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.LanguageEncodingTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:01.485Z" hostname="MacBook-Pro-5.local" time="0.044">
+  <properties />
+  <testcase name="[1] null, &quot;null&quot;" classname="blue.LanguageEncodingTest" time="0.0" />
+  <testcase name="[2] true, &quot;true&quot;" classname="blue.LanguageEncodingTest" time="0.001" />
+  <testcase name="[3] 42, &quot;42&quot;" classname="blue.LanguageEncodingTest" time="0.0" />
+  <testcase name="[4] &quot;9007199254740992&quot;, &quot;\&quot;9007199254740992\&quot;&quot;" classname="blue.LanguageEncodingTest" time="0.0" />
+  <testcase name="[5] 42.0, &quot;42.0&quot;" classname="blue.LanguageEncodingTest" time="0.0" />
+  <testcase name="[6] -0.0, &quot;0.0&quot;" classname="blue.LanguageEncodingTest" time="0.0" />
+  <testcase name="[7] NumberToken[text=1.20e+3], &quot;1.20e+3&quot;" classname="blue.LanguageEncodingTest" time="0.001" />
+  <testcase name="bareListsUseArraysAndTypedListsRetainTheirFields()" classname="blue.LanguageEncodingTest" time="0.0" />
+  <testcase name="[1] &quot;?&quot;" classname="blue.LanguageEncodingTest" time="0.0" />
+  <testcase name="[2] &quot;?&quot;" classname="blue.LanguageEncodingTest" time="0.001" />
+  <testcase name="fieldOrderAndEscapesAreCanonicalWithoutChangingUnicode()" classname="blue.LanguageEncodingTest" time="0.0" />
+  <testcase name="referencesStayCollapsedEvenWhenTheyOwnACyclicBody()" classname="blue.LanguageEncodingTest" time="0.0" />
+  <testcase name="[1] 0" classname="blue.LanguageEncodingTest" time="0.012" />
+  <testcase name="[2] 1" classname="blue.LanguageEncodingTest" time="0.01" />
+  <testcase name="[3] 2" classname="blue.LanguageEncodingTest" time="0.009" />
+  <testcase name="[4] 3" classname="blue.LanguageEncodingTest" time="0.007" />
+  </testsuite>

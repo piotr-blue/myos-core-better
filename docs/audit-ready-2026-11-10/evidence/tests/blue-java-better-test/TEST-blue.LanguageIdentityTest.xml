@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.LanguageIdentityTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:01.532Z" hostname="MacBook-Pro-5.local" time="0.027">
+  <properties />
+  <testcase name="[1] 0" classname="blue.LanguageIdentityTest" time="0.006" />
+  <testcase name="[2] 1" classname="blue.LanguageIdentityTest" time="0.005" />
+  <testcase name="[3] 2" classname="blue.LanguageIdentityTest" time="0.008" />
+  <testcase name="[4] 3" classname="blue.LanguageIdentityTest" time="0.005" />
+  <testcase name="cyclicHelpersRemainScopedAndDoNotPopulateOrdinaryIdentityMetadata()" classname="blue.LanguageIdentityTest" time="0.001" />
+  <testcase name="listFoldsQuoteScopedTokensAndOrderElementBeforePrevious()" classname="blue.LanguageIdentityTest" time="0.0" />
+  </testsuite>

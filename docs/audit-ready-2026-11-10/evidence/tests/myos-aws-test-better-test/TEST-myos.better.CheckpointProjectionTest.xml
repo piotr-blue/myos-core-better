@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CheckpointProjectionTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:35.677Z" hostname="MacBook-Pro-5.local" time="0.085">
+  <properties />
+  <testcase name="anOmittedProjectionIsBoundedDuringConstructionAfterRestart()" classname="myos.better.CheckpointProjectionTest" time="0.019" />
+  <testcase name="[1] 1000" classname="myos.better.CheckpointProjectionTest" time="0.007" />
+  <testcase name="[2] 5000" classname="myos.better.CheckpointProjectionTest" time="0.006" />
+  <testcase name="[3] 10000" classname="myos.better.CheckpointProjectionTest" time="0.006" />
+  <testcase name="[4] 10000000" classname="myos.better.CheckpointProjectionTest" time="0.01" />
+  <testcase name="[1] BOUNDED" classname="myos.better.CheckpointProjectionTest" time="0.018" />
+  <testcase name="[2] EAGER" classname="myos.better.CheckpointProjectionTest" time="0.014" />
+  </testsuite>

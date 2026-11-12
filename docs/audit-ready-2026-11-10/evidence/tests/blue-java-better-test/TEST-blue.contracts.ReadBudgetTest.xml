@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.contracts.ReadBudgetTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.860Z" hostname="MacBook-Pro-5.local" time="0.06">
+  <properties />
+  <testcase name="oneExpensiveReadStillFailsAndDoesNotPoisonALaterSelectedRead()" classname="blue.contracts.ReadBudgetTest" time="0.009" />
+  <testcase name="independentReadsDoNotExhaustALifetimeAllowance()" classname="blue.contracts.ReadBudgetTest" time="0.051" />
+  </testsuite>

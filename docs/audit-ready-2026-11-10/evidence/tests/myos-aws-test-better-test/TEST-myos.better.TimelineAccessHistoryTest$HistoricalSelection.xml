@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineAccessHistoryTest$HistoricalSelection" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:28.904Z" hostname="MacBook-Pro-5.local" time="0.918">
+  <properties />
+  <testcase name="timestampTiesUseTimelineThenEntryIdentity()" classname="myos.better.TimelineAccessHistoryTest$HistoricalSelection" time="0.079" />
+  <testcase name="catchUpContinuesAcrossAttemptsAndWarmQueriesPerformNoArchiveReads()" classname="myos.better.TimelineAccessHistoryTest$HistoricalSelection" time="0.091" />
+  <testcase name="quietPollingWindowsAreBatchedWithoutSkippingPermissionChanges()" classname="myos.better.TimelineAccessHistoryTest$HistoricalSelection" time="0.545" />
+  <testcase name="theSameIdentitiesInAnotherAccountCannotReuseUnacquiredPermission()" classname="myos.better.TimelineAccessHistoryTest$HistoricalSelection" time="0.058" />
+  <testcase name="evictedChangesAndTheGapBeforeTheRetainedWindowReplayToTheSameAnswer()" classname="myos.better.TimelineAccessHistoryTest$HistoricalSelection" time="0.144" />
+  </testsuite>

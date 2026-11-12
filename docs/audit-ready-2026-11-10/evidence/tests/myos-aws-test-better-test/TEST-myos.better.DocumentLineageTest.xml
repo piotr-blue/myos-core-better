@@ -1,0 +1,20 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.DocumentLineageTest" tests="16" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:56.229Z" hostname="MacBook-Pro-5.local" time="0.511">
+  <properties />
+  <testcase name="repeatedBodyIdentityRetainsItsFirstPublication()" classname="myos.better.DocumentLineageTest" time="0.009" />
+  <testcase name="lostCommitResponseRecoversTheSameResultAndLineageWithoutRerunningBusinessCode()" classname="myos.better.DocumentLineageTest" time="0.011" />
+  <testcase name="[1] &quot;snapshot&quot;" classname="myos.better.DocumentLineageTest" time="0.006" />
+  <testcase name="[2] &quot;edition&quot;" classname="myos.better.DocumentLineageTest" time="0.005" />
+  <testcase name="[3] &quot;document&quot;" classname="myos.better.DocumentLineageTest" time="0.005" />
+  <testcase name="[4] &quot;identity&quot;" classname="myos.better.DocumentLineageTest" time="0.006" />
+  <testcase name="[5] &quot;introducedAt&quot;" classname="myos.better.DocumentLineageTest" time="0.006" />
+  <testcase name="[1] 1" classname="myos.better.DocumentLineageTest" time="0.006" />
+  <testcase name="[2] 128" classname="myos.better.DocumentLineageTest" time="0.366" />
+  <testcase name="indexingWithoutTheMatchingDocumentTransactionIsRejectedWithoutMutatingIntent()" classname="myos.better.DocumentLineageTest" time="0.005" />
+  <testcase name="initialAndCommittedIdentitiesResolveAfterRestartWithExactVersionAndAccountBounds()" classname="myos.better.DocumentLineageTest" time="0.007" />
+  <testcase name="failedInitializationPublishesNoLineageAndLegacyDocumentsRequireMigration()" classname="myos.better.DocumentLineageTest" time="0.012" />
+  <testcase name="repeatedOperationTargetsReuseABoundedHistoricalSessionWithoutCrossingVersionsOrAccounts()" classname="myos.better.DocumentLineageTest" time="0.015" />
+  <testcase name="anOlderWriterCannotLeaveAnUndetectedHoleInIndexedHistory()" classname="myos.better.DocumentLineageTest" time="0.018" />
+  <testcase name="receivingViewRetainsOneCoverageCutAndDoesNotRereadKnownMemberships()" classname="myos.better.DocumentLineageTest" time="0.006" />
+  <testcase name="aPeerAdvancingDuringIndexPreparationRetriesTheOriginalCommand()" classname="myos.better.DocumentLineageTest" time="0.023" />
+  </testsuite>

@@ -1,0 +1,7 @@
+{
+  "counter": "counter.blue",
+  "agreement": "agreement.blue",
+  "order": "order.blue",
+  "clauseTutorial": "clause-tutorial/agreement.blue",
+  "incrementalClauseTutorial": "clause-tutorial/agreement-incremental.blue"
+}

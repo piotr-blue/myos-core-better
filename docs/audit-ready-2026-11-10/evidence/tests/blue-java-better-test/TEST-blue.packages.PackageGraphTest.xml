@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.packages.PackageGraphTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.662Z" hostname="MacBook-Pro-5.local" time="0.034">
+  <properties />
+  <testcase name="[1] &quot;{&quot;" classname="blue.packages.PackageGraphTest" time="0.003" />
+  <testcase name="[2] &quot;{\&quot;x\&quot;:1,\&quot;x\&quot;:2}&quot;" classname="blue.packages.PackageGraphTest" time="0.004" />
+  <testcase name="[3] &quot;{\&quot;x\&quot;:1}&quot;" classname="blue.packages.PackageGraphTest" time="0.004" />
+  <testcase name="transitiveLanguageEvidenceDoesNotReplaceAnExplicitImport()" classname="blue.packages.PackageGraphTest" time="0.005" />
+  <testcase name="everyBranchMustSelectTheSameExactLanguageRelease()" classname="blue.packages.PackageGraphTest" time="0.005" />
+  <testcase name="[1] true" classname="blue.packages.PackageGraphTest" time="0.006" />
+  <testcase name="[2] false" classname="blue.packages.PackageGraphTest" time="0.005" />
+  </testsuite>

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.examples.TutorialScenariosTest" tests="9" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.414Z" hostname="MacBook-Pro-5.local" time="0.008">
+  <properties />
+  <testcase name="01 Identity" classname="blue.examples.TutorialScenariosTest" time="0.001" />
+  <testcase name="02 References and evidence" classname="blue.examples.TutorialScenariosTest" time="0.001" />
+  <testcase name="03 Inheritance" classname="blue.examples.TutorialScenariosTest" time="0.0" />
+  <testcase name="04 Lists" classname="blue.examples.TutorialScenariosTest" time="0.001" />
+  <testcase name="07 Reference transparency" classname="blue.examples.TutorialScenariosTest" time="0.0" />
+  <testcase name="09 Generalization" classname="blue.examples.TutorialScenariosTest" time="0.001" />
+  <testcase name="12 Cyclic content" classname="blue.examples.TutorialScenariosTest" time="0.0" />
+  <testcase name="16 Types and selective providers" classname="blue.examples.TutorialScenariosTest" time="0.001" />
+  <testcase name="17 Schema evolution" classname="blue.examples.TutorialScenariosTest" time="0.001" />
+  </testsuite>

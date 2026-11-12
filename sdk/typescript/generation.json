@@ -1,0 +1,9 @@
+{
+  "source": "core-ui/public/openapi.json",
+  "sourceSha256": "bf9dd82f4159dacc842dfc3181b7d8904fbbc9c6416021df877acedd0aa0726d",
+  "generatorVersion": "7.26.0",
+  "generatorSha256": "1760050094997b9cc790cc1350be095f15da8c08a996b184d3eadc4ccda5e35e",
+  "configSha256": "7597fe64aefba0b047265653ef75a890079c6dfbabc98b8983f2879fffc7b6f8",
+  "generationScriptSha256": "3cda003751f627d4d05e42dd26d0631ba09aedc0b7de909f42f310255fd399ca",
+  "schemaPreparationSha256": "ad84f23eb9357039f9cf8f531fe45aa86bdeac7c04229db141fcc295cada8d93"
+}

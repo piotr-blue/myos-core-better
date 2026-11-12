@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractSnapshotCommitmentTest" tests="32" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:58.735Z" hostname="MacBook-Pro-5.local" time="0.045">
+  <properties />
+  <testcase name="&quot;unchanged&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.001" />
+  <testcase name="&quot;unchanged&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;root&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;root&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;release&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.001" />
+  <testcase name="&quot;release&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;generation&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;generation&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;revision&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;revision&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;runtimes&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;runtimes&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.001" />
+  <testcase name="&quot;new member&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;new member&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;removed member&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;removed member&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.001" />
+  <testcase name="&quot;replaced member&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;replaced member&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;birth&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;birth&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.001" />
+  <testcase name="&quot;channel life&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;channel life&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;channel serial&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;channel serial&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.001" />
+  <testcase name="&quot;edge serial&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;edge serial&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;removed edge&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;removed edge&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;edge generation&quot;, previously encoded=false" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="&quot;edge generation&quot;, previously encoded=true" classname="blue.ContractSnapshotCommitmentTest" time="0.0" />
+  <testcase name="growingAndEditedSnapshotsRetainCanonicalCommitmentsAndCopyIsolation()" classname="blue.ContractSnapshotCommitmentTest" time="0.034" />
+  <testcase name="preparedProofRecordsKeepCanonicalBytesAndOwnTheirInput()" classname="blue.ContractSnapshotCommitmentTest" time="0.001" />
+  </testsuite>

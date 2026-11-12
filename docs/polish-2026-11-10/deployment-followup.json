@@ -1,0 +1,14 @@
+{
+  "status": "Success",
+  "releaseSha256": "66d9d21516b6c2c1916d48a501a79860d33fb003b1cc0c961c70487f54cf9497",
+  "ssmCommandId": "7721993f-6a93-4536-8b3c-cfc5e29cb843",
+  "url": "https://d2buikczdox1rt.cloudfront.net",
+  "runtimeProfile": "console-native",
+  "workers": 2,
+  "independentOwners": true,
+  "gasSchedule": "contracts-semantic-gas",
+  "previousRelease": "ff18c6420e3671fed0b6b71eb1af5c09354714262e65f016131af81ee7020863",
+  "sameInfrastructureAndCustody": true,
+  "awsJvm": "Corretto 25.0.5",
+  "healthOutput": "{\"canonicalGraphs\": true, \"combinedAcknowledgements\": true, \"durable\": true, \"edition\": \"AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup\", \"nativeAdmission\": true, \"newOwnerGasSchedule\": \"contracts-semantic-gas\", \"status\": \"ok\", \"supportedEditions\": [\"AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup\"], \"timelineAutomatic\": true, \"timelineProcessing\": true, \"workers\": 2}"
+}

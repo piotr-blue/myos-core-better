@@ -1,0 +1,27 @@
+{
+  "blue-java-better": {
+    "identical": true,
+    "sha256": {
+      "build/libs/blue-java-better-0.1.0-SNAPSHOT-javadoc.jar": "e79105a9bd0b6caeede3c14e44eb7cb37f6c30f5624c5e16a19cc8125a5bbf1f",
+      "build/libs/blue-java-better-0.1.0-SNAPSHOT-sources.jar": "9079898af75f701518a6d86d07964ad6772c40cb47afba980d43c19b2a3de579",
+      "build/libs/blue-java-better-0.1.0-SNAPSHOT.jar": "00acb8f0a86c1eab33e048dd6d0492a290160b29dc12b9c5a6ce9ed8978e7693"
+    }
+  },
+  "myos-simplified": {
+    "identical": true,
+    "sha256": {
+      "build/libs/myos-simplified-0.1.0-SNAPSHOT.jar": "91087c4c877d06281806bda30abf42c2850f2e2227668061b74a022d3142f1aa",
+      "build/distributions/myos-simplified-0.1.0-SNAPSHOT.zip": "b901aee979df777f7420497105f96c0a4f441536990b6f9eb1f8fd9d99767bae",
+      "build/distributions/myos-simplified-0.1.0-SNAPSHOT.tar": "d9bfb69156f38271be78b747782495db1367cd86ad55aa8f05c61720c8e91c69"
+    }
+  },
+  "myos-aws-test-better": {
+    "identical": true,
+    "sha256": {
+      "build/libs/myos-core-better-0.1.0-experiment-qualification.jar": "bfb61b55bef09e8e8846288056bbf213b3d65762c241561c97e30feaf6f33016",
+      "build/libs/myos-core-better-0.1.0-experiment.jar": "3daddcf2f94dd6a5d3c3ef879503811c7faf7b5d483ed14cbb4d2b429eb06f82",
+      "build/distributions/myos-core-better-0.1.0-experiment.tar": "fa61d7918c69f190d52b75c28c480fe6a471cf7dba0ee06a4b9006f1190e579a",
+      "build/distributions/myos-core-better-0.1.0-experiment.zip": "1055686a1073e073fb54b6e6b3f669dd5d3ebeb2f2dcc49e2fb33533adda9e56"
+    }
+  }
+}

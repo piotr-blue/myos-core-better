@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineArchiveTest$ProtectedRecovery" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:29.986Z" hostname="MacBook-Pro-5.local" time="0.65">
+  <properties />
+  <testcase name="restartReadsOnlyTheProtectedHeadAndRetainsQuietNavigation()" classname="myos.better.TimelineArchiveTest$ProtectedRecovery" time="0.208" />
+  <testcase name="recoveryCannotBeSubstitutedForAnotherCommittedBatch()" classname="myos.better.TimelineArchiveTest$ProtectedRecovery" time="0.022" />
+  <testcase name="ownerProjectionSkipsVerifiedEmptyRangesInsteadOfReadingEveryCheckpoint()" classname="myos.better.TimelineArchiveTest$ProtectedRecovery" time="0.189" />
+  <testcase name="oldVerifiedHostRecordsMigrateWithoutReplayingTheSourceHistory()" classname="myos.better.TimelineArchiveTest$ProtectedRecovery" time="0.019" />
+  <testcase name="routingSurvivesColdRecoveryAndLegacyArchivesUseTheNativeMessageGrammar()" classname="myos.better.TimelineArchiveTest$ProtectedRecovery" time="0.013" />
+  <testcase name="migratedQuietHistoryIsLocatedWithoutScanningAndOverlappingViewsCoalesce()" classname="myos.better.TimelineArchiveTest$ProtectedRecovery" time="0.199" />
+  </testsuite>

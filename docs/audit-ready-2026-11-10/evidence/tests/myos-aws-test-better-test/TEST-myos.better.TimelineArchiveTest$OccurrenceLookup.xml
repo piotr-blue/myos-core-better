@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineArchiveTest$OccurrenceLookup" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:30.636Z" hostname="MacBook-Pro-5.local" time="0.126">
+  <properties />
+  <testcase name="multipleEntriesInOneBatchAndUnclosedSuccessorsKeepTheirOriginalOccurrences()" classname="myos.better.TimelineArchiveTest$OccurrenceLookup" time="0.01" />
+  <testcase name="historyLookupIsLogarithmicAndContentPresenceNeverEstablishesMembership()" classname="myos.better.TimelineArchiveTest$OccurrenceLookup" time="0.115" />
+  </testsuite>

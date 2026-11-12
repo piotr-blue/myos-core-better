@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.RetainedCompositionTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:49.634Z" hostname="MacBook-Pro-5.local" time="0.348">
+  <properties />
+  <testcase name="independentlyInitializedParentsKeepTheirSharedSourceIdentity()" classname="myos.local.RetainedCompositionTest" time="0.135" />
+  <testcase name="receiverPreservesAllTurnBatchesFromAMultiRoundCycle()" classname="myos.local.RetainedCompositionTest" time="0.212" />
+  </testsuite>

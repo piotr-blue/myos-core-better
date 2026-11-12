@@ -1,0 +1,20 @@
+{
+  "suite": "myos-core-better application",
+  "tests": {
+    "tests": 841,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "testFiles": 228,
+  "commands": [
+    "format check installDist --offline --no-parallel",
+    "format checkFormat qualificationJar --offline --no-parallel"
+  ],
+  "javaVersion": 25,
+  "qualificationInspection": "read-only",
+  "libraryFullSuiteRerun": false,
+  "traceBusinessCalls": 4,
+  "traceBusinessCallsPassed": 4,
+  "sourceFilesPromoted": 12
+}

@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.examples.PackageExamplesTest" tests="18" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.267Z" hostname="MacBook-Pro-5.local" time="0.131">
+  <properties />
+  <testcase name="01. Pinned local archive" classname="blue.examples.PackageExamplesTest" time="0.008" />
+  <testcase name="02. Classpath resource" classname="blue.examples.PackageExamplesTest" time="0.003" />
+  <testcase name="03. Caller-owned stream" classname="blue.examples.PackageExamplesTest" time="0.003" />
+  <testcase name="04. Prepared directory" classname="blue.examples.PackageExamplesTest" time="0.004" />
+  <testcase name="05. Package metadata and documentation" classname="blue.examples.PackageExamplesTest" time="0.002" />
+  <testcase name="06. Mount and read YAML" classname="blue.examples.PackageExamplesTest" time="0.003" />
+  <testcase name="07. YAML, JSON and direct specialization share identity" classname="blue.examples.PackageExamplesTest" time="0.001" />
+  <testcase name="08. Two packages, one definition" classname="blue.examples.PackageExamplesTest" time="0.004" />
+  <testcase name="09. Inheritance across package imports" classname="blue.examples.PackageExamplesTest" time="0.002" />
+  <testcase name="10. Local extension of a published type" classname="blue.examples.PackageExamplesTest" time="0.002" />
+  <testcase name="11. Explicit import namespaces" classname="blue.examples.PackageExamplesTest" time="0.002" />
+  <testcase name="12. Coexisting pinned versions" classname="blue.examples.PackageExamplesTest" time="0.006" />
+  <testcase name="13. Arbitrary collapsed content" classname="blue.examples.PackageExamplesTest" time="0.005" />
+  <testcase name="14. Three list edits, one canonical form" classname="blue.examples.PackageExamplesTest" time="0.002" />
+  <testcase name="15. Cyclic evidence from a package" classname="blue.examples.PackageExamplesTest" time="0.001" />
+  <testcase name="16. Immutable documents after loading" classname="blue.examples.PackageExamplesTest" time="0.001" />
+  <testcase name="17. Bounded caching and pin failures" classname="blue.examples.PackageExamplesTest" time="0.004" />
+  <testcase name="18. Real Contracts, BEX and Language declarations" classname="blue.examples.PackageExamplesTest" time="0.075" />
+  </testsuite>

@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractManagedBoundaryTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:55.486Z" hostname="MacBook-Pro-5.local" time="0.02">
+  <properties />
+  <testcase name="[1] &quot;/paidTotal&quot;, &quot;true&quot;" classname="blue.ContractManagedBoundaryTest" time="0.006" />
+  <testcase name="[2] &quot;/metadata/a~1b/count&quot;, &quot;true&quot;" classname="blue.ContractManagedBoundaryTest" time="0.003" />
+  <testcase name="[3] &quot;/children/a~1b&quot;, &quot;true&quot;" classname="blue.ContractManagedBoundaryTest" time="0.004" />
+  <testcase name="[4] &quot;/children/a~1b/count&quot;, &quot;false&quot;" classname="blue.ContractManagedBoundaryTest" time="0.002" />
+  <testcase name="[5] &quot;/children/a~0b/count&quot;, &quot;false&quot;" classname="blue.ContractManagedBoundaryTest" time="0.002" />
+  <testcase name="[6] &quot;/children/a~01b/count&quot;, &quot;false&quot;" classname="blue.ContractManagedBoundaryTest" time="0.002" />
+  </testsuite>

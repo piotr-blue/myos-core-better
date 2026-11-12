@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.contracts.NativeStepTest" tests="11" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:04.771Z" hostname="MacBook-Pro-5.local" time="0.062">
+  <properties />
+  <testcase name="compactionPreservesNativeCodeAndTheExactSubsequentTransition()" classname="blue.contracts.NativeStepTest" time="0.013" />
+  <testcase name="handlerAndGasFailuresLeaveNoPartialEffects()" classname="blue.contracts.NativeStepTest" time="0.003" />
+  <testcase name="rejectsExecutionWithoutInstalledCodeAndConflictingRegistration()" classname="blue.contracts.NativeStepTest" time="0.003" />
+  <testcase name="terminationAppliesQueuedChangesAndStopsSubsequentSteps()" classname="blue.contracts.NativeStepTest" time="0.003" />
+  <testcase name="admissionRejectsANativeTypeOutsideTheContractsHierarchy()" classname="blue.contracts.NativeStepTest" time="0.0" />
+  <testcase name="builderMutationCannotChangeAnInstalledTariff()" classname="blue.contracts.NativeStepTest" time="0.005" />
+  <testcase name="subtypeExecutionRequiresExplicitOptIn()" classname="blue.contracts.NativeStepTest" time="0.004" />
+  <testcase name="explicitRejectionCarriesItsReasonAndClosesTheContext()" classname="blue.contracts.NativeStepTest" time="0.003" />
+  <testcase name="executesAtomicallyWithBexAndRestoresTheExactBinding()" classname="blue.contracts.NativeStepTest" time="0.022" />
+  <testcase name="contextCannotEscapeAndEffectsSnapshotCallerData()" classname="blue.contracts.NativeStepTest" time="0.003" />
+  <testcase name="eventsCallsAndEvaluatedObjectsAreDetachedPublicJavaValues()" classname="blue.contracts.NativeStepTest" time="0.002" />
+  </testsuite>

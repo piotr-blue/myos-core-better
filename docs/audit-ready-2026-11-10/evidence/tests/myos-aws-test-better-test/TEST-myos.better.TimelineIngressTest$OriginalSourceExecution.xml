@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineIngressTest$OriginalSourceExecution" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:53.282Z" hostname="MacBook-Pro-5.local" time="0.12">
+  <properties />
+  <testcase name="privateSourcesWaitForHistoricalAccessRatherThanUsingTheirSignaturesAsPermission()" classname="myos.better.TimelineIngressTest$OriginalSourceExecution" time="0.018" />
+  <testcase name="aSerializedSourceCutCannotCreateAnInvocationOrClaimACommand()" classname="myos.better.TimelineIngressTest$OriginalSourceExecution" time="0.021" />
+  <testcase name="wrongActorIsRecordedAsInapplicableWithoutExecutingTheDocument()" classname="myos.better.TimelineIngressTest$OriginalSourceExecution" time="0.018" />
+  <testcase name="exactTimelineAndActorBindingsExecuteTheOriginalMessage()" classname="myos.better.TimelineIngressTest$OriginalSourceExecution" time="0.022" />
+  <testcase name="declarationsDeriveEverySourceAndQuietOrEqualCoverageBlocksExecution()" classname="myos.better.TimelineIngressTest$OriginalSourceExecution" time="0.041" />
+  </testsuite>

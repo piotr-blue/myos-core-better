@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.CanonicalTransactionTest$Publication" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:09.033Z" hostname="MacBook-Pro-5.local" time="0.057">
+  <properties />
+  <testcase name="remainsPrivateUntilCommittedAndCanBeDiscarded()" classname="blue.CanonicalTransactionTest$Publication" time="0.012" />
+  <testcase name="inspectionStaysBoundToItsSnapshotAcrossCommitDiscardAndCompaction()" classname="blue.CanonicalTransactionTest$Publication" time="0.035" />
+  <testcase name="concurrentCandidatesCannotOverwriteOneAnother()" classname="blue.CanonicalTransactionTest$Publication" time="0.009" />
+  </testsuite>

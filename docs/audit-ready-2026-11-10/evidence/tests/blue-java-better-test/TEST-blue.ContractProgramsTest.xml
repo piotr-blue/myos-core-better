@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractProgramsTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:58.509Z" hostname="MacBook-Pro-5.local" time="0.017">
+  <properties />
+  <testcase name="distinctDefinitionsEvictOldPlansWithoutInvalidatingAlreadyReturnedCode()" classname="blue.ContractProgramsTest" time="0.0" />
+  <testcase name="immutablePlansAreReusedOnlyForTheSameStepAndSelectedDefinition()" classname="blue.ContractProgramsTest" time="0.0" />
+  <testcase name="independentSessionsExecuteSharedCodeAgainstTheirOwnValues()" classname="blue.ContractProgramsTest" time="0.006" />
+  <testcase name="warmDefinitionsPreserveInvalidFieldDiagnosticsAndExactFailureGas()" classname="blue.ContractProgramsTest" time="0.004" />
+  <testcase name="sharingPlansNeverBypassesTheCurrentDefinitionOrMissingDefinitionCheck()" classname="blue.ContractProgramsTest" time="0.004" />
+  <testcase name="definitionValuesOwnAnImmutableSnapshotAndDoNotRetainInvalidShapes()" classname="blue.ContractProgramsTest" time="0.001" />
+  <testcase name="oversizedProgramsAndFailedCompilationsAreNotRetained()" classname="blue.ContractProgramsTest" time="0.0" />
+  </testsuite>

@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.AdmissionEvidenceTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.422Z" hostname="MacBook-Pro-5.local" time="0.007">
+  <properties />
+  <testcase name="aCommittedNativeVersionRemainsValidEvidenceAfterItsSessionCloses()" classname="blue.language.AdmissionEvidenceTest" time="0.002" />
+  <testcase name="cyclicValuesRetainPortableEvidenceWithoutGrantingAnotherCallAProof()" classname="blue.language.AdmissionEvidenceTest" time="0.001" />
+  <testcase name="admissionUsesCompletedSubtreesWithinABoundedCallWithoutRetainingTheirAuthority()" classname="blue.language.AdmissionEvidenceTest" time="0.003" />
+  <testcase name="sourceOmissionExactPresentationAndParsedNodesAgreeWithOrdinaryAdmission()" classname="blue.language.AdmissionEvidenceTest" time="0.0" />
+  <testcase name="newContentAndContextualRestrictionsStillFailNormally()" classname="blue.language.AdmissionEvidenceTest" time="0.001" />
+  </testsuite>

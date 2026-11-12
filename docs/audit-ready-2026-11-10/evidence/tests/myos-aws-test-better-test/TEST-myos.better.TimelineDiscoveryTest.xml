@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineDiscoveryTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:48.921Z" hostname="MacBook-Pro-5.local" time="0.114">
+  <properties />
+  <testcase name="discoveryIsDurableButDoesNotAdvanceHistoryOrGrantAccess()" classname="myos.better.TimelineDiscoveryTest" time="0.039" />
+  <testcase name="evenASignedReplacementControlRequiresExplicitAdoption()" classname="myos.better.TimelineDiscoveryTest" time="0.039" />
+  <testcase name="aStoredIdentityMismatchCannotBecomeDiscoveryAuthorityAfterRestart()" classname="myos.better.TimelineDiscoveryTest" time="0.035" />
+  </testsuite>

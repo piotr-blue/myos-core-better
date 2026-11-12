@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineWorkTest$PublicationRaces" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:59.848Z" hostname="MacBook-Pro-5.local" time="0.002">
+  <properties />
+  <testcase name="subscriptionRemovalDuringFanoutCannotBeResurrected()" classname="myos.better.TimelineWorkTest$PublicationRaces" time="0.0" />
+  <testcase name="freshSourceArrivalsCannotHotLoopAnUnchangedFailedBusinessEntry()" classname="myos.better.TimelineWorkTest$PublicationRaces" time="0.0" />
+  <testcase name="missingCheckpointHistoryIsVisibleAndCannotHotLoopOnNewArrivals()" classname="myos.better.TimelineWorkTest$PublicationRaces" time="0.0" />
+  <testcase name="idleCannotEraseAnArrivalAfterTheReceiversReadCut()" classname="myos.better.TimelineWorkTest$PublicationRaces" time="0.0" />
+  <testcase name="failedReceiverStopsUntilExplicitRetryAndDoesNotBlockAnotherReceiver()" classname="myos.better.TimelineWorkTest$PublicationRaces" time="0.001" />
+  </testsuite>

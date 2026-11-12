@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractLanguageSnapshotTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:55.361Z" hostname="MacBook-Pro-5.local" time="0.125">
+  <properties />
+  <testcase name="capturedViewsReleaseInvocationProvidersButKeepVerifiedContent()" classname="blue.ContractLanguageSnapshotTest" time="0.0" />
+  <testcase name="failedRetentionDoesNotCertifyAPartialClosure()" classname="blue.ContractLanguageSnapshotTest" time="0.001" />
+  <testcase name="viewsShareOldHeadsButKeepLaterEvidenceAndMemoEntriesConfined()" classname="blue.ContractLanguageSnapshotTest" time="0.001" />
+  <testcase name="forksReuseCompletedBodyClosuresWithinABoundedPhysicalBudget()" classname="blue.ContractLanguageSnapshotTest" time="0.0" />
+  <testcase name="warmedViewsCannotApproveForgedNewEvidence()" classname="blue.ContractLanguageSnapshotTest" time="0.0" />
+  <testcase name="publisherCutsExpireWithoutCertifyingTheirAncestorsInAnySnapshot()" classname="blue.ContractLanguageSnapshotTest" time="0.123" />
+  </testsuite>

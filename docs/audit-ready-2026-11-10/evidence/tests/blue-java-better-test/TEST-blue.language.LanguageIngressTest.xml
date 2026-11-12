@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.LanguageIngressTest" tests="12" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.462Z" hostname="MacBook-Pro-5.local" time="0.01">
+  <properties />
+  <testcase name="definitionsAndValuesHaveDistinctAdmissionObligations()" classname="blue.language.LanguageIngressTest" time="0.0" />
+  <testcase name="typedSourcePreservesExactNumbersWithoutChangingTextIngressPolicy()" classname="blue.language.LanguageIngressTest" time="0.002" />
+  <testcase name="completeAdmissionRejectsBadUnselectedSiblingWhileSelectedReadCanSucceed()" classname="blue.language.LanguageIngressTest" time="0.001" />
+  <testcase name="authoringInspectionIncludesUnfilledInheritedFieldsWithoutChangingValuePresence()" classname="blue.language.LanguageIngressTest" time="0.0" />
+  <testcase name="scalarCodecsHandleDoubleLargeIntegerAndStrictInputGrammar()" classname="blue.language.LanguageIngressTest" time="0.001" />
+  <testcase name="providersUseTheCanonicalLanguageApi()" classname="blue.language.LanguageIngressTest" time="0.0" />
+  <testcase name="namedEntryPointsKeepDefinitionAndValueValidationDistinct(Path)" classname="blue.language.LanguageIngressTest" time="0.002" />
+  <testcase name="&quot;escaped object field&quot;" classname="blue.language.LanguageIngressTest" time="0.001" />
+  <testcase name="&quot;list item&quot;" classname="blue.language.LanguageIngressTest" time="0.0" />
+  <testcase name="&quot;inline type definition&quot;" classname="blue.language.LanguageIngressTest" time="0.0" />
+  <testcase name="&quot;root value&quot;" classname="blue.language.LanguageIngressTest" time="0.0" />
+  <testcase name="&quot;source normalization&quot;" classname="blue.language.LanguageIngressTest" time="0.001" />
+  </testsuite>

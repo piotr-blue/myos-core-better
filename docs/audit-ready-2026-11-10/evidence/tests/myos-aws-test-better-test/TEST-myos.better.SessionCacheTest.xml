@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.SessionCacheTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:26.714Z" hostname="MacBook-Pro-5.local" time="0.013">
+  <properties />
+  <testcase name="capacityPressureNeverClosesAPinnedExecutionAndReleasedOversizeEntriesAreDiscarded()" classname="myos.better.SessionCacheTest" time="0.004" />
+  <testcase name="abortedPublicationClosesChildrenAndNeverPublishesThem()" classname="myos.better.SessionCacheTest" time="0.002" />
+  <testcase name="versionMismatchAndHistoryRenewalReloadWhileReadLeasesDoNotAgeTheSession()" classname="myos.better.SessionCacheTest" time="0.003" />
+  <testcase name="initializedChildrenEnterTheCacheOnlyAfterConfirmedPublication()" classname="myos.better.SessionCacheTest" time="0.001" />
+  <testcase name="invalidBoundsAreRejectedBeforeOpeningAnySession()" classname="myos.better.SessionCacheTest" time="0.001" />
+  <testcase name="publicationCannotReplaceAnAlreadyRunningReceiverAndCapacityStillApplies()" classname="myos.better.SessionCacheTest" time="0.001" />
+  </testsuite>

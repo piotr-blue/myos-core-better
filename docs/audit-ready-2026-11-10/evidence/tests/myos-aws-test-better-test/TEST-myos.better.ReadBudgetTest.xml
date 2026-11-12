@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.ReadBudgetTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:22.294Z" hostname="MacBook-Pro-5.local" time="0.002">
+  <properties />
+  <testcase name="projectionBoundsAccumulateAndCountKeysAndUtf16Text()" classname="myos.better.ReadBudgetTest" time="0.0" />
+  <testcase name="wideCollectionsStopBeforeEnumeratingOrCopyingAllElements()" classname="myos.better.ReadBudgetTest" time="0.001" />
+  <testcase name="sessionProjectionConsumesTheRemainingCumulativeBudgetBeforeBuildingMoreOutput()" classname="myos.better.ReadBudgetTest" time="0.0" />
+  <testcase name="invalidBoundsFailAtConstruction()" classname="myos.better.ReadBudgetTest" time="0.0" />
+  <testcase name="documentCountAndDepthHaveInclusiveBounds()" classname="myos.better.ReadBudgetTest" time="0.001" />
+  </testsuite>

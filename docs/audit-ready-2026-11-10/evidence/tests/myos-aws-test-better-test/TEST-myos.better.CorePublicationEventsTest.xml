@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CorePublicationEventsTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:46.191Z" hostname="MacBook-Pro-5.local" time="0.019">
+  <properties />
+  <testcase name="eventBatchContinuationCannotOverrunTheAtomicStoreLimitOrLoseItsTail()" classname="myos.better.CorePublicationEventsTest" time="0.001" />
+  <testcase name="rejectedCommitPublishesNoEventsAndLostSuccessResponseDoesNotDuplicateThem()" classname="myos.better.CorePublicationEventsTest" time="0.013" />
+  <testcase name="nativeInitializationAndExecutionProduceRetainedEventsWithoutDuplicatingOnReplay()" classname="myos.better.CorePublicationEventsTest" time="0.005" />
+  </testsuite>

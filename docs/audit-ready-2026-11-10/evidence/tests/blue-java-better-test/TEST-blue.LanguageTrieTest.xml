@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.LanguageTrieTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:01.589Z" hostname="MacBook-Pro-5.local" time="0.07">
+  <properties />
+  <testcase name="randomizedBranchesAgreeWithOrdinaryMapUnionIncludingCollisionsAndRemovals()" classname="blue.LanguageTrieTest" time="0.064" />
+  <testcase name="unionOfLargeSiblingSnapshotsVisitsOnlyChangedBranches()" classname="blue.LanguageTrieTest" time="0.005" />
+  <testcase name="snapshotsAndTheirEntriesRejectMutation()" classname="blue.LanguageTrieTest" time="0.0" />
+  </testsuite>

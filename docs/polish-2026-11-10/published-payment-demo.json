@@ -1,0 +1,1711 @@
+{
+  "steps": [
+    {
+      "operation": "initialize",
+      "millis": 763.601625
+    },
+    {
+      "nativeInvocations": 1,
+      "jobs": 1,
+      "operation": "placeOrder",
+      "millis": 303.552959,
+      "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32"
+    },
+    {
+      "nativeInvocations": 2,
+      "jobs": 2,
+      "operation": "preparePayment",
+      "millis": 387.317958,
+      "owner": "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532"
+    },
+    {
+      "nativeInvocations": 3,
+      "jobs": 3,
+      "operation": "acceptPaymentInstruction",
+      "millis": 123.771458,
+      "owner": "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107"
+    },
+    {
+      "nativeInvocations": 1,
+      "jobs": 3,
+      "operation": "placeOrder",
+      "millis": 168.433125,
+      "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32"
+    },
+    {
+      "nativeInvocations": 2,
+      "jobs": 4,
+      "operation": "preparePayment",
+      "millis": 297.67325,
+      "owner": "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3"
+    },
+    {
+      "nativeInvocations": 3,
+      "jobs": 5,
+      "operation": "acceptPaymentInstruction",
+      "millis": 169.882667,
+      "owner": "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd"
+    },
+    {
+      "nativeInvocations": 3,
+      "jobs": 5,
+      "operation": "reportTransfer",
+      "millis": 154.983625,
+      "owner": "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107"
+    },
+    {
+      "nativeInvocations": 3,
+      "jobs": 5,
+      "operation": "acknowledgeTransfer",
+      "millis": 182.153708,
+      "owner": "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107"
+    },
+    {
+      "nativeInvocations": 3,
+      "jobs": 5,
+      "operation": "reportTransfer",
+      "millis": 126.479958,
+      "owner": "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd"
+    },
+    {
+      "nativeInvocations": 3,
+      "jobs": 5,
+      "operation": "acknowledgeTransfer",
+      "millis": 185.559708,
+      "owner": "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd"
+    }
+  ],
+  "paidTotal": 400,
+  "history": {
+    "doc-9e361738-93f7-4721-857c-7bc9f3252c32": [
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 11,
+        "sequence": 11,
+        "kind": "PROCESS",
+        "receipt": "sha256:6fb7c84541095db4f4d1c63bae5a48bc0b0e3745ff2cc17f95065142150d37dc",
+        "snapshot": "sha256:cad3109dd7c44ec06edc33d131d8a25262101560034d457b76700e01ba57fc03",
+        "engine_nanos": 51098375,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 16101,
+          "gasByMember": {
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 4143,
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 3980,
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 7978
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 10,
+        "sequence": 10,
+        "kind": "PROCESS",
+        "receipt": "sha256:351cf3828e6300da1a89ff27d3bce77391c7376d7b7ebbfe58a783eaa022289b",
+        "snapshot": "sha256:249b146cf7563ee981af80102302e6422c9e1170013ad0fbd97b6a082373d25a",
+        "engine_nanos": 38500000,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 7023,
+          "gasByMember": {
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 3,
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 2075,
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 4945
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 9,
+        "sequence": 9,
+        "kind": "PROCESS",
+        "receipt": "sha256:8383ea45bae60fd573d4846836324eb994b98c9e35720fac22e95d9f36139e8a",
+        "snapshot": "sha256:0dace40ee6063b36cbd30567776f756c8e1dff3b43af1fad3af7c61d4d6fe809",
+        "engine_nanos": 66344458,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 16101,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 3980,
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 4143,
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 7978
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 8,
+        "sequence": 8,
+        "kind": "PROCESS",
+        "receipt": "sha256:7d029b096fa3375ff1ca94229f3021c7a25114c0f3c8f8e484d6ae42bc667079",
+        "snapshot": "sha256:138f3fd4ba585dffcd0a0bd7fa824cb0ae212a78dfed9d93a0cd6cf2a08fd538",
+        "engine_nanos": 38743125,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 7023,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 2075,
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 3,
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 4945
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 7,
+        "sequence": 7,
+        "kind": "PROCESS",
+        "receipt": "sha256:0e5bc83ce846acf71f5c81a1fe0e4c9c2f03836c5f1f5c254cebb47dee07ed0b",
+        "snapshot": "sha256:af4de42e89ceedcb477e35123c47e5b49f1ebaa9a9e0c016161f586d1f427c77",
+        "engine_nanos": 54168000,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 10966,
+          "gasByMember": {
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 3,
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 2075,
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 8888
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 6,
+        "sequence": 6,
+        "kind": "PROCESS",
+        "receipt": "sha256:6d358bf39576753b4bc17be16082678612ecce57fe158702910097ec6f5ac48d",
+        "snapshot": "sha256:f7117618db84c483bccea1df668d34668a68b8cfe0619caed04305c15529f473",
+        "engine_nanos": 118804084,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 199052,
+          "gasByMember": {
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 4463,
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 28506,
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 166083
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 5,
+        "sequence": 5,
+        "kind": "PROCESS",
+        "receipt": "sha256:065e67e7fc0f216a426f61b811f2e9b1a6bcbac012217716e8bc605f1a24902c",
+        "snapshot": "sha256:8c24e3629439b9f974a6c6b40fa81149174cc88d8c22ff30a54d5a86fb6d1939",
+        "engine_nanos": 136987916,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 187038,
+          "gasByMember": {
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 161340,
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 25698
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 4,
+        "sequence": 4,
+        "kind": "PROCESS",
+        "receipt": "sha256:b8699c7a070703e0cc625fd83138e4b9389aacb33f083be8155b952e6709d3d7",
+        "snapshot": "sha256:a7357655f1fe7cb1e02937c9746b2cc59ea011b264977cd00a1b7a7e15f0b1e6",
+        "engine_nanos": 22089834,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 10966,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 2075,
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 3,
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 8888
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 3,
+        "sequence": 3,
+        "kind": "PROCESS",
+        "receipt": "sha256:385237463aea282b81f5b46d07489721546c02c72d528887f1e11bb0da1ba6c6",
+        "snapshot": "sha256:c9be8724e572e79a33db54a63c4cd4a308dcf069d829225b6085790166285798",
+        "engine_nanos": 145612167,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 199052,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 28506,
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 4463,
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 166083
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 2,
+        "sequence": 2,
+        "kind": "PROCESS",
+        "receipt": "sha256:41fd45c20506466409f850f10e923f1f2165a09ae574ec6f25bfbae81f1da9f9",
+        "snapshot": "sha256:031a5480aa655c1e9b0f8b76c10e6cf57ccc1f413bedf29c7fbfdc8e89f9d4f2",
+        "engine_nanos": 242461625,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 187038,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 161340,
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 25698
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+        "version": 1,
+        "sequence": null,
+        "kind": "INITIALIZE",
+        "receipt": "sha256:005512b2f66a43dad4c245ffd5c29ac38d3854b5d729acd9f751535f58ce4e53",
+        "snapshot": "sha256:1f85f5f9110cfe91fcbf58a37b055d419beb30e49e756eb6ec2038979e811ada",
+        "engine_nanos": 294744708,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 98391,
+          "gasByMember": {
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 98391
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      }
+    ],
+    "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": [
+      {
+        "owner": "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532",
+        "version": 5,
+        "sequence": 9,
+        "kind": "PROCESS",
+        "receipt": "sha256:e869f7d122d1ec99685eaa1f6ba31cc95092893a4181bd0bcede305757ecf9e6",
+        "snapshot": "sha256:5b81bfdb94369b9dde467bd00fc81b4ece8226ac873e269f6ca93416019da258",
+        "engine_nanos": 36303917,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 11958,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 3980,
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 7978
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532",
+        "version": 4,
+        "sequence": 8,
+        "kind": "PROCESS",
+        "receipt": "sha256:73cf08a06357dd8bfd36021ca32bbdbdc93f77cce512e6a8d1eadbd276c3033f",
+        "snapshot": "sha256:51926d6c11c9ca6fada8ef7beac5b2098085490f7688c49ef8b644b39c5f146b",
+        "engine_nanos": 43613500,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 7020,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 2075,
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 4945
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532",
+        "version": 3,
+        "sequence": 4,
+        "kind": "PROCESS",
+        "receipt": "sha256:c495055c28e2c7fe53287785e010a8bf11b9015b447ddada99af99309ea36d1f",
+        "snapshot": "sha256:ecc4301de70aa6847bae3876e3f40ca8503443ef50c09e11058f019da4ca489e",
+        "engine_nanos": 29721584,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 10963,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 2075,
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 8888
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532",
+        "version": 2,
+        "sequence": 3,
+        "kind": "PROCESS",
+        "receipt": "sha256:1103c99097adae2a2ec381fefaf247cadf0461abeadbfa291b2d6daf322e141a",
+        "snapshot": "sha256:1ebfed19f3bbf6ac610fd9834314da8bef1178ef70da2a119ba295ff3329cbd9",
+        "engine_nanos": 181901084,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 194589,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 28506,
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 166083
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532",
+        "version": 1,
+        "sequence": 2,
+        "kind": "INITIALIZE",
+        "receipt": "sha256:41fd45c20506466409f850f10e923f1f2165a09ae574ec6f25bfbae81f1da9f9",
+        "snapshot": "sha256:414608067e9ae283582099c12fa8bac304b182760156b71f1cfe203193574a8a",
+        "engine_nanos": 242461625,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 187038,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 161340,
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 25698
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      }
+    ],
+    "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": [
+      {
+        "owner": "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3",
+        "version": 5,
+        "sequence": 11,
+        "kind": "PROCESS",
+        "receipt": "sha256:937b573b38d80e9342b4beefecbc4fca468b7358265dd082761a5cd7188c5d6a",
+        "snapshot": "sha256:9d6a6a96b4eb0d307778464d44dcdd18878d7fe55506752365e16be3e9d02426",
+        "engine_nanos": 46882083,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 11958,
+          "gasByMember": {
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 7978,
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 3980
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3",
+        "version": 4,
+        "sequence": 10,
+        "kind": "PROCESS",
+        "receipt": "sha256:1b41037ccaf418c372b8980e79da4e9e6372ccc657ce17633bdc259b732182da",
+        "snapshot": "sha256:8e2833b61bb6bd6be95bd30fa365b59267a546047460d4bf77f95af149b600e3",
+        "engine_nanos": 26822291,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 7020,
+          "gasByMember": {
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 4945,
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 2075
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3",
+        "version": 3,
+        "sequence": 7,
+        "kind": "PROCESS",
+        "receipt": "sha256:8486eef70d6ca55af49f826014f34d3142f2fe05fe7be870dfb508e4a2b84719",
+        "snapshot": "sha256:1ffb0ea6b199f00a01c556b399889fabc711e154b9491ff98f072fb93e0632a0",
+        "engine_nanos": 33428666,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 10963,
+          "gasByMember": {
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 8888,
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 2075
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3",
+        "version": 2,
+        "sequence": 6,
+        "kind": "PROCESS",
+        "receipt": "sha256:aa713a70f7d9a974df4541b9f3622bffd74b7c945220ccf13baf484e2e7bb546",
+        "snapshot": "sha256:0383735f0fdf229e402762c9492e6d428df99cfa5a288bdfb693294c2d9ffad5",
+        "engine_nanos": 142714875,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 194589,
+          "gasByMember": {
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 166083,
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 28506
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3",
+        "version": 1,
+        "sequence": 5,
+        "kind": "INITIALIZE",
+        "receipt": "sha256:065e67e7fc0f216a426f61b811f2e9b1a6bcbac012217716e8bc605f1a24902c",
+        "snapshot": "sha256:bade2a11925ccdd3f4388352881e68e86263a87b2e392dbee76f0f2d1de14c6a",
+        "engine_nanos": 136987916,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 187038,
+          "gasByMember": {
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 161340,
+            "doc-9e361738-93f7-4721-857c-7bc9f3252c32": 25698
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      }
+    ],
+    "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": [
+      {
+        "owner": "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107",
+        "version": 4,
+        "sequence": 9,
+        "kind": "PROCESS",
+        "receipt": "sha256:ff484d2fadd061c0507a5d40f2dfe1dc5d3b2964fdbcbeadd1fe0a522f783816",
+        "snapshot": "sha256:9295c8692c745c0b05389535f614190ea07021a1493adba0a8f2db71df861b33",
+        "engine_nanos": 35538708,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 7978,
+          "gasByMember": {
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 7978
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107",
+        "version": 3,
+        "sequence": 8,
+        "kind": "PROCESS",
+        "receipt": "sha256:94c871f4707286902fe6436fda62edcc8572c792d6aeddf65e4aeae0a0985e1f",
+        "snapshot": "sha256:2ee301cef3da8dee946d343b62c4990c742da7d5661e87bc2b93e717c471691c",
+        "engine_nanos": 31324833,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 4945,
+          "gasByMember": {
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 4945
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107",
+        "version": 2,
+        "sequence": 4,
+        "kind": "PROCESS",
+        "receipt": "sha256:6cf946c5e0eb330a4d17798dcfdeb41a73dda9082b59a8e6c90523577f79377f",
+        "snapshot": "sha256:6d4be056befa4a3211fc6ec06c797b154c17b9d5edfbdcce652714abb5e600f6",
+        "engine_nanos": 38402875,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 8888,
+          "gasByMember": {
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 8888
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107",
+        "version": 1,
+        "sequence": 3,
+        "kind": "INITIALIZE",
+        "receipt": "sha256:1103c99097adae2a2ec381fefaf247cadf0461abeadbfa291b2d6daf322e141a",
+        "snapshot": "sha256:2136a5f333932051c28c0a077d9dcab00b07cddbc4fb017a4257799a34d14fc4",
+        "engine_nanos": 181901084,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 194589,
+          "gasByMember": {
+            "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": 28506,
+            "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": 166083
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      }
+    ],
+    "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": [
+      {
+        "owner": "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd",
+        "version": 4,
+        "sequence": 11,
+        "kind": "PROCESS",
+        "receipt": "sha256:34aec9caf65153fa1933197289b85d4ff5d18112cbea731232765fba48bf3760",
+        "snapshot": "sha256:7e3c45e8e7b3ecdc9b83c17a219b8d0bc55f008005c67927d2103b97d2d35cde",
+        "engine_nanos": 46859333,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 7978,
+          "gasByMember": {
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 7978
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd",
+        "version": 3,
+        "sequence": 10,
+        "kind": "PROCESS",
+        "receipt": "sha256:1ae681bdab63184c8baae18877e8c3eee2b51e47fbcc4f8b5be74d9fbec9d640",
+        "snapshot": "sha256:818c56e7542084c0c92164d3a169228769f3074659ba428ce8ed329e0234056f",
+        "engine_nanos": 25368291,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 4945,
+          "gasByMember": {
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 4945
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd",
+        "version": 2,
+        "sequence": 7,
+        "kind": "PROCESS",
+        "receipt": "sha256:5b68ad0bfcec283072ae2e772a88a7c7a148ae81f618062f4896be0a35fecd59",
+        "snapshot": "sha256:93b3ed112c54cb8fce34c6cfccd39e198f857ea46b8a9411b30a48cf29e9238b",
+        "engine_nanos": 36214042,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 8888,
+          "gasByMember": {
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 8888
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      },
+      {
+        "owner": "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd",
+        "version": 1,
+        "sequence": 6,
+        "kind": "INITIALIZE",
+        "receipt": "sha256:aa713a70f7d9a974df4541b9f3622bffd74b7c945220ccf13baf484e2e7bb546",
+        "snapshot": "sha256:8068c8573e0fe5ff629487e7f3381a4b20c9eed6ea6588242ff9f37af3b43166",
+        "engine_nanos": 142714875,
+        "observations": {
+          "status": "APPLIED",
+          "gasSchedule": "contracts-semantic-gas",
+          "gas": 194589,
+          "gasByMember": {
+            "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": 166083,
+            "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": 28506
+          },
+          "diagnostic": null,
+          "rejected": null
+        }
+      }
+    ]
+  },
+  "totalsAfterAcknowledgment": [
+    {
+      "paymentCompleted": 200,
+      "agreementPaid": 200,
+      "orderPaid": 200
+    },
+    {
+      "paymentCompleted": 200,
+      "agreementPaid": 400,
+      "orderPaid": 200
+    }
+  ],
+  "agreement": "doc-9e361738-93f7-4721-857c-7bc9f3252c32",
+  "events": {
+    "doc-9e361738-93f7-4721-857c-7bc9f3252c32": [
+      {
+        "receipt": "sha256:005512b2f66a43dad4c245ffd5c29ac38d3854b5d729acd9f751535f58ce4e53",
+        "ordinal": 0,
+        "event": "DiaB4CDu3JtorsNoTPHf2RXnAxRLGQuAFA2B2Rd2BHXo",
+        "timestamp": null,
+        "value": {
+          "type": {
+            "blueId": "E444CeDMiBXJKBmENNtpZre9YzKFABPzqhdbcVQf1JFy"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:005512b2f66a43dad4c245ffd5c29ac38d3854b5d729acd9f751535f58ce4e53",
+        "ordinal": 1,
+        "event": "KvDebT97JCiT4H952o8g4wo5NYSGbS9LHzxmVNee4cd",
+        "timestamp": null,
+        "value": {
+          "configurationId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "AsiZR8xiBiUQDudvF3JkKjuzRJAckpUSx7UDo718cdsB"
+          },
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "7AeMHi9XT5TdEzQWhDGp6Tp5aqYP4sxumfYoPk1B6fVi"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:005512b2f66a43dad4c245ffd5c29ac38d3854b5d729acd9f751535f58ce4e53",
+        "ordinal": 2,
+        "event": "J6MQY61fa7nd9R9MiZGBr46BKbSQLyq5nNskBA5KNonf",
+        "timestamp": null,
+        "value": {
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "EdcMeh93AEEwTmZ4HKBbBMphAoCn6dJ8GZ69w86oBe1k"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:41fd45c20506466409f850f10e923f1f2165a09ae574ec6f25bfbae81f1da9f9",
+        "ordinal": 3,
+        "event": "AfYec1RBXNemzHvYeVqvTQdrd7KVwcg5ggmtMv4XBGYF",
+        "timestamp": 1794295076537694,
+        "value": {
+          "clauseId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "orders"
+          },
+          "itemKey": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "order-1"
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "order-1"
+          },
+          "requirementRef": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "HF1GFpL3QMk6RbvyitT7R2uYbM79NmesRbwBHw19hYiH"
+          },
+          "status": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "selected"
+          },
+          "type": {
+            "blueId": "3RvrVvnMZKvsF2SucEQWZZNkExRhSWB6HeGcrcAWVJws"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:41fd45c20506466409f850f10e923f1f2165a09ae574ec6f25bfbae81f1da9f9",
+        "ordinal": 4,
+        "event": "AybQF3VPCkXHd6azbcu7VLEs18qTURWQVJzrfweMwiNG",
+        "timestamp": 1794295076537694,
+        "value": {
+          "clauseId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "orders"
+          },
+          "documentOrigin": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "HF1GFpL3QMk6RbvyitT7R2uYbM79NmesRbwBHw19hYiH"
+          },
+          "inResponseTo": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "order-1"
+          },
+          "itemKey": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "order-1"
+          },
+          "type": {
+            "blueId": "9BuYfpVDFybFkggpnobd1Xdju3QmpDvE9nVCgSedMWzx"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:065e67e7fc0f216a426f61b811f2e9b1a6bcbac012217716e8bc605f1a24902c",
+        "ordinal": 3,
+        "event": "6vZ79c8oxH41vjZA53snttSEoRysKQ3prw62jLoKM4qz",
+        "timestamp": 1794295077351148,
+        "value": {
+          "clauseId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "orders"
+          },
+          "itemKey": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "order-2"
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "order-2"
+          },
+          "requirementRef": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "GdaQFHo7FQY8956mikJWCXQRpomr8PxLV5eZLCG7JdsB"
+          },
+          "status": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "selected"
+          },
+          "type": {
+            "blueId": "3RvrVvnMZKvsF2SucEQWZZNkExRhSWB6HeGcrcAWVJws"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:065e67e7fc0f216a426f61b811f2e9b1a6bcbac012217716e8bc605f1a24902c",
+        "ordinal": 4,
+        "event": "A33CnNMcj7ya8oGuefr5PTeSV2746hnqg3BnQ8uZjsR2",
+        "timestamp": 1794295077351148,
+        "value": {
+          "clauseId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "orders"
+          },
+          "documentOrigin": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "GdaQFHo7FQY8956mikJWCXQRpomr8PxLV5eZLCG7JdsB"
+          },
+          "inResponseTo": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "order-2"
+          },
+          "itemKey": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "order-2"
+          },
+          "type": {
+            "blueId": "9BuYfpVDFybFkggpnobd1Xdju3QmpDvE9nVCgSedMWzx"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:8383ea45bae60fd573d4846836324eb994b98c9e35720fac22e95d9f36139e8a",
+        "ordinal": 0,
+        "event": "FjReC4xewZv6LZSNsfmgQccJWgBMUsbm2d6gejjtNbZj",
+        "timestamp": 1794295078162588,
+        "value": {
+          "amountMinor": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 200
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Agreement Payment Received"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:6fb7c84541095db4f4d1c63bae5a48bc0b0e3745ff2cc17f95065142150d37dc",
+        "ordinal": 0,
+        "event": "FjReC4xewZv6LZSNsfmgQccJWgBMUsbm2d6gejjtNbZj",
+        "timestamp": 1794295078501497,
+        "value": {
+          "amountMinor": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 200
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Agreement Payment Received"
+          }
+        }
+      }
+    ],
+    "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532": [
+      {
+        "receipt": "sha256:41fd45c20506466409f850f10e923f1f2165a09ae574ec6f25bfbae81f1da9f9",
+        "ordinal": 0,
+        "event": "DiaB4CDu3JtorsNoTPHf2RXnAxRLGQuAFA2B2Rd2BHXo",
+        "timestamp": 1794295076537694,
+        "value": {
+          "type": {
+            "blueId": "E444CeDMiBXJKBmENNtpZre9YzKFABPzqhdbcVQf1JFy"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:41fd45c20506466409f850f10e923f1f2165a09ae574ec6f25bfbae81f1da9f9",
+        "ordinal": 1,
+        "event": "FoitMEz6dGwtyHaTPQvsEtd2QGq455P8mrrBmXEWhqGa",
+        "timestamp": 1794295076537694,
+        "value": {
+          "configurationId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "8XQniwiC6Pumz47isGZoPxjhW8TgNwbuSUrDa1FpX1qt"
+          },
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "7AeMHi9XT5TdEzQWhDGp6Tp5aqYP4sxumfYoPk1B6fVi"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:41fd45c20506466409f850f10e923f1f2165a09ae574ec6f25bfbae81f1da9f9",
+        "ordinal": 2,
+        "event": "J6MQY61fa7nd9R9MiZGBr46BKbSQLyq5nNskBA5KNonf",
+        "timestamp": 1794295076537694,
+        "value": {
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "EdcMeh93AEEwTmZ4HKBbBMphAoCn6dJ8GZ69w86oBe1k"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:1103c99097adae2a2ec381fefaf247cadf0461abeadbfa291b2d6daf322e141a",
+        "ordinal": 5,
+        "event": "HtKfm9PoCkDW4k5gsFFhe8YZUmQ39m2zYFQRzwo3Eg4G",
+        "timestamp": 1794295076841571,
+        "value": {
+          "clauseId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "payment"
+          },
+          "itemKey": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "single"
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "single"
+          },
+          "requirementRef": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "EQXo1rCu6oFZmR6ataE8U3i6QdXF7Kb37DExAbjs8puq"
+          },
+          "status": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "selected"
+          },
+          "type": {
+            "blueId": "3RvrVvnMZKvsF2SucEQWZZNkExRhSWB6HeGcrcAWVJws"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:1103c99097adae2a2ec381fefaf247cadf0461abeadbfa291b2d6daf322e141a",
+        "ordinal": 6,
+        "event": "9YSbkJWczuMud8G4wLcwTPetjR54rjLK1Xds4z1Gc5hp",
+        "timestamp": 1794295076841571,
+        "value": {
+          "clauseId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "payment"
+          },
+          "documentOrigin": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "EQXo1rCu6oFZmR6ataE8U3i6QdXF7Kb37DExAbjs8puq"
+          },
+          "inResponseTo": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "single"
+          },
+          "itemKey": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "single"
+          },
+          "type": {
+            "blueId": "9BuYfpVDFybFkggpnobd1Xdju3QmpDvE9nVCgSedMWzx"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:e869f7d122d1ec99685eaa1f6ba31cc95092893a4181bd0bcede305757ecf9e6",
+        "ordinal": 0,
+        "event": "CGwyrsDoz6u2RPxuuibixwfPktkj5ixcvt48EoWCwo5q",
+        "timestamp": 1794295078162588,
+        "value": {
+          "amountMinor": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 200
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Order Payment Received"
+          }
+        }
+      }
+    ],
+    "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3": [
+      {
+        "receipt": "sha256:065e67e7fc0f216a426f61b811f2e9b1a6bcbac012217716e8bc605f1a24902c",
+        "ordinal": 0,
+        "event": "DiaB4CDu3JtorsNoTPHf2RXnAxRLGQuAFA2B2Rd2BHXo",
+        "timestamp": 1794295077351148,
+        "value": {
+          "type": {
+            "blueId": "E444CeDMiBXJKBmENNtpZre9YzKFABPzqhdbcVQf1JFy"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:065e67e7fc0f216a426f61b811f2e9b1a6bcbac012217716e8bc605f1a24902c",
+        "ordinal": 1,
+        "event": "FoitMEz6dGwtyHaTPQvsEtd2QGq455P8mrrBmXEWhqGa",
+        "timestamp": 1794295077351148,
+        "value": {
+          "configurationId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "8XQniwiC6Pumz47isGZoPxjhW8TgNwbuSUrDa1FpX1qt"
+          },
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "7AeMHi9XT5TdEzQWhDGp6Tp5aqYP4sxumfYoPk1B6fVi"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:065e67e7fc0f216a426f61b811f2e9b1a6bcbac012217716e8bc605f1a24902c",
+        "ordinal": 2,
+        "event": "J6MQY61fa7nd9R9MiZGBr46BKbSQLyq5nNskBA5KNonf",
+        "timestamp": 1794295077351148,
+        "value": {
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "EdcMeh93AEEwTmZ4HKBbBMphAoCn6dJ8GZ69w86oBe1k"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:aa713a70f7d9a974df4541b9f3622bffd74b7c945220ccf13baf484e2e7bb546",
+        "ordinal": 5,
+        "event": "93vGn2FtJjPKU7eQdVb6UyRY9LNwYrjk9UiAT8QUMBmU",
+        "timestamp": 1794295077521791,
+        "value": {
+          "clauseId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "payment"
+          },
+          "itemKey": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "single"
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "single"
+          },
+          "requirementRef": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Gz9nSGrReEapHqU1DjwYDnQenLeRKunquGdf4wsP9rfv"
+          },
+          "status": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "selected"
+          },
+          "type": {
+            "blueId": "3RvrVvnMZKvsF2SucEQWZZNkExRhSWB6HeGcrcAWVJws"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:aa713a70f7d9a974df4541b9f3622bffd74b7c945220ccf13baf484e2e7bb546",
+        "ordinal": 6,
+        "event": "8XwWxSCNszdFGtfyGELoreHCwKjPxhaqRRCKrznqB2un",
+        "timestamp": 1794295077521791,
+        "value": {
+          "clauseId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "payment"
+          },
+          "documentOrigin": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Gz9nSGrReEapHqU1DjwYDnQenLeRKunquGdf4wsP9rfv"
+          },
+          "inResponseTo": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "single"
+          },
+          "itemKey": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "single"
+          },
+          "type": {
+            "blueId": "9BuYfpVDFybFkggpnobd1Xdju3QmpDvE9nVCgSedMWzx"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:937b573b38d80e9342b4beefecbc4fca468b7358265dd082761a5cd7188c5d6a",
+        "ordinal": 0,
+        "event": "CGwyrsDoz6u2RPxuuibixwfPktkj5ixcvt48EoWCwo5q",
+        "timestamp": 1794295078501497,
+        "value": {
+          "amountMinor": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 200
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Order Payment Received"
+          }
+        }
+      }
+    ],
+    "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107": [
+      {
+        "receipt": "sha256:1103c99097adae2a2ec381fefaf247cadf0461abeadbfa291b2d6daf322e141a",
+        "ordinal": 0,
+        "event": "DiaB4CDu3JtorsNoTPHf2RXnAxRLGQuAFA2B2Rd2BHXo",
+        "timestamp": 1794295076841571,
+        "value": {
+          "type": {
+            "blueId": "E444CeDMiBXJKBmENNtpZre9YzKFABPzqhdbcVQf1JFy"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:1103c99097adae2a2ec381fefaf247cadf0461abeadbfa291b2d6daf322e141a",
+        "ordinal": 1,
+        "event": "GeDVekPwd6WmoHw9qw4mw8gVJo8hbkMLfuuPDRyFjip9",
+        "timestamp": 1794295076841571,
+        "value": {
+          "configurationId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "9tZfnjnJNPR1XgDkqVHv3tYRh8FGQMsuGmiZbG8PUyba"
+          },
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "7AeMHi9XT5TdEzQWhDGp6Tp5aqYP4sxumfYoPk1B6fVi"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:1103c99097adae2a2ec381fefaf247cadf0461abeadbfa291b2d6daf322e141a",
+        "ordinal": 2,
+        "event": "B2MHRjLgzXVsE2RgkkoN19SLYfRhaUyzuZYjGam9HXqW",
+        "timestamp": 1794295076841571,
+        "value": {
+          "currency": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "EUR"
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Payment Initialized"
+          },
+          "paymentId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "HtGWq3AUZUG4DHop6mXtScoU4dYYGKvvpL6wpkVuSfPJ"
+          },
+          "type": {
+            "blueId": "CJgGWmocYCpqmt9isfL6aJab4Qs4i62qhUt7T7QubHoo"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:1103c99097adae2a2ec381fefaf247cadf0461abeadbfa291b2d6daf322e141a",
+        "ordinal": 3,
+        "event": "aZ1aVroaLC9omJsh9PRQJqnC8gPhqECyopihp8xBjZJ",
+        "timestamp": 1794295076841571,
+        "value": {
+          "currency": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "EUR"
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Payment Instruction Acceptance Requested"
+          },
+          "paymentId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "HtGWq3AUZUG4DHop6mXtScoU4dYYGKvvpL6wpkVuSfPJ"
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "acceptance"
+          },
+          "type": {
+            "blueId": "5U8KJGf7PQTPGa596mtGPJ6zPj4zsWDiMHRdpYwuSYaM"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:1103c99097adae2a2ec381fefaf247cadf0461abeadbfa291b2d6daf322e141a",
+        "ordinal": 4,
+        "event": "J6MQY61fa7nd9R9MiZGBr46BKbSQLyq5nNskBA5KNonf",
+        "timestamp": 1794295076841571,
+        "value": {
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "EdcMeh93AEEwTmZ4HKBbBMphAoCn6dJ8GZ69w86oBe1k"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:6cf946c5e0eb330a4d17798dcfdeb41a73dda9082b59a8e6c90523577f79377f",
+        "ordinal": 0,
+        "event": "87hNK8bJELiYRRuLHLRtbVS3krayRFC1ETYqgir5xyfJ",
+        "timestamp": 1794295077232183,
+        "value": {
+          "currency": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "EUR"
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Instruction Accepted"
+          },
+          "paymentId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "HtGWq3AUZUG4DHop6mXtScoU4dYYGKvvpL6wpkVuSfPJ"
+          },
+          "reason": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": ""
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "acceptance"
+          },
+          "type": {
+            "blueId": "AQw9ujDvCtcW3zVZKNg7fwTLks7z3CtveEKoTL5wfgpR"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:94c871f4707286902fe6436fda62edcc8572c792d6aeddf65e4aeae0a0985e1f",
+        "ordinal": 0,
+        "event": "5kbWTWWBfrRd5Cdr4WcERT6HxFwJgdBBWPkPb3xMGcKg",
+        "timestamp": 1794295078007754,
+        "value": {
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Manual Transfer Reported"
+          },
+          "report": {
+            "reference": {
+              "type": {
+                "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+              },
+              "value": "local-bank-demo"
+            },
+            "requestId": {
+              "type": {
+                "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+              },
+              "value": "transfer-1"
+            }
+          },
+          "type": {
+            "blueId": "CJgGWmocYCpqmt9isfL6aJab4Qs4i62qhUt7T7QubHoo"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:ff484d2fadd061c0507a5d40f2dfe1dc5d3b2964fdbcbeadd1fe0a522f783816",
+        "ordinal": 0,
+        "event": "7akijahamDv3VwCXEgoDjZ8pnW8z4hEwDtuRt9fL2MUn",
+        "timestamp": 1794295078162588,
+        "value": {
+          "amountMinor": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 200
+          },
+          "evidence": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "recipientAcknowledgment"
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Manual Receipt Acknowledged"
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "transfer-1"
+          },
+          "type": {
+            "blueId": "CJgGWmocYCpqmt9isfL6aJab4Qs4i62qhUt7T7QubHoo"
+          }
+        }
+      }
+    ],
+    "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd": [
+      {
+        "receipt": "sha256:aa713a70f7d9a974df4541b9f3622bffd74b7c945220ccf13baf484e2e7bb546",
+        "ordinal": 0,
+        "event": "DiaB4CDu3JtorsNoTPHf2RXnAxRLGQuAFA2B2Rd2BHXo",
+        "timestamp": 1794295077521791,
+        "value": {
+          "type": {
+            "blueId": "E444CeDMiBXJKBmENNtpZre9YzKFABPzqhdbcVQf1JFy"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:aa713a70f7d9a974df4541b9f3622bffd74b7c945220ccf13baf484e2e7bb546",
+        "ordinal": 1,
+        "event": "GeDVekPwd6WmoHw9qw4mw8gVJo8hbkMLfuuPDRyFjip9",
+        "timestamp": 1794295077521791,
+        "value": {
+          "configurationId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "9tZfnjnJNPR1XgDkqVHv3tYRh8FGQMsuGmiZbG8PUyba"
+          },
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "7AeMHi9XT5TdEzQWhDGp6Tp5aqYP4sxumfYoPk1B6fVi"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:aa713a70f7d9a974df4541b9f3622bffd74b7c945220ccf13baf484e2e7bb546",
+        "ordinal": 2,
+        "event": "DNnbDHzBDbdGfonM7gNf85JZ9gs1axwrmUfWsLkFGChq",
+        "timestamp": 1794295077521791,
+        "value": {
+          "currency": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "EUR"
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Payment Initialized"
+          },
+          "paymentId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "FRPbMXKYumtxcTk1pzdHcWys6q2X1s4h9Zpxek6TmgnR"
+          },
+          "type": {
+            "blueId": "CJgGWmocYCpqmt9isfL6aJab4Qs4i62qhUt7T7QubHoo"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:aa713a70f7d9a974df4541b9f3622bffd74b7c945220ccf13baf484e2e7bb546",
+        "ordinal": 3,
+        "event": "6JBbC53nTPFgc63KneKdD17LQAKbN77fgpkWof9pvtPZ",
+        "timestamp": 1794295077521791,
+        "value": {
+          "currency": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "EUR"
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Payment Instruction Acceptance Requested"
+          },
+          "paymentId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "FRPbMXKYumtxcTk1pzdHcWys6q2X1s4h9Zpxek6TmgnR"
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "acceptance"
+          },
+          "type": {
+            "blueId": "5U8KJGf7PQTPGa596mtGPJ6zPj4zsWDiMHRdpYwuSYaM"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:aa713a70f7d9a974df4541b9f3622bffd74b7c945220ccf13baf484e2e7bb546",
+        "ordinal": 4,
+        "event": "J6MQY61fa7nd9R9MiZGBr46BKbSQLyq5nNskBA5KNonf",
+        "timestamp": 1794295077521791,
+        "value": {
+          "revision": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 1
+          },
+          "type": {
+            "blueId": "EdcMeh93AEEwTmZ4HKBbBMphAoCn6dJ8GZ69w86oBe1k"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:5b68ad0bfcec283072ae2e772a88a7c7a148ae81f618062f4896be0a35fecd59",
+        "ordinal": 0,
+        "event": "ALgkvC3EQsarvEQ9tfc9nvm11XSfN8xxVtHKUQ5KJuuj",
+        "timestamp": 1794295077822192,
+        "value": {
+          "currency": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "EUR"
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Instruction Accepted"
+          },
+          "paymentId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "FRPbMXKYumtxcTk1pzdHcWys6q2X1s4h9Zpxek6TmgnR"
+          },
+          "reason": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": ""
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "acceptance"
+          },
+          "type": {
+            "blueId": "AQw9ujDvCtcW3zVZKNg7fwTLks7z3CtveEKoTL5wfgpR"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:1ae681bdab63184c8baae18877e8c3eee2b51e47fbcc4f8b5be74d9fbec9d640",
+        "ordinal": 0,
+        "event": "62gz9XgLLiodxg71ZMZZqmPeVK1fXC2B2r6dudXsw2Pp",
+        "timestamp": 1794295078374407,
+        "value": {
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Manual Transfer Reported"
+          },
+          "report": {
+            "reference": {
+              "type": {
+                "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+              },
+              "value": "local-bank-demo"
+            },
+            "requestId": {
+              "type": {
+                "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+              },
+              "value": "transfer-2"
+            }
+          },
+          "type": {
+            "blueId": "CJgGWmocYCpqmt9isfL6aJab4Qs4i62qhUt7T7QubHoo"
+          }
+        }
+      },
+      {
+        "receipt": "sha256:34aec9caf65153fa1933197289b85d4ff5d18112cbea731232765fba48bf3760",
+        "ordinal": 0,
+        "event": "98un1EZ4C9UZVi1uYLEJnwn3ET4m3i2YsjcVCKZ2nL3j",
+        "timestamp": 1794295078501497,
+        "value": {
+          "amountMinor": {
+            "type": {
+              "blueId": "E2LM6qgzWG9ttagq2xTmiZkgYEAgkYedFCmU9v7NnVEq"
+            },
+            "value": 200
+          },
+          "evidence": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "recipientAcknowledgment"
+          },
+          "kind": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "Manual Receipt Acknowledged"
+          },
+          "requestId": {
+            "type": {
+              "blueId": "GX7CFUmSDrE2MzptunLCCdZwnuwwrenRQqEnHL4x3uoC"
+            },
+            "value": "transfer-2"
+          },
+          "type": {
+            "blueId": "CJgGWmocYCpqmt9isfL6aJab4Qs4i62qhUt7T7QubHoo"
+          }
+        }
+      }
+    ]
+  },
+  "orders": [
+    "sha256:12793d683e2b06765857e64d95b3c400acddd8037ef1a5106a1d6bf0aa6ff532",
+    "sha256:1bf0d25b5de547ecef8c56b70be1111a22ac449f6000046cd94cc054aafaedf3"
+  ],
+  "data": "/private/tmp/blue-polish-20261110/myos-simplified/.local/demo-814ec712-c0ef-4112-8e04-f833f3972938",
+  "status": {
+    "nativeInvocations": 27,
+    "documents": 6,
+    "jobs": {
+      "DONE": 39,
+      "WAITING": 0
+    },
+    "residentDocumentSessions": 0,
+    "packages": {
+      "Activation": "4jsSnzpfSjT7MNhJkUaSjr6j1Pv7pzqFaMfBRgpW66Yk",
+      "Agreements": "5qBykS7uRhzUCLUbxKvtGfWwJfJtvRu95iULxNtPquWb",
+      "Contracts": "4Jmza3Z7eEDah9qtyYq5i2AqX5tKfUnLNKYAoAPoWzmF",
+      "Coordination": "GMzA1zqLaxpDhxefhcS3gWtPFQobAUB5rgWSj3jtvaJa",
+      "Documents": "CtGNX2EA7RndTVJuDnT4HtrvxYmdR9uD6LZ3EsDr2jeq",
+      "IncrementalDocuments": "67SMChJ95B6AJJZz3iKnsa6rxGJzGhvpbNTJv8U8s838",
+      "ManualPayments": "4jsxkYNn8LAHTaYVm9SyC6yaViQdNJkdxa6mnM24xc8o",
+      "Orders": "jdYoDcS4q8oWs6Ma9NfysBX3mVg7moenTwLVTKzP428",
+      "Parties": "3REY1NvPSCHxPkQHTRMQJ6NiqLKCXLrBw6coL7desXbM",
+      "Payment": "9R3k6v5r1NY5JJqGaFx3yqqosXXbyQHLj7BrfhrvMizZ",
+      "PaymentInstruction": "FatyrA88FeJNLaYUMZMkWpQieP1gfpS49pM68dWMDQCS"
+    }
+  },
+  "payments": [
+    "sha256:cacadb40dec127e953f9622bb889d273367c42322d379668681ce47ac8b20107",
+    "sha256:cb796bffcdfb755a599ae2e5c29ad1f2b14b06bf7de29f7680f2eff0bed64bfd"
+  ],
+  "evidenceScope": "Compact business, event, gas and timing evidence. Full private proof records remain in generated build/demo-report.json.",
+  "fullGeneratedReportSha256": "87e2cb3cdab51d7aa642421edca75edaecf361dfa945f72d85d1a094e425ec27"
+}

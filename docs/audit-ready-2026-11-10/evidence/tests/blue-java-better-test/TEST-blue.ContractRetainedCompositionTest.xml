@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.ContractRetainedCompositionTest" tests="6" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:58.526Z" hostname="MacBook-Pro-5.local" time="0.209">
+  <properties />
+  <testcase name="[1] PUBLISHED" classname="blue.ContractRetainedCompositionTest" time="0.046" />
+  <testcase name="[2] COMPOSITIONAL_V1" classname="blue.ContractRetainedCompositionTest" time="0.038" />
+  <testcase name="[3] ADDITIVE_PROTOTYPE_V2" classname="blue.ContractRetainedCompositionTest" time="0.049" />
+  <testcase name="[4] ADDITIVE_PROTOTYPE" classname="blue.ContractRetainedCompositionTest" time="0.046" />
+  <testcase name="twoImportedParentsRetainTheSameAlreadyInitializedDescendant()" classname="blue.ContractRetainedCompositionTest" time="0.025" />
+  <testcase name="adoptingAChildBodyPreservesUnchangedAttachmentTopology()" classname="blue.ContractRetainedCompositionTest" time="0.002" />
+  </testsuite>

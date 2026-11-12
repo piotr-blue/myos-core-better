@@ -1,0 +1,279 @@
+package myos.better;
+
+import java.util.*;
+
+/**
+ * One coherent scheduling cut, published by a single DynamoDB conditional manifest write. Immutable
+ * pages precede publication. Failed writers leave only unreachable content; a fanout of more than
+ * 100 index entries never becomes a partially visible DynamoDB transaction.
+ */
+final class OwnerMetadata {
+  private static final Set<String> OWNER_FIELDS =
+      Set.of(
+          "head",
+          "frontier",
+          "deferred",
+          "coverage-set",
+          "coverage-local",
+          "coverage-external",
+          "coverage-dirty",
+          "publication",
+          "owner-address",
+          "owner-alias");
+
+  private static String packedOwner(String key) {
+    int separator = key.indexOf('\0');
+    return separator > 0
+            && key.indexOf('\0', separator + 1) < 0
+            && OWNER_FIELDS.contains(key.substring(0, separator))
+        ? key.substring(separator + 1)
+        : null;
+  }
+
+  private static String packedKey(String owner) {
+    return "owner-read-pack\0" + owner;
+  }
+
+  private final Repository repository;
+  private final String account;
+  private final AtomicStore.Key manifest;
+
+  OwnerMetadata(AtomicStore store, String account) {
+    this(new Repository(store), account);
+  }
+
+  OwnerMetadata(Repository repository, String account) {
+    this.repository = repository;
+    this.account = Repository.identifier(account);
+    manifest = new AtomicStore.Key("A#" + account + "#OWNER-COORDINATION", "MANIFEST");
+  }
+
+  Transaction begin() {
+    return new Transaction(repository.store.get(manifest));
+  }
+
+  final class Transaction {
+    private final AtomicStore.Row before;
+    private final Repository.Blobs blobs = repository.blobs(account);
+    private final OrderedIndex index = new OrderedIndex(blobs);
+    private final ContentBlocks blocks = new ContentBlocks(blobs);
+    private final String root;
+    private final TreeMap<String, String> changes = new TreeMap<>();
+    private boolean finished;
+    private final Map<String, Map<String, String>> ownerPacks = new HashMap<>();
+    private final List<AtomicStore.Write> writes = new ArrayList<>();
+    private final List<AtomicStore.Check> checks = new ArrayList<>();
+
+    void publish(List<AtomicStore.Write> additions, List<AtomicStore.Check> conditions) {
+      check();
+      writes.addAll(additions);
+      checks.addAll(conditions);
+    }
+
+    Transaction(AtomicStore.Row before) {
+      this.before = before;
+      if (before != null && !"independent-owner-frontiers/1".equals(before.value().get("format")))
+        throw new IllegalStateException("Unsupported owner metadata format");
+      root = before == null ? OrderedIndex.EMPTY : (String) before.value().get("root");
+    }
+
+    String get(String key) {
+      check();
+      if (changes.containsKey(key)) return changes.get(key);
+      String owner = packedOwner(key);
+      if (owner != null) {
+        loadPacks(List.of(owner));
+        Map<String, String> pack = ownerPacks.get(owner);
+        if (pack != null) return decode(pack.get(key.substring(0, key.indexOf('\0'))));
+      }
+      return decode(index.get(root, key));
+    }
+
+    /** Load only requested index paths and their bounded values in network batches. */
+    void prefetch(Collection<String> keys) {
+      check();
+      var selected = keys.stream().filter(key -> !changes.containsKey(key)).toList();
+      loadPacks(
+          selected.stream().map(OwnerMetadata::packedOwner).filter(Objects::nonNull).toList());
+      List<String> ordinary = new ArrayList<>(), values = new ArrayList<>();
+      for (String key : selected) {
+        String owner = packedOwner(key);
+        Map<String, String> pack = owner == null ? null : ownerPacks.get(owner);
+        if (pack == null) ordinary.add(key);
+        else {
+          String value = pack.get(key.substring(0, key.indexOf('\0')));
+          if (value != null) values.add(value);
+        }
+      }
+      values.addAll(index.getAll(root, ordinary).values());
+      prefetchValues(values);
+    }
+
+    private void loadPacks(Collection<String> owners) {
+      var missing =
+          owners.stream().distinct().filter(owner -> !ownerPacks.containsKey(owner)).toList();
+      if (missing.isEmpty()) return;
+      var references = index.getAll(root, missing.stream().map(OwnerMetadata::packedKey).toList());
+      prefetchValues(references.values());
+      for (String owner : missing) {
+        String encoded = references.get(packedKey(owner));
+        if (encoded == null) {
+          ownerPacks.put(owner, null);
+          continue;
+        }
+        var record = Json.object(decode(encoded).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+        if (!"myos.owner-read-pack/1".equals(record.get("format"))
+            || !owner.equals(record.get("owner")))
+          throw new IllegalStateException("Invalid protected owner read pack");
+        var fields = RuntimeConfiguration.object(record.get("fields"), "owner fields");
+        if (!OWNER_FIELDS.containsAll(fields.keySet()))
+          throw new IllegalStateException("Unknown packed owner field");
+        Map<String, String> pack = new HashMap<>();
+        fields.forEach((field, value) -> pack.put(field, (String) value));
+        ownerPacks.put(owner, Map.copyOf(pack));
+      }
+    }
+
+    /** A small redundant projection, updated in the same root as its authoritative keys. */
+    private void packOwners(TreeMap<String, String> encoded) {
+      var owners =
+          changes.keySet().stream()
+              .map(OwnerMetadata::packedOwner)
+              .filter(Objects::nonNull)
+              .distinct()
+              .toList();
+      loadPacks(owners);
+      for (String owner : owners) {
+        Map<String, String> previous = ownerPacks.get(owner), fields = new TreeMap<>();
+        for (String field : OWNER_FIELDS) {
+          String key = field + "\0" + owner;
+          String value =
+              encoded.containsKey(key)
+                  ? encoded.get(key)
+                  : previous != null ? previous.get(field) : index.get(root, key);
+          if (value != null) fields.put(field, value);
+        }
+        byte[] bytes =
+            Json.bytes(
+                Map.of("format", "myos.owner-read-pack/1", "owner", owner, "fields", fields));
+        if (bytes.length > 32 * 1024)
+          throw new IllegalStateException("Owner read pack exceeds its host bound");
+        encoded.put(packedKey(owner), "2" + blobs.put(bytes));
+      }
+    }
+
+    private void prefetchValues(Collection<String> values) {
+      var direct =
+          values.stream()
+              .filter(v -> v.startsWith("2"))
+              .map(v -> v.substring(1))
+              .distinct()
+              .toList();
+      var chunked =
+          values.stream()
+              .filter(v -> v.startsWith("1"))
+              .map(v -> v.substring(1))
+              .distinct()
+              .toList();
+      for (int offset = 0; offset < direct.size(); offset += BlobStore.READ_BATCH_SIZE)
+        blobs.prefetch(
+            direct.subList(offset, Math.min(direct.size(), offset + BlobStore.READ_BATCH_SIZE)));
+      for (int offset = 0; offset < chunked.size(); offset += BlobStore.READ_BATCH_SIZE)
+        blocks.prefetch(
+            chunked.subList(offset, Math.min(chunked.size(), offset + BlobStore.READ_BATCH_SIZE)));
+    }
+
+    void put(String key, String value) {
+      check();
+      changes.put(key, Objects.requireNonNull(value));
+    }
+
+    void remove(String key) {
+      check();
+      changes.put(key, null);
+    }
+
+    /** Reads its own edits while retaining the original coherent committed base cut. */
+    List<OrderedIndex.Entry> page(String prefix, String after, int limit) {
+      check();
+      if (limit < 1 || limit > 1024)
+        throw new IllegalArgumentException("Page size must be 1..1024");
+      TreeMap<String, String> selected = new TreeMap<>();
+      String cursor = after;
+      while (selected.size() < limit) {
+        List<OrderedIndex.Entry> base = index.page(root, prefix, cursor, limit);
+        if (base.isEmpty()) break;
+        prefetchValues(
+            base.stream()
+                .filter(e -> !changes.containsKey(e.key()))
+                .map(OrderedIndex.Entry::value)
+                .toList());
+        for (var entry : base) {
+          String value =
+              changes.containsKey(entry.key()) ? changes.get(entry.key()) : decode(entry.value());
+          if (value != null) selected.put(entry.key(), value);
+        }
+        cursor = base.getLast().key();
+        if (base.size() < limit) break;
+      }
+      while (selected.size() > limit) selected.pollLastEntry();
+      String lower = after == null || after.compareTo(prefix) < 0 ? prefix : after;
+      for (var change :
+          changes.tailMap(lower, after == null || after.compareTo(prefix) < 0).entrySet()) {
+        if (!change.getKey().startsWith(prefix)) break;
+        if (selected.size() >= limit && change.getKey().compareTo(selected.lastKey()) > 0) break;
+        if (change.getValue() != null) selected.put(change.getKey(), change.getValue());
+        if (selected.size() > limit) selected.pollLastEntry();
+      }
+      return selected.entrySet().stream()
+          .limit(limit)
+          .map(entry -> new OrderedIndex.Entry(entry.getKey(), entry.getValue()))
+          .toList();
+    }
+
+    /** CAS failure means none of these metadata edits was published. */
+    boolean commit() {
+      check();
+      finished = true;
+      if (changes.isEmpty() && writes.isEmpty() && checks.isEmpty()) return true;
+      TreeMap<String, String> encoded = new TreeMap<>();
+      changes.forEach((key, value) -> encoded.put(key, encode(value)));
+      packOwners(encoded);
+      String next = index.update(root, encoded);
+      if (!changes.isEmpty())
+        writes.add(
+            AtomicStore.Write.put(
+                manifest,
+                before == null ? 0 : before.version(),
+                Map.of("format", "independent-owner-frontiers/1", "root", next)));
+      else checks.add(new AtomicStore.Check(manifest, before == null ? 0 : before.version()));
+      if (writes.stream().anyMatch(w -> w.key().partition().startsWith("CORE_EVENT_OUTBOX#"))) {
+        blobs.flushDurably();
+        return CoreEventSource.commit(repository.store, writes, checks);
+      }
+      return blobs.commit(writes, checks);
+    }
+
+    private void check() {
+      if (finished) throw new IllegalStateException("Metadata transaction is finished");
+    }
+
+    private String encode(String value) {
+      if (value == null) return null;
+      byte[] bytes = value.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+      if (bytes.length <= 1024) return "0" + value;
+      // Small protected records fit one authenticated page; no extra chunk manifest read.
+      return bytes.length <= 64 * 1024 ? "2" + blobs.put(bytes) : "1" + blocks.put(bytes);
+    }
+
+    private String decode(String stored) {
+      if (stored == null) return null;
+      if (stored.startsWith("0")) return stored.substring(1);
+      if (stored.startsWith("2"))
+        return new String(blobs.get(stored.substring(1)), java.nio.charset.StandardCharsets.UTF_8);
+      if (stored.startsWith("1"))
+        return new String(blocks.get(stored.substring(1)), java.nio.charset.StandardCharsets.UTF_8);
+      throw new IllegalStateException("Invalid owner metadata value");
+    }
+  }
+}

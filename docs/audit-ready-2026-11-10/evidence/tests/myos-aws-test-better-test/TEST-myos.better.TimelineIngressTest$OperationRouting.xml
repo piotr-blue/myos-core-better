@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.TimelineIngressTest$OperationRouting" tests="5" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:24:52.928Z" hostname="MacBook-Pro-5.local" time="0.199">
+  <properties />
+  <testcase name="untargetedOperationUsesItsSelectedChannelInsteadOfEveryNativeSource()" classname="myos.better.TimelineIngressTest$OperationRouting" time="0.024" />
+  <testcase name="verifiedRecognitionRequiresTheExactOriginalMessageAndPreservesItsDescription()" classname="myos.better.TimelineIngressTest$OperationRouting" time="0.026" />
+  <testcase name="unrelatedTargetsRemainObservableAndExactHistoricalVersionsStillFail()" classname="myos.better.TimelineIngressTest$OperationRouting" time="0.057" />
+  <testcase name="anUnaddressedOperationWithoutObserversAdvancesOnlySourceDisposition()" classname="myos.better.TimelineIngressTest$OperationRouting" time="0.041" />
+  <testcase name="historicalTargetsAndCompositeChannelsExecuteWhileOtherDocumentsOnlyObserve()" classname="myos.better.TimelineIngressTest$OperationRouting" time="0.051" />
+  </testsuite>

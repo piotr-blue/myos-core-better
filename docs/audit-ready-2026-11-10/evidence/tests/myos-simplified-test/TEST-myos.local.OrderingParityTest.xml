@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.local.OrderingParityTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:01:47.938Z" hostname="MacBook-Pro-5.local" time="0.733">
+  <properties />
+  <testcase name="creationDoesNotSkipAChildEntryThatArrivedEarlierButSortsAfterTheBirth()" classname="myos.local.OrderingParityTest" time="0.066" />
+  <testcase name="newParentCanAttachAnExactOldChildViewAndReuseItsCommittedHistory()" classname="myos.local.OrderingParityTest" time="0.055" />
+  <testcase name="earlierResultDetachesLaterChildButDoesNotBlockThatIndependentChild()" classname="myos.local.OrderingParityTest" time="0.057" />
+  <testcase name="fourMemberCycleUsesNativeAtomicRoundsAndMatchesWholeExecution()" classname="myos.local.OrderingParityTest" time="0.212" />
+  <testcase name="crossTimelineTiesAreClosedThenOrderedByBlueIdRatherThanArrival()" classname="myos.local.OrderingParityTest" time="0.069" />
+  <testcase name="equalEventValuesRemainDistinctOccurrencesThroughReceiving()" classname="myos.local.OrderingParityTest" time="0.046" />
+  <testcase name="fourMemberCycleCarriesEventsThroughSeveralNativeRounds()" classname="myos.local.OrderingParityTest" time="0.087" />
+  <testcase name="pausedParentConsumesExactChildHistoryAfterChildAdvancesAndProcessRestarts()" classname="myos.local.OrderingParityTest" time="0.137" />
+  </testsuite>

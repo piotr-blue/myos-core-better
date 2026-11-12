@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.CanonicalPortableTest" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:52:08.566Z" hostname="MacBook-Pro-5.local" time="0.391">
+  <properties />
+  <testcase name="acceptanceRejectsForgedReplayAndDuplicateCapabilities()" classname="blue.CanonicalPortableTest" time="0.005" />
+  <testcase name="capsulePinsPolicyAndRejectsAlteredCommitment()" classname="blue.CanonicalPortableTest" time="0.024" />
+  <testcase name="nativePortableAndColdInvocationAgreeForBothEditions()" classname="blue.CanonicalPortableTest" time="0.362" />
+  </testsuite>

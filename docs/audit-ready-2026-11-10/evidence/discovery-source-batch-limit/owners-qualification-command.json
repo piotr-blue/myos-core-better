@@ -1,0 +1,16 @@
+{
+  "commandId": "d081792d-d029-451c-a279-1efb14e32c3f",
+  "instance": "i-0fc9423e311416e22",
+  "table": "myos-better-canonical-20261108-documents",
+  "account": "owner-qa-38f9cf432566",
+  "digest": "4fbc4d3a8f4a1a8e6f4dc492e8beea62f2b49568455c9ec3d57bf3f9f47af4c3",
+  "counts": [
+    10,
+    100
+  ],
+  "cold": true,
+  "profileSummaries": false,
+  "gasSchedule": "ADDITIVE_PROTOTYPE",
+  "rotateTargets": false,
+  "separateTimelines": true
+}

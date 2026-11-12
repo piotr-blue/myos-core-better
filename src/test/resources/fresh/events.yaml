@@ -1,0 +1,38 @@
+log: ""
+child:
+  count: 0
+  contracts:
+    lifecycle: {type: Contracts/Lifecycle Event Channel}
+    initialize:
+      type: Contracts/Sequential Workflow
+      channel: lifecycle
+      steps:
+        - type: Contracts/Update Document
+          changeset: [{op: replace, path: /count, val: {$add: [{$document: /count}, 1]}}]
+        - type: Contracts/Trigger Event
+          event: {kind: Child Ready}
+contracts:
+  embedded: {type: Contracts/Process Embedded, paths: [/child]}
+  lifecycle: {type: Contracts/Lifecycle Event Channel}
+  childEvents: {type: Contracts/Embedded Node Channel, event: {kind: Child Ready}}
+  localEvents: {type: Contracts/Triggered Event Channel, event: {kind: Parent Ready}}
+  initialize:
+    type: Contracts/Sequential Workflow
+    channel: lifecycle
+    steps:
+      - type: Contracts/Update Document
+        changeset: [{op: replace, path: /log, val: I}]
+      - type: Contracts/Trigger Event
+        event: {kind: Parent Ready}
+  onChild:
+    type: Contracts/Sequential Workflow
+    channel: childEvents
+    steps:
+      - type: Contracts/Update Document
+        changeset: [{op: replace, path: /log, val: {$concat: [{$document: /log}, C]}}]
+  onLocal:
+    type: Contracts/Sequential Workflow
+    channel: localEvents
+    steps:
+      - type: Contracts/Update Document
+        changeset: [{op: replace, path: /log, val: {$concat: [{$document: /log}, P]}}]

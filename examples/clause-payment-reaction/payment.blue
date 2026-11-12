@@ -1,0 +1,26 @@
+name: Manual payment for the Order
+type: ManualPayments/Manual Receipt Instruction
+timelineReadAccess:
+  type: Dictionary
+clauses:
+  activation:
+    type: Activation/Activation Clause
+    parameters:
+      parties:
+        payer:
+          type: Parties/Party
+        payee:
+          type: Parties/Party
+        guarantor:
+          type: Parties/Party
+      required: []
+paymentTerms:
+  amountMinor: 200
+  limitMinor: 200
+  currency: EUR
+  payerChannel: payer
+  payeeChannel: payee
+  guarantorChannel: guarantor
+  allowedPayees:
+    - payee
+  recipientApprovalRequired: false

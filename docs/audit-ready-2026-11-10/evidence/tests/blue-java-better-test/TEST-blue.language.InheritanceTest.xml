@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.language.InheritanceTest" tests="8" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:10.453Z" hostname="MacBook-Pro-5.local" time="0.005">
+  <properties />
+  <testcase name="specificationMetadataIsOwnAndNeverInherited()" classname="blue.language.InheritanceTest" time="0.001" />
+  <testcase name="selectedContentRetainsInheritedDefinitionsRefinementsAndCyclicIdentity()" classname="blue.language.InheritanceTest" time="0.001" />
+  <testcase name="concretePresenceDistinguishesRootDefinitionsFromInheritedValues()" classname="blue.language.InheritanceTest" time="0.0" />
+  <testcase name="minimizationRetainsEffectiveMeaningAndBoundRecords()" classname="blue.language.InheritanceTest" time="0.001" />
+  <testcase name="inheritancePreservesExactOriginAndRefinesContextualTypes()" classname="blue.language.InheritanceTest" time="0.001" />
+  <testcase name="explicitSameTypeAndSubtypeArePreservedButIncompatibleTypesAreRejected()" classname="blue.language.InheritanceTest" time="0.0" />
+  <testcase name="extendAndSpecializeRetainDependenciesAndDistinguishIntent()" classname="blue.language.InheritanceTest" time="0.001" />
+  <testcase name="exactRefinementAndSchemaConjunctionKeepInheritedRestrictions()" classname="blue.language.InheritanceTest" time="0.0" />
+  </testsuite>

@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreRegistrationsTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:46.219Z" hostname="MacBook-Pro-5.local" time="0.089">
+  <properties />
+  <testcase name="unlinkRootPreservesEmbeddedMembersAndRejectsRemovingTheirNativeRegistration()" classname="myos.better.CoreRegistrationsTest" time="0.016" />
+  <testcase name="retryAfterLosingTheIdentityPinResponseInitializesOnlyOnce()" classname="myos.better.CoreRegistrationsTest" time="0.01" />
+  <testcase name="unlinkSurvivesAdapterRestartWithoutPausingOrDiscardingNativeWork()" classname="myos.better.CoreRegistrationsTest" time="0.012" />
+  <testcase name="duplicateAndRecreatedRegistrationKeepOneNativeHistoryAcrossAdapterRestart()" classname="myos.better.CoreRegistrationsTest" time="0.018" />
+  <testcase name="unlinkPreservesAnExistingPauseAndPaginationSkipsHiddenRegistrations()" classname="myos.better.CoreRegistrationsTest" time="0.011" />
+  <testcase name="concurrentIdenticalDefinitionsConvergeOnOneNativeInitializationAndRegistration()" classname="myos.better.CoreRegistrationsTest" time="0.009" />
+  <testcase name="lostAliasPublicationResponseRecoversTheOriginalHandleAndHistory()" classname="myos.better.CoreRegistrationsTest" time="0.013" />
+  </testsuite>

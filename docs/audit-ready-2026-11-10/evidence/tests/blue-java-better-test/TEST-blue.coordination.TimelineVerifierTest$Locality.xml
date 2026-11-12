@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="blue.coordination.TimelineVerifierTest$Locality" tests="3" skipped="0" failures="0" errors="0" timestamp="2026-11-10T00:53:09.979Z" hostname="MacBook-Pro-5.local" time="0.132">
+  <properties />
+  <testcase name="[1] 1" classname="blue.coordination.TimelineVerifierTest$Locality" time="0.004" />
+  <testcase name="[2] 128" classname="blue.coordination.TimelineVerifierTest$Locality" time="0.015" />
+  <testcase name="[3] 1024" classname="blue.coordination.TimelineVerifierTest$Locality" time="0.113" />
+  </testsuite>

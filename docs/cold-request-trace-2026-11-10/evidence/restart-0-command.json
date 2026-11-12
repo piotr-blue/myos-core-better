@@ -1,0 +1,22 @@
+{
+  "CommandId": "6b1c320f-80a0-41b7-8bbb-f73f8f29d2fb",
+  "InstanceId": "i-052007ebaf704c0ad",
+  "Comment": "",
+  "DocumentName": "AWS-RunShellScript",
+  "DocumentVersion": "$DEFAULT",
+  "PluginName": "aws:runShellScript",
+  "ResponseCode": 0,
+  "ExecutionStartDateTime": "2026-11-10T01:55:11.382Z",
+  "ExecutionElapsedTime": "PT23.879S",
+  "ExecutionEndDateTime": "2026-11-10T01:55:34.382Z",
+  "Status": "Success",
+  "StatusDetails": "Success",
+  "StandardOutputContent": "{\"canonicalGraphs\":true,\"combinedAcknowledgements\":true,\"durable\":true,\"edition\":\"AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup\",\"nativeAdmission\":true,\"newOwnerGasSchedule\":\"contracts-compositional-gas-1\",\"status\":\"ok\",\"supportedEditions\":[\"AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup\"],\"timelineAutomatic\":true,\"timelineProcessing\":true,\"workers\":2}2026-11-10T01:55:35.169757770Z\n/opt/myos-better/releases/b6c62ef537cc56c834dbda71af4605839fb3699518fb5233a2116466341f58e1\n",
+  "StandardOutputUrl": "https://s3.eu-west-1.amazonaws.com/myos-better-canonical-20261108-artifacts-y9kcxxg2eyvc/reports/cold-trace/cold-trace-0e2fe3014562/restart-0/6b1c320f-80a0-41b7-8bbb-f73f8f29d2fb/i-052007ebaf704c0ad/awsrunShellScript/0.awsrunShellScript/stdout",
+  "StandardErrorContent": "",
+  "StandardErrorUrl": "https://s3.eu-west-1.amazonaws.com/myos-better-canonical-20261108-artifacts-y9kcxxg2eyvc/reports/cold-trace/cold-trace-0e2fe3014562/restart-0/6b1c320f-80a0-41b7-8bbb-f73f8f29d2fb/i-052007ebaf704c0ad/awsrunShellScript/0.awsrunShellScript/stderr",
+  "CloudWatchOutputConfig": {
+    "CloudWatchLogGroupName": "",
+    "CloudWatchOutputEnabled": false
+  }
+}

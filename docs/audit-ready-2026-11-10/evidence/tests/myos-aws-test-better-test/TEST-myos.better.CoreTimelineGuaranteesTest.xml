@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='utf-8'?>
+<testsuite name="myos.better.CoreTimelineGuaranteesTest" tests="4" skipped="0" failures="0" errors="0" timestamp="2026-11-10T01:23:53.461Z" hostname="MacBook-Pro-5.local" time="0.026">
+  <properties />
+  <testcase name="aLostReceiptReplyRecoversTheOriginalSelection()" classname="myos.better.CoreTimelineGuaranteesTest" time="0.008" />
+  <testcase name="signedPagesAndExactReplayKeepTheSelectedFenceAcrossAppendsAndRestart()" classname="myos.better.CoreTimelineGuaranteesTest" time="0.011" />
+  <testcase name="sdkQuerySelectorsAgreeWithBodyAndConflictsAreRejected()" classname="myos.better.CoreTimelineGuaranteesTest" time="0.0" />
+  <testcase name="invalidSelectorsUnestablishedFencesAndForeignAnchorsPublishNoReceipt()" classname="myos.better.CoreTimelineGuaranteesTest" time="0.006" />
+  </testsuite>
