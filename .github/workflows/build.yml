@@ -1,0 +1,53 @@
+name: Build
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  java:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: myos-core-better
+      # The Gradle build is a composite that expects the library beside this repository.
+      - uses: actions/checkout@v4
+        with:
+          repository: piotr-blue/blue-java-better
+          path: blue-java-better
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 25
+      - uses: gradle/actions/setup-gradle@v4
+      # Formatting, -Xlint:all -Werror, the Java suite and compilation of the qualification tools.
+      - name: Check
+        working-directory: myos-core-better
+        run: ./gradlew check
+      - name: Upload test report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: myos-core-better/build/reports/tests
+
+  scripts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Script tests
+        run: python3 -m unittest discover -s scripts -p 'test_*.py'
