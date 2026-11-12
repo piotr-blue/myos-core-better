@@ -5,9 +5,9 @@ This preserves earlier experiments and measurement boundaries. It is not the cur
 # MyOS Core Better
 
 The current independent-owner deployment, correctness checks, measured AWS timings and limits are
-in the [8 November report](docs/owner-aws-report-2026-11-08.md). Follow the
-[reproduction guide](docs/owner-reproduction.md) for Agreement → Order → Payment and mixed local /
-external timelines; see [the ordering model](docs/owner-frontiers.md) for completeness and recovery.
+in the [8 November report](owner-aws-report-2026-11-08.md). Follow the
+[reproduction guide](owner-reproduction.md) for Agreement → Order → Payment and mixed local /
+external timelines; see [the ordering model](owner-frontiers.md) for completeness and recovery.
 
 This alternative MyOS host uses `blue-java-better` and DynamoDB. With `MYOS_OWNERS_FAST=true`,
 new `graph-fast-*` documents use independently persisted native owners and initial cyclic units.
@@ -21,24 +21,24 @@ AWS deployment is isolated, with an authenticated HTTPS console at
 [MyOS Better](https://d2ya9daeiur7nz.cloudfront.net). Create an account, confirm its email, then open
 **Examples** or **Documents → Bootstrap document**. **Timelines** supports private creation,
 signed message append and entry browsing. **API Keys** creates and revokes application credentials
-for the same owner account; see [usage](docs/API-KEYS.md). The console reuses the existing MyOS components;
-execution and persistence use Better. See [console instructions](docs/CONSOLE.md).
+for the same owner account; see [usage](API-KEYS.md). The console reuses the existing MyOS components;
+execution and persistence use Better. See [console instructions](CONSOLE.md).
 Live storage and large-network qualification are recorded in
-[the historical overnight report](docs/OVERNIGHT-REPORT-2026-11-05.md). The current owner adapter supports initial cyclic components and canonical rollback. Arbitrary
+[the historical overnight report](OVERNIGHT-REPORT-2026-11-05.md). The current owner adapter supports initial cyclic components and canonical rollback. Arbitrary
 historical graph migration, portable proof parity and production high availability remain unfinished.
 
-The [512-document payment walkthrough](docs/PAYMENT-WALKTHROUGH.md) records an earlier host
+The [512-document payment walkthrough](PAYMENT-WALKTHROUGH.md) records an earlier host
 experiment. Its synthetic/kernel numbers do not qualify the current published-clause route.
 
 The published Activation/Documents/Payment workflow uses the signed native Timeline route.
 Its end-to-end latency target is still unmet; earlier kernel and synthetic-graph timings do not
-qualify that route. See the [8 November report](docs/owner-aws-report-2026-11-08.md) for current
+qualify that route. See the [8 November report](owner-aws-report-2026-11-08.md) for current
 results, the deployed build, retained optimizations and remaining scaling work.
 
-The earlier [canonical graph adapter](docs/CANONICAL-GRAPHS.md) remains available for existing
+The earlier [canonical graph adapter](CANONICAL-GRAPHS.md) remains available for existing
 `graph-*` documents, with whole-graph publication and cyclic rollback.
 Its bounded measurements retain exact canonical receipts and show the remaining size-dependent
-cost. Follow the [AWS clause walkthrough](docs/AWS-CLAUSE-WALKTHROUGH.md) to try it.
+cost. Follow the [AWS clause walkthrough](AWS-CLAUSE-WALKTHROUGH.md) to try it.
 
 ## Run locally
 
@@ -58,8 +58,8 @@ uses a separate authenticated router; public requests derive their account from 
 ## Operator HTTP API for the earlier document-local editions
 
 The endpoints below describe the earlier document-local host. For the authenticated console's
-canonical graph API, see [canonical graphs](docs/CANONICAL-GRAPHS.md) and the
-[clause tutorial](examples/clause-tutorial/README.md). Canonical child/parent changes commit together;
+canonical graph API, see [canonical graphs](CANONICAL-GRAPHS.md) and the
+[clause tutorial](../examples/clause-tutorial/README.md). Canonical child/parent changes commit together;
 the asynchronous propagation endpoints below apply to the earlier editions.
 
 Every operation request supplies an account, document and stable command identifier. Retrying the
@@ -71,9 +71,9 @@ notification has arrived. All timestamps are explicit deterministic nonnegative 
 - `POST /documents/create`: `{account, document, command, source}`; source is YAML text or JSON data.
 - `POST /documents/call`: `{account, document, command, channel, operation, request, timestamp}`.
 - `POST /documents/process`: `{account, document, command, event, timestamp}` preserves an authored event envelope.
-- `POST /documents/admit`: `{account, document, command, event, timestamp, evidence}`; explicit scoped native admission, requiring configured namespace and verifier. See [native ingress](docs/NATIVE-ADMISSION.md).
+- `POST /documents/admit`: `{account, document, command, event, timestamp, evidence}`; explicit scoped native admission, requiring configured namespace and verifier. See [native ingress](NATIVE-ADMISSION.md).
 - `POST /timelines/head`, `POST /timelines/acquire` and `POST /documents/timeline/step`: explicitly
-  configured signed-source acquisition and processing; see [Timeline service](docs/TIMELINE-SERVICE.md).
+  configured signed-source acquisition and processing; see [Timeline service](TIMELINE-SERVICE.md).
 - `POST /documents/command`: `{account, document, command}` returns its original input and durable result.
 - `POST /documents/propagation`: `{account, document}` inspects pending or blocked source delivery.
 - `POST /documents/propagation/retry`: `{account, document, command}` explicitly retries a blocked source.
@@ -94,7 +94,7 @@ or aggregation workflows.
 A conditional transaction publishes document state, its immutable version, the idempotency result,
 reverse links and outbox. Small immutable index-page sets publish in that same transaction; larger
 sets publish first, before their root pointer can commit. A failed publication cannot expose staged
-pages through a document. See [the publication comparison](docs/PERFORMANCE-CONTENT-PUBLICATION-128.md).
+pages through a document. See [the publication comparison](PERFORMANCE-CONTENT-PUBLICATION-128.md).
 Workers deliver source versions in order. A durable parent command identifier prevents duplicate
 business effects when a notification is retried after a crash.
 
@@ -102,20 +102,20 @@ The index test changes one child among 20,000 siblings and verifies old-root rea
 deletions and bounded page writes. Whole-collection reads enumerate local links and materialize the selected collection. A root with
 arbitrary business logic reacting to every child remains a serialization point.
 
-See [architecture](docs/ARCHITECTURE.md) for the strategy and semantic tradeoffs. No package publisher
+See [architecture](ARCHITECTURE.md) for the strategy and semantic tradeoffs. No package publisher
 or changes to the original Python, MyOS deployment, or shared package publications are included.
 
-The internal [published Timeline ingress](docs/TIMELINE-INGRESS.md) derives required public sources
+The internal [published Timeline ingress](TIMELINE-INGRESS.md) derives required public sources
 from exact receiving declarations and executes signed entries through the published bindings.
-Explicit [main-service configuration and HTTP processing](docs/TIMELINE-SERVICE.md) are available.
+Explicit [main-service configuration and HTTP processing](TIMELINE-SERVICE.md) are available.
 Opt-in automatic public HTTPS acquisition and durable receiver scheduling are available for configured
 sources. Signed private reader access and operator source adoption are available. Receiving-policy
 rebase and adoption/routing through the owner console remain unfinished.
-Account-owned Timeline publication is available in the console; see [its boundaries](docs/HOSTED-TIMELINES.md).
+Account-owned Timeline publication is available in the console; see [its boundaries](HOSTED-TIMELINES.md).
 
-The internal [timeline acquisition archive](docs/TIMELINE-ACQUISITION.md) stores verified source
+The internal [timeline acquisition archive](TIMELINE-ACQUISITION.md) stores verified source
 evidence and immutable content through the same conditional store. Warm importers verify only new
-batches; a fresh process replays retained evidence. The internal [source selector](docs/TIMELINE-PROCESSING.md) now publishes receiver progress with
+batches; a fresh process replays retained evidence. The internal [source selector](TIMELINE-PROCESSING.md) now publishes receiver progress with
 actual document execution for explicit source sets. The configured automatic runner connects public
 provider acquisition to this path; explicit signed-evidence submission remains available as well.
 
@@ -130,7 +130,7 @@ The isolated stack is `myos-better-20261105` in `eu-west-1`. It contains one `c7
 public operator port, an encrypted DynamoDB table with point-in-time recovery and a private artifact
 bucket. The separate console stack exposes HTTPS through a private CloudFront VPC origin; port8088
 accepts the CloudFront managed prefix only. Deploy with `--console` to retain that listener; follow
-[the complete console build/deploy steps](docs/CONSOLE.md).
+[the complete console build/deploy steps](CONSOLE.md).
 Resources are retained for inspection; review date is 2026-11-12. Retention tags do not perform cleanup.
 The DynamoDB table has a Retain policy. Cleanup must explicitly choose whether to preserve its data.
 
@@ -140,14 +140,14 @@ With the service running locally, use `/usr/bin/python3 scripts/demo.py`. It ini
 adds an order containing two payments, records one payment and waits for the order and agreement
 listeners. The final agreement has `paidTotal: 42`; its public event is `Agreement Payment Received`.
 The authored definitions are in `examples/`; the inspection report is written to ignored `reports/`.
-See [operations](docs/OPERATIONS.md) for the AWS tunnel, restart, rollback and cleanup commands.
+See [operations](OPERATIONS.md) for the AWS tunnel, restart, rollback and cleanup commands.
 
-The [pinned Hello/Activation example](examples/hello/README.md) loads actual package publications,
+The [pinned Hello/Activation example](../examples/hello/README.md) loads actual package publications,
 requires consent, validates an action and retains its events and original input. Configure packages
-through [a verified runtime manifest](docs/RUNTIME-PACKAGES.md). The [AWS report](docs/AWS-PERFORMANCE.md)
+through [a verified runtime manifest](RUNTIME-PACKAGES.md). The [AWS report](AWS-PERFORMANCE.md)
 contains the 80,001-document qualification and measured storage improvements.
 
-The [overnight implementation report](docs/OVERNIGHT-REPORT-2026-11-05.md) summarizes retained and
+The [overnight implementation report](OVERNIGHT-REPORT-2026-11-05.md) summarizes retained and
 reverted experiments, measured AWS results, and the remaining compatibility/production boundaries.
 
 Full document views are bounded to 256 document visits, 262,144 structural traversal units,
@@ -165,14 +165,14 @@ controlled comparisons. Both modes use128 warmups, check every root total, and e
 from operation timings. They are synchronous CLI probes, not concurrent HTTP saturation tests.
 
 
-The [current real-worker scale probe](docs/PERFORMANCE-WORKING-SET-130.md) compares existing synthetic
+The [current real-worker scale probe](PERFORMANCE-WORKING-SET-130.md) compares existing synthetic
 graphs with sequential and concurrent payments. `scripts/run_graph_load.py` requires explicit small
 and large `bench-*` accounts, pins the deployed runtime manifest/artifacts, and restores the main
 service after its bounded campaign. It records all touched document deltas and acknowledgements.
 Use `--active-orders 16` to hold active-set size/overlap constant across stored graph sizes; omit it
 to sample the full population. Full inventory/target setup is reported separately from operation time.
 
-The [independent-owner AWS reproduction](docs/owner-reproduction.md) covers the current canonical
+The [independent-owner AWS reproduction](owner-reproduction.md) covers the current canonical
 owner scheduler, published Agreement/Order/Payment clauses, and imported external timelines.
-See [the ordering and durability model](docs/owner-frontiers.md) before comparing these results
+See [the ordering and durability model](owner-frontiers.md) before comparing these results
 with earlier document-local performance experiments.
