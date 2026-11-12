@@ -141,22 +141,27 @@ final class OwnerTimeIngress {
                   registration.id()),
               (writes, checks) -> {});
       return new OwnerInput() {
+        @Override
         public CanonicalGraphs.Request request() {
           return request;
         }
 
+        @Override
         public boolean participating() {
           return direct;
         }
 
+        @Override
         public Optional<TimelineVerifier.Entry> entry() {
           return Optional.empty();
         }
 
+        @Override
         public RetainedTimeline retainedTimeline() {
           return null;
         }
 
+        @Override
         public void verified() {
           negative.verified();
           if (frame.receiver != null && !frame.verified) {
@@ -164,10 +169,12 @@ final class OwnerTimeIngress {
           }
         }
 
+        @Override
         public Map<String, Object> audit() {
           return Map.of("time", proof, "direct", direct, "timelines", negative.audit());
         }
 
+        @Override
         public void close() {
           invocation.remove();
           negative.close();

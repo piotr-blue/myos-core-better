@@ -265,6 +265,7 @@ class TimelineDirectoryHttpTest {
       }
     }
 
+    @Override
     public void close() {
       server.close();
       client.close();

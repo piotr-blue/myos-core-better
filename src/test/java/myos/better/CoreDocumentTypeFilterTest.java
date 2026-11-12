@@ -177,6 +177,7 @@ class CoreDocumentTypeFilterTest {
       return CoreDocumentTypeFilterTest.ids(api.list("alice", query));
     }
 
+    @Override
     public void close() {
       core.close();
       store.close();

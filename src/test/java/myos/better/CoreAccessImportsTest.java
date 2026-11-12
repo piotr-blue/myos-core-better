@@ -120,10 +120,12 @@ class CoreAccessImportsTest {
               f.source.publisher.host,
               f.selectedRuntime,
               new CoreAccessUpdates.Follower() {
+                @Override
                 public void check(String account, BlueId access, Map<String, Object> selection) {
                   f.api.checkSelection(account, access, selection);
                 }
 
+                @Override
                 public void retain(String account, BlueId access, Map<String, Object> selection) {
                   f.importer.add(
                       account,
@@ -285,6 +287,7 @@ class CoreAccessImportsTest {
       fail("Access follower did not become idle");
     }
 
+    @Override
     public void close() {
       importer.close();
       timelines.close();

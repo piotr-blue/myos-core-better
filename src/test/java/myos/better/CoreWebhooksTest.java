@@ -416,6 +416,7 @@ class CoreWebhooksTest {
       var closed = new AtomicBoolean();
       WebhookTransport transport =
           new WebhookTransport() {
+            @Override
             public int send(String target, Map<String, String> headers, byte[] body) {
               assertFalse(closed.get());
               if (received.add(headers.get("x-myos-webhook-event-delivery-id"))) {
@@ -424,6 +425,7 @@ class CoreWebhooksTest {
               return 200;
             }
 
+            @Override
             public void close() {
               closed.set(true);
             }
@@ -580,10 +582,12 @@ class CoreWebhooksTest {
       now += amount;
     }
 
+    @Override
     public ZoneId getZone() {
       return ZoneOffset.UTC;
     }
 
+    @Override
     public Clock withZone(ZoneId zone) {
       if (!zone.equals(ZoneOffset.UTC)) {
         throw new IllegalArgumentException();
@@ -591,6 +595,7 @@ class CoreWebhooksTest {
       return this;
     }
 
+    @Override
     public Instant instant() {
       return Instant.ofEpochMilli(now);
     }

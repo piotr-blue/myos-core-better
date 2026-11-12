@@ -97,6 +97,7 @@ class OwnerTimeIntegrationTest {
       }
     }
 
+    @Override
     public void close() {
       service.close();
     }

@@ -508,28 +508,34 @@ final class GraphTimelineIngress implements AutoCloseable {
       request = GraphTimelineIngress.this.request(frame);
     }
 
+    @Override
     public CanonicalGraphs.Request request() {
       return request;
     }
 
+    @Override
     public boolean participating() {
       return participating;
     }
 
+    @Override
     public Optional<TimelineVerifier.Entry> entry() {
       return frame.plan == null ? Optional.empty() : frame.plan.verifiedEntry();
     }
 
+    @Override
     public RetainedTimeline retainedTimeline() {
       return frame.plan == null ? null : frame.plan.retainedTimeline();
     }
 
+    @Override
     public void verified() {
       if (!frame.verified.equals(frame.assessments.keySet())) {
         throw new IllegalStateException("Native admission did not verify every receiving lifetime");
       }
     }
 
+    @Override
     public Map<String, Object> audit() {
       return GraphTimelineIngress.audit(frame);
     }

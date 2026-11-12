@@ -253,6 +253,7 @@ class TimelineHttpTransportTest {
       return URI.create("https://localhost:" + server.getAddress().getPort() + path);
     }
 
+    @Override
     public void close() {
       server.stop(0);
       workers.shutdownNow();

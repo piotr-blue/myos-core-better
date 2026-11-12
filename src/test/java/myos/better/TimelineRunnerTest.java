@@ -222,6 +222,7 @@ class TimelineRunnerTest {
       TimelineService service = loaded.timelines().orElseThrow();
       TimelineTransport transport =
           new TimelineTransport() {
+            @Override
             public Reply exchange(
                 java.net.URI uri, String request, int maximum, java.time.Duration timeout)
                 throws IOException {
@@ -235,6 +236,7 @@ class TimelineRunnerTest {
               }
             }
 
+            @Override
             public void close() {
               transportClosed.set(true);
             }
@@ -247,6 +249,7 @@ class TimelineRunnerTest {
 
   private record Running(Core core, TimelineService service, TimelineRunner runner)
       implements AutoCloseable {
+    @Override
     public void close() {
       runner.close();
       core.close();

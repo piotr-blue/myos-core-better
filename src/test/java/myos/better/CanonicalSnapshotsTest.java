@@ -616,34 +616,41 @@ class CanonicalSnapshotsTest {
     private final AtomicStore delegate = new JsonBoundaryStore();
     int reads, written, maximumBytes, points, batches;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       reads++;
       points++;
       return delegate.content(account, identity);
     }
 
+    @Override
     public Map<String, byte[]> contentAll(String account, List<String> identities) {
       batches++;
       reads += identities.size();
       return delegate.contentAll(account, identities);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       written += pages.size();
       pages.values().forEach(bytes -> maximumBytes = Math.max(maximumBytes, bytes.length));

@@ -219,10 +219,12 @@ final class CoreDashboardApi {
               timelines.hosted(),
               runtime,
               new CoreAccessUpdates.Follower() {
+                @Override
                 public void check(String account, BlueId access, Map<String, Object> selection) {
                   coreDocuments.checkSelection(account, access, selection);
                 }
 
+                @Override
                 public void retain(String account, BlueId access, Map<String, Object> selection) {
                   accessImports.add(
                       account,

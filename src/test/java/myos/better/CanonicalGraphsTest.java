@@ -256,26 +256,32 @@ class CanonicalGraphsTest {
     final AtomicStore delegate = new JsonBoundaryStore();
     boolean beforeCommit, afterCommit;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String p, String prefix, String after, int limit) {
       return delegate.query(p, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String id) {
       return delegate.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       if (beforeCommit) {
         beforeCommit = false;

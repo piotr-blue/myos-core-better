@@ -46,10 +46,12 @@ class AdoptedTimelineIndexTest {
     var visits = new java.util.concurrent.atomic.AtomicInteger();
     var registrations =
         new java.util.AbstractList<TimelineArchive>() {
+          @Override
           public int size() {
             return 1000;
           }
 
+          @Override
           public TimelineArchive get(int index) {
             java.util.Objects.checkIndex(index, size());
             visits.incrementAndGet();

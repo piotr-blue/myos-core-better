@@ -159,6 +159,7 @@ class OwnerTimeTimelineTest {
       previousEntry = entry.blueId();
     }
 
+    @Override
     public void close() {
       service.close();
     }

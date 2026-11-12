@@ -207,11 +207,13 @@ class PropagationReadTest {
     Page stale;
     Consumer<List<Key>> afterBatch = keys -> {};
 
+    @Override
     public Row get(Key key) {
       reads.add(key);
       return delegate.get(key);
     }
 
+    @Override
     public Map<Key, Row> getAll(List<Key> keys) {
       batches.add(List.copyOf(keys));
       if (failBatch) {
@@ -223,23 +225,28 @@ class PropagationReadTest {
       return result;
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       scans++;
       return stale != null && shard.equals("work-0") ? stale : delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }

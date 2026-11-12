@@ -34,6 +34,7 @@ class CoreNativeIsolationHttpTest {
     var alice = new ConsoleLogin.User("alice", "alice@example.invalid");
     ConsoleLogin login =
         new ConsoleLogin() {
+          @Override
           public User verify(String token) {
             if (!Set.of("alice", "bob").contains(Objects.toString(token, ""))) {
               throw new ConsoleProblem(401, "SIGN_IN", "Sign in");
@@ -41,10 +42,12 @@ class CoreNativeIsolationHttpTest {
             return new User(token, token + "@example.invalid");
           }
 
+          @Override
           public Map<String, Object> action(String action, Map<String, Object> input) {
             throw new UnsupportedOperationException();
           }
 
+          @Override
           public void close() {}
         };
     try (var f = new ConsoleInputFixture(language, PublicPackages.EMPTY, 60_000, true, false);

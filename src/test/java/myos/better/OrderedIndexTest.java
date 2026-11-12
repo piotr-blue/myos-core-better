@@ -17,6 +17,7 @@ class OrderedIndexTest {
     final Map<String, byte[]> values = new HashMap<>();
     int reads, writes;
 
+    @Override
     public String put(byte[] value) {
       String id = Json.hash(value);
       values.put(id, value.clone());
@@ -24,6 +25,7 @@ class OrderedIndexTest {
       return id;
     }
 
+    @Override
     public byte[] get(String id) {
       reads++;
       return values.get(id).clone();
@@ -98,10 +100,12 @@ class OrderedIndexTest {
       int batches;
       int individualReads;
 
+      @Override
       public String put(byte[] bytes) {
         return content.put(bytes);
       }
 
+      @Override
       public byte[] get(String identity) {
         byte[] known = fetched.get(identity);
         if (known != null) {
@@ -111,6 +115,7 @@ class OrderedIndexTest {
         return content.get(identity);
       }
 
+      @Override
       public void prefetch(List<String> identities) {
         List<String> missing = identities.stream().filter(id -> !fetched.containsKey(id)).toList();
         if (missing.isEmpty()) {

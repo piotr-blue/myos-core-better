@@ -24,38 +24,47 @@ final class NotifyingStore implements AtomicStore {
     listeners.remove(listener);
   }
 
+  @Override
   public Row get(Key key) {
     return delegate.get(key);
   }
 
+  @Override
   public Map<Key, Row> getAll(List<Key> keys) {
     return delegate.getAll(keys);
   }
 
+  @Override
   public Page query(String partition, String prefix, String after, int limit) {
     return delegate.query(partition, prefix, after, limit);
   }
 
+  @Override
   public Page work(String shard, String after, int limit) {
     return delegate.work(shard, after, limit);
   }
 
+  @Override
   public byte[] content(String account, String identity) {
     return delegate.content(account, identity);
   }
 
+  @Override
   public Map<String, byte[]> contentAll(String account, List<String> ids) {
     return delegate.contentAll(account, ids);
   }
 
+  @Override
   public void publishContent(String account, Map<String, byte[]> pages) {
     delegate.publishContent(account, pages);
   }
 
+  @Override
   public Map<String, Long> statistics() {
     return delegate.statistics();
   }
 
+  @Override
   public boolean commit(List<Write> writes, List<Check> checks) {
     boolean committed = delegate.commit(writes, checks);
     if (committed) {
@@ -64,6 +73,7 @@ final class NotifyingStore implements AtomicStore {
     return committed;
   }
 
+  @Override
   public boolean commitWithContent(
       List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
     boolean committed = delegate.commitWithContent(writes, checks, account, pages);

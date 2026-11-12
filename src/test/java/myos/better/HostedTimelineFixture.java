@@ -90,6 +90,7 @@ final class HostedTimelineFixture {
     long getCalls, contentCalls;
     boolean legacyMetadata;
 
+    @Override
     public Row get(Key key) {
       getCalls++;
       Row row = delegate.get(key);
@@ -101,14 +102,17 @@ final class HostedTimelineFixture {
       return row;
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String id) {
       contentCalls++;
       if (unavailable.contains(id)) {
@@ -117,11 +121,13 @@ final class HostedTimelineFixture {
       return delegate.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       published.addAll(pages.keySet());
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       Runnable race = beforeCommit;
       beforeCommit = null;

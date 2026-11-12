@@ -369,18 +369,22 @@ class GraphOperationCatalogueTest {
     Row override;
     boolean failCommit;
 
+    @Override
     public Row get(Key key) {
       return override != null && override.key().equals(key) ? override : delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       if (failCommit) {
         failCommit = false;
@@ -395,6 +399,7 @@ class GraphOperationCatalogueTest {
       return result;
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       if (denied.contains(identity)) {
         throw new AssertionError("Execution content was opened");
@@ -402,6 +407,7 @@ class GraphOperationCatalogueTest {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }

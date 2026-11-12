@@ -365,26 +365,32 @@ class TimelineConfigurationTest {
       this.mode = mode;
     }
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String id) {
       return delegate.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       if (writes.stream()
           .noneMatch(write -> write.key().partition().endsWith("#TIMELINE_CONFIG"))) {

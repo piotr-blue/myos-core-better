@@ -332,6 +332,7 @@ class DocumentLineageTest {
     String corruptField;
     int reads;
 
+    @Override
     public Row get(Key key) {
       reads++;
       if (key.sort().equals("LINEAGE") && beforeLineageRead != null) {
@@ -354,14 +355,17 @@ class DocumentLineageTest {
       return row;
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean committed = delegate.commit(writes, checks);
       if (committed && loseResponse) {
@@ -371,10 +375,12 @@ class DocumentLineageTest {
       return committed;
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }

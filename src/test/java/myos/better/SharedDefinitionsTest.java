@@ -140,18 +140,22 @@ class SharedDefinitionsTest {
     CyclicBarrier barrier;
     final AtomicInteger commits = new AtomicInteger();
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       if (barrier != null && commits.incrementAndGet() <= 2) {
         try {
@@ -163,10 +167,12 @@ class SharedDefinitionsTest {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       if (failContent) {
         throw new IllegalStateException("Injected content failure");
@@ -174,6 +180,7 @@ class SharedDefinitionsTest {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public void close() {
       delegate.close();
     }

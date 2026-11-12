@@ -172,26 +172,32 @@ class CoreAdmissionListingTest {
     var once = new AtomicBoolean();
     AtomicStore failed =
         new AtomicStore() {
+          @Override
           public Row get(Key key) {
             return store.get(key);
           }
 
+          @Override
           public Page query(String p, String s, String a, int l) {
             return store.query(p, s, a, l);
           }
 
+          @Override
           public Page work(String s, String a, int l) {
             return store.work(s, a, l);
           }
 
+          @Override
           public byte[] content(String a, String id) {
             throw new AssertionError("Listing must not open content");
           }
 
+          @Override
           public void publishContent(String a, Map<String, byte[]> p) {
             throw new AssertionError("Listing must not publish content");
           }
 
+          @Override
           public boolean commit(List<Write> writes, List<Check> checks) {
             boolean result = store.commit(writes, checks);
             if (result

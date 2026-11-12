@@ -791,6 +791,7 @@ class TimelineArchiveTest {
     final Map<Key, Row> overrides = new HashMap<>();
     final Map<String, byte[]> contentOverrides = new HashMap<>();
 
+    @Override
     public Row get(Key key) {
       if (key.sort().startsWith("H#")) {
         historyReads.add(key.sort());
@@ -801,6 +802,7 @@ class TimelineArchiveTest {
       return delegate.get(key);
     }
 
+    @Override
     public Map<Key, Row> getAll(List<Key> keys) {
       historyBatchSizes.add(keys.size());
       Runnable action = beforeBatchRead;
@@ -811,14 +813,17 @@ class TimelineArchiveTest {
       return AtomicStore.super.getAll(keys);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       if (contentOverrides.containsKey(identity)) {
         return contentOverrides.get(identity);
@@ -826,15 +831,18 @@ class TimelineArchiveTest {
       return delegate.content(account, identity);
     }
 
+    @Override
     public Map<String, byte[]> contentAll(String account, List<String> identities) {
       contentBatchSizes.add(identities.size());
       return AtomicStore.super.contentAll(account, identities);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       Runnable action = beforeCommit;
       beforeCommit = null;

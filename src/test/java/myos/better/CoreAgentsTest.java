@@ -253,26 +253,32 @@ class CoreAgentsTest {
     volatile Runnable before = () -> {};
     boolean loseReply;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String p, String prefix, String after, int limit) {
       return delegate.query(p, prefix, after, limit);
     }
 
+    @Override
     public Page work(String s, String after, int limit) {
       return delegate.work(s, after, limit);
     }
 
+    @Override
     public byte[] content(String a, String id) {
       return delegate.content(a, id);
     }
 
+    @Override
     public void publishContent(String a, Map<String, byte[]> p) {
       delegate.publishContent(a, p);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       before.run();
       boolean result = delegate.commit(writes, checks);

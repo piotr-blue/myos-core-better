@@ -20,6 +20,7 @@ class CorePublicDirectoryHttpTest {
     var directory = new PublicDirectoryStore(new JsonBoundaryStore());
     ConsoleLogin login =
         new ConsoleLogin() {
+          @Override
           public User verify(String token) {
             if (!Set.of("alice", "bob").contains(Objects.toString(token, ""))) {
               throw new ConsoleProblem(401, "invalid", "Sign in");
@@ -27,10 +28,12 @@ class CorePublicDirectoryHttpTest {
             return new User(token, token + "@example.test");
           }
 
+          @Override
           public Map<String, Object> action(String action, Map<String, Object> input) {
             return Map.of();
           }
 
+          @Override
           public void close() {}
         };
     try (var f = new ConsoleHttpTest.Fixture(web, null, new NotifyingStore(directory), login)) {

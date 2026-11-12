@@ -19,6 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 /** Escaping failures must reach supervision even when executors retain their exceptions. */
 class DashboardWorkerHealthTest {
   private record Worker(Runnable cleanup, Runnable start, Runnable check) implements AutoCloseable {
+    @Override
     public void close() {
       cleanup.run();
     }
@@ -67,10 +68,12 @@ class DashboardWorkerHealthTest {
     var fatal = new AssertionError("private execution fixture");
     var action =
         new CoreBootstrapJobs.Action() {
+          @Override
           public Map<String, Object> prepare(String account, Map<String, Object> input) {
             return Map.of("prepared", true);
           }
 
+          @Override
           public Map<String, Object> execute(
               String account, String command, Map<String, Object> prepared) {
             entered.countDown();
@@ -103,10 +106,12 @@ class DashboardWorkerHealthTest {
       case "bootstrap" -> {
         var action =
             new CoreBootstrapJobs.Action() {
+              @Override
               public Map<String, Object> prepare(String account, Map<String, Object> input) {
                 throw new AssertionError();
               }
 
+              @Override
               public Map<String, Object> execute(
                   String account, String command, Map<String, Object> prepared) {
                 throw new AssertionError();

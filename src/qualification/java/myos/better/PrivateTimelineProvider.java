@@ -193,6 +193,7 @@ final class PrivateTimelineProvider implements AutoCloseable {
     return Map.of("requests", requests.sum(), "deniedReads", denied.sum());
   }
 
+  @Override
   public void close() {
     https.close();
   }

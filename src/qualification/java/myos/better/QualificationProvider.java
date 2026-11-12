@@ -259,6 +259,7 @@ final class QualificationProvider implements AutoCloseable {
     }
   }
 
+  @Override
   public void close() {
     https.close();
   }

@@ -227,6 +227,7 @@ final class TimelineAccessHistory implements AutoCloseable {
           true, Optional.ofNullable(prior == null ? discardedState : prior.getValue()));
     }
 
+    @Override
     public void close() {
       access.close();
     }
@@ -246,6 +247,7 @@ final class TimelineAccessHistory implements AutoCloseable {
     return new State(document.blueId(), timelines, keys);
   }
 
+  @Override
   public void close() {
     synchronized (replays) {
       closed = true;

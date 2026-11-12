@@ -181,6 +181,7 @@ class RadixIndexTest {
     int writes;
     int reads;
 
+    @Override
     public String put(byte[] value) {
       writes++;
       String id = Json.hash(value);
@@ -188,6 +189,7 @@ class RadixIndexTest {
       return id;
     }
 
+    @Override
     public byte[] get(String id) {
       reads++;
       return content.get(id).clone();

@@ -284,6 +284,7 @@ class ConsoleHttpTest {
 
     private static ConsoleLogin testLogin() {
       return new ConsoleLogin() {
+        @Override
         public User verify(String token) {
           if (!Set.of("alice", "bob").contains(Objects.toString(token, ""))) {
             throw new ConsoleProblem(401, "INVALID", "Sign in");
@@ -291,10 +292,12 @@ class ConsoleHttpTest {
           return new User(token, token + "@example.invalid");
         }
 
+        @Override
         public Map<String, Object> action(String action, Map<String, Object> input) {
           return Map.of("token", "alice", "expiresIn", 3600);
         }
 
+        @Override
         public void close() {}
       };
     }
@@ -363,6 +366,7 @@ class ConsoleHttpTest {
       return Json.object(response.body().getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
+    @Override
     public void close() {
       server.close();
       http.close();

@@ -181,6 +181,7 @@ final class TimelinePermissions implements AutoCloseable {
         TimelineIngress.Status.APPLIED, "Historical read access established", List.copyOf(facts));
   }
 
+  @Override
   public void close() {
     history.close();
     policies.clear();

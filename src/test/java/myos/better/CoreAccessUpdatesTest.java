@@ -225,6 +225,7 @@ class CoreAccessUpdatesTest {
     volatile boolean conflict;
     volatile Map<String, Object> lastSelection;
 
+    @Override
     public void check(String account, BlueId access, Map<String, Object> selection) {
       if (conflict) {
         throw new ConsoleProblem(
@@ -232,6 +233,7 @@ class CoreAccessUpdatesTest {
       }
     }
 
+    @Override
     public void retain(String account, BlueId access, Map<String, Object> selection) {
       calls.incrementAndGet();
       if (failures.getAndUpdate(value -> Math.max(0, value - 1)) > 0) {

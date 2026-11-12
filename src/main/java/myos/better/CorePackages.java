@@ -175,6 +175,7 @@ final class CorePackages {
         new java.util.function.Supplier<Map<String, String>>() {
           private Map<String, String> value;
 
+          @Override
           public Map<String, String> get() {
             if (value == null) {
               value = selectedAliases(account, selection);

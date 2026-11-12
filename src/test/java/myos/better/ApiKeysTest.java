@@ -169,26 +169,32 @@ class ApiKeysTest {
     private final AtomicStore store = new JsonBoundaryStore();
     boolean lose;
 
+    @Override
     public Row get(Key key) {
       return store.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return store.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return store.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String id) {
       return store.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       store.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean result = store.commit(writes, checks);
       if (result && lose) {

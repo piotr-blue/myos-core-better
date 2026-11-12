@@ -600,6 +600,7 @@ final class TimelineIngress implements AutoCloseable {
     return expected;
   }
 
+  @Override
   public void close() {
     if (permissions != null) {
       permissions.close();

@@ -48,22 +48,27 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
     }
   }
 
+  @Override
   public Page publicDirectoryPage(String after) {
     return delegate.publicDirectoryPage(after);
   }
 
+  @Override
   public Row get(Key key) {
     return delegate.get(key);
   }
 
+  @Override
   public Page query(String partition, String prefix, String after, int limit) {
     return delegate.query(partition, prefix, after, limit);
   }
 
+  @Override
   public Page work(String shard, String after, int limit) {
     return delegate.work(shard, after, limit);
   }
 
+  @Override
   public boolean commit(List<Write> writes, List<Check> checks) {
     List<Write> encoded =
         writes.stream()
@@ -79,6 +84,7 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
     return delegate.commit(encoded, checks);
   }
 
+  @Override
   public synchronized byte[] content(String account, String identity) {
     if (channel == null) {
       return delegate.content(account, identity);
@@ -100,6 +106,7 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
     return bytes.array();
   }
 
+  @Override
   public synchronized void publishContent(String account, Map<String, byte[]> pages) {
     if (channel == null) {
       delegate.publishContent(account, pages);
@@ -126,6 +133,7 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
     }
   }
 
+  @Override
   public synchronized Map<String, Long> statistics() {
     return Map.of(
         "qualification.diskContentBytes",
@@ -134,6 +142,7 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
         (long) locations.size());
   }
 
+  @Override
   public synchronized void close() {
     if (channel == null) {
       return;

@@ -52,6 +52,7 @@ final class OwnerFrontiers {
       return String.format(Locale.ROOT, "%016d", timestamp) + "\0" + timeline + "\0" + entry;
     }
 
+    @Override
     public int compareTo(Order other) {
       return key().compareTo(other.key());
     }

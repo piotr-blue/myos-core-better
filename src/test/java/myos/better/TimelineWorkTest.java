@@ -847,30 +847,36 @@ class TimelineWorkTest {
     boolean loseResponse;
     int maximumWrites, gets, queries, returnedWork;
 
+    @Override
     public Row get(Key key) {
       gets++;
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       queries++;
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       Page page = delegate.work(shard, after, limit);
       returnedWork += page.rows().size();
       return page;
     }
 
+    @Override
     public byte[] content(String account, String id) {
       return delegate.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       Runnable action = beforeCommit;
       beforeCommit = () -> {};

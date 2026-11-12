@@ -78,6 +78,7 @@ final class Repository {
       return account.equals(tenant) ? pending.get(id) : null;
     }
 
+    @Override
     public void close() {
       if (batch.get() != this) {
         throw new IllegalStateException("Wrong content batch");

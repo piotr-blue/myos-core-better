@@ -197,6 +197,7 @@ final class PrivateTimelineFixture implements AutoCloseable {
     };
   }
 
+  @Override
   public void close() {
     if (core != null) {
       core.close();

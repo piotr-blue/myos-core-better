@@ -127,6 +127,7 @@ final class CoreAccessImports implements AutoCloseable {
         "Verified control history is not complete yet. Retry the same access import.");
   }
 
+  @Override
   public void close() {
     histories.close();
   }

@@ -376,6 +376,7 @@ class GraphTimelineIngressTest {
       return ingress.step(graphs, "alice", "graph-test", (a, r) -> List.of(archive));
     }
 
+    @Override
     public void close() {
       graphs.close();
       ingress.close();

@@ -84,20 +84,24 @@ class IndexPagesTest {
     assertEquals(values, new OrderedIndex(repository.blobs("alice")).getAll(root, values.keySet()));
     BlobStore sharedOnly =
         new BlobStore() {
+          @Override
           public String put(byte[] ignored) {
             throw new AssertionError("Unexpected write");
           }
 
+          @Override
           public byte[] get(String ignored) {
             throw new AssertionError("Repeated page decode");
           }
 
+          @Override
           public void prefetch(List<String> ids) {
             if (!ids.isEmpty()) {
               throw new AssertionError("Repeated byte prefetch");
             }
           }
 
+          @Override
           public OrderedIndex.Page orderedPage(String id) {
             return repository.blobs("alice").orderedPage(id);
           }

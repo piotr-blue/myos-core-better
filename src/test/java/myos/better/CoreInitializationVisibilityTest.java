@@ -213,6 +213,7 @@ class CoreInitializationVisibilityTest {
       return (List<?>) api.list("owner", Map.of()).get("items");
     }
 
+    @Override
     public void close() {
       try {
         host.close();

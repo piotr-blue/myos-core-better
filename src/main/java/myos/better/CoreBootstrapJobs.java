@@ -74,10 +74,12 @@ final class CoreBootstrapJobs implements AutoCloseable {
         admissions,
         access,
         new Action() {
+          @Override
           public Map<String, Object> prepare(String account, Map<String, Object> input) {
             return bootstrap.prepare(account, input);
           }
 
+          @Override
           public Map<String, Object> execute(
               String account, String command, Map<String, Object> prepared) {
             return bootstrap.execute(account, command, prepared);

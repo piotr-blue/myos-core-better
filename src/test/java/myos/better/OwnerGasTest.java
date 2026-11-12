@@ -52,6 +52,7 @@ class OwnerGasTest {
       return Long.parseLong((String) gas.summary(frontiers.metadata.begin()).get(field));
     }
 
+    @Override
     public void close() {
       store.close();
     }
@@ -367,26 +368,32 @@ class OwnerGasTest {
     final AtomicStore delegate = new JsonBoundaryStore();
     boolean armed, afterCommit;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean interrupt = armed && writes.stream().anyMatch(w -> w.key().sort().equals("MANIFEST"));
       if (interrupt) {
@@ -402,6 +409,7 @@ class OwnerGasTest {
       return committed;
     }
 
+    @Override
     public void close() {
       delegate.close();
     }

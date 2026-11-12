@@ -85,6 +85,7 @@ class OwnerIdleCutTest {
     Runnable afterRead;
     int interleavings;
 
+    @Override
     public Row get(Key key) {
       Row result = delegate.get(key);
       if (afterRead != null
@@ -98,26 +99,32 @@ class OwnerIdleCutTest {
       return result;
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public void close() {
       delegate.close();
     }

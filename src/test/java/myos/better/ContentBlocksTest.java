@@ -115,10 +115,12 @@ class ContentBlocksTest {
     final Map<String, byte[]> values = new HashMap<>();
     final List<List<String>> prefetched = new ArrayList<>();
 
+    @Override
     public void prefetch(List<String> identities) {
       prefetched.add(List.copyOf(identities));
     }
 
+    @Override
     public String put(byte[] value) {
       if (value.length > 128 * 1024) {
         throw new IllegalArgumentException("Store page bound exceeded");
@@ -128,6 +130,7 @@ class ContentBlocksTest {
       return id;
     }
 
+    @Override
     public byte[] get(String id) {
       byte[] value = values.get(id);
       if (value == null) {

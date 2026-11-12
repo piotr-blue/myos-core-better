@@ -102,10 +102,12 @@ class CorePendingRecipientsTest {
       var sent = new ArrayList<String>();
       var sender =
           new CoreInvitationDelivery.Sender() {
+            @Override
             public void send(String email, String link) {
               fail("Signup cannot use invitation delivery");
             }
 
+            @Override
             public void signup(String email, String link) {
               sent.add(email + " " + link);
               if (sent.size() == 1) {

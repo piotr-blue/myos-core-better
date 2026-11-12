@@ -33,18 +33,22 @@ class CoreAdminNotificationsTest {
   static final class MutableClock extends Clock {
     long now = 100_000;
 
+    @Override
     public ZoneId getZone() {
       return ZoneOffset.UTC;
     }
 
+    @Override
     public Clock withZone(ZoneId zone) {
       return this;
     }
 
+    @Override
     public Instant instant() {
       return Instant.ofEpochMilli(now);
     }
 
+    @Override
     public long millis() {
       return now;
     }

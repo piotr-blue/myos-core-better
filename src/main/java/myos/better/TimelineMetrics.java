@@ -77,6 +77,7 @@ final class TimelineMetrics {
       counter.active().increment();
     }
 
+    @Override
     public void close() {
       if (closed) {
         return;

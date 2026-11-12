@@ -66,6 +66,7 @@ final class QualificationHttps implements AutoCloseable {
         "-Djavax.net.ssl.trustStoreType=PKCS12");
   }
 
+  @Override
   public void close() {
     server.stop(0);
     workers.shutdownNow();

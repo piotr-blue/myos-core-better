@@ -328,18 +328,22 @@ class CoreApiKeysTest {
   private static final class MutableClock extends Clock {
     long millis = Instant.parse("2026-11-07T00:00:00Z").toEpochMilli();
 
+    @Override
     public ZoneId getZone() {
       return ZoneOffset.UTC;
     }
 
+    @Override
     public Clock withZone(ZoneId zone) {
       return this;
     }
 
+    @Override
     public Instant instant() {
       return Instant.ofEpochMilli(millis);
     }
 
+    @Override
     public long millis() {
       return millis;
     }

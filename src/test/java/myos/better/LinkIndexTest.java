@@ -30,6 +30,7 @@ class LinkIndexTest {
     final Map<String, byte[]> pages = new HashMap<>();
     int writes, reads;
 
+    @Override
     public String put(byte[] value) {
       writes++;
       String id = Json.hash(value);
@@ -37,6 +38,7 @@ class LinkIndexTest {
       return id;
     }
 
+    @Override
     public byte[] get(String identity) {
       reads++;
       return pages.get(identity).clone();

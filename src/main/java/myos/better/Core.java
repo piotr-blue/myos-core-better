@@ -793,10 +793,12 @@ final class Core implements AutoCloseable {
                       : sourceSelection.find(id);
                 }
 
+                @Override
                 public Object read(String pointer, Object local) {
                   return read(pointer, local, List.of());
                 }
 
+                @Override
                 public Object read(String pointer, Object local, List<String> replaced) {
                   return virtualRead(
                       account,

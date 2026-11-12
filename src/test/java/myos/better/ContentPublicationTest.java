@@ -37,22 +37,27 @@ class ContentPublicationTest {
     boolean reject, loseContentReply, lost;
     int lastPageCount;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public boolean commitWithContent(
         List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
       lastPageCount = pages.size();
@@ -67,10 +72,12 @@ class ContentPublicationTest {
       return committed;
     }
 
+    @Override
     public byte[] content(String account, String id) {
       return delegate.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
