@@ -1,7 +1,12 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /** Separate exact display and closure retention for a small body with a private linked history. */
 public final class PublishedContentReadProbe {

@@ -1,6 +1,6 @@
 package myos.better;
 
-import java.util.*;
+import java.util.List;
 
 /** Projects verified immutable archive prefixes into the independent-owner ordering cut. */
 final class OwnerSources {

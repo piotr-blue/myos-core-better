@@ -1,10 +1,24 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageProvider;
+import blue.LanguageView;
+import blue.Node;
+import blue.TimelineRequests;
+import blue.TimelineVerifier;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /** Blue JSON protocol adapter. Owner authentication is supplied only by the enclosing HTTP host. */
 final class NativeTimelineApi {

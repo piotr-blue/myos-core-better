@@ -1,6 +1,9 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Locale;
+import java.util.Map;
 
 /** Verified email changes fence recipient selection without a global directory lock. */
 final class CoreUserIdentities {

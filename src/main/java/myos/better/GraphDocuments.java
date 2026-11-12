@@ -1,7 +1,22 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Bex;
+import blue.BlueId;
+import blue.Contracts;
+import blue.GasSchedule;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Console views over canonical graph members. Storage IDs never enter Blue document content. */
 final class GraphDocuments implements AutoCloseable {

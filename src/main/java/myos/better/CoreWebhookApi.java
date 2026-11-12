@@ -1,6 +1,6 @@
 package myos.better;
 
-import java.util.*;
+import java.util.Map;
 
 /** Original dashboard routes; public selectors and native callback bodies keep their meanings. */
 final class CoreWebhookApi implements AutoCloseable {

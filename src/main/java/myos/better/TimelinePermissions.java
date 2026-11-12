@@ -1,7 +1,16 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Requirements come from the frozen receiver; facts come from independently verified control

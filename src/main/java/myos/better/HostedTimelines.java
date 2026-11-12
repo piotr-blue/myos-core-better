@@ -1,10 +1,23 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageProvider;
+import blue.TimelinePublisher;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.LongSupplier;
 
 /**

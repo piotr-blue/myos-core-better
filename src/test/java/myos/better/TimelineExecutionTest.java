@@ -1,11 +1,21 @@
 package myos.better;
 
-import static myos.better.NativeAdmissionFixture.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.NativeAdmissionFixture.EVENT;
+import static myos.better.NativeAdmissionFixture.NAMESPACE;
+import static myos.better.NativeAdmissionFixture.SOURCE;
+import static myos.better.NativeAdmissionFixture.TYPE;
+import static myos.better.NativeAdmissionFixture.permitIdentity;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueId;
+import blue.LanguageContent;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**

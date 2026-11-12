@@ -1,9 +1,18 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.TimelineRequests;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.util.*;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.util.HexFormat;
+import java.util.Map;
+import java.util.Objects;
 
 /** One protected reader key bound to one exact source; never owner or business authority. */
 final class TimelineReaderSigning {

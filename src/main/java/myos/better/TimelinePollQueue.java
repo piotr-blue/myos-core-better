@@ -1,6 +1,9 @@
 package myos.better;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
 
 /** Bounded, coalescing discovery hints. Local arrivals take priority; polling provides recovery. */
 final class TimelinePollQueue implements AutoCloseable {

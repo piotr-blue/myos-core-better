@@ -1,14 +1,30 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.PackageLoader;
+import blue.ProviderSignatures;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.Signature;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /** Deployed native protocol qualification; the owner session arrives only on private stdin. */
 public final class NativeTimelineHttpProbe {

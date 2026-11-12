@@ -1,9 +1,14 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.BluePackage;
+import blue.Contracts;
+import blue.Language;
+import blue.PackageLoader;
+import blue.TimeBindings;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /** Native Time effects, independent owners and durable publications in one real host. */

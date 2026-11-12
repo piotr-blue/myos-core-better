@@ -1,7 +1,12 @@
 package myos.better;
 
 import blue.BlueId;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Resumable owner bootstrap. Deterministic per-role commands survive lost replies and restarts. */
 final class DocumentBootstrap {

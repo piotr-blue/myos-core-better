@@ -1,10 +1,14 @@
 package myos.better;
 
 import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.util.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Objects;
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /** JCA authenticated encryption with separate domains and resource-bound associated data. */
 final class SecretEnvelope {

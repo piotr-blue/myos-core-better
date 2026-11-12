@@ -1,7 +1,13 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Language;
+import blue.LanguageContent;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Immutable Better host history. Its format is deliberately distinct from native proof receipts.

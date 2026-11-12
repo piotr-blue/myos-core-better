@@ -1,6 +1,13 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageException;
+import blue.TimelineAccess;
+import blue.TimelineReader;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;

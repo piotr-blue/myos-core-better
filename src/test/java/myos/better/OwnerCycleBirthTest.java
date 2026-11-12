@@ -1,10 +1,15 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import blue.BlueId;
+import blue.Contracts;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** A new cyclic child shares the existing fenced unit without resetting its source cursors. */
 class OwnerCycleBirthTest {

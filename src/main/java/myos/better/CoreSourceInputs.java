@@ -1,9 +1,15 @@
 package myos.better;
 
-import blue.*;
-import java.math.*;
+import blue.BlueException;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.Node;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Core source admission preserves exact integers and rejects lossy decimal conversion. */
 final class CoreSourceInputs {

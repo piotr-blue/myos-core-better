@@ -1,7 +1,11 @@
 package myos.better;
 
 import blue.Contracts;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Durable owner identity is separate from a member key in a canonical rooted invocation. */
 final class OwnerAliases {

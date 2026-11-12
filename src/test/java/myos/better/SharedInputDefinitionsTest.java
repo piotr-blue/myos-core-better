@@ -1,10 +1,15 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import org.junit.jupiter.api.Test;
 
 /** An input's unused public type is still part of its retained exact content closure. */

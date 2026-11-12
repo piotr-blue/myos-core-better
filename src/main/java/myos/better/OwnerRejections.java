@@ -1,6 +1,9 @@
 package myos.better;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Terminal input decisions advance the causal cursor without fabricating a native publication. */
 final class OwnerRejections {

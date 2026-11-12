@@ -1,11 +1,16 @@
 package myos.better;
 
-import blue.*;
-import java.nio.file.*;
+import blue.Language;
+import blue.LanguageDocument;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.attribute.PosixFilePermissions;
-import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
 import java.security.interfaces.EdECPublicKey;
-import java.util.*;
+import java.util.Base64;
+import java.util.HexFormat;
+import java.util.Map;
 
 /** Explicit one-time provisioning utility. The service never generates a replacement identity. */
 public final class ProviderIdentityTool {

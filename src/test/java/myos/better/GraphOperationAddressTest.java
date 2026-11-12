@@ -1,10 +1,19 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import blue.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.TimelineChannels;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Test;
 
 /** Operation preflight uses committed lineage; it does not own or restore execution sessions. */

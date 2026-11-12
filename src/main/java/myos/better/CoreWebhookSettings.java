@@ -1,6 +1,11 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** The original public webhook selectors, with omitted fields preserved on update. */
 final class CoreWebhookSettings {

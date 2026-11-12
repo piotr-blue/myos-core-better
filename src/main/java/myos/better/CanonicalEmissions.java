@@ -1,8 +1,17 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.LanguageProvider;
+import blue.LanguageRecord;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /** Immutable exact event closure, made visible only with the corresponding graph publication. */
 final class CanonicalEmissions {

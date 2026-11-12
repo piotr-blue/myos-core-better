@@ -1,6 +1,8 @@
 package myos.better;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /** Source acquisition recovery cannot silently authorize native recovery after invalid evidence. */
 final class OwnerSourceFailures {

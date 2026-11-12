@@ -1,7 +1,16 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.Node;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** A pinned subset of retained exact values; never a claim of complete or portable proof. */
 final class CoreDocumentEvidence {

@@ -1,8 +1,15 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.LanguageContent;
+import blue.LanguageProvider;
+import blue.LanguageRecord;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /** An immutable source-scoped content index. Only a committed root makes records reachable. */
 final class TimelineRecords implements LanguageProvider {

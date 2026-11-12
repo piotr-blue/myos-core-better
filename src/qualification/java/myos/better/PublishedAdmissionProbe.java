@@ -1,7 +1,14 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Cold request admission over a protected publication, with varying immutable history depth. */
 public final class PublishedAdmissionProbe {

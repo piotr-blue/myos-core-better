@@ -1,6 +1,11 @@
 package myos.better;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Live pending-timer reads from one protected owner cut, without execution or clock access. */
 final class CoreDocumentTimers {

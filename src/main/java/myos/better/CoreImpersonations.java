@@ -3,7 +3,11 @@ package myos.better;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Clock;
-import java.util.*;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Independently revocable one-hour user sessions; bearer secrets are never stored in plain text.

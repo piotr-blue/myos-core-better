@@ -1,8 +1,13 @@
 package myos.better;
 
-import blue.*;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.LanguageRecord;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /** Protected admitted input and immutable closure, before any native state has initialized. */
 final class OwnerInitializationContent {

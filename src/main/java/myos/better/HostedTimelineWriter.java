@@ -1,7 +1,9 @@
 package myos.better;
 
 import blue.LanguageContent;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Immutable writer identity; a request body never supplies publication authority. */
 final class HostedTimelineWriter {

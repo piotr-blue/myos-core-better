@@ -1,8 +1,15 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageProvider;
+import blue.LanguageRecord;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /** One bounded immutable publication, independent of the number of earlier Timeline entries. */

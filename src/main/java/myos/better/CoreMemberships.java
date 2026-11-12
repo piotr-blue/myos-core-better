@@ -1,6 +1,13 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /** Revision-checked membership commands, including recovery after the caller removes itself. */
 final class CoreMemberships {

@@ -1,10 +1,18 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.TimelineRequests;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Signed, checkpoint-bound read assembly after an owner-scoped lookup. This component does not

@@ -1,6 +1,7 @@
 package myos.better;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 
 /** Gas authorization tied to a native owner claim and its conditional publication. */
 final class OwnerGasClaims {

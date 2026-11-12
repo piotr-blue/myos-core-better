@@ -1,9 +1,14 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.LanguageException;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Imports an access follower only after replay authenticates the provider's current claim. */
 final class CoreAccessImports implements AutoCloseable {

@@ -1,10 +1,21 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.PackageLoader;
+import blue.ProviderSignatures;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.security.spec.*;
-import java.util.*;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.security.spec.EdECPrivateKeySpec;
+import java.security.spec.NamedParameterSpec;
+import java.util.HexFormat;
+import java.util.List;
 
 /** Published Coordination and public RFC test keys, with no deployment credentials. */
 final class TimelineFixture {

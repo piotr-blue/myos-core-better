@@ -1,6 +1,9 @@
 package myos.better;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /** Bounded scheduling hints; the durable work index recovers any discarded hint. */
 final class TimelineWorkQueue {

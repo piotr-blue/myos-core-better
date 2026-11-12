@@ -1,9 +1,19 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.ProviderSignatures;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.util.*;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
 
 /** Exact published signature domains; JCA owns Ed25519. Key custody belongs to deployment. */
 final class ProviderSigning {

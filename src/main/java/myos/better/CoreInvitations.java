@@ -1,9 +1,17 @@
 package myos.better;
 
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.time.Clock;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 /** Invitation intent, recipient binding and membership acceptance share atomic publication. */
 final class CoreInvitations {

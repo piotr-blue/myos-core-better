@@ -1,7 +1,13 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Best-effort locations after the complete native matcher has already rejected a request. */
 final class CoreInputDiagnostics {

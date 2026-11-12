@@ -1,8 +1,13 @@
 package myos.better;
 
-import blue.*;
+import blue.Contracts;
+import blue.Language;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Isolates historical-catalogue admission/export/update work from document execution and AWS. */
 public final class PublishedCatalogueProbe {

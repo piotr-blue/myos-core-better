@@ -1,7 +1,8 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BluePackage;
+import blue.Language;
+import java.util.List;
 
 /** Isolated real provider/reader protocol with in-memory durable boundaries and test-only keys. */
 final class ConsoleInputFixture implements AutoCloseable {

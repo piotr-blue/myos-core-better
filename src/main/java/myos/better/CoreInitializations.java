@@ -1,7 +1,8 @@
 package myos.better;
 
 import blue.LanguageDocument;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /** Public processing state before the first native publication exists. */
 final class CoreInitializations {

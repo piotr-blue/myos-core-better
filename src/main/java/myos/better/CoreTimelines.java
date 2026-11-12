@@ -1,8 +1,16 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.LanguageContent;
+import blue.LanguageDocument;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Core projections over the existing signed publisher; entries remain their original exact values.

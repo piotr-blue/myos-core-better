@@ -1,6 +1,13 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Direct native occurrences. A relationship is not a claim that a proof position was applied. */
 final class CoreRelationships {

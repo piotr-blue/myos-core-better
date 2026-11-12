@@ -1,9 +1,14 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.LanguageDocument;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Connects an authenticated owner's exact Timeline; business receiver declarations remain explicit.

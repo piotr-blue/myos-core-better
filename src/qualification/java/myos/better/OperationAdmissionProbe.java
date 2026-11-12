@@ -1,8 +1,14 @@
 package myos.better;
 
-import blue.*;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
 import java.lang.management.ManagementFactory;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Compares ordinary and scoped admission of the same current native member, without I/O. */
 public final class OperationAdmissionProbe {

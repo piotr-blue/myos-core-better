@@ -1,7 +1,12 @@
 package myos.better;
 
-import java.time.*;
-import java.util.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Shared Core list selectors. Filtering is applied to metadata, never document bodies. */
 final class CoreListFilter {

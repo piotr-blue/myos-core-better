@@ -2,7 +2,15 @@ package myos.better;
 
 import blue.BlueId;
 import blue.BluePackage;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /** Account-local authoring choices over the host's verified, immutable publication catalogue. */
 final class CorePackages {

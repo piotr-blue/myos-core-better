@@ -1,7 +1,10 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.Language;
+import java.util.List;
+import java.util.Map;
 
 /** Account-scoped input receipts over both execution stores, without scanning embedded members. */
 final class CoreInputStatus {

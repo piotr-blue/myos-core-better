@@ -1,11 +1,20 @@
 package myos.better;
 
-import static myos.better.CoreInvitationsTest.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.CoreInvitationsTest.id;
+import static myos.better.CoreInvitationsTest.number;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.net.URI;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import myos.better.CoreInvitationsTest.Fixture;
 import org.junit.jupiter.api.Test;
 
 /** Original outbox lease, same-link retry and terminal-invitation behavior, without email I/O. */

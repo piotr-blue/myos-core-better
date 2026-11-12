@@ -1,6 +1,6 @@
 package myos.better;
 
-import java.net.*;
+import java.net.URI;
 
 /**
  * Public callback policy; the HTTP client's resolver pins the checked addresses to the connection.

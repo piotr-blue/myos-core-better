@@ -3,7 +3,7 @@ package myos.better;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.List;
 
 /** Isolated publisher and receiving account with managed reader custody. */
 final class CoreTimelineFixture {

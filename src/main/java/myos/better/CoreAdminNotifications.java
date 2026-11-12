@@ -1,7 +1,12 @@
 package myos.better;
 
 import java.time.Clock;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** Administrator recipients and immutable lifecycle outbox events share the originating commit. */
 final class CoreAdminNotifications {

@@ -1,7 +1,11 @@
 package myos.better;
 
 import java.util.function.Supplier;
-import jdk.jfr.*;
+import jdk.jfr.Category;
+import jdk.jfr.Event;
+import jdk.jfr.Label;
+import jdk.jfr.Name;
+import jdk.jfr.StackTrace;
 
 /** Optional physical preparation measurements; never part of a Blue observation or receipt. */
 @Name("myos.OwnerPreparation")

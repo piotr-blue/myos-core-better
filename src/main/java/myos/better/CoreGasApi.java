@@ -1,6 +1,8 @@
 package myos.better;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /** Read-only compatibility boundary; funding remains an internal authority. */
 final class CoreGasApi {

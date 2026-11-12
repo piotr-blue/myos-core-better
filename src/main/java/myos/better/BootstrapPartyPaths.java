@@ -1,8 +1,19 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageView;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /** Typed Parties in this document, excluding executable recipes and embedded document scopes. */
 final class BootstrapPartyPaths {

@@ -1,9 +1,24 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.AdmissionEvidence;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageException;
+import blue.LanguageRecord;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /** Pinned execution content: demand-only reads, historical preparations and corrupt records. */

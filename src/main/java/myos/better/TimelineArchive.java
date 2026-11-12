@@ -1,8 +1,27 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageProvider;
+import blue.LanguageRecord;
+import blue.Node;
+import blue.TimelineReader;
+import blue.TimelineVerifier;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.NavigableMap;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 
 /**
  * Tenant-scoped acquired source history. A conditional head publishes immutable evidence/content

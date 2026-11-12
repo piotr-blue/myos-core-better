@@ -1,7 +1,18 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageException;
+import blue.Node;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 /** Core's bounded form descriptor, projected from canonical Language definitions. */
 final class CoreInputDefinition {

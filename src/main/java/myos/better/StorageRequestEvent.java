@@ -1,7 +1,12 @@
 package myos.better;
 
 import java.util.function.Supplier;
-import jdk.jfr.*;
+import jdk.jfr.Category;
+import jdk.jfr.Event;
+import jdk.jfr.EventType;
+import jdk.jfr.Label;
+import jdk.jfr.Name;
+import jdk.jfr.StackTrace;
 
 /**
  * One SDK invocation, including its internal retries. Never records keys, payloads or credentials.

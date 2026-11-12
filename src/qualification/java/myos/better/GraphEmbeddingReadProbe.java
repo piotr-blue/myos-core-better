@@ -1,7 +1,11 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /** Isolated embedding-address reads after execution eviction; no AWS or HTTP. */
 public final class GraphEmbeddingReadProbe {

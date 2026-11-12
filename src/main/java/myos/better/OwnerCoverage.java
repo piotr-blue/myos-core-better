@@ -1,8 +1,23 @@
 package myos.better;
 
-import static myos.better.FrontierRows.*;
+import static myos.better.FrontierRows.completeness;
+import static myos.better.FrontierRows.decode;
+import static myos.better.FrontierRows.get;
+import static myos.better.FrontierRows.key;
+import static myos.better.FrontierRows.number;
+import static myos.better.FrontierRows.prefix;
+import static myos.better.FrontierRows.put;
+import static myos.better.FrontierRows.required;
+import static myos.better.FrontierRows.scan;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import myos.better.FrontierRows.Binding;
 import myos.better.OwnerFrontiers.Coverage;
 import myos.better.OwnerFrontiers.Kind;
 import myos.better.OwnerFrontiers.Source;

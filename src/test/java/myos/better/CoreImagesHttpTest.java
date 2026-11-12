@@ -1,14 +1,22 @@
 package myos.better;
 
-import static myos.better.CoreWorkspacesHttpTest.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.CoreWorkspacesHttpTest.json;
+import static myos.better.CoreWorkspacesHttpTest.request;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.*;
-import java.net.*;
-import java.net.http.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 

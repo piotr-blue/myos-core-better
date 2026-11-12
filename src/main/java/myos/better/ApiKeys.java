@@ -4,7 +4,14 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.SecureRandom;
 import java.time.Clock;
-import java.util.*;
+import java.util.Base64;
+import java.util.HashMap;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Account credentials: random bearer secrets are disclosed once and only digests are retained. */
 final class ApiKeys {

@@ -1,9 +1,34 @@
 package myos.better;
 
-import static myos.better.FrontierRows.*;
+import static myos.better.FrontierRows.completeness;
+import static myos.better.FrontierRows.component;
+import static myos.better.FrontierRows.decode;
+import static myos.better.FrontierRows.get;
+import static myos.better.FrontierRows.key;
+import static myos.better.FrontierRows.number;
+import static myos.better.FrontierRows.prefix;
+import static myos.better.FrontierRows.put;
+import static myos.better.FrontierRows.required;
+import static myos.better.FrontierRows.scan;
+import static myos.better.FrontierRows.sequence;
 
-import java.util.*;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Function;
+import myos.better.FrontierRows.Binding;
 
 /**
  * Durable independent-owner merge scheduling over a coherent conditional metadata cut. Native

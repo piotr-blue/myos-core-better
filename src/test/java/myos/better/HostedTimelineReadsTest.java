@@ -1,11 +1,24 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.TimelineReader;
+import blue.TimelineVerifier;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 

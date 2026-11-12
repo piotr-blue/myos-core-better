@@ -1,7 +1,10 @@
 package myos.better;
 
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 public final class InitTiming {
   public static void main(String[] args) throws Exception {

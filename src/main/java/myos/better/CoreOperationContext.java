@@ -1,8 +1,17 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueException;
+import blue.ContractInspection;
+import blue.Contracts;
+import blue.LanguageContent;
+import blue.ProjectionLimits;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Bounded exact context from the same authorized stable publication used by operation discovery.

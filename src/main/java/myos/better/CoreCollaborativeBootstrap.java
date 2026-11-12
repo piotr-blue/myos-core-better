@@ -1,7 +1,15 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /** Accepted multi-account binding; every recipient uses the ordinary verified source protocol. */
 final class CoreCollaborativeBootstrap {

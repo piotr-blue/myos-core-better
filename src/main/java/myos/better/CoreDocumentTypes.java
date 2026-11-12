@@ -1,7 +1,17 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageException;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 /** Exact nominal type filters over one authorized, immutable document publication. */
 final class CoreDocumentTypes {

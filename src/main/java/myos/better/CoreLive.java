@@ -1,6 +1,11 @@
 package myos.better;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /** Core LiveUpdates' bounded, coalescing invalidation model, adapted to Better's record keys. */

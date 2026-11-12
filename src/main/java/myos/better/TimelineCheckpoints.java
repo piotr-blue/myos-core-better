@@ -2,7 +2,10 @@ package myos.better;
 
 import blue.Contracts;
 import blue.NativeChannel;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Original-source positions carried with an explicitly authenticated, immutable document fork. */
 final class TimelineCheckpoints {

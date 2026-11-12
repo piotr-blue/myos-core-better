@@ -1,11 +1,29 @@
 package myos.better;
 
-import blue.*;
-import java.security.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.Signature;
 import java.security.interfaces.EdECPublicKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.time.Clock;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Internal account-owned reader custody. Public selectors never grant read or append authority. */
 final class CoreReaderKeys {

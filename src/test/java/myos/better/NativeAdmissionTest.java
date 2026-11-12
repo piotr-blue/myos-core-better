@@ -1,7 +1,15 @@
 package myos.better;
 
-import static myos.better.NativeAdmissionFixture.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.NativeAdmissionFixture.EVENT;
+import static myos.better.NativeAdmissionFixture.NAMESPACE;
+import static myos.better.NativeAdmissionFixture.SEMANTICS;
+import static myos.better.NativeAdmissionFixture.SOURCE;
+import static myos.better.NativeAdmissionFixture.TYPE;
+import static myos.better.NativeAdmissionFixture.permit;
+import static myos.better.NativeAdmissionFixture.snapshot;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigInteger;
 import java.util.LinkedHashMap;

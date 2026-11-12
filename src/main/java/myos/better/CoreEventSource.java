@@ -1,6 +1,10 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Commit ordering for subscriptions, independent of delayed event projection and wall clocks. */
 final class CoreEventSource {

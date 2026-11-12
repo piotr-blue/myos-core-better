@@ -1,6 +1,13 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
 
 /** Ordered directory views and literal email postings in the same immutable metadata cut. */
 final class CoreAdminDirectoryIndex {

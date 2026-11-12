@@ -1,10 +1,16 @@
 package myos.better;
 
-import blue.*;
+import blue.BluePackage;
+import blue.LanguageDocument;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Map;
+import java.util.Set;
 
 /** Reader custody is pinned to the consuming account, protocol, provider and private source. */
 final class ReaderIdentity {

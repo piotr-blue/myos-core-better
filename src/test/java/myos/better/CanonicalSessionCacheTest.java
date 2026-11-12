@@ -1,8 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.AdmissionEvidence;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
 import java.math.BigInteger;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;

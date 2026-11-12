@@ -1,6 +1,8 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 
 /** Current administrator authority, fenced by the same commit as the requested host change. */
 final class CoreAccountAuthority {

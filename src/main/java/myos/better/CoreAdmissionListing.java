@@ -2,7 +2,13 @@ package myos.better;
 
 import java.math.BigInteger;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /** Live receipt listing over an ordered metadata index; document bodies are never opened. */
 final class CoreAdmissionListing {

@@ -1,8 +1,15 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Bounded exact materialization for portable content reads; never flattens inheritance. */
 final class TimelineContentExpansion {

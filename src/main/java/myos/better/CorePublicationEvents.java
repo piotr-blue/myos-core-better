@@ -1,6 +1,10 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /** Compact event references to the immutable history committed in the same transaction. */
 final class CorePublicationEvents {
