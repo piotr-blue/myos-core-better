@@ -36,8 +36,9 @@ final class CoreAdminApi {
       require(method, "GET");
       Boolean verified = null;
       if (query.containsKey("verified")) {
-        if (!Set.of("true", "false").contains(query.get("verified")))
+        if (!Set.of("true", "false").contains(query.get("verified"))) {
           throw new ConsoleProblem(422, "invalid_admin_filter", "Verified must be true or false.");
+        }
         verified = Boolean.valueOf(query.get("verified"));
       }
       return directory.list(
@@ -73,13 +74,16 @@ final class CoreAdminApi {
   }
 
   private static void require(String method, String... allowed) {
-    if (!Set.of(allowed).contains(method))
+    if (!Set.of(allowed).contains(method)) {
       throw new ConsoleProblem(
           405, "method_not_allowed", "Use " + String.join(" or ", allowed) + ".");
+    }
   }
 
   private static int integer(Map<String, String> query, String key, int fallback) {
-    if (!query.containsKey(key)) return fallback;
+    if (!query.containsKey(key)) {
+      return fallback;
+    }
     try {
       return Integer.parseInt(query.get(key));
     } catch (NumberFormatException invalid) {

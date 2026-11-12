@@ -90,7 +90,9 @@ class HttpDeadlineTest {
         assertTrue(overflow.closingThread.get().startsWith("admitted-owner-"));
         var timerDeadline = new HttpDeadline(timer, Duration.ofMillis(25), cancellation);
         long until = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
-        while (!timerDeadline.expired() && System.nanoTime() < until) Thread.sleep(5);
+        while (!timerDeadline.expired() && System.nanoTime() < until) {
+          Thread.sleep(5);
+        }
         assertTrue(
             timerDeadline.expired(),
             "The shared deadline clock must keep running when close capacity is full");
@@ -262,7 +264,9 @@ class HttpDeadlineTest {
     @Override
     public void close() {
       closeCalls.incrementAndGet();
-      if (!closed.compareAndSet(false, true)) return;
+      if (!closed.compareAndSet(false, true)) {
+        return;
+      }
       closingThread.set(Thread.currentThread().getName());
       entered.countDown();
       boolean interrupted = false;
@@ -275,7 +279,9 @@ class HttpDeadlineTest {
         }
       }
       completed.set(true);
-      if (interrupted) Thread.currentThread().interrupt();
+      if (interrupted) {
+        Thread.currentThread().interrupt();
+      }
     }
 
     @Override

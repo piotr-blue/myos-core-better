@@ -75,7 +75,9 @@ class CoreFunctionalRuntimeTest {
                             .readValue("alice", documents.nativeId("alice", id), "/count"))
                     .longValue()
                 < 2
-            && System.nanoTime() < deadline) Thread.sleep(10);
+            && System.nanoTime() < deadline) {
+          Thread.sleep(10);
+        }
         service.checkWorkers();
         assertEquals(
             2L,
@@ -89,8 +91,11 @@ class CoreFunctionalRuntimeTest {
         assertEquals(List.of(), api.timers("alice", id, Map.of()).get("items"));
       }
     } finally {
-      if (previous == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", previous);
+      if (previous == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", previous);
+      }
     }
   }
 }

@@ -200,7 +200,9 @@ class OwnerRoutingTest {
                   "coverage-set",
                   "coverage-binding",
                   "coverage-reference")) {
-            for (var row : tx.page(prefix + "\0", null, 1024)) tx.remove(row.key());
+            for (var row : tx.page(prefix + "\0", null, 1024)) {
+              tx.remove(row.key());
+            }
           }
           return null;
         });

@@ -64,8 +64,9 @@ final class TimelineArchive {
   private String retainedDefinitions;
 
   private synchronized String retainedDefinitions() {
-    if (retainedDefinitions == null)
+    if (retainedDefinitions == null) {
       retainedDefinitions = SharedDefinitions.retain(repository, account, coordination, packages);
+    }
     return retainedDefinitions;
   }
 
@@ -89,16 +90,20 @@ final class TimelineArchive {
   synchronized Discovery discover(LanguageContent descriptor) {
     TimelineReader reader = TimelineReader.adopt(verifier, descriptor);
     String exact = descriptor.toJson();
-    if (exact.getBytes(StandardCharsets.UTF_8).length > 256 * 1024)
+    if (exact.getBytes(StandardCharsets.UTF_8).length > 256 * 1024) {
       throw new IllegalArgumentException("Provider descriptor exceeds 256 KiB");
+    }
     for (int attempt = 0; attempt < 3; attempt++) {
       AtomicStore.Row before = repository.store.get(key("DISCOVERY"));
       if (before != null) {
         Discovery prior = discovery(before);
-        if (!prior.control().equals(reader.controlTimelineId()))
+        if (!prior.control().equals(reader.controlTimelineId())) {
           throw new IllegalStateException(
               "Reserved control source changed; explicit adoption required");
-        if (prior.descriptor().blueId().equals(descriptor.blueId())) return prior;
+        }
+        if (prior.descriptor().blueId().equals(descriptor.blueId())) {
+          return prior;
+        }
       }
       Map<String, Object> value =
           Map.of("descriptor", exact, "identity", descriptor.blueId().value());
@@ -115,15 +120,18 @@ final class TimelineArchive {
   }
 
   synchronized Optional<Discovery> discovery() {
-    if (discovery != null) return Optional.of(discovery);
+    if (discovery != null) {
+      return Optional.of(discovery);
+    }
     AtomicStore.Row row = repository.store.get(key("DISCOVERY"));
     return row == null ? Optional.empty() : Optional.of(discovery(row));
   }
 
   private Discovery discovery(AtomicStore.Row row) {
     String exact = text(row.value(), "descriptor");
-    if (exact.getBytes(StandardCharsets.UTF_8).length > 256 * 1024)
+    if (exact.getBytes(StandardCharsets.UTF_8).length > 256 * 1024) {
       throw new IllegalStateException("Stored provider descriptor exceeds 256 KiB");
+    }
     Language language =
         Language.newBuilder()
             .mount("Coordination", coordination)
@@ -131,8 +139,9 @@ final class TimelineArchive {
             .content(timeline)
             .build();
     LanguageContent descriptor = language.prepare(Language.Input.exactJson(exact));
-    if (!descriptor.blueId().value().equals(text(row.value(), "identity")))
+    if (!descriptor.blueId().value().equals(text(row.value(), "identity"))) {
       throw new IllegalStateException("Stored provider descriptor identity mismatch");
+    }
     TimelineReader reader = TimelineReader.adopt(verifier, descriptor);
     discovery = new Discovery(descriptor, reader.controlTimelineId());
     return discovery;
@@ -184,7 +193,9 @@ final class TimelineArchive {
   synchronized Idle idleState() {
     if (cached == null
         || cached.prefix().completeBefore() == 0
-        || cached.prefix().successorId().isPresent()) return null;
+        || cached.prefix().successorId().isPresent()) {
+      return null;
+    }
     return new Idle(
         repository.store,
         cached.head().key(),
@@ -211,8 +222,9 @@ final class TimelineArchive {
   record Routing(boolean operation, String target) {}
 
   Routing routing(Batch batch, Entry entry) {
-    if (entry.operation() != null && (!entry.operation() || entry.target() != null))
+    if (entry.operation() != null && (!entry.operation() || entry.target() != null)) {
       return new Routing(entry.operation(), entry.target());
+    }
     // Legacy archives already authenticated this occurrence. Reconstruct only the scheduling
     // hint from its exact message using the native grammar, never by inspecting JSON type names.
     Repository.Blobs blobs = repository.blobs(account);
@@ -240,8 +252,9 @@ final class TimelineArchive {
       List<Entry> entries) {
     Batch {
       entries = List.copyOf(entries);
-      if (!FORMAT.equals(format) || position < 1)
+      if (!FORMAT.equals(format) || position < 1) {
         throw new IllegalArgumentException("Invalid source history");
+      }
     }
   }
 
@@ -255,7 +268,9 @@ final class TimelineArchive {
   /** Next unconsumed position in this source's acquisition history, not a timestamp. */
   record Cursor(long batch, int offset) {
     Cursor {
-      if (batch < 1 || offset < 0) throw new IllegalArgumentException("Invalid source cursor");
+      if (batch < 1 || offset < 0) {
+        throw new IllegalArgumentException("Invalid source cursor");
+      }
     }
 
     static Cursor initial() {
@@ -323,7 +338,9 @@ final class TimelineArchive {
 
     private Optional<LanguageRecord> record(String root, BlueId id) {
       LanguageRecord adopted = common.get(id);
-      if (adopted != null) return Optional.of(adopted);
+      if (adopted != null) {
+        return Optional.of(adopted);
+      }
       Repository.Blobs blobs = repository.blobs(account);
       String address = new RadixIndex<>(blobs, String.class).get(root, id.value());
       return address == null
@@ -336,7 +353,9 @@ final class TimelineArchive {
     /** Skips only empty/exhausted batches, retaining the first unconsumed original occurrence. */
     Pending next(Cursor cursor) {
       Selected known = selected;
-      if (known != null && known.cursor().equals(cursor)) return known.pending();
+      if (known != null && known.cursor().equals(cursor)) {
+        return known.pending();
+      }
       Pending found = select(cursor);
       selected = new Selected(cursor, found);
       return found;
@@ -344,30 +363,43 @@ final class TimelineArchive {
 
     /** Locates an original occurrence using monotone verified completeness, never content alone. */
     Optional<Pending> find(BlueId id) {
-      if (head == null) return Optional.empty();
+      if (head == null) {
+        return Optional.empty();
+      }
       String root = text(head.value(), "content");
-      if (record(root, id).isEmpty()) return Optional.empty();
+      if (record(root, id).isEmpty()) {
+        return Optional.empty();
+      }
       Node value = content(root).reference(id).at("/timestamp").observation("value");
-      if (value.isMissing() || value.get("decimal").isMissing()) return Optional.empty();
+      if (value.isMissing() || value.get("decimal").isMissing()) {
+        return Optional.empty();
+      }
       long timestamp;
       try {
         timestamp = Long.parseLong(value.get("decimal").text());
       } catch (NumberFormatException invalid) {
         return Optional.empty();
       }
-      if (timestamp < 0 || timestamp >= completeBefore()) return Optional.empty();
+      if (timestamp < 0 || timestamp >= completeBefore()) {
+        return Optional.empty();
+      }
       ContentBlocks blocks = new ContentBlocks(repository.blobs(account));
       long low = 1, high = version();
       while (low < high) {
         long middle = low + (high - low) / 2;
         Batch candidate = batch(historyRow(middle), blocks);
-        if (candidate.completeBefore() > timestamp) high = middle;
-        else low = middle + 1;
+        if (candidate.completeBefore() > timestamp) {
+          high = middle;
+        } else {
+          low = middle + 1;
+        }
       }
       Batch candidate = batch(historyRow(low), blocks);
       for (int offset = 0; offset < candidate.entries().size(); offset++) {
         Entry entry = candidate.entries().get(offset);
-        if (entry.timestamp() > timestamp) break;
+        if (entry.timestamp() > timestamp) {
+          break;
+        }
         if (id.value().equals(entry.blueId())) {
           lastBatch = candidate;
           return Optional.of(next(new Cursor(low, offset)));
@@ -377,15 +409,18 @@ final class TimelineArchive {
     }
 
     private Pending select(Cursor cursor) {
-      if (cursor.batch() > version() + 1 || cursor.batch() == version() + 1 && cursor.offset() != 0)
+      if (cursor.batch() > version() + 1
+          || cursor.batch() == version() + 1 && cursor.offset() != 0) {
         throw new IllegalStateException("Receiver cursor exceeds acquired source history");
+      }
       Repository.Blobs blobs = repository.blobs(account);
       ContentBlocks blocks = new ContentBlocks(blobs);
       long position = cursor.batch();
       int offset = cursor.offset();
       while (position <= version()) {
-        if (Thread.currentThread().isInterrupted())
+        if (Thread.currentThread().isInterrupted()) {
           throw new IllegalStateException("Source selection interrupted");
+        }
         var run = quiet.floorEntry(position);
         if (offset == 0 && run != null && run.getValue() >= position) {
           position = Math.min(version(), run.getValue()) + 1;
@@ -396,12 +431,14 @@ final class TimelineArchive {
           batch = batch(historyRow(position), blocks);
           lastBatch = batch;
         }
-        if (batch.position() != position || offset > batch.entries().size())
+        if (batch.position() != position || offset > batch.entries().size()) {
           throw new IllegalStateException("Receiver cursor disagrees with committed source batch");
+        }
         if (offset < batch.entries().size()) {
           Entry entry = batch.entries().get(offset);
-          if (entry.timestamp() >= prefix.completeBefore())
+          if (entry.timestamp() >= prefix.completeBefore()) {
             throw new IllegalStateException("Source history entry is outside its verified prefix");
+          }
           Cursor selected = new Cursor(position, offset);
           Cursor after =
               offset + 1 == batch.entries().size()
@@ -418,7 +455,9 @@ final class TimelineArchive {
 
   record Pending(View source, Cursor position, Cursor after, Entry entry, String content) {
     RetainedTimeline retained() {
-      if (entry == null) throw new IllegalStateException("No pending source occurrence");
+      if (entry == null) {
+        throw new IllegalStateException("No pending source occurrence");
+      }
       return source.retained(content, position.batch());
     }
 
@@ -435,7 +474,9 @@ final class TimelineArchive {
     }
 
     LanguageContent original() {
-      if (entry == null) throw new IllegalStateException("No pending source occurrence");
+      if (entry == null) {
+        throw new IllegalStateException("No pending source occurrence");
+      }
       return source.content(content).reference(new BlueId(entry.blueId()));
     }
   }
@@ -577,8 +618,9 @@ final class TimelineArchive {
   @SuppressWarnings("try")
   private Acquired acquireAtHead(
       String exactJson, Map<BlueId, LanguageRecord> offered, StoredLanguageRecords stored) {
-    if (exactJson.length() > 16 * 1024 * 1024 || offered.size() > 100_000)
+    if (exactJson.length() > 16 * 1024 * 1024 || offered.size() > 100_000) {
       throw new IllegalArgumentException("Acquisition exceeds host input bound");
+    }
     offered = Map.copyOf(offered);
     AtomicStore.Row head = repository.store.get(key("STATE"));
     TimelineVerifier.Prefix previous = restore(head);
@@ -590,7 +632,9 @@ final class TimelineArchive {
         language(before, records, blocks, offered).toBuilder().provider(stored.provider()).build();
     LanguageContent evidence = language.prepare(Language.Input.exactJson(exactJson));
     Acquired receipt = receipt(evidence.blueId(), head, blocks);
-    if (receipt != null) return receipt;
+    if (receipt != null) {
+      return receipt;
+    }
     TimelineVerifier.Result result;
     try (var timing = metrics.time(TimelineMetrics.Phase.VERIFY_RANGE)) {
       result = verifier.advance(previous, evidence);
@@ -602,12 +646,14 @@ final class TimelineArchive {
         && result.entries().isEmpty()
         && previous.completeBefore() == result.prefix().completeBefore()
         && previous.headId().equals(result.prefix().headId())
-        && previous.successorId().equals(result.prefix().successorId()))
+        && previous.successorId().equals(result.prefix().successorId())) {
       return acquired(batch(head, blocks), true);
+    }
     Map<BlueId, LanguageRecord> additions =
         evidence.records(id -> shared.contains(id) || records.get(before, id.value()) != null);
-    if (additions.size() > 100_000)
+    if (additions.size() > 100_000) {
       throw new IllegalArgumentException("Acquisition exceeds record count bound");
+    }
     Map<String, String> changes = new LinkedHashMap<>();
     for (var record : additions.entrySet()) {
       StoredLanguageRecords.Location existing = stored.find().apply(record.getKey());
@@ -675,14 +721,22 @@ final class TimelineArchive {
             OwnerSources.append(frontiers, tx, timeline.blueId().value(), next);
             tx.publish(writes, List.of());
             committed = tx.commit();
-          } else committed = repository.store.commit(writes, List.of());
+          } else {
+            committed = repository.store.commit(writes, List.of());
+          }
         }
-        if (committed) break;
+        if (committed) {
+          break;
+        }
         AtomicStore.Row current = repository.store.get(key("STATE"));
         restore(current);
         Acquired repeated = receipt(evidence.blueId(), current, blocks);
-        if (repeated != null) return repeated;
-        if (!Objects.equals(head, current)) break;
+        if (repeated != null) {
+          return repeated;
+        }
+        if (!Objects.equals(head, current)) {
+          break;
+        }
       }
       if (!committed) {
         // Preserve a competing proposal for inspection; a local race is not provider fraud.
@@ -712,22 +766,28 @@ final class TimelineArchive {
     cached = new Cached(new AtomicStore.Row(key("STATE"), position, value), result.prefix());
     rememberQuiet(quietRuns, next);
     remember(result.entries(), verifiedEntries);
-    if (localAuthority != null && OwnerGraphs.enabled()) localAuthority.enroll(this);
+    if (localAuthority != null && OwnerGraphs.enabled()) {
+      localAuthority.enroll(this);
+    }
     return acquired(next, false);
   }
 
   private Acquired receipt(BlueId evidence, AtomicStore.Row head, ContentBlocks blocks) {
     AtomicStore.Row receipt = repository.store.get(key("P#" + evidence));
-    if (receipt == null) return null;
+    if (receipt == null) {
+      return null;
+    }
     Batch prior = batch(receipt, blocks);
     if (receipt.version() != 1
         || !prior.evidence().equals(evidence.value())
         || head == null
-        || prior.position() > head.version())
+        || prior.position() > head.version()) {
       throw new IllegalStateException("Source receipt is not in the committed history");
+    }
     AtomicStore.Row history = historyRow(prior.position());
-    if (!history.value().equals(receipt.value()))
+    if (!history.value().equals(receipt.value())) {
       throw new IllegalStateException("Source receipt names a different history batch");
+    }
     return acquired(prior, true);
   }
 
@@ -739,33 +799,42 @@ final class TimelineArchive {
   synchronized Batch history(long position) {
     AtomicStore.Row head = repository.store.get(key("STATE"));
     restore(head);
-    if (position < 1 || head == null || position > head.version())
+    if (position < 1 || head == null || position > head.version()) {
       throw new IllegalArgumentException("Unknown committed source position");
+    }
     return batch(historyRow(position), new ContentBlocks(repository.blobs(account)));
   }
 
   /** A bounded window of immutable acquisitions, all covered by this archive's verified head. */
   synchronized List<Batch> history(long first, long through, int limit) {
-    if (limit < 1 || limit > 32) throw new IllegalArgumentException("Invalid history window");
+    if (limit < 1 || limit > 32) {
+      throw new IllegalArgumentException("Invalid history window");
+    }
     AtomicStore.Row head = repository.store.get(key("STATE"));
     restore(head);
-    if (first < 1 || through < first || head == null || through > head.version())
+    if (first < 1 || through < first || head == null || through > head.version()) {
       throw new IllegalArgumentException("Unknown committed source position");
+    }
     List<Long> positions = new ArrayList<>();
     for (long position = first; position <= through && positions.size() < limit; position++) {
       var run = quietRuns.floorEntry(position);
-      if (run != null && run.getValue() >= position) position = Math.min(through, run.getValue());
-      else if (recovery == Recovery.PROTECTED_STORAGE) {
+      if (run != null && run.getValue() >= position) {
+        position = Math.min(through, run.getValue());
+      } else if (recovery == Recovery.PROTECTED_STORAGE) {
         ContentBlocks blocks = new ContentBlocks(repository.blobs(account));
         Batch batch = batch(historyRow(position), blocks);
-        if (batch.entries().isEmpty()) position = quietThrough(position, through, batch, blocks);
+        if (batch.entries().isEmpty()) {
+          position = quietThrough(position, through, batch, blocks);
+        }
       }
       positions.add(position);
     }
     ContentBlocks blocks = new ContentBlocks(repository.blobs(account));
     Map<AtomicStore.Key, AtomicStore.Row> rows = historyRows(positions, blocks);
     List<Batch> batches = new ArrayList<>();
-    for (long position : positions) batches.add(batch(rows.get(historyKey(position)), blocks));
+    for (long position : positions) {
+      batches.add(batch(rows.get(historyKey(position)), blocks));
+    }
     return List.copyOf(batches);
   }
 
@@ -786,23 +855,31 @@ final class TimelineArchive {
 
   private TimelineVerifier.Prefix restore(AtomicStore.Row head) {
     if (head == null) {
-      if (cached != null) throw new IllegalStateException("Committed source history disappeared");
+      if (cached != null) {
+        throw new IllegalStateException("Committed source history disappeared");
+      }
       return verifier.initial();
     }
     binding(head);
-    if (cached != null && cached.head().equals(head)) return cached.prefix();
-    if (cached != null && head.version() <= cached.head().version())
+    if (cached != null && cached.head().equals(head)) {
+      return cached.prefix();
+    }
+    if (cached != null && head.version() <= cached.head().version()) {
       throw new IllegalStateException("Committed source history rewound");
+    }
     if (cached == null && recovery == Recovery.PROTECTED_STORAGE) {
       TimelineVerifier.Prefix recovered = recover(head);
-      if (recovered != null) return recovered;
+      if (recovered != null) {
+        return recovered;
+      }
     }
     TimelineVerifier.Prefix prefix = cached == null ? verifier.initial() : cached.prefix();
     String previous = cached == null ? "" : text(cached.head().value(), "batch");
     long start = cached == null ? 1 : cached.head().version() + 1;
     if (cached != null
-        && !text(historyRow(cached.head().version()).value(), "batch").equals(previous))
+        && !text(historyRow(cached.head().version()).value(), "batch").equals(previous)) {
       throw new IllegalStateException("Established source history was replaced");
+    }
     Repository.Blobs blobs = repository.blobs(account);
     ContentBlocks blocks = new ContentBlocks(blobs);
     RadixIndex<String> records = new RadixIndex<>(blobs, String.class);
@@ -810,16 +887,18 @@ final class TimelineArchive {
     NavigableMap<Long, Long> quiet = cached == null ? new TreeMap<>() : new TreeMap<>(quietRuns);
     Map<AtomicStore.Key, AtomicStore.Row> window = Map.of();
     for (long position = start; position <= head.version(); position++) {
-      if (Thread.currentThread().isInterrupted())
+      if (Thread.currentThread().isInterrupted()) {
         throw new IllegalStateException("Source history replay interrupted");
+      }
       AtomicStore.Key selected = historyKey(position);
       if (!window.containsKey(selected)) {
         window = historyWindow(position, head.version(), blocks);
       }
       AtomicStore.Row row = window.get(selected);
       Batch batch = batch(row, blocks);
-      if (batch.position() != position || !batch.previous().equals(previous))
+      if (batch.position() != position || !batch.previous().equals(previous)) {
         throw new IllegalStateException("Noncontiguous acquired source history");
+      }
       Language source = language(batch.content(), records, blocks, Map.of());
       TimelineVerifier.Result verified =
           verifier.advance(prefix, source.reference(new BlueId(batch.evidence())));
@@ -831,17 +910,20 @@ final class TimelineArchive {
               .map(BlueId::value)
               .orElse("")
               .equals(batch.successor())
-          || !entries(verified).equals(batch.entries()))
+          || !entries(verified).equals(batch.entries())) {
         throw new IllegalStateException("Stored source claims disagree with verified evidence");
+      }
       prefix = verified.prefix();
       rememberQuiet(quiet, batch);
       remember(verified.entries(), replayed);
       previous = text(row.value(), "batch");
-      if (position == head.version() && !batch.content().equals(text(head.value(), "content")))
+      if (position == head.version() && !batch.content().equals(text(head.value(), "content"))) {
         throw new IllegalStateException("Source content head mismatch");
+      }
     }
-    if (!previous.equals(text(head.value(), "batch")))
+    if (!previous.equals(text(head.value(), "batch"))) {
       throw new IllegalStateException("Source history head mismatch");
+    }
     cached = new Cached(head, prefix);
     quietRuns = quiet;
     remember(replayed.values(), verifiedEntries);
@@ -893,13 +975,16 @@ final class TimelineArchive {
 
   /** The old format was also published only after verification, in the same protected store. */
   private TimelineVerifier.Prefix migrateProtected(AtomicStore.Row head) {
-    if (!historyRow(head.version()).value().get("batch").equals(head.value().get("batch")))
+    if (!historyRow(head.version()).value().get("batch").equals(head.value().get("batch"))) {
       throw new IllegalStateException("Protected source history head was replaced");
+    }
     Repository.Blobs blobs = repository.blobs(account);
     ContentBlocks blocks = new ContentBlocks(blobs);
     Batch batch = batch(head, blocks);
-    if (batch.position() != head.version() || !batch.content().equals(head.value().get("content")))
+    if (batch.position() != head.version()
+        || !batch.content().equals(head.value().get("content"))) {
       throw new IllegalStateException("Protected source batch does not match its head");
+    }
     TimelineVerifier.Prefix prefix =
         verifier.restoreTrusted(
             batch.completeBefore(),
@@ -907,7 +992,9 @@ final class TimelineArchive {
             batch.successor().isEmpty() ? null : new BlueId(batch.successor()),
             retained(batch.content(), new RadixIndex<>(blobs, String.class), blocks, Map.of()));
     NavigableMap<Long, Long> quiet = new TreeMap<>();
-    if (batch.entries().isEmpty()) quiet.put(batch.position(), batch.position());
+    if (batch.entries().isEmpty()) {
+      quiet.put(batch.position(), batch.position());
+    }
     AtomicStore.Write checkpoint =
         recovery(
             head.version(), text(head.value(), "batch"), batch.content(), prefix, quiet, blocks);
@@ -923,15 +1010,21 @@ final class TimelineArchive {
    * length.
    */
   private long quietThrough(long first, long through, Batch batch, ContentBlocks blocks) {
-    if (recovery != Recovery.PROTECTED_STORAGE || !batch.entries().isEmpty()) return first;
+    if (recovery != Recovery.PROTECTED_STORAGE || !batch.entries().isEmpty()) {
+      return first;
+    }
     long low = first, high = through;
     while (low < high) {
       long middle = low + (high - low + 1) / 2;
       Batch probe = batch(historyRow(middle), blocks);
-      if (probe.position() != middle)
+      if (probe.position() != middle) {
         throw new IllegalStateException("Invalid protected history position");
-      if (batch.head().equals(probe.head())) low = middle;
-      else high = middle - 1;
+      }
+      if (batch.head().equals(probe.head())) {
+        low = middle;
+      } else {
+        high = middle - 1;
+      }
     }
     synchronized (this) {
       rememberQuiet(quietRuns, first, low);
@@ -941,18 +1034,22 @@ final class TimelineArchive {
 
   private TimelineVerifier.Prefix recover(AtomicStore.Row head) {
     AtomicStore.Row row = repository.store.get(recoveryKey(head.version()));
-    if (row == null) return migrateProtected(head);
+    if (row == null) {
+      return migrateProtected(head);
+    }
     Map<String, Object> value = row.value();
     if (row.version() != 1
         || !"myos.timeline-recovery/1".equals(value.get("format"))
         || !Objects.equals(value.get("batch"), head.value().get("batch"))
-        || !Objects.equals(value.get("content"), head.value().get("content")))
+        || !Objects.equals(value.get("content"), head.value().get("content"))) {
       throw new IllegalStateException(
           "Recovery checkpoint does not bind the committed source head");
+    }
     Repository.Blobs blobs = repository.blobs(account);
     ContentBlocks blocks = new ContentBlocks(blobs);
-    if (!historyRow(head.version()).value().get("batch").equals(value.get("batch")))
+    if (!historyRow(head.version()).value().get("batch").equals(value.get("batch"))) {
       throw new IllegalStateException("Recovery history head was replaced");
+    }
     Map<String, Object> checkpoint = Json.object(blocks.get(text(value, "checkpoint")));
     TimelineVerifier.Prefix prefix =
         verifier.restore(
@@ -964,18 +1061,22 @@ final class TimelineArchive {
     long last = 0;
     for (Object raw : RuntimeConfiguration.list(checkpoint.get("quiet"), "quiet")) {
       List<?> range = RuntimeConfiguration.list(raw, "quiet range");
-      if (range.size() != 2) throw new IllegalStateException("Invalid quiet range");
-      long from = Repository.number(range.getFirst()), through = Repository.number(range.getLast());
-      if (from <= last || through < from || through > head.version() || quiet.size() >= 256)
+      if (range.size() != 2) {
         throw new IllegalStateException("Invalid quiet range");
+      }
+      long from = Repository.number(range.getFirst()), through = Repository.number(range.getLast());
+      if (from <= last || through < from || through > head.version() || quiet.size() >= 256) {
+        throw new IllegalStateException("Invalid quiet range");
+      }
       quiet.put(from, through);
       last = through;
     }
     Batch batch = batch(head, blocks);
     if (prefix.completeBefore() != batch.completeBefore()
         || !prefix.headId().map(BlueId::value).orElse("").equals(batch.head())
-        || !prefix.successorId().map(BlueId::value).orElse("").equals(batch.successor()))
+        || !prefix.successorId().map(BlueId::value).orElse("").equals(batch.successor())) {
       throw new IllegalStateException("Recovery prefix does not match its committed batch");
+    }
     cached = new Cached(head, prefix);
     quietRuns = quiet;
     prefix.headEntry().ifPresent(entry -> remember(List.of(entry), verifiedEntries));
@@ -987,7 +1088,9 @@ final class TimelineArchive {
       long first, long last, ContentBlocks blocks) {
     int count = (int) Math.min(32L, last - first + 1);
     List<Long> positions = new ArrayList<>();
-    for (int offset = 0; offset < count; offset++) positions.add(first + offset);
+    for (int offset = 0; offset < count; offset++) {
+      positions.add(first + offset);
+    }
     return historyRows(positions, blocks);
   }
 
@@ -995,26 +1098,34 @@ final class TimelineArchive {
       List<Long> positions, ContentBlocks blocks) {
     int count = positions.size();
     List<AtomicStore.Key> keys = new ArrayList<>();
-    for (long position : positions) keys.add(historyKey(position));
+    for (long position : positions) {
+      keys.add(historyKey(position));
+    }
     Map<AtomicStore.Key, AtomicStore.Row> rows =
         count == 1
             ? Map.of(keys.getFirst(), historyRow(positions.getFirst()))
             : repository.store.getAll(keys);
-    if (!rows.keySet().equals(Set.copyOf(keys)))
+    if (!rows.keySet().equals(Set.copyOf(keys))) {
       throw new IllegalStateException("Missing or unexpected committed source history");
+    }
     List<String> batches = new ArrayList<>();
     for (AtomicStore.Key key : keys) {
       AtomicStore.Row row = rows.get(key);
-      if (row == null || !row.key().equals(key) || row.version() != 1)
+      if (row == null || !row.key().equals(key) || row.version() != 1) {
         throw new IllegalStateException("Missing or rewritten committed source history");
+      }
       batches.add(text(row.value(), "batch"));
     }
-    if (count > 1) blocks.prefetch(batches);
+    if (count > 1) {
+      blocks.prefetch(batches);
+    }
     return Map.copyOf(rows);
   }
 
   private static void rememberQuiet(NavigableMap<Long, Long> runs, Batch batch) {
-    if (batch.entries().isEmpty()) rememberQuiet(runs, batch.position(), batch.position());
+    if (batch.entries().isEmpty()) {
+      rememberQuiet(runs, batch.position(), batch.position());
+    }
   }
 
   private static void rememberQuiet(NavigableMap<Long, Long> runs, long first, long last) {
@@ -1030,7 +1141,9 @@ final class TimelineArchive {
       next = runs.higherEntry(first);
     }
     runs.put(first, last);
-    while (runs.size() > 256) runs.pollFirstEntry();
+    while (runs.size() > 256) {
+      runs.pollFirstEntry();
+    }
   }
 
   private synchronized Optional<TimelineVerifier.Entry> verified(BlueId id) {
@@ -1041,7 +1154,9 @@ final class TimelineArchive {
       Collection<TimelineVerifier.Entry> entries, Map<BlueId, TimelineVerifier.Entry> retained) {
     for (TimelineVerifier.Entry entry : entries) {
       retained.put(entry.blueId(), entry);
-      while (retained.size() > 256) retained.remove(retained.keySet().iterator().next());
+      while (retained.size() > 256) {
+        retained.remove(retained.keySet().iterator().next());
+      }
     }
   }
 
@@ -1060,7 +1175,9 @@ final class TimelineArchive {
       Map<BlueId, LanguageRecord> offered) {
     return id -> {
       LanguageRecord adopted = common.get(id);
-      if (adopted != null) return Optional.of(adopted);
+      if (adopted != null) {
+        return Optional.of(adopted);
+      }
       String blob = records.get(content, id.value());
       return blob == null
           ? Optional.ofNullable(offered.get(id))
@@ -1073,8 +1190,9 @@ final class TimelineArchive {
     if (!FORMAT.equals(head.value().get("format"))
         || !coordination.blueId().value().equals(head.value().get("package"))
         || !provider.blueId().value().equals(head.value().get("provider"))
-        || !timeline.blueId().value().equals(head.value().get("timeline")))
+        || !timeline.blueId().value().equals(head.value().get("timeline"))) {
       throw new IllegalStateException("Stored source adoption does not match this archive");
+    }
   }
 
   private static Acquired acquired(Batch batch, boolean duplicate) {
@@ -1089,8 +1207,12 @@ final class TimelineArchive {
   private Set<String> notificationTargets(TimelineVerifier.Result result) {
     List<BlueId> targets = new ArrayList<>();
     for (TimelineVerifier.Entry entry : result.entries()) {
-      if (!entry.mayInvokeOperation()) continue;
-      if (entry.operationTarget().isEmpty()) return null;
+      if (!entry.mayInvokeOperation()) {
+        continue;
+      }
+      if (entry.operationTarget().isEmpty()) {
+        return null;
+      }
       targets.add(entry.operationTarget().orElseThrow());
     }
     return new DocumentLineage(repository).notificationTargets(account, targets, 64).orElse(null);
@@ -1116,7 +1238,9 @@ final class TimelineArchive {
 
   private AtomicStore.Row required(AtomicStore.Key key) {
     AtomicStore.Row row = repository.store.get(key);
-    if (row == null) throw new IllegalStateException("Missing committed source history");
+    if (row == null) {
+      throw new IllegalStateException("Missing committed source history");
+    }
     return row;
   }
 
@@ -1124,16 +1248,21 @@ final class TimelineArchive {
     if (recovery == Recovery.PROTECTED_STORAGE) {
       synchronized (historyCache) {
         var known = historyCache.get(position);
-        if (known != null) return known;
+        if (known != null) {
+          return known;
+        }
       }
     }
     AtomicStore.Row row = required(historyKey(position));
-    if (row.version() != 1) throw new IllegalStateException("Source history is not immutable");
+    if (row.version() != 1) {
+      throw new IllegalStateException("Source history is not immutable");
+    }
     if (recovery == Recovery.PROTECTED_STORAGE) {
       synchronized (historyCache) {
         historyCache.put(position, row);
-        while (historyCache.size() > 256)
+        while (historyCache.size() > 256) {
           historyCache.remove(historyCache.keySet().iterator().next());
+        }
       }
     }
     return row;
@@ -1148,8 +1277,9 @@ final class TimelineArchive {
   }
 
   private static String text(Map<String, Object> row, String field) {
-    if (!(row.get(field) instanceof String value))
+    if (!(row.get(field) instanceof String value)) {
       throw new IllegalStateException("Missing source field: " + field);
+    }
     return value;
   }
 }

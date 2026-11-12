@@ -42,7 +42,9 @@ final class TimelineInputs {
 
   record Order(long timestamp, String timeline, String entry) implements Comparable<Order> {
     Order {
-      if (timestamp < 0) throw new IllegalArgumentException("Negative entry timestamp");
+      if (timestamp < 0) {
+        throw new IllegalArgumentException("Negative entry timestamp");
+      }
       new blue.BlueId(timeline);
       new blue.BlueId(entry);
     }
@@ -50,7 +52,9 @@ final class TimelineInputs {
     @Override
     public int compareTo(Order other) {
       int compared = Long.compare(timestamp, other.timestamp);
-      if (compared == 0) compared = timeline.compareTo(other.timeline);
+      if (compared == 0) {
+        compared = timeline.compareTo(other.timeline);
+      }
       return compared == 0 ? entry.compareTo(other.entry) : compared;
     }
   }
@@ -110,46 +114,58 @@ final class TimelineInputs {
     archives = List.copyOf(sources);
     this.deliveries = deliveries == null ? null : Set.copyOf(deliveries);
     this.receiverKey = Objects.requireNonNull(receiverKey);
-    if (archives.isEmpty())
+    if (archives.isEmpty()) {
       throw new IllegalArgumentException("An explicit required-source set is needed");
+    }
   }
 
   Plan next(long documentVersion) {
-    if (documentVersion < 1) throw new IllegalArgumentException("Receiver must be initialized");
+    if (documentVersion < 1) {
+      throw new IllegalArgumentException("Receiver must be initialized");
+    }
     AtomicStore.Key progressKey = Repository.key(account, document, "TIMELINE_INPUTS");
     AtomicStore.Row progress = repository.store.get(progressKey);
     Map<String, TimelineArchive.View> sources = new TreeMap<>();
     for (TimelineArchive archive : archives) {
       TimelineArchive.View source = archive.view();
-      if (!account.equals(source.account()))
+      if (!account.equals(source.account())) {
         throw new IllegalArgumentException("Source belongs to another account");
-      if (sources.putIfAbsent(source.timeline().value(), source) != null)
+      }
+      if (sources.putIfAbsent(source.timeline().value(), source) != null) {
         throw new IllegalArgumentException("Duplicate required source");
+      }
     }
     List<String> identities = List.copyOf(sources.keySet());
-    if (deliveries != null && !sources.keySet().containsAll(deliveries))
+    if (deliveries != null && !sources.keySet().containsAll(deliveries)) {
       throw new IllegalArgumentException("Every receiving source needs acquired coverage");
+    }
     Map<String, TimelineArchive.Cursor> before = new TreeMap<>();
     Order last = null;
     if (progress != null) {
-      if (!Objects.equals(reception, progress.value().get("reception")))
+      if (!Objects.equals(reception, progress.value().get("reception"))) {
         throw new IllegalStateException(
             "Receiving declarations or lifetimes changed; explicit historical rebase is required");
+      }
       if (!FORMAT.equals(progress.value().get("format"))
-          || !identities.equals(progress.value().get("sources")))
+          || !identities.equals(progress.value().get("sources"))) {
         throw new IllegalStateException(
             "Required sources changed; explicit historical rebase is required");
-      if (Repository.number(progress.value().get("documentVersion")) > documentVersion)
+      }
+      if (Repository.number(progress.value().get("documentVersion")) > documentVersion) {
         throw new IllegalStateException("Source progress belongs to a newer receiver version");
+      }
       Object raw = progress.value().get("cursors");
-      if (!(raw instanceof Map<?, ?> rows) || !rows.keySet().equals(sources.keySet()))
+      if (!(raw instanceof Map<?, ?> rows) || !rows.keySet().equals(sources.keySet())) {
         throw new IllegalStateException("Incomplete required-source cursors");
-      for (var row : rows.entrySet())
+      }
+      for (var row : rows.entrySet()) {
         before.put(
             (String) row.getKey(),
             Json.MAPPER.convertValue(row.getValue(), TimelineArchive.Cursor.class));
-      if (progress.value().containsKey("last"))
+      }
+      if (progress.value().containsKey("last")) {
         last = Json.MAPPER.convertValue(progress.value().get("last"), Order.class);
+      }
     } else {
       sources.keySet().forEach(id -> before.put(id, TimelineArchive.Cursor.initial()));
     }
@@ -172,8 +188,9 @@ final class TimelineInputs {
     List<String> waiting = new ArrayList<>();
     for (var archive : archives) {
       var view = archive.view();
-      if (!account.equals(view.account()))
+      if (!account.equals(view.account())) {
         throw new IllegalArgumentException("Different source account");
+      }
       views.put(view.timeline().value(), view);
       boolean local = frontier.local(authority, view.timeline().value());
       long bound = local ? frontier.localBefore(authority) : view.completeBefore();
@@ -184,17 +201,21 @@ final class TimelineInputs {
               view.version(),
               evidence == null ? "local-enrollment" : evidence,
               bound));
-      if (view.timeline().value().equals(order.timeline()))
+      if (view.timeline().value().equals(order.timeline())) {
         original =
             view.find(new blue.BlueId(order.entry()))
                 .orElseThrow(
                     () ->
                         new TimelinePermissions.Unavailable(
                             "Selected local input is awaiting acquisition"));
-      if (bound <= order.timestamp()) waiting.add(view.timeline().value());
+      }
+      if (bound <= order.timestamp()) {
+        waiting.add(view.timeline().value());
+      }
     }
-    if (original == null || original.entry().timestamp() != order.timestamp())
+    if (original == null || original.entry().timestamp() != order.timestamp()) {
       throw new IllegalStateException("Selected original is not in the verified prefix");
+    }
     return new Plan(
         Repository.key(account, document, "OWNER_INPUT"),
         0,
@@ -241,12 +262,17 @@ final class TimelineInputs {
         }
       }
     }
-    if (last != null && order != null && order.compareTo(last) <= 0)
+    if (last != null && order != null && order.compareTo(last) <= 0) {
       throw new IllegalStateException("Source order precedes the committed receiver position");
+    }
     List<String> waiting = new ArrayList<>();
-    if (order != null)
-      for (Cut cut : cuts)
-        if (cut.completeBefore() <= order.timestamp()) waiting.add(cut.timeline());
+    if (order != null) {
+      for (Cut cut : cuts) {
+        if (cut.completeBefore() <= order.timestamp()) {
+          waiting.add(cut.timeline());
+        }
+      }
+    }
     Status status = order == null ? Status.IDLE : waiting.isEmpty() ? Status.READY : Status.WAITING;
     return new Plan(
         progressKey,
@@ -303,7 +329,9 @@ final class TimelineInputs {
 
     /** Advances only a tentative selection; publication still fences the original revision. */
     Plan following() {
-      if (status != Status.READY) throw new IllegalStateException("Unclosed source input");
+      if (status != Status.READY) {
+        throw new IllegalStateException("Unclosed source input");
+      }
       Map<String, TimelineArchive.Cursor> after = new TreeMap<>(cursors);
       after.put(order.timeline(), selected.after());
       return select(progressKey, revision, documentVersion, new TreeMap<>(views), after, order);
@@ -314,8 +342,9 @@ final class TimelineInputs {
     }
 
     void requestCoverage() {
-      if (status == Status.WAITING)
+      if (status == Status.WAITING) {
         TimelineCoverage.require(repository.store, account, cuts, order.timestamp());
+      }
     }
 
     List<String> waitingSources() {
@@ -327,12 +356,16 @@ final class TimelineInputs {
     }
 
     TimelineArchive.Entry entry() {
-      if (status != Status.READY) throw new IllegalStateException("Source input is not ready");
+      if (status != Status.READY) {
+        throw new IllegalStateException("Source input is not ready");
+      }
       return selected.entry();
     }
 
     blue.LanguageContent message() {
-      if (status != Status.READY) throw new IllegalStateException("Source input is not ready");
+      if (status != Status.READY) {
+        throw new IllegalStateException("Source input is not ready");
+      }
       return selected.message();
     }
 
@@ -356,26 +389,34 @@ final class TimelineInputs {
     }
 
     void bind(String requestedAccount, String requestedDocument, long version) {
-      if (!account.equals(requestedAccount) || !document.equals(requestedDocument))
+      if (!account.equals(requestedAccount) || !document.equals(requestedDocument)) {
         throw new IllegalArgumentException("Source selection belongs to another receiver");
-      if (version != documentVersion) throw new Reselect();
+      }
+      if (version != documentVersion) {
+        throw new Reselect();
+      }
     }
 
     void bind(Object event, long timestamp) {
-      if (status != Status.READY) throw new IllegalStateException("Source input is not ready");
+      if (status != Status.READY) {
+        throw new IllegalStateException("Source input is not ready");
+      }
       blue.BlueId id =
           blue.Language.create()
               .prepare(
                   blue.Language.Input.exactJson(
                       new String(Json.bytes(event), java.nio.charset.StandardCharsets.UTF_8)))
               .blueId();
-      if (timestamp != order.timestamp() || !id.value().equals(order.entry()))
+      if (timestamp != order.timestamp() || !id.value().equals(order.entry())) {
         throw new IllegalArgumentException(
             "Native input differs from selected original occurrence");
+      }
     }
 
     Map<String, Object> audit() {
-      if (status != Status.READY) throw new IllegalStateException("Source input is not ready");
+      if (status != Status.READY) {
+        throw new IllegalStateException("Source input is not ready");
+      }
       return Map.of(
           "format",
           FORMAT,
@@ -398,7 +439,9 @@ final class TimelineInputs {
     }
 
     Optional<blue.TimelineVerifier.Entry> verifiedEntry() {
-      if (status != Status.READY) throw new IllegalStateException("Source input is not ready");
+      if (status != Status.READY) {
+        throw new IllegalStateException("Source input is not ready");
+      }
       return selected.verified();
     }
 
@@ -407,12 +450,16 @@ final class TimelineInputs {
     }
 
     blue.LanguageContent original() {
-      if (status != Status.READY) throw new IllegalStateException("Source input is not ready");
+      if (status != Status.READY) {
+        throw new IllegalStateException("Source input is not ready");
+      }
       return selected.original();
     }
 
     RetainedTimeline retainedTimeline() {
-      if (status != Status.READY) throw new IllegalStateException("Input is not ready");
+      if (status != Status.READY) {
+        throw new IllegalStateException("Input is not ready");
+      }
       return selected.retained();
     }
 
@@ -428,54 +475,73 @@ final class TimelineInputs {
         Disposition disposition,
         blue.BlueId inputIdentity,
         Map<String, Object> assessments) {
-      if (disposition != Disposition.COVERAGE && status != Status.READY)
+      if (disposition != Disposition.COVERAGE && status != Status.READY) {
         throw new IllegalStateException("Unclosed input cannot be disposed or consumed");
+      }
       var control = DocumentControls.key(account, document);
-      if (checks.stream().noneMatch(check -> check.key().equals(control)))
+      if (checks.stream().noneMatch(check -> check.key().equals(control))) {
         checks.add(DocumentControls.permit(repository.store, account, document));
+      }
       AtomicStore.Key receiver = receiverKey;
       long resultingVersion = documentVersion;
       boolean writesReceiver = false;
-      for (AtomicStore.Write write : writes)
+      for (AtomicStore.Write write : writes) {
         if (write.key().equals(receiver)) {
-          if (write.expected() != documentVersion || write.next() == null)
+          if (write.expected() != documentVersion || write.next() == null) {
             throw new IllegalArgumentException(
                 "Receiver publication uses a different input version");
+          }
           writesReceiver = true;
           resultingVersion = write.next().version();
         }
-      if (disposition == Disposition.CONSUMED && !writesReceiver)
+      }
+      if (disposition == Disposition.CONSUMED && !writesReceiver) {
         throw new IllegalArgumentException(
             "Consumed input requires the receiver result in the same transaction");
-      if (disposition != Disposition.CONSUMED && writesReceiver)
+      }
+      if (disposition != Disposition.CONSUMED && writesReceiver) {
         throw new IllegalArgumentException(
             "Coverage and inapplicable input do not fabricate receiver execution");
+      }
       if (!writesReceiver) {
         var existing = checks.stream().filter(check -> check.key().equals(receiver)).findFirst();
-        if (existing.isEmpty()) checks.add(new AtomicStore.Check(receiver, documentVersion));
-        else if (existing.orElseThrow().version() != documentVersion)
+        if (existing.isEmpty()) {
+          checks.add(new AtomicStore.Check(receiver, documentVersion));
+        } else if (existing.orElseThrow().version() != documentVersion) {
           throw new IllegalArgumentException("Receiver fencing uses a different input version");
+        }
       }
       Map<String, TimelineArchive.Cursor> after = new TreeMap<>(cursors);
-      if (disposition != Disposition.COVERAGE) after.put(order.timeline(), selected.after());
+      if (disposition != Disposition.COVERAGE) {
+        after.put(order.timeline(), selected.after());
+      }
       Map<String, Object> value = new LinkedHashMap<>();
       value.put("format", FORMAT);
       value.put("documentVersion", resultingVersion);
       value.put("sources", sources);
       value.put("cursors", after);
       value.put("coverage", cuts);
-      if (reception != null) value.put("reception", reception);
+      if (reception != null) {
+        value.put("reception", reception);
+      }
       Order committed = disposition == Disposition.COVERAGE ? last : order;
-      if (committed != null) value.put("last", committed);
+      if (committed != null) {
+        value.put("last", committed);
+      }
       writes.add(AtomicStore.Write.put(progressKey, revision, value));
       Map<String, Object> history = new LinkedHashMap<>(value);
       history.put("revision", revision + 1);
       history.put("disposition", disposition.name());
-      if (disposition != Disposition.COVERAGE) history.put("input", order);
-      if (!assessments.isEmpty()) history.put("assessments", assessments);
+      if (disposition != Disposition.COVERAGE) {
+        history.put("input", order);
+      }
+      if (!assessments.isEmpty()) {
+        history.put("assessments", assessments);
+      }
       if (inputIdentity != null) {
-        if (disposition != Disposition.CONSUMED)
+        if (disposition != Disposition.CONSUMED) {
           throw new IllegalArgumentException("Only execution establishes a channel checkpoint");
+        }
         history.put("inputIdentity", inputIdentity.value());
         writes.add(
             AtomicStore.Write.put(

@@ -47,7 +47,9 @@ final class OwnerGasWork implements AutoCloseable {
 
   static void stage(Repository repository, String account, OwnerMetadata.Transaction tx) {
     var ledger = new OwnerGas(account);
-    if (!ledger.enabled(tx)) return;
+    if (!ledger.enabled(tx)) {
+      return;
+    }
     long now = System.currentTimeMillis();
     String next = tx.get(NEXT);
     long immediate = next == null ? now : Math.max(now, Long.parseLong(next));
@@ -75,7 +77,9 @@ final class OwnerGasWork implements AutoCloseable {
     }
     var before = repository.store.get(key(account));
     if (due == null) {
-      if (before != null) tx.publish(List.of(AtomicStore.Write.delete(before)), List.of());
+      if (before != null) {
+        tx.publish(List.of(AtomicStore.Write.delete(before)), List.of());
+      }
       return;
     }
     var value =
@@ -90,13 +94,14 @@ final class OwnerGasWork implements AutoCloseable {
             SHARD,
             "position",
             String.format(Locale.ROOT, "%020d", due));
-    if (before != null && before.value().equals(value))
+    if (before != null && before.value().equals(value)) {
       tx.publish(List.of(), List.of(new AtomicStore.Check(before.key(), before.version())));
-    else
+    } else {
       tx.publish(
           List.of(
               AtomicStore.Write.put(key(account), before == null ? 0 : before.version(), value)),
           List.of());
+    }
   }
 
   void start() {
@@ -113,7 +118,9 @@ final class OwnerGasWork implements AutoCloseable {
   int process(String account) {
     var before = store.get(key(account));
     long now = clock.getAsLong();
-    if (before == null || Repository.number(before.value().get("due")) > now) return 0;
+    if (before == null || Repository.number(before.value().get("due")) > now) {
+      return 0;
+    }
     var frontiers = new OwnerFrontiers(store, account);
     var recovery = new OwnerGasRecovery(account, frontiers);
     frontiers.change(
@@ -135,9 +142,12 @@ final class OwnerGasWork implements AutoCloseable {
                 ? receiver.apply(account, (String) before.value().get("owner"))
                 : initializer.apply(account, initializing.getFirst().intent().graph());
         if (outcome.status() == TimelineIngress.Status.APPLIED
-            || outcome.status() == TimelineIngress.Status.INAPPLICABLE) count++;
-        else {
-          if (outcome.status() != TimelineIngress.Status.IDLE) delay = 1000;
+            || outcome.status() == TimelineIngress.Status.INAPPLICABLE) {
+          count++;
+        } else {
+          if (outcome.status() != TimelineIngress.Status.IDLE) {
+            delay = 1000;
+          }
           break;
         }
       }

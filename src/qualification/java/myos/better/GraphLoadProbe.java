@@ -29,9 +29,10 @@ public final class GraphLoadProbe {
       double commitMillis) {}
 
   public static void main(String[] args) throws Exception {
-    if ((args.length != 5 && args.length != 6) || !args[0].matches("bench-[A-Za-z0-9._-]{1,90}"))
+    if ((args.length != 5 && args.length != 6) || !args[0].matches("bench-[A-Za-z0-9._-]{1,90}")) {
       throw new IllegalArgumentException(
           "Expected bench account, orders, payments, operations, clients, optional active orders");
+    }
     String account = args[0];
     int orders = Integer.parseInt(args[1]),
         payments = Integer.parseInt(args[2]),
@@ -47,23 +48,29 @@ public final class GraphLoadProbe {
         || clients < 1
         || clients > 16
         || activeOrders < 0
-        || activeOrders > orders) throw new IllegalArgumentException("Invalid bounded dimensions");
-    if (512L * 1024 * 1024 > Runtime.getRuntime().maxMemory() / 2)
+        || activeOrders > orders) {
+      throw new IllegalArgumentException("Invalid bounded dimensions");
+    }
+    if (512L * 1024 * 1024 > Runtime.getRuntime().maxMemory() / 2) {
       throw new IllegalArgumentException(
           "The probe requires at least a 1 GiB heap for its session policy");
+    }
     String table = System.getenv("MYOS_TABLE");
-    if (table != null && System.getProperty("myos.probe.recordingDir") != null)
+    if (table != null && System.getProperty("myos.probe.recordingDir") != null) {
       throw new IllegalArgumentException("Profiling is local only");
-    if (table == null && orders > 2048)
+    }
+    if (table == null && orders > 2048) {
       throw new IllegalArgumentException("Large graphs must already exist in durable storage");
+    }
     Path manifest =
         Path.of(
             java.util.Objects.requireNonNull(
                 System.getenv("MYOS_RUNTIME"), "MYOS_RUNTIME is required"));
     RuntimeCatalog catalog = RuntimeConfiguration.loadCatalog(manifest);
     boolean legacyFixture = Boolean.getBoolean("myos.probe.legacy");
-    if (legacyFixture && table != null)
+    if (legacyFixture && table != null) {
       throw new IllegalArgumentException("Legacy preparation is local only");
+    }
     AtomicStore backing = table == null ? new MemoryStore() : new DynamoStore(table, "eu-west-1");
     if (legacyFixture) {
       try (Core legacy =
@@ -79,14 +86,16 @@ public final class GraphLoadProbe {
             Core.ProjectionPolicy.BOUNDED,
             new SessionCache.Policy(256, 512L * 1024 * 1024, 32),
             ReadBudget.Limits.STANDARD)) {
-      if (legacyFixture)
+      if (legacyFixture) {
         require(
             core.migrate(
                     account, "agreement", "probe-migrate-root", CanonicalRuntime.HOST_LINKS_EDITION)
                 .status()
                 .equals("APPLIED"),
             "Local fixture migration failed");
-      else if (table == null) Scenario.populate(core, account, orders, payments);
+      } else if (table == null) {
+        Scenario.populate(core, account, orders, payments);
+      }
       require(
           number(core, account, "agreement", "initializedOrders") == orders,
           "Wrong initialized order count");
@@ -96,8 +105,9 @@ public final class GraphLoadProbe {
       double inventoryMillis = elapsed(inventoryStart);
       if (activeOrders != 0) {
         List<String> selected = new ArrayList<>(activeOrders);
-        for (int i = 0; i < activeOrders; i++)
+        for (int i = 0; i < activeOrders; i++) {
           selected.add(paths.get((int) ((long) i * paths.size() / activeOrders)));
+        }
         paths = List.copyOf(selected);
       }
       String run = UUID.randomUUID().toString();
@@ -226,13 +236,16 @@ public final class GraphLoadProbe {
             int index = i;
             tasks.add(() -> call(core, account, targets.get(index), run, index));
           }
-          for (var future : executor.invokeAll(tasks, 90, TimeUnit.SECONDS))
+          for (var future : executor.invokeAll(tasks, 90, TimeUnit.SECONDS)) {
             calls.add(future.get());
+          }
         }
         await(core, account, before + 42L * operations);
       }
       millis = elapsed(start);
-      if (recording != null) recording.stop();
+      if (recording != null) {
+        recording.stop();
+      }
     }
     Map<String, Long> storage = difference(store.statistics(), metrics);
     Map<String, Long> sessionAfter = core.sessionStatistics();
@@ -281,7 +294,9 @@ public final class GraphLoadProbe {
     result.put("runtimeMedianMillis", median(calls.stream().map(Call::runtimeMillis).toList()));
     result.put("leafCommitMedianMillis", median(calls.stream().map(Call::commitMillis).toList()));
     result.put("sequentialCompletionMillis", completed);
-    if (!completed.isEmpty()) result.put("sequentialCompletionMedianMillis", median(completed));
+    if (!completed.isEmpty()) {
+      result.put("sequentialCompletionMedianMillis", median(completed));
+    }
     result.put("gas", calls.stream().map(c -> c.result.gas()).toList());
     result.put("versions", calls.stream().map(c -> c.result.version()).toList());
     result.put("storage", storage);
@@ -295,7 +310,9 @@ public final class GraphLoadProbe {
   /** Local, opt-in diagnostics; recording setup and teardown are outside elapsed times. */
   private static Recording recording(String run) throws Exception {
     String directory = System.getProperty("myos.probe.recordingDir");
-    if (directory == null || run.endsWith("-warm")) return null;
+    if (directory == null || run.endsWith("-warm")) {
+      return null;
+    }
     Path destination = Path.of(directory);
     Files.createDirectories(destination);
     Recording recording = new Recording(Configuration.getConfiguration("profile"));
@@ -336,7 +353,9 @@ public final class GraphLoadProbe {
     long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(60);
     while (true) {
       long actual = number(core, account, "agreement", "paidTotal");
-      if (actual == total) return;
+      if (actual == total) {
+        return;
+      }
       require(actual < total, "Duplicate aggregate effect");
       require(System.nanoTime() - deadline < 0, "Parent completion timed out");
       Thread.sleep(10);
@@ -366,6 +385,8 @@ public final class GraphLoadProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new AssertionError(message);
+    if (!condition) {
+      throw new AssertionError(message);
+    }
   }
 }

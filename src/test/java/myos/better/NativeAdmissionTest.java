@@ -44,9 +44,10 @@ class NativeAdmissionTest {
     try (Core core = fixture.core(store, NAMESPACE);
         Core otherHost = fixture.core(store, "test-host/two")) {
       for (List<String> target :
-          List.of(List.of("alice", "one"), List.of("bob", "one"), List.of("alice", "two")))
+          List.of(List.of("alice", "one"), List.of("bob", "one"), List.of("alice", "two"))) {
         assertEquals(
             "APPLIED", core.create(target.get(0), target.get(1), "create", SOURCE).status());
+      }
       assertEquals(snapshot(store, "alice", "one"), snapshot(store, "bob", "one"));
       assertEquals(snapshot(store, "alice", "one"), snapshot(store, "alice", "two"));
       Map<String, Object> proof = permit(store, NAMESPACE, "alice", "one", "tick", EVENT, 1);
@@ -265,10 +266,11 @@ class NativeAdmissionTest {
           List.of(
               List.of(),
               Map.of(TYPE.blueId().value(), 1.25),
-              Map.of(TYPE.blueId().value(), Map.of("large", "x".repeat(150_000)))))
+              Map.of(TYPE.blueId().value(), Map.of("large", "x".repeat(150_000))))) {
         assertThrows(
             RuntimeException.class,
             () -> core.admit("alice", "one", "invalid", EVENT, 1, evidence));
+      }
       assertEquals(before, core.head("alice", "one"));
       assertEquals(0, fixture.verifications.get());
       assertThrows(IllegalArgumentException.class, () -> core.command("alice", "one", "invalid"));

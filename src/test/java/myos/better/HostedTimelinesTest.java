@@ -298,7 +298,9 @@ class HostedTimelinesTest {
     void freshPublishersNeedNoEarlierEntryBodiesForAppendOrCheckpoint() {
       HostedTimelineFixture f = new HostedTimelineFixture();
       HostedTimelines.Created created = f.create();
-      for (int i = 0; i < 64; i++) f.host.append("alice", created.id(), "old" + i, f.message(i));
+      for (int i = 0; i < 64; i++) {
+        f.host.append("alice", created.id(), "old" + i, f.message(i));
+      }
       // Content-index pages are required lookup metadata. Remove every old entry body while
       // keeping those pages, so an accidental history traversal still fails at its first body.
       AtomicStore.Page oldEntries = f.host.entries("alice", created.id(), null, 100);
@@ -354,20 +356,24 @@ class HostedTimelinesTest {
         Future<?> a =
             executor.submit(
                 () -> {
-                  for (int i = 0; i < 12; i++)
+                  for (int i = 0; i < 12; i++) {
                     f.host.append("alice", created.id(), "a" + i, f.message(i));
+                  }
                 });
         Future<?> b =
             executor.submit(
                 () -> {
-                  for (int i = 0; i < 12; i++)
+                  for (int i = 0; i < 12; i++) {
                     peer.append("alice", created.id(), "b" + i, f.message(i));
+                  }
                 });
         a.get(10, TimeUnit.SECONDS);
         b.get(10, TimeUnit.SECONDS);
       }
       List<HostedTimelines.Published> entries = new ArrayList<>();
-      for (int i = 1; i <= 24; i++) entries.add(peer.entry("alice", created.id(), i));
+      for (int i = 1; i <= 24; i++) {
+        entries.add(peer.entry("alice", created.id(), i));
+      }
       assertEquals(
           24, f.verify(created, peer.seal("alice", created.id(), null), entries).entries().size());
       assertEquals(24, peer.head("alice", created.id()).count());

@@ -176,8 +176,9 @@ class CoreAdminNotificationsTest {
             clock,
             message -> {
               seen.add(message.deliveryId());
-              if (attempts.getAndIncrement() == 0)
+              if (attempts.getAndIncrement() == 0) {
                 throw new IllegalStateException("provider unavailable");
+              }
             },
             () -> {})) {
       delivery.turn();

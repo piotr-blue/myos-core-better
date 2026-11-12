@@ -87,7 +87,9 @@ final class NativeTimelineApi {
 
   LocalSourceContent localContent(TimelineArchive archive) {
     TimelineArchive.Source source = archive.source();
-    if (!owns(archive)) return LocalSourceContent.empty(archive);
+    if (!owns(archive)) {
+      return LocalSourceContent.empty(archive);
+    }
     try {
       TimelineRecords records =
           timelines.retainedContent(source.account(), source.timeline(), source.url());
@@ -118,7 +120,9 @@ final class NativeTimelineApi {
 
   boolean sameLocalHead(BlueId coordination, TimelineArchive.Source source, BlueId last) {
     if (!coordination.equals(signing.coordination().blueId())
-        || !source.provider().equals(signing.provider().blueId())) return false;
+        || !source.provider().equals(signing.provider().blueId())) {
+      return false;
+    }
     try {
       String owner =
           source.timeline().equals(access.control().id())
@@ -172,14 +176,18 @@ final class NativeTimelineApi {
     } else {
       Repository.identifier(owner);
       boolean create = route.equals("access/create");
-      if (!create && !route.equals("access/update"))
+      if (!create && !route.equals("access/update")) {
         throw new IllegalArgumentException("Unknown access route");
+      }
       HostedAccess.Permissions permissions = permissions(request);
       Language.Builder context = context(request);
-      for (BlueId timeline : permissions.timelines())
+      for (BlueId timeline : permissions.timelines()) {
         context.content(timelines.head(owner, timeline).created().timeline());
+      }
       BlueId target = create ? null : reference(request, "access");
-      if (target != null) context.content(access.get(target).initial());
+      if (target != null) {
+        context.content(access.get(target).initial());
+      }
       request = context.build().admit(request, Language.Goal.VALUE);
       inspect(
           request,
@@ -194,8 +202,9 @@ final class NativeTimelineApi {
               : access.update(owner, command, target, permissions);
       response = response(request, result);
     }
-    if (response.toJson().getBytes(StandardCharsets.UTF_8).length > 2 * 1024 * 1024)
+    if (response.toJson().getBytes(StandardCharsets.UTF_8).length > 2 * 1024 * 1024) {
       throw new HostedTimelineReads.LimitExceeded();
+    }
     return response;
   }
 
@@ -210,34 +219,44 @@ final class NativeTimelineApi {
 
   private boolean isType(LanguageContent content, String name) {
     Optional<BlueId> type = content.resolve().type();
-    if (type.isEmpty()) return false;
-    if (type.orElseThrow().equals(signing.coordination().export(name))) return true;
+    if (type.isEmpty()) {
+      return false;
+    }
+    if (type.orElseThrow().equals(signing.coordination().export(name))) {
+      return true;
+    }
     Language context = context(content).build();
     return context.isSubtype(
         context.define(type.orElseThrow()), signing.coordination().definition(name));
   }
 
   private void inspect(LanguageContent request, String type, Set<String> fields) {
-    if (!isType(request, type) || !new HashSet<>(request.resolve().keys()).equals(fields))
+    if (!isType(request, type) || !new HashSet<>(request.resolve().keys()).equals(fields)) {
       throw new IllegalArgumentException("Invalid " + type);
+    }
   }
 
   private static BlueId reference(LanguageContent request, String field) {
     Node node = request.node().get(field);
-    if (node.isMissing() || !node.fields().keySet().equals(Set.of("blueId")))
+    if (node.isMissing() || !node.fields().keySet().equals(Set.of("blueId"))) {
       throw new IllegalArgumentException("Exact reference required: " + field);
+    }
     return new BlueId(node.get("blueId").text());
   }
 
   private static HostedAccess.Permissions permissions(LanguageContent request) {
     LanguageView sources = request.at("/allowedTimelines"), readers = request.at("/allowedKeys");
-    if (sources.size() > 32 || readers.size() > 32)
+    if (sources.size() > 32 || readers.size() > 32) {
       throw new IllegalArgumentException("Access list limit exceeded");
+    }
     List<BlueId> timelines = new ArrayList<>();
     List<String> keys = new ArrayList<>();
-    for (int i = 0; i < sources.size(); i++)
+    for (int i = 0; i < sources.size(); i++) {
       timelines.add(new BlueId(sources.at("/items/" + i).observation("exactId").text()));
-    for (int i = 0; i < readers.size(); i++) keys.add(readers.at("/items/" + i).text());
+    }
+    for (int i = 0; i < readers.size(); i++) {
+      keys.add(readers.at("/items/" + i).text());
+    }
     return new HostedAccess.Permissions(timelines, keys);
   }
 

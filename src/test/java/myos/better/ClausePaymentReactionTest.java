@@ -174,8 +174,11 @@ class ClausePaymentReactionTest {
     long version = ((Number) f.service.graphs().head("alice", id).get("version")).longValue();
     for (long v = 1; v <= version; v++) {
       Map<String, Object> history = f.service.graphs().history("alice", id, v);
-      for (Object event : (List<?>) history.get("events"))
-        if (kind.equals(object(event).get("kind"))) count++;
+      for (Object event : (List<?>) history.get("events")) {
+        if (kind.equals(object(event).get("kind"))) {
+          count++;
+        }
+      }
     }
     return count;
   }
@@ -184,7 +187,9 @@ class ClausePaymentReactionTest {
     Set<String> result = new HashSet<>();
     for (Object raw : (List<?>) documents.operations("alice", id).get("channels")) {
       Object timeline = object(raw).get("timeline");
-      if (timeline instanceof String text) result.add(text);
+      if (timeline instanceof String text) {
+        result.add(text);
+      }
     }
     return result;
   }
@@ -200,8 +205,9 @@ class ClausePaymentReactionTest {
     String timeline = null;
     for (Object raw : (List<?>) documents.operations("alice", id).get("channels")) {
       Map<String, Object> candidate = object(raw);
-      if (((Collection<?>) candidate.get("selectors")).contains(channel))
+      if (((Collection<?>) candidate.get("selectors")).contains(channel)) {
         timeline = (String) candidate.get("timeline");
+      }
     }
     assertNotNull(timeline, () -> JsonText.of(documents.operations("alice", id)));
     Map<String, Object> result =
@@ -236,8 +242,10 @@ class ClausePaymentReactionTest {
   private static void await(ConsoleInputFixture f, String id, BooleanSupplier complete)
       throws Exception {
     long deadline = System.nanoTime() + Duration.ofSeconds(15).toNanos();
-    while (!complete.getAsBoolean() && System.nanoTime() < deadline) Thread.sleep(25);
-    if (!complete.getAsBoolean())
+    while (!complete.getAsBoolean() && System.nanoTime() < deadline) {
+      Thread.sleep(25);
+    }
+    if (!complete.getAsBoolean()) {
       Files.writeString(
           Path.of("build/clause-reaction-failure.json"),
           JsonText.of(
@@ -268,6 +276,7 @@ class ClausePaymentReactionTest {
                               null,
                               100)
                           .rows())));
+    }
     assertTrue(
         complete.getAsBoolean(), () -> JsonText.of(f.service.graphs().processing("alice", id)));
   }
@@ -275,7 +284,9 @@ class ClausePaymentReactionTest {
   private static String child(ConsoleInputFixture f, String id, String path) {
     for (Object raw : (List<?>) f.service.graphs().children("alice", id, null).get("items")) {
       Map<String, Object> row = object(raw);
-      if (path.equals(row.get("path"))) return (String) row.get("document");
+      if (path.equals(row.get("path"))) {
+        return (String) row.get("document");
+      }
     }
     return null;
   }
@@ -292,7 +303,9 @@ class ClausePaymentReactionTest {
             "payment",
             "reportedTransfer")) {
       Object value = f.service.graphs().readValue("alice", id, "/" + key);
-      if (value != Bex.undefined()) result.put(key, value);
+      if (value != Bex.undefined()) {
+        result.put(key, value);
+      }
     }
     return result;
   }

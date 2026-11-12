@@ -24,7 +24,7 @@ public final class GraphOperationDiscoveryProbe {
     for (String configuredCount : counts) {
       int count = Integer.parseInt(configuredCount);
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++) {
         children.put(
             "child-" + i,
             Map.of(
@@ -52,6 +52,7 @@ public final class GraphOperationDiscoveryProbe {
                         Map.of("amount", Map.of("type", "Integer")),
                         "steps",
                         List.of()))));
+      }
       var rootContracts =
           Map.of(
               "embedded",
@@ -104,11 +105,15 @@ public final class GraphOperationDiscoveryProbe {
             var descriptions = reader.operations("probe", child);
             double readMillis = millis(started);
             long loads = reader.statistics().get("graphSessions.loads");
-            if (loads != expectedLoads)
+            if (loads != expectedLoads) {
               throw new AssertionError("Unexpected session loads: " + loads);
+            }
             String hash = Json.hash(Json.bytes(descriptions));
-            if (expectedHash == null) expectedHash = hash;
-            else if (!expectedHash.equals(hash)) throw new AssertionError("Descriptions changed");
+            if (expectedHash == null) {
+              expectedHash = hash;
+            } else if (!expectedHash.equals(hash)) {
+              throw new AssertionError("Descriptions changed");
+            }
             reads.add(Map.of("warmup", sample == 0, "millis", readMillis, "sessionLoads", loads));
           }
         }
@@ -135,8 +140,9 @@ public final class GraphOperationDiscoveryProbe {
                   sample + 1,
                   AdmissionEvidence.empty());
           double total = millis(started);
-          if (!result.status().equals("APPLIED"))
+          if (!result.status().equals("APPLIED")) {
             throw new AssertionError(JsonText.of(result.diagnostic()));
+          }
           var afterMembers =
               writer.inspect("probe", "graph-probe", c -> c.session().graph().members());
           var previousMembers = new HashMap<String, BlueId>();
@@ -145,8 +151,9 @@ public final class GraphOperationDiscoveryProbe {
               afterMembers.stream()
                   .filter(member -> !member.blueId().equals(previousMembers.get(member.key())))
                   .count();
-          if (changedMembers != (filtered ? 1 : count + 1))
+          if (changedMembers != (filtered ? 1 : count + 1)) {
             throw new AssertionError("Unexpected changed-member count: " + changedMembers);
+          }
           long projection =
               writer.metrics.snapshot().getOrDefault("GRAPH_OPERATIONS.nanos", 0L) - previous;
           updates.add(

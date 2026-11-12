@@ -16,7 +16,9 @@ final class CoreOperationPreparation {
   private CoreOperationPreparation() {}
 
   static boolean request(String path, String method) {
-    if (!method.equals("POST") || !path.startsWith(CoreDashboardApi.BASE)) return false;
+    if (!method.equals("POST") || !path.startsWith(CoreDashboardApi.BASE)) {
+      return false;
+    }
     String[] parts = path.substring(CoreDashboardApi.BASE.length()).split("/", -1);
     return parts.length == 4
         && parts[0].equals("documents")
@@ -40,7 +42,9 @@ final class CoreOperationPreparation {
         "invalid_request",
         "requestJson must be JSON source text");
     String supplied = (String) input.get("requestJson");
-    if (supplied != null) result.put("requestJson", supplied);
+    if (supplied != null) {
+      result.put("requestJson", supplied);
+    }
     boolean matcher = declaration.containsKey("request");
     LanguageContent pattern = null;
     try {
@@ -48,8 +52,9 @@ final class CoreOperationPreparation {
       var definition = new LinkedHashMap<String, Object>();
       definition.put("state", matcher ? "matcher" : "no_matcher");
       definition.put("runtime", runtime);
-      if (declaration.get("description") instanceof String description)
+      if (declaration.get("description") instanceof String description) {
         definition.put("description", description);
+      }
       definition.put(
           "digest",
           "sha256:"
@@ -64,19 +69,20 @@ final class CoreOperationPreparation {
                           runtime))));
       result.put("definition", definition);
       List<Object> issues = new ArrayList<>();
-      if (supplied == null && matcher)
+      if (supplied == null && matcher) {
         issues.add(issue("", "OPERATION_INPUT_REQUIRED", "Provide the operation input"));
-      else if (supplied != null) {
+      } else if (supplied != null) {
         var actual = values.source(supplied, Language.Goal.VALUE);
-        if (matcher && !actual.resolve().isConcrete())
+        if (matcher && !actual.resolve().isConcrete()) {
           issues.add(
               issue(
                   "",
                   "REQUEST_NOT_PRESENT",
                   "The supplied node is an unvalued definition, not a present request. No input"
                       + " values were added."));
-        else if (matcher && !values.matches(actual, pattern))
+        } else if (matcher && !values.matches(actual, pattern)) {
           issues.addAll(new CoreInputDiagnostics(values).issues(actual, pattern, parse(supplied)));
+        }
       }
       result.put(
           "validation",
@@ -160,15 +166,18 @@ final class CoreOperationPreparation {
                     "",
                     "definitionBlueId",
                     values.pattern(Map.of()).blueId().value()));
-        if (collapsed.contains("")) descriptor.put("collapsed", true);
+        if (collapsed.contains("")) {
+          descriptor.put("collapsed", true);
+        }
         output.put("descriptor", descriptor);
       }
       result.put("definition", output);
-    } else if (!views.isEmpty())
+    } else if (!views.isEmpty()) {
       throw new ConsoleProblem(
           400,
           "invalid_definition_view_path",
           "Cannot select fields of an unresolved request definition");
+    }
     return result;
   }
 
@@ -191,7 +200,7 @@ final class CoreOperationPreparation {
       String path) {
     result.remove("messageJson");
     boolean definitionMissing = !result.containsKey("definition");
-    if (definitionMissing)
+    if (definitionMissing) {
       result.put(
           "definition",
           Map.of(
@@ -201,6 +210,7 @@ final class CoreOperationPreparation {
               "sha256:" + Json.hash(Json.bytes(code)),
               "runtime",
               runtime));
+    }
     result.put(
         "validation",
         Map.of(
@@ -220,8 +230,9 @@ final class CoreOperationPreparation {
         value instanceof Number || value instanceof String,
         "invalid_epoch",
         "epoch must be a nonnegative int64 integer");
-    if (value instanceof String text)
+    if (value instanceof String text) {
       check(text.matches("[0-9]+"), "invalid_epoch", "epoch text must contain decimal digits");
+    }
     try {
       long epoch = new BigDecimal(value.toString()).longValueExact();
       check(epoch >= 0, "invalid_epoch", "epoch must be nonnegative");
@@ -232,7 +243,9 @@ final class CoreOperationPreparation {
   }
 
   private static int offset(Map<String, Object> input) {
-    if (!input.containsKey("descriptorOffset")) return 0;
+    if (!input.containsKey("descriptorOffset")) {
+      return 0;
+    }
     Object raw = input.get("descriptorOffset");
     check(
         raw instanceof Number,

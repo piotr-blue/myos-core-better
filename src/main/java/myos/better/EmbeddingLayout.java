@@ -16,19 +16,25 @@ record EmbeddingLayout(List<String> paths, List<String> collections) {
     for (String path :
         java.util.stream.Stream.concat(paths.stream(), collections.stream()).toList()) {
       Pointer boundary = Pointer.parse(path);
-      if (boundary.segments().isEmpty() || boundary.segments().getFirst().equals("contracts"))
+      if (boundary.segments().isEmpty() || boundary.segments().getFirst().equals("contracts")) {
         throw new IllegalArgumentException("Invalid embedding boundary: " + path);
-      for (Pointer existing : boundaries)
-        if (existing.contains(boundary) || boundary.contains(existing))
+      }
+      for (Pointer existing : boundaries) {
+        if (existing.contains(boundary) || boundary.contains(existing)) {
           throw new IllegalArgumentException("Overlapping embedding boundaries: " + path);
+        }
+      }
       boundaries.add(boundary);
     }
   }
 
   static EmbeddingLayout from(Object declaration) {
-    if (declaration == Bex.undefined()) return EMPTY;
-    if (!(declaration instanceof Map<?, ?> map))
+    if (declaration == Bex.undefined()) {
+      return EMPTY;
+    }
+    if (!(declaration instanceof Map<?, ?> map)) {
       throw new IllegalArgumentException("Invalid embedding declaration");
+    }
     return new EmbeddingLayout(strings(map.get("paths")), strings(map.get("collectionPaths")));
   }
 
@@ -38,11 +44,16 @@ record EmbeddingLayout(List<String> paths, List<String> collections) {
 
   String childPath(String pointer) {
     Pointer selected = Pointer.parse(pointer);
-    for (String path : paths) if (Pointer.parse(path).contains(selected)) return path;
+    for (String path : paths) {
+      if (Pointer.parse(path).contains(selected)) {
+        return path;
+      }
+    }
     for (String collection : collections) {
       Pointer base = Pointer.parse(collection);
-      if (base.contains(selected) && selected.segments().size() > base.segments().size())
+      if (base.contains(selected) && selected.segments().size() > base.segments().size()) {
         return new Pointer(selected.segments().subList(0, base.segments().size() + 1)).toString();
+      }
     }
     return null;
   }

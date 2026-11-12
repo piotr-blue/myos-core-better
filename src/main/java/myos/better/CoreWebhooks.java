@@ -63,14 +63,16 @@ final class CoreWebhooks {
                       "sessionIds",
                       List.of()),
                   input);
-          if (!configuration.containsKey("url"))
+          if (!configuration.containsKey("url")) {
             throw new ConsoleProblem(400, "invalid_url", "Provide a webhook URL.");
+          }
           var countKey = key(account, "COUNT");
           var count = store.get(countKey);
           long total = count == null ? 0 : Repository.number(count.value().get("value"));
-          if (total >= 256)
+          if (total >= 256) {
             throw new ConsoleProblem(
                 422, "webhook_limit", "This account supports 256 active or inactive webhooks.");
+          }
           configuration.put("createdAt", clock.instant().toString());
           configuration.put("updatedAt", configuration.get("createdAt"));
           configuration.put("account", account);
@@ -103,8 +105,9 @@ final class CoreWebhooks {
       boolean delete) {
     available();
     Repository.identifier(id);
-    if (delete && !input.isEmpty())
+    if (delete && !input.isEmpty()) {
       throw new ConsoleProblem(400, "unknown_field", "Delete does not accept a request body.");
+    }
     String account = session.principal().account();
     return mutate(
         session,
@@ -114,7 +117,9 @@ final class CoreWebhooks {
         (writes, checks) -> {
           var row = require(account, id, false);
           var changed = CoreWebhookSettings.apply(row.value(), input);
-          if (delete) changed.put("status", "DELETED");
+          if (delete) {
+            changed.put("status", "DELETED");
+          }
           if (!changed.equals(row.value())) {
             changed.put(
                 "generation",
@@ -124,15 +129,20 @@ final class CoreWebhooks {
             working(changed);
             writes.add(AtomicStore.Write.put(row.key(), row.version(), changed));
             var previous = store.get(key(account, (String) row.value().get("index")));
-            if (previous == null) throw new IllegalStateException("Webhook listing missing");
+            if (previous == null) {
+              throw new IllegalStateException("Webhook listing missing");
+            }
             boolean sameIndex = changed.get("index").equals(row.value().get("index"));
-            if (delete || !sameIndex) writes.add(AtomicStore.Write.delete(previous));
-            if (!delete)
+            if (delete || !sameIndex) {
+              writes.add(AtomicStore.Write.delete(previous));
+            }
+            if (!delete) {
               writes.add(
                   AtomicStore.Write.put(
                       key(account, (String) changed.get("index")),
                       sameIndex ? previous.version() : 0,
                       CoreWebhookSettings.display(changed)));
+            }
             if (delete) {
               var count = store.get(key(account, "COUNT"));
               writes.add(
@@ -141,7 +151,9 @@ final class CoreWebhooks {
                       count.version(),
                       Map.of("value", Repository.number(count.value().get("value")) - 1)));
             }
-          } else checks.add(new AtomicStore.Check(row.key(), row.version()));
+          } else {
+            checks.add(new AtomicStore.Check(row.key(), row.version()));
+          }
           return CoreWebhookSettings.display(changed);
         });
   }
@@ -154,8 +166,10 @@ final class CoreWebhooks {
   Map<String, Object> list(CoreAccounts.Session session, Map<String, String> query) {
     CoreAccountAuthority.administrator(store, session);
     RuntimeConfiguration.fields(new HashMap<>(query), Set.of("limit", "pageToken", "status"));
-    if (query.containsKey("status") && !Set.of("ACTIVE", "INACTIVE").contains(query.get("status")))
+    if (query.containsKey("status")
+        && !Set.of("ACTIVE", "INACTIVE").contains(query.get("status"))) {
       throw new ConsoleProblem(400, "invalid_status", "Unsupported webhook status.");
+    }
     String account = session.principal().account();
     int limit = CoreListFilter.limit(query);
     var cursor = pages.decode(account, "webhooks", query);
@@ -200,9 +214,10 @@ final class CoreWebhooks {
       var checks = new ArrayList<>(CoreAccountAuthority.administrator(store, session));
       var receipt = store.get(receiptKey);
       if (receipt != null) {
-        if (!fingerprint.equals(receipt.value().get("fingerprint")))
+        if (!fingerprint.equals(receipt.value().get("fingerprint"))) {
           throw new ConsoleProblem(
               409, "idempotency_conflict", "Key already used with different input.");
+        }
         return Json.object(
             secrets
                 .open((String) receipt.value().get("sealed"), context)
@@ -219,7 +234,9 @@ final class CoreWebhooks {
                   fingerprint,
                   "sealed",
                   secrets.seal(JsonText.of(result), context))));
-      if (store.commit(writes, checks)) return result;
+      if (store.commit(writes, checks)) {
+        return result;
+      }
     }
     throw new ConsoleProblem(503, "webhook_busy", "Retry the same webhook command.");
   }
@@ -227,8 +244,9 @@ final class CoreWebhooks {
   AtomicStore.Row require(String account, String id, boolean deleted) {
     Repository.identifier(id);
     var row = store.get(key(account, "HOOK#" + id));
-    if (row == null || !deleted && "DELETED".equals(row.value().get("status")))
+    if (row == null || !deleted && "DELETED".equals(row.value().get("status"))) {
       throw new ConsoleProblem(404, "webhook_not_found", "Webhook not found.");
+    }
     return row;
   }
 
@@ -264,8 +282,9 @@ final class CoreWebhooks {
   }
 
   private void available() {
-    if (secrets == null)
+    if (secrets == null) {
       throw new ConsoleProblem(
           503, "webhooks_unavailable", "Callback key custody is not configured.");
+    }
   }
 }

@@ -28,7 +28,9 @@ final class CoreEventSource {
         stamped.add(write);
         continue;
       }
-      if (write.expected() != 0) throw new IllegalArgumentException("Source facts are immutable");
+      if (write.expected() != 0) {
+        throw new IllegalArgumentException("Source facts are immutable");
+      }
       String account = write.key().partition().substring(OUTBOX.length());
       var key = gate(account, Math.floorMod(write.key().sort().hashCode(), SHARDS));
       if (!gates.containsKey(key)) {
@@ -47,7 +49,9 @@ final class CoreEventSource {
   /** Appends a new subscription's boundary to the same atomic transaction as its configuration. */
   static long advance(AtomicStore store, String account, List<AtomicStore.Write> writes) {
     List<AtomicStore.Key> keys = new ArrayList<>(SHARDS);
-    for (int shard = 0; shard < SHARDS; shard++) keys.add(gate(account, shard));
+    for (int shard = 0; shard < SHARDS; shard++) {
+      keys.add(gate(account, shard));
+    }
     var gates = store.getAll(keys);
     long next =
         Math.incrementExact(
@@ -62,7 +66,9 @@ final class CoreEventSource {
 
   static long generation(Map<String, Object> value) {
     long generation = Repository.number(value.getOrDefault(GENERATION, 0));
-    if (generation < 0) throw new IllegalStateException("Invalid event source generation");
+    if (generation < 0) {
+      throw new IllegalStateException("Invalid event source generation");
+    }
     return generation;
   }
 

@@ -42,7 +42,9 @@ final class CoreCollaborativeBootstrap {
   private List<AtomicStore.Check> accountChecks(String initiator, Collection<String> recipients) {
     var selected = new TreeSet<>(recipients);
     selected.add(initiator);
-    if (selected.size() > 64) throw new IllegalArgumentException("Too many bootstrap recipients");
+    if (selected.size() > 64) {
+      throw new IllegalArgumentException("Too many bootstrap recipients");
+    }
     var keys = selected.stream().map(id -> CoreWorkspaces.accountKey(id, "ACCOUNT")).toList();
     var rows = store.getAll(keys);
     var checks = new ArrayList<AtomicStore.Check>();
@@ -50,11 +52,12 @@ final class CoreCollaborativeBootstrap {
       var row = rows.get(key);
       boolean own = key.equals(CoreWorkspaces.accountKey(initiator, "ACCOUNT"));
       if (row == null && !own
-          || row != null && !"ACTIVE".equals(row.value().getOrDefault("status", "ACTIVE")))
+          || row != null && !"ACTIVE".equals(row.value().getOrDefault("status", "ACTIVE"))) {
         throw new ConsoleProblem(
             422,
             "BOOTSTRAP_RECIPIENT_UNAVAILABLE",
             "A selected participant account is unavailable.");
+      }
       checks.add(new AtomicStore.Check(key, row == null ? 0 : row.version()));
     }
     return checks;
@@ -86,8 +89,9 @@ final class CoreCollaborativeBootstrap {
             new TreeSet<>(
                 plan.participants().stream()
                     .map(BootstrapPreparation.Participant::channelName)
-                    .toList())))
+                    .toList()))) {
       throw new IllegalStateException("Accepted bootstrap participant set differs from document");
+    }
     String scope = Json.hash(Json.bytes(List.of(initiator, Repository.identifier(command))));
     var key = new AtomicStore.Key("CORE_COLLABORATIVE_BOOTSTRAP#" + initiator, scope);
     String fingerprint = Json.hash(Json.bytes(prepared));
@@ -106,13 +110,16 @@ final class CoreCollaborativeBootstrap {
           checks);
       intent = store.get(key);
     }
-    if (intent == null)
+    if (intent == null) {
       throw new ConsoleProblem(503, "BOOTSTRAP_BUSY", "Retry the accepted bootstrap.");
-    if (!fingerprint.equals(intent.value().get("fingerprint")))
+    }
+    if (!fingerprint.equals(intent.value().get("fingerprint"))) {
       throw new ConsoleProblem(
           409, "BOOTSTRAP_CONFLICT", "This bootstrap command already has different input.");
-    if (intent.value().get("result") instanceof Map<?, ?>)
+    }
+    if (intent.value().get("result") instanceof Map<?, ?>) {
       return RuntimeConfiguration.object(intent.value().get("result"), "bootstrap result");
+    }
     var keyIds = new TreeMap<String, String>();
     var publicKeys = new TreeMap<String, String>();
     var selectedKeys =
@@ -129,27 +136,29 @@ final class CoreCollaborativeBootstrap {
     }
     var connections = new TreeMap<String, Map<String, Object>>();
     var allowedSet = new TreeSet<>(publicKeys.values());
-    for (Object keyValue : (List<?>) prepared.getOrDefault("grantedReaderKeys", List.of()))
+    for (Object keyValue : (List<?>) prepared.getOrDefault("grantedReaderKeys", List.of())) {
       allowedSet.add((String) keyValue);
+    }
     List<String> allowed = List.copyOf(allowedSet);
     for (var participant : plan.participants()) {
       String role = participant.channelName(), owner = assignments.get(role);
       String roleScope = Json.hash(Json.bytes(List.of(scope, role)));
       BlueId id;
-      if (writers.containsKey(role))
+      if (writers.containsKey(role)) {
         id =
             timelines
                 .hosted()
                 .createRepresented(
                     owner, "bootstrap-" + roleScope, role, (String) writers.get(role))
                 .id();
-      else
+      } else {
         id =
             new BlueId(
                 (String)
                     timelines
                         .create(owner, "bootstrap-" + roleScope, Map.of("name", role))
                         .get("timeline"));
+      }
       var timeline = timelines.hosted().head(owner, id).created().timeline();
       var grants = new ArrayList<Object>();
       for (int offset = 0; offset < allowed.size(); offset += 32) {
@@ -198,10 +207,13 @@ final class CoreCollaborativeBootstrap {
                           + BootstrapPartyPaths.escape(name)
                           + "/readerKeys");
           var alternatives = new ArrayList<String>();
-          if (authored.exists())
-            for (int i = 0; i < authored.size(); i++)
+          if (authored.exists()) {
+            for (int i = 0; i < authored.size(); i++) {
               alternatives.add(authored.at("/items/" + i).text());
-          else alternatives.add(publicKeys.get((String) account));
+            }
+          } else {
+            alternatives.add(publicKeys.get((String) account));
+          }
           readerGroups.put(name, alternatives);
         });
     var bound = preparation.bind(plan, connections, assignments, roleReaders, readerGroups);
@@ -216,11 +228,15 @@ final class CoreCollaborativeBootstrap {
     String endpoint = timelines.hosted().access().descriptor().at("/object/endpoint").text();
     var source = new LinkedHashMap<>(request);
     source.put("participantAccounts", assignments);
-    if (!readerAccounts.isEmpty()) source.put("readerAccounts", readerAccounts);
+    if (!readerAccounts.isEmpty()) {
+      source.put("readerAccounts", readerAccounts);
+    }
     source.put("boundSource", bound);
     for (String account : recipients) {
-      if (packages != null) packages.installSelection(account, "bootstrap/" + scope, selection);
-      for (var connection : connections.entrySet())
+      if (packages != null) {
+        packages.installSelection(account, "bootstrap/" + scope, selection);
+      }
+      for (var connection : connections.entrySet()) {
         imports.add(
             account,
             Map.of(
@@ -232,6 +248,7 @@ final class CoreCollaborativeBootstrap {
                 keyIds.get(account),
                 "name",
                 connection.getKey()));
+      }
       documents.rememberBootstrap(account, document, source, plan.sourceBlueId());
       documents.create(account, creation, definition);
       new CoreRegistrations(store, documents)

@@ -58,8 +58,11 @@ class HostedTimelineWriterTest {
         assertEquals(0, f.host.head("workspace", source.id()).count());
         assertFalse(f.host.writable("workspace", source.id(), session("alice")));
       } finally {
-        if (before == null) System.clearProperty("myos.owners.fast");
-        else System.setProperty("myos.owners.fast", before);
+        if (before == null) {
+          System.clearProperty("myos.owners.fast");
+        } else {
+          System.setProperty("myos.owners.fast", before);
+        }
       }
     }
   }

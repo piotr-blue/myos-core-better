@@ -48,7 +48,7 @@ class ClauseOnlyTutorialTest {
               new SessionCache.Policy(8, 16L * 1024 * 1024, 2))) {
         if (independent) {
           var unrelated = f.timelines.hosted().create("unrelated", "history", "Historical access");
-          for (int n = 0; n < 32; n++)
+          for (int n = 0; n < 32; n++) {
             f.timelines
                 .hosted()
                 .access()
@@ -57,6 +57,7 @@ class ClauseOnlyTutorialTest {
                     "grant-" + n,
                     new HostedAccess.Permissions(
                         List.of(unrelated.id()), List.of(Json.hash(Json.bytes(n)))));
+          }
         }
         ConsoleDocuments documents =
             new ConsoleDocuments(f.core, f.store, Path.of("examples"), f.timelines);
@@ -80,12 +81,14 @@ class ClauseOnlyTutorialTest {
         f.runner.start();
         call(f, documents, agreement, "customer", "placeOrder", Map.of("orderId", "order-1"));
         await(f, agreement, () -> child(f, agreement, "/orders/order-1") != null);
-        if (independent) OwnerReplay.verify(f.store, "alice", agreement, language, f.service);
+        if (independent) {
+          OwnerReplay.verify(f.store, "alice", agreement, language, f.service);
+        }
         if (independent) {
           var frontiers = new OwnerFrontiers(f.store, "alice");
           int routed = 0;
-          for (var row : frontiers.metadata.begin().page("head\0", null, 100))
-            for (var source : frontiers.sources(row.key().substring("head\0".length())))
+          for (var row : frontiers.metadata.begin().page("head\0", null, 100)) {
+            for (var source : frontiers.sources(row.key().substring("head\0".length()))) {
               if (source.id().endsWith(":provider:1")) {
                 // Target-indexed delivery leaves unrelated cursors untouched. The semantic
                 // invariant is that old unrelated messages do not cause native owner turns.
@@ -94,6 +97,8 @@ class ClauseOnlyTutorialTest {
                     "Unrelated old messages must be routed without native owner turns");
                 routed++;
               }
+            }
+          }
           assertEquals(2, routed);
         }
         String order = child(f, agreement, "/orders/order-1");
@@ -155,9 +160,11 @@ class ClauseOnlyTutorialTest {
         assertEquals(roots, timelines(documents, order));
         assertEquals(roots, timelines(documents, payment));
         assertEquals(0L, f.service.graphs().statistics().get("graphSessions.compactionFailures"));
-        if (!independent)
+        if (!independent) {
           assertTrue(f.service.graphs().statistics().get("graphSessions.compactions") >= 3);
-        else assertEquals(0, f.service.graphs().statistics().get("graphSessions.entries"));
+        } else {
+          assertEquals(0, f.service.graphs().statistics().get("graphSessions.entries"));
+        }
         if (independent) {
           var parity = OwnerReplay.verify(f.store, "alice", agreement, language, f.service);
           assertTrue(((Number) parity.get("exactWholeRootComparisons")).intValue() >= 10);
@@ -176,8 +183,9 @@ class ClauseOnlyTutorialTest {
         List<Object> measurements = new ArrayList<>();
         long version =
             ((Number) f.service.graphs().head("alice", agreement).get("version")).longValue();
-        for (long v = 1; v <= version; v++)
+        for (long v = 1; v <= version; v++) {
           measurements.add(f.service.graphs().history("alice", agreement, v).get("outcome"));
+        }
         Files.writeString(Path.of("build/clause-only-timings.json"), JsonText.of(measurements));
       }
     } finally {
@@ -189,7 +197,9 @@ class ClauseOnlyTutorialTest {
     Set<String> result = new HashSet<>();
     for (Object raw : (List<?>) documents.operations("alice", id).get("channels")) {
       Object timeline = object(raw).get("timeline");
-      if (timeline instanceof String text) result.add(text);
+      if (timeline instanceof String text) {
+        result.add(text);
+      }
     }
     return result;
   }
@@ -205,8 +215,9 @@ class ClauseOnlyTutorialTest {
     String timeline = null;
     for (Object raw : (List<?>) documents.operations("alice", id).get("channels")) {
       Map<String, Object> candidate = object(raw);
-      if (((Collection<?>) candidate.get("selectors")).contains(channel))
+      if (((Collection<?>) candidate.get("selectors")).contains(channel)) {
         timeline = (String) candidate.get("timeline");
+      }
     }
     assertNotNull(timeline, () -> JsonText.of(documents.operations("alice", id)));
     Map<String, Object> result =
@@ -240,8 +251,10 @@ class ClauseOnlyTutorialTest {
   private static void await(ConsoleInputFixture f, String id, BooleanSupplier complete)
       throws Exception {
     long deadline = System.nanoTime() + Duration.ofSeconds(15).toNanos();
-    while (!complete.getAsBoolean() && System.nanoTime() < deadline) Thread.sleep(25);
-    if (!complete.getAsBoolean())
+    while (!complete.getAsBoolean() && System.nanoTime() < deadline) {
+      Thread.sleep(25);
+    }
+    if (!complete.getAsBoolean()) {
       Files.writeString(
           Path.of("build/clause-only-failure.json"),
           JsonText.of(
@@ -264,6 +277,7 @@ class ClauseOnlyTutorialTest {
                               null,
                               100)
                           .rows())));
+    }
     assertTrue(
         complete.getAsBoolean(), () -> JsonText.of(f.service.graphs().processing("alice", id)));
   }
@@ -271,7 +285,9 @@ class ClauseOnlyTutorialTest {
   private static String child(ConsoleInputFixture f, String id, String path) {
     for (Object raw : (List<?>) f.service.graphs().children("alice", id, null).get("items")) {
       Map<String, Object> row = object(raw);
-      if (path.equals(row.get("path"))) return (String) row.get("document");
+      if (path.equals(row.get("path"))) {
+        return (String) row.get("document");
+      }
     }
     return null;
   }
@@ -280,7 +296,9 @@ class ClauseOnlyTutorialTest {
     Map<String, Object> result = new LinkedHashMap<>();
     for (String key : List.of("paidTotal", "payment", "reportedTransfer")) {
       Object value = f.service.graphs().readValue("alice", id, "/" + key);
-      if (value != Bex.undefined()) result.put(key, value);
+      if (value != Bex.undefined()) {
+        result.put(key, value);
+      }
     }
     return result;
   }

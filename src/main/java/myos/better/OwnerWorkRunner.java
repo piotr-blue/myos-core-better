@@ -42,8 +42,9 @@ final class OwnerWorkRunner implements AutoCloseable {
   }
 
   synchronized void start() {
-    if (closed || started)
+    if (closed || started) {
       throw new IllegalStateException("Account worker already started or closed");
+    }
     started = true;
     discovery.scheduleWithFixedDelay(health.guard(this::discover), 0, 100, TimeUnit.MILLISECONDS);
   }
@@ -54,8 +55,12 @@ final class OwnerWorkRunner implements AutoCloseable {
       for (var row : store.work(shard, 32)) {
         String account = (String) row.value().get("account");
         synchronized (this) {
-          if (closed || inFlight.size() >= 2) return;
-          if (Repository.number(row.value().get("due")) > now || !inFlight.add(account)) continue;
+          if (closed || inFlight.size() >= 2) {
+            return;
+          }
+          if (Repository.number(row.value().get("due")) > now || !inFlight.add(account)) {
+            continue;
+          }
         }
         try {
           workers.execute(
@@ -75,7 +80,9 @@ final class OwnerWorkRunner implements AutoCloseable {
         } catch (RejectedExecutionException stopped) {
           synchronized (this) {
             inFlight.remove(account);
-            if (!closed) throw stopped;
+            if (!closed) {
+              throw stopped;
+            }
           }
         }
       }
@@ -95,8 +102,9 @@ final class OwnerWorkRunner implements AutoCloseable {
     try {
       if (!discovery.awaitTermination(25, TimeUnit.SECONDS)
           || !workers.awaitTermination(
-              Math.max(0, deadline - System.nanoTime()), TimeUnit.NANOSECONDS))
+              Math.max(0, deadline - System.nanoTime()), TimeUnit.NANOSECONDS)) {
         throw new IllegalStateException("Account workers did not stop; durable work is retained");
+      }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException(

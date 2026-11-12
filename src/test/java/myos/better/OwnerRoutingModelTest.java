@@ -43,7 +43,9 @@ class OwnerRoutingModelTest {
     }
 
     void refresh() {
-      while (position < history.size() && !matches(history.get(position))) position++;
+      while (position < history.size() && !matches(history.get(position))) {
+        position++;
+      }
     }
 
     Input next() {
@@ -67,7 +69,9 @@ class OwnerRoutingModelTest {
       var model = new Model();
       var random = new Random(seed);
       for (int i = 1; i <= 300; i++) {
-        if (i % 31 == 0) scheduler = new OwnerFrontiers(store, "account");
+        if (i % 31 == 0) {
+          scheduler = new OwnerFrontiers(store, "account");
+        }
         if (i == 75) {
           model.targetB = true;
           configure(scheduler, true, false);
@@ -80,17 +84,29 @@ class OwnerRoutingModelTest {
         var input = new Input(i, kind);
         model.history.add(input);
         accept(scheduler, input);
-        if (model.matches(input)) model.refresh();
-        if (i % 7 == 0) scheduler.accept(input.original());
+        if (model.matches(input)) {
+          model.refresh();
+        }
+        if (i % 7 == 0) {
+          scheduler.accept(input.original());
+        }
         scheduler.sealLocalBefore(i + 1L);
-        if (random.nextInt(3) == 0) completeOne(scheduler, model);
-        if (i % 30 == 0) while (model.next() != null) completeOne(scheduler, model);
+        if (random.nextInt(3) == 0) {
+          completeOne(scheduler, model);
+        }
+        if (i % 30 == 0) {
+          while (model.next() != null) {
+            completeOne(scheduler, model);
+          }
+        }
         assertEquals(
             model.position,
             scheduler.sources("owner").getFirst().position(),
             "source position at seed " + seed + " input " + i);
       }
-      while (model.next() != null) completeOne(scheduler, model);
+      while (model.next() != null) {
+        completeOne(scheduler, model);
+      }
       assertTrue(scheduler.ready(0, 10).isEmpty());
       assertEquals(300, model.position);
     }
@@ -101,7 +117,9 @@ class OwnerRoutingModelTest {
         tx -> {
           scheduler.interest(tx, "owner", "shared", observed);
           scheduler.target(tx, "owner", "a");
-          if (targetB) scheduler.target(tx, "owner", "b");
+          if (targetB) {
+            scheduler.target(tx, "owner", "b");
+          }
           return null;
         });
   }
@@ -109,13 +127,14 @@ class OwnerRoutingModelTest {
   private static void accept(OwnerFrontiers scheduler, Input input) {
     scheduler.change(
         tx -> {
-          if (input.kind() != Kind.UNKNOWN)
+          if (input.kind() != Kind.UNKNOWN) {
             scheduler.classify(
                 tx,
                 "shared",
                 input.entry(),
                 input.kind() != Kind.EVENT,
                 input.kind() == Kind.EVENT ? null : input.kind() == Kind.TARGET_A ? "a" : "b");
+          }
           scheduler.accept(tx, input.original());
           return null;
         });

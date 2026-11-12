@@ -16,10 +16,13 @@ final class ProviderIdentity {
     String arn = environment.get("MYOS_PROVIDER_SECRET_ARN");
     String version = environment.get("MYOS_PROVIDER_SECRET_VERSION");
     String id = environment.get("MYOS_PROVIDER_ID");
-    if (arn == null && version == null && id == null) return null;
-    if (arn == null || version == null || id == null)
+    if (arn == null && version == null && id == null) {
+      return null;
+    }
+    if (arn == null || version == null || id == null) {
       throw new IllegalArgumentException(
           "Provider secret ARN, version and identity must be configured together");
+    }
     String secret =
         SigningSecret.read(
             new SigningSecret.Reference(arn, version),
@@ -38,11 +41,14 @@ final class ProviderIdentity {
   static ProviderSigning decode(String secret, BlueId expected, String endpoint) {
     // Diagnostics deliberately omit both secret data and parser exception causes.
     try {
-      if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length > 16 * 1024)
+      if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length > 16 * 1024) {
         throw new IllegalArgumentException();
+      }
       Map<String, Object> data = Json.object(secret.getBytes(StandardCharsets.UTF_8));
       if (!data.keySet().equals(Set.of("format", "provider", "privateKeyPkcs8"))
-          || !FORMAT.equals(data.get("format"))) throw new IllegalArgumentException();
+          || !FORMAT.equals(data.get("format"))) {
+        throw new IllegalArgumentException();
+      }
       BluePackage coordination = coordination();
       LanguageDocument provider =
           Language.newBuilder()
@@ -50,8 +56,10 @@ final class ProviderIdentity {
               .build()
               .read(
                   Language.Input.exactJson(JsonText.of(data.get("provider"))), Language.Goal.VALUE);
-      if (!provider.blueId().equals(expected) || !endpoint.equals(provider.at("/endpoint").text()))
+      if (!provider.blueId().equals(expected)
+          || !endpoint.equals(provider.at("/endpoint").text())) {
         throw new IllegalArgumentException();
+      }
       byte[] encoded = Base64.getDecoder().decode((String) data.get("privateKeyPkcs8"));
       try {
         PrivateKey key =

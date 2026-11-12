@@ -88,7 +88,7 @@ class TimelineDirectoryTest {
       CountDownLatch ready = new CountDownLatch(4), start = new CountDownLatch(1);
       try (ExecutorService pool = Executors.newFixedThreadPool(4)) {
         List<Future<Boolean>> results = new ArrayList<>();
-        for (TimelineFixture source : List.of(a, b, a, b))
+        for (TimelineFixture source : List.of(a, b, a, b)) {
           results.add(
               pool.submit(
                   () -> {
@@ -102,10 +102,15 @@ class TimelineDirectoryTest {
                       return false;
                     }
                   }));
+        }
         assertTrue(ready.await(5, TimeUnit.SECONDS));
         start.countDown();
         int successful = 0;
-        for (Future<Boolean> result : results) if (result.get(10, TimeUnit.SECONDS)) successful++;
+        for (Future<Boolean> result : results) {
+          if (result.get(10, TimeUnit.SECONDS)) {
+            successful++;
+          }
+        }
         assertEquals(2, successful);
       }
       TimelineDirectory fresh = directory(store);
@@ -309,7 +314,9 @@ class TimelineDirectoryTest {
     }
 
     public byte[] content(String account, String identity) {
-      if (failContent) throw new IllegalStateException("Unavailable source definition");
+      if (failContent) {
+        throw new IllegalStateException("Unavailable source definition");
+      }
       return delegate.content(account, identity);
     }
 

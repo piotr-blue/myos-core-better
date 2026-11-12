@@ -56,7 +56,9 @@ class ContentPublicationTest {
     public boolean commitWithContent(
         List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
       lastPageCount = pages.size();
-      if (reject) return false;
+      if (reject) {
+        return false;
+      }
       boolean committed = delegate.commitWithContent(writes, checks, account, pages);
       if (committed && !pages.isEmpty() && loseContentReply && !lost) {
         lost = true;

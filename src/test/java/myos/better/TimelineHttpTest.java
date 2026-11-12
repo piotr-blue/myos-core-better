@@ -286,7 +286,9 @@ class TimelineHttpTest {
     void awaitCount(String document, long expected) throws Exception {
       long deadline = System.nanoTime() + Duration.ofSeconds(5).toNanos();
       while (!BigInteger.valueOf(expected).equals(count(document))) {
-        if (System.nanoTime() >= deadline) fail("Parent propagation did not complete");
+        if (System.nanoTime() >= deadline) {
+          fail("Parent propagation did not complete");
+        }
         Thread.sleep(10);
       }
     }

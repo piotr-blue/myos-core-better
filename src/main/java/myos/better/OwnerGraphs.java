@@ -57,8 +57,9 @@ final class OwnerGraphs {
       GraphTimelineIngress ingress,
       OwnerStorage storage) {
     this.store = store;
-    if (storage.repository.store != store)
+    if (storage.repository.store != store) {
       throw new IllegalArgumentException("Different owner store");
+    }
     this.storage = storage;
     this.configuration = configuration;
     this.timelines = timelines;
@@ -77,8 +78,9 @@ final class OwnerGraphs {
   }
 
   static Contracts configurationFor(Contracts configuration, Map<String, Object> stored) {
-    if (!GasSchedule.STANDARD.id().equals(stored.get("gasSchedule")))
+    if (!GasSchedule.STANDARD.id().equals(stored.get("gasSchedule"))) {
       throw new HistoryRequiresReplay();
+    }
     return configuration;
   }
 
@@ -90,17 +92,21 @@ final class OwnerGraphs {
   TimelineIngress.Outcome resumeInitialization(String account, String graph) {
     var records = storage.records(account);
     var state = new OwnerInitializations(account).find(records.read, graph);
-    if (state == null || "SUCCEEDED".equals(state.status()))
+    if (state == null || "SUCCEEDED".equals(state.status())) {
       return new TimelineIngress.Outcome(TimelineIngress.Status.IDLE, "No pending initialization");
-    if ("FAILED".equals(state.status()))
+    }
+    if ("FAILED".equals(state.status())) {
       return new TimelineIngress.Outcome(
           TimelineIngress.Status.WAITING, "Initialization requires targeted retry");
+    }
     try {
       createOrResume(account, graph, state.intent().command(), null);
       return new TimelineIngress.Outcome(
           TimelineIngress.Status.APPLIED, "Initialization committed");
     } catch (ConsoleProblem pending) {
-      if (pending.status < 500 && pending.status != 422) throw pending;
+      if (pending.status < 500 && pending.status != 422) {
+        throw pending;
+      }
       return new TimelineIngress.Outcome(TimelineIngress.Status.WAITING, pending.code);
     }
   }
@@ -118,28 +124,33 @@ final class OwnerGraphs {
     if (retained != null
         && (!retained.intent().command().equals(command)
             || !retained.intent().document().equals(documentId)
-            || !retained.intent().gasSchedule().equals(configuration.gasSchedule().id())))
+            || !retained.intent().gasSchedule().equals(configuration.gasSchedule().id()))) {
       throw new ConsoleProblem(
           409, "initialization_conflict", "Initialization has different immutable input.");
+    }
     String request = Json.hash(Json.bytes(List.of(graph, documentId)));
     var prior = records.get("command", command);
     if (prior != null) {
       if (prior.containsKey("gasSchedule")
-          && !configuration.gasSchedule().id().equals(prior.get("gasSchedule")))
+          && !configuration.gasSchedule().id().equals(prior.get("gasSchedule"))) {
         throw new IllegalArgumentException("Idempotency key reused with a different gas schedule");
+      }
       return repeated(prior, request);
     }
-    if (records.get("publication", graph) != null)
+    if (records.get("publication", graph) != null) {
       throw new IllegalStateException("Document exists");
-    if (retained != null && "FAILED".equals(retained.status()))
+    }
+    if (retained != null && "FAILED".equals(retained.status())) {
       throw new ConsoleProblem(
           422,
           "initialization_failed",
           "Initialization requires its failed evaluation to be retried.");
+    }
     var controlKey = DocumentControls.key(account, graph);
     var controlRow = store.get(controlKey);
-    if (DocumentControls.paused(controlRow))
+    if (DocumentControls.paused(controlRow)) {
       throw new ConsoleProblem(503, "initialization_paused", "Initialization is paused.");
+    }
     var controlPermit = DocumentControls.permit(controlKey, controlRow);
     long started = System.nanoTime();
     OwnerInitializations.Claim claimed = null;
@@ -169,8 +180,9 @@ final class OwnerGraphs {
                   initializations.register(tx, intent);
                   if (fresh) {
                     var root = store.get(RootDocuments.root(account, graph));
-                    if (root != null)
+                    if (root != null) {
                       throw new IllegalStateException("Initialization root already exists");
+                    }
                     tx.publish(
                         List.of(
                             AtomicStore.Write.put(
@@ -193,7 +205,9 @@ final class OwnerGraphs {
                 });
         if (selected.isEmpty()) {
           var completed = storage.records(account).get("command", command);
-          if (completed != null) return repeated(completed, request);
+          if (completed != null) {
+            return repeated(completed, request);
+          }
           throw new ConsoleProblem(
               503,
               "initialization_waiting",
@@ -204,9 +218,10 @@ final class OwnerGraphs {
       var permit = claimed;
       var outcome = processor.initialize(before);
       if (metered && !outcome.transition().applied()) {
-        if ("NEEDS_RESOURCES".equals(outcome.transition().status()))
+        if ("NEEDS_RESOURCES".equals(outcome.transition().status())) {
           throw new ConsoleProblem(
               503, "initialization_resources", "Initialization needs unavailable resources.");
+        }
         records.frontiers.change(
             tx -> {
               tx.publish(List.of(), List.of(controlPermit));
@@ -245,15 +260,17 @@ final class OwnerGraphs {
             var duplicate = OwnerRecords.object(tx, OwnerRecords.key("command", command));
             if (duplicate != null) {
               if (duplicate.containsKey("gasSchedule")
-                  && !configuration.gasSchedule().id().equals(duplicate.get("gasSchedule")))
+                  && !configuration.gasSchedule().id().equals(duplicate.get("gasSchedule"))) {
                 throw new IllegalArgumentException(
                     "Idempotency key reused with a different gas schedule");
+              }
               repeated(duplicate, request);
               return null;
             }
-            if (tx.get(OwnerRecords.key("publication", graph)) != null)
+            if (tx.get(OwnerRecords.key("publication", graph)) != null) {
               throw new IllegalStateException("Document exists");
-            if (permit != null)
+            }
+            if (permit != null) {
               initializations.settle(
                   tx,
                   permit,
@@ -262,8 +279,9 @@ final class OwnerGraphs {
                   outcome.transition().status(),
                   outcome.transition().receipt(),
                   initializationTerminal(outcome));
-            else if (new OwnerGas(account).enabled(tx))
+            } else if (new OwnerGas(account).enabled(tx)) {
               throw new IllegalStateException("Gas enforcement changed during initialization");
+            }
             publish(records, tx, prepared);
             OwnerRecords.put(
                 tx,
@@ -282,8 +300,9 @@ final class OwnerGraphs {
             rootValue.put("name", graph);
             if (root != null) {
               if (!Boolean.TRUE.equals(root.value().get("pendingInitialization"))
-                  || !documentId.equals(root.value().get("initialBlueId")))
+                  || !documentId.equals(root.value().get("initialBlueId"))) {
                 throw new IllegalStateException("Initialization root changed");
+              }
               rootValue.putAll(root.value());
               rootValue.remove("pendingInitialization");
             }
@@ -306,9 +325,10 @@ final class OwnerGraphs {
           records.frontiers.change(
               tx -> {
                 var current = initializations.find(tx, graph);
-                if (current != null && permit.equals(current.claim()))
+                if (current != null && permit.equals(current.claim())) {
                   initializations.release(
                       tx, permit, Math.addExact(System.currentTimeMillis(), 1000));
+                }
                 return null;
               });
         } catch (RuntimeException recovery) {
@@ -323,10 +343,13 @@ final class OwnerGraphs {
     var terminal = new LinkedHashMap<String, Object>();
     terminal.put("status", outcome.transition().status());
     terminal.put("gas", outcome.transition().gas());
-    if (outcome.transition().receipt() != null)
+    if (outcome.transition().receipt() != null) {
       terminal.put("receipt", outcome.transition().receipt());
+    }
     Object diagnostic = outcome.transition().observations().get("diagnostic");
-    if (diagnostic != null) terminal.put("diagnostic", diagnostic);
+    if (diagnostic != null) {
+      terminal.put("diagnostic", diagnostic);
+    }
     return terminal;
   }
 
@@ -347,9 +370,10 @@ final class OwnerGraphs {
     List<String> ready = runnable.owners();
     if (ready.isEmpty()) {
       // A surviving lease is pending work. Keep its durable wakeup until it expires.
-      if (runnable.leased())
+      if (runnable.leased()) {
         return new TimelineIngress.Outcome(
             TimelineIngress.Status.LEASED, "Owner work is waiting for a retained lease");
+      }
       // An empty readiness result and its waiting reason must use the same cut.
       // New coverage between those reads must not turn a waiting receiver into IDLE:
       // completeness-only fanout intentionally skips idle receivers.
@@ -375,12 +399,16 @@ final class OwnerGraphs {
               System.currentTimeMillis(),
               120_000,
               (tx, candidate, now) -> claimPermit(account, owner, tx, candidate, now));
-      if (selected.isEmpty()) continue;
+      if (selected.isEmpty()) {
+        continue;
+      }
       var claim = selected.orElseThrow();
       try {
         if (time != null) {
           var rejection = OwnerRejections.inherited(storage.records(account), claim);
-          if (rejection != null) throw rejection;
+          if (rejection != null) {
+            throw rejection;
+          }
         }
         return process(account, owner, claim);
       } catch (OwnerRejections.Failure rejected) {
@@ -392,14 +420,15 @@ final class OwnerGraphs {
             System.currentTimeMillis() + 250,
             failureDiagnostic,
             tx -> new OwnerGasClaims(account).release(tx, claim));
-        if (time != null && OwnerTimers.input(records.read, claim.order()) != null)
+        if (time != null && OwnerTimers.input(records.read, claim.order()) != null) {
           records
               .frontiers
               .refreshNeeded(64)
               .forEach(
                   (source, timestamp) -> timelines.demandOwnerSource(account, source, timestamp));
-        else
+        } else {
           timelines.demandOwnerSource(account, claim.order().timeline(), claim.order().timestamp());
+        }
       } catch (HistoryRequiresReplay | OwnerSourceFailures.Failure retired) {
         failureDiagnostic = retired.getMessage();
         records.frontiers.defer(
@@ -417,8 +446,9 @@ final class OwnerGraphs {
             tx -> new OwnerGasClaims(account).release(tx, claim));
       }
     }
-    if (failureDiagnostic != null)
+    if (failureDiagnostic != null) {
       return new TimelineIngress.Outcome(TimelineIngress.Status.WAITING, failureDiagnostic);
+    }
     return new TimelineIngress.Outcome(
         TimelineIngress.Status.RETRY, "Ready owners are already claimed");
   }
@@ -431,8 +461,9 @@ final class OwnerGraphs {
       long now) {
     var key = DocumentControls.key(account, owner);
     var control = store.get(key);
-    if (DocumentControls.paused(control))
+    if (DocumentControls.paused(control)) {
       return new OwnerFrontiers.Deferred(Long.MAX_VALUE, "OWNER_PAUSED");
+    }
     tx.publish(List.of(), List.of(DocumentControls.permit(key, control)));
     var waiting = time == null ? null : time.permit(tx, claim.sources(), now);
     return waiting != null ? waiting : new OwnerGasClaims(account).authorize(tx, claim);
@@ -466,7 +497,9 @@ final class OwnerGraphs {
           new OwnerLocal(this, storage, timelines, ingress)
               .process(
                   records, processor, account, owner, claim, publication, control, timing, started);
-      if (local != null) return local;
+      if (local != null) {
+        return local;
+      }
       var before = records.restore(processor, claim.snapshot());
       timing.restoreNanos = System.nanoTime() - started;
       long admissionStarted = System.nanoTime();
@@ -521,7 +554,9 @@ final class OwnerGraphs {
           for (var selected : claim.sources()) {
             if (selected.binding().kind() != OwnerFrontiers.Kind.OWNER
                 || selected.receipt() == null
-                || !selectedReceipts.add(selected.receipt())) continue;
+                || !selectedReceipts.add(selected.receipt())) {
+              continue;
+            }
             var completion = records.get("completion", selected.receipt());
             if (completion != null && !"APPLIED".equals(completion.get("status"))) {
               // Reproduce failure and rollback in the parent's own invocation; a rejected
@@ -535,8 +570,9 @@ final class OwnerGraphs {
                     records.snapshots.execution(account, (String) completion.get(boundary));
                 processor.withContent(retained.content());
               }
-              if (completion.get("eventContent") instanceof String eventContent)
+              if (completion.get("eventContent") instanceof String eventContent) {
                 processor.withContent(records.emissions.provider(account, eventContent));
+              }
               sources.add(
                   new Contracts.Execution.Source(
                       selected.receipt(), members.stream().map(String.class::cast).toList()));
@@ -545,10 +581,11 @@ final class OwnerGraphs {
         }
         var outcome = invoke(records, processor, before, scope.request(), sources);
         timing.executionNanos = System.nanoTime() - executionStarted;
-        if ("NEEDS_RESOURCES".equals(outcome.transition().status()))
+        if ("NEEDS_RESOURCES".equals(outcome.transition().status())) {
           throw new IllegalStateException(
               "Native invocation needs unavailable resources: "
                   + outcome.transition().observations().get("diagnostic"));
+        }
         scope.verified();
         long nanos = System.nanoTime() - started;
         long preparationStarted = System.nanoTime();
@@ -658,33 +695,45 @@ final class OwnerGraphs {
                   (LanguageContent) request.event(),
                   request.timestamp(),
                   request.evidence());
-      if (!"NEEDS_RESOURCES".equals(result.transition().status())) return result;
+      if (!"NEEDS_RESOURCES".equals(result.transition().status())) {
+        return result;
+      }
       var diagnostic = result.transition().observations().get("diagnostic");
       if (!(diagnostic instanceof Map<?, ?> details)
-          || !(details.get("requiredHistory") instanceof List<?> required)) return result;
+          || !(details.get("requiredHistory") instanceof List<?> required)) {
+        return result;
+      }
       boolean progress = false;
       for (Object raw : required) {
         String id = (String) raw;
-        if (loaded.size() >= 256 || !loaded.add(id)) continue;
+        if (loaded.size() >= 256 || !loaded.add(id)) {
+          continue;
+        }
         var snapshot = records.retained(new BlueId(id));
         if (snapshot.isPresent()) {
           processor.restore(snapshot.orElseThrow());
           progress = true;
         }
       }
-      if (!progress) return result;
+      if (!progress) {
+        return result;
+      }
     }
   }
 
   private GraphLineage.Target target(
       OwnerRecords records, Map<String, Object> head, Contracts.Execution.State state, BlueId id) {
     var found = records.lineage.find(records.account, (String) head.get("lineage"), id.value());
-    if (found != null) return found;
+    if (found != null) {
+      return found;
+    }
     Map<String, Long> members = new LinkedHashMap<>();
     for (var member : state.members()) {
       var initial =
           state.member(member.key()).at("/contracts/initialized/document").observation("exactId");
-      if (!initial.isMissing() && id.value().equals(initial.text())) members.put(member.key(), 1L);
+      if (!initial.isMissing() && id.value().equals(initial.text())) {
+        members.put(member.key(), 1L);
+      }
     }
     return members.isEmpty() ? null : new GraphLineage.Target(members);
   }
@@ -797,14 +846,17 @@ final class OwnerGraphs {
     Map<String, String> previousIds = new HashMap<>();
     outcome.before().members().forEach(m -> previousIds.put(m.key(), m.blueId().value()));
     Map<String, String> previousUnits = new HashMap<>();
-    if (birth != null)
+    if (birth != null) {
       for (var component : outcome.before().components()) {
         String representative =
             component.stream().map(aliases::owner).min(String::compareTo).orElseThrow();
         component.forEach(member -> previousUnits.put(member, representative));
       }
+    }
     for (var member : after.members()) {
-      if (freshEdge != null && !member.key().equals(freshEdge.target())) continue;
+      if (freshEdge != null && !member.key().equals(freshEdge.target())) {
+        continue;
+      }
       String stableOwner = aliases.owner(member.key());
       // The protected before-snapshot was published atomically with its owner registrations.
       // An existing unchanged ownership unit needs no reread of every sibling's full history head.
@@ -816,17 +868,20 @@ final class OwnerGraphs {
           // A new member may close a cycle with the currently claimed unit. Its history
           // is new, but that unit already has a fenced head and consumed source positions.
           // Complete the existing claim; never register or reset its frontier again.
-          if (records.frontiers.find(records.read, address(representative)) == null)
+          if (records.frontiers.find(records.read, address(representative)) == null) {
             newUnits.put(address(representative), representative);
-        } else if (!units.get(member.key()).equals(prior.get("representative")))
+          }
+        } else if (!units.get(member.key()).equals(prior.get("representative"))) {
           throw new IllegalStateException(
               "Established cyclic ownership changed; an explicit migration is required");
+        }
       }
       if (!owned.contains(stableOwner)
           && !member.blueId().value().equals(previousIds.get(member.key()))) {
         var retained = records.view(stableOwner, member.blueId().value());
-        if (retained == null || !stableOwner.equals(retained.get("member")))
+        if (retained == null || !stableOwner.equals(retained.get("member"))) {
           throw new IllegalStateException("An unscheduled dependency changed: " + member.key());
+        }
       }
     }
     ownerValidation.finish();
@@ -851,18 +906,20 @@ final class OwnerGraphs {
     // An owner's history contains its own emitted occurrences. The complete rooted proof is
     // retained once above. Copying the entire graph's emissions into every child is quadratic.
     Map<String, List<Contracts.Emission>> memberEmissions = new HashMap<>();
-    for (var emission : outcome.transition().emissions())
+    for (var emission : outcome.transition().emissions()) {
       memberEmissions
           .computeIfAbsent(emission.member(), ignored -> new ArrayList<>())
           .add(emission);
+    }
     Map<String, List<Object>> memberOccurrences = new HashMap<>();
-    if (outcome.applied())
+    if (outcome.applied()) {
       for (Object raw : (List<?>) outcome.transition().observations().get("events")) {
         var occurrence = RuntimeConfiguration.object(raw, "emission");
         memberOccurrences
             .computeIfAbsent((String) occurrence.get("document"), ignored -> new ArrayList<>())
             .add(raw);
       }
+    }
     // A birth may share its committed predecessor's immutable catalogue. Initial bulk creation
     // has no predecessor: give each owner its own closure instead of inheriting siblings' indices.
     String contentBase = rootPublication == null ? null : (String) rootPublication.get("page");
@@ -920,7 +977,7 @@ final class OwnerGraphs {
                   () ->
                       state.appendedCheckpoint(
                           beforeState, contentId -> retainedBase.test(new BlueId(contentId))));
-          if (!delta.isEmpty())
+          if (!delta.isEmpty()) {
             page =
                 OwnerPreparationEvent.measure(
                     member,
@@ -933,6 +990,7 @@ final class OwnerGraphs {
                             delta,
                             state::member,
                             preparation));
+          }
         }
         if (page == null) {
           // Export checks each current member against the retained catalogue. Batch those
@@ -1046,7 +1104,9 @@ final class OwnerGraphs {
       value.put("evidenceCatalog", savedEvidence.catalog());
       value.put("identity", state.identity());
       var local = state.localCheckpoint();
-      if (!local.isEmpty() && member.equals(local.get("root"))) value.put("local", local);
+      if (!local.isEmpty() && member.equals(local.get("root"))) {
+        value.put("local", local);
+      }
       value.put("blueId", state.blueId());
       value.put("lineage", lineage);
       value.put("eventContent", events);
@@ -1072,12 +1132,15 @@ final class OwnerGraphs {
         identities.add(after.rooted(member).blueId());
         var initial =
             after.member(member).at("/contracts/initialized/document").observation("exactId");
-        if (!initial.isMissing()) identities.add(initial.text());
+        if (!initial.isMissing()) {
+          identities.add(initial.text());
+        }
       }
       targets.put(owner, Set.copyOf(identities));
       Map<String, OwnerFrontiers.Source> existing = new HashMap<>();
-      if (records.frontiers.find(records.read, owner) != null)
+      if (records.frontiers.find(records.read, owner) != null) {
         records.frontiers.sources(records.read, owner).forEach(s -> existing.put(s.id(), s));
+      }
       List<OwnerFrontiers.Source> required = new ArrayList<>();
       for (var binding : ingress.direct(declarations, members).entrySet()) {
         String timeline = binding.getValue().source().timeline().value();
@@ -1101,14 +1164,17 @@ final class OwnerGraphs {
         String id = "embedding:" + edge.source() + ":" + edge.path() + ":" + edge.generation();
         var unchanged = existing.get(id);
         if (unchanged != null) {
-          if (!child.equals(unchanged.source()))
+          if (!child.equals(unchanged.source())) {
             throw new IllegalStateException("An unchanged embedding changed its owner");
+          }
           required.add(unchanged);
           continue;
         }
         long position = 0;
         var view = records.view(aliases.owner(edge.target()), after.rooted(edge.target()).blueId());
-        if (view != null) position = Repository.number(view.getOrDefault("position", 0));
+        if (view != null) {
+          position = Repository.number(view.getOrDefault("position", 0));
+        }
         required.add(
             new OwnerFrontiers.Source(
                 id, OwnerFrontiers.Kind.OWNER, child, edge.generation(), position));
@@ -1157,19 +1223,21 @@ final class OwnerGraphs {
             records.emissions.retain(records.account, "", outcome.transition().emissions()));
       }
       completionTiming.finish();
-      if (birth != null && unit.size() == 1)
+      if (birth != null && unit.size() == 1) {
         localCompletion =
             OwnerBirth.project(
                 processor, outcome, afterPage, (String) completion.get("eventContent"));
+      }
     }
     OwnerTimers.Turn timers = null;
     if (time != null && freshEdge == null) {
       Map<String, String> timerMembers = new LinkedHashMap<>(), timerUnits = new LinkedHashMap<>();
-      for (var member : after.members())
+      for (var member : after.members()) {
         if (owned.contains(aliases.owner(member.key()))) {
           timerMembers.put(member.key(), aliases.owner(member.key()));
           timerUnits.put(member.key(), address(units.get(member.key())));
         }
+      }
       timers = time.prepare(records, outcome, timerMembers, timerUnits, birth);
     }
     return new Plan(
@@ -1198,20 +1266,24 @@ final class OwnerGraphs {
                     .filter(s -> s.kind() == OwnerFrontiers.Kind.TIMELINE)
                     .forEach(
                         s -> {
-                          if (s.id().startsWith("timeline:access:"))
+                          if (s.id().startsWith("timeline:access:")) {
                             records.frontiers.coverageOnly(tx, owner, s.id());
-                          else
+                          } else {
                             records.frontiers.interest(
                                 tx, owner, s.id(), plan.observers().get(owner).contains(s.id()));
+                          }
                         }));
     for (var entry : plan.newUnits().entrySet()) {
       var publication = plan.publications().get(address(entry.getValue()));
       records.frontiers.register(
           tx, entry.getKey(), (String) publication.value().get("page"), List.of());
     }
-    for (String owner : plan.newUnits().keySet())
+    for (String owner : plan.newUnits().keySet()) {
       records.frontiers.configureNew(tx, owner, plan.bindings().get(owner));
-    if (plan.timers() != null) time.publish(records, tx, plan.timers());
+    }
+    if (plan.timers() != null) {
+      time.publish(records, tx, plan.timers());
+    }
     for (var entry : plan.publications().entrySet()) {
       var value = entry.getValue().value();
       OwnerRecords.put(tx, OwnerRecords.key("publication", entry.getKey()), value);
@@ -1224,7 +1296,9 @@ final class OwnerGraphs {
           value);
       long position = 0;
       var old = records.frontiers.find(tx, address((String) value.get("representative")));
-      if (old != null) position = old.position();
+      if (old != null) {
+        position = old.position();
+      }
       var view =
           Map.of(
               "member",
@@ -1241,16 +1315,18 @@ final class OwnerGraphs {
           OwnerRecords.key("member-view", entry.getValue().member() + "\0" + value.get("blueId")),
           view);
     }
-    if (!plan.completion().isEmpty())
+    if (!plan.completion().isEmpty()) {
       OwnerRecords.put(
           tx,
           OwnerRecords.key("completion", (String) plan.completion().get("receipt")),
           plan.completion());
-    if (!plan.localCompletion().isEmpty())
+    }
+    if (!plan.localCompletion().isEmpty()) {
       OwnerRecords.put(
           tx,
           OwnerRecords.key("local-completion", (String) plan.completion().get("receipt")),
           plan.localCompletion());
+    }
     plan.validation()
         .forEach((key, value) -> tx.put(OwnerRecords.key("validation", key), value.toString()));
     plan.preparations()
@@ -1273,8 +1349,9 @@ final class OwnerGraphs {
   }
 
   private static CanonicalGraphs.Result repeated(Map<String, Object> prior, String request) {
-    if (!request.equals(prior.get("hash")))
+    if (!request.equals(prior.get("hash"))) {
       throw new IllegalArgumentException("Idempotency key reused");
+    }
     return Json.MAPPER.convertValue(prior.get("result"), CanonicalGraphs.Result.class);
   }
 }

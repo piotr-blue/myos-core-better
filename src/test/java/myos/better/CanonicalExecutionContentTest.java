@@ -225,10 +225,11 @@ class CanonicalExecutionContentTest {
         text(added.records().get(added.blueId())),
         text(snapshots.execution("account", later).content().find(added.blueId()).orElseThrow()));
     assertThrows(IllegalStateException.class, () -> snapshots.execution("foreign", fixture.page));
-    for (int i = 0; i < fixture.ids.size(); i++)
+    for (int i = 0; i < fixture.ids.size(); i++) {
       assertEquals(
           text(fixture.records.get(i)),
           text(original.content().find(fixture.ids.get(i)).orElseThrow()));
+    }
     assertTrue(original.content().find(added.blueId()).isEmpty());
   }
 

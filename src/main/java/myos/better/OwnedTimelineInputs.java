@@ -99,7 +99,9 @@ final class OwnedTimelineInputs {
   }
 
   void wakeDocument(String account, String document) {
-    if (service != null) service.published(account, document);
+    if (service != null) {
+      service.published(account, document);
+    }
   }
 
   void published(String account, BlueId timeline) {

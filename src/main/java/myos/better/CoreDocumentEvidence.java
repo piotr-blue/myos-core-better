@@ -43,16 +43,19 @@ final class CoreDocumentEvidence {
         List.of("epoch", "positionBlueId", "entryBlueId").stream()
             .filter(query::containsKey)
             .count();
-    if (selectors != (continuation ? 0 : 1))
+    if (selectors != (continuation ? 0 : 1)) {
       throw problem(
           400,
           "invalid_evidence_selector",
           "Select one epoch, positionBlueId or entryBlueId; continue with pageToken and the same"
               + " limit only.");
+    }
     int limit = CoreListFilter.limit(query);
     String resource = "documents/" + document + "/evidence";
     var normalized = new HashMap<>(Map.of("limit", Integer.toString(limit)));
-    if (continuation) normalized.put("pageToken", query.get("pageToken"));
+    if (continuation) {
+      normalized.put("pageToken", query.get("pageToken"));
+    }
     var selected =
         continuation
             ? pages.decode(account, resource, normalized)
@@ -70,7 +73,9 @@ final class CoreDocumentEvidence {
     LanguageContent initial = documents.initial(account, document);
     supplied.put(initial.blueId().value(), initial);
     refs.put(lineage, "CONTENT");
-    if (entry != null) refs.putIfAbsent(entry, "CONTENT");
+    if (entry != null) {
+      refs.putIfAbsent(entry, "CONTENT");
+    }
     if (version != 0) {
       requireVersion(account, document, version);
       var position = history.position(account, document, version);
@@ -90,11 +95,13 @@ final class CoreDocumentEvidence {
             .map(e -> Map.of("kind", e.getValue(), "ref", Map.of("blueId", e.getKey())))
             .toList();
     String fingerprint = Json.hash(Json.bytes(manifest));
-    if (continuation && !fingerprint.equals(selected.get("manifest")))
+    if (continuation && !fingerprint.equals(selected.get("manifest"))) {
       throw problem(409, "evidence_changed", "Retained evidence changed; restart the traversal.");
+    }
     int offset = Math.toIntExact(Repository.number(selected.getOrDefault("offset", 0)));
-    if (offset < 0 || offset > manifest.size())
+    if (offset < 0 || offset > manifest.size()) {
       throw problem(400, "INVALID_PAGE_TOKEN", "Invalid evidence boundary.");
+    }
     int end = Math.min(manifest.size(), offset + limit);
     var items = new ArrayList<Object>();
     for (int i = offset; i < end; i++) {
@@ -102,15 +109,18 @@ final class CoreDocumentEvidence {
       String id = reference(item.get("ref"));
       try {
         LanguageContent local = supplied.get(id);
-        if (local == null)
+        if (local == null) {
           local =
               Language.create()
                   .prepare(
                       Language.Input.exactJson(
                           JsonText.of(contents.read(account, new BlueId(id)))));
+        }
         item.put("value", ownBody(local));
       } catch (ConsoleProblem unavailable) {
-        if (unavailable.status != 404 && unavailable.status != 503) throw unavailable;
+        if (unavailable.status != 404 && unavailable.status != 503) {
+          throw unavailable;
+        }
         throw problem(503, "evidence_unavailable", "Selected exact evidence is unavailable.");
       }
       items.add(item);
@@ -133,7 +143,9 @@ final class CoreDocumentEvidence {
     if (entry != null) {
       identity(entry);
       var row = CoreInputStatus.find(store, documents, contents, account, document, entry);
-      if (row == null) throw missing();
+      if (row == null) {
+        throw missing();
+      }
       version =
           "CONSUMED".equals(row.get("disposition"))
               ? Repository.number(row.get("documentVersion"))
@@ -141,7 +153,9 @@ final class CoreDocumentEvidence {
       if (version != 0) {
         var facts = documents.history(account, document, version);
         var input = RuntimeConfiguration.object(facts.getOrDefault("input", Map.of()), "input");
-        if (!entry.equals(input.get("entry"))) throw missing();
+        if (!entry.equals(input.get("entry"))) {
+          throw missing();
+        }
       }
     } else if (query.containsKey("positionBlueId")) {
       String id = query.get("positionBlueId");
@@ -153,24 +167,30 @@ final class CoreDocumentEvidence {
                 .prepare(
                     Language.Input.exactJson(JsonText.of(contents.read(account, new BlueId(id)))));
       } catch (ConsoleProblem absent) {
-        if (absent.status == 404) throw missing();
+        if (absent.status == 404) {
+          throw missing();
+        }
         throw absent;
       }
       try {
         if (!"myos.better.history-position/1".equals(position.at("/format").text())
-            || !documents.nativeId(account, document).equals(position.at("/session").text()))
+            || !documents.nativeId(account, document).equals(position.at("/session").text())) {
           throw missing();
+        }
         version = epoch(Long.toString(position.at("/epoch").integer()));
       } catch (BlueException malformed) {
         throw missing();
       }
       requireVersion(account, document, version);
-      if (!id.equals(reference(history.position(account, document, version).get("positionRef"))))
+      if (!id.equals(reference(history.position(account, document, version).get("positionRef")))) {
         throw missing();
+      }
     } else {
       version = epoch(query.get("epoch"));
     }
-    if (version != 0) requireVersion(account, document, version);
+    if (version != 0) {
+      requireVersion(account, document, version);
+    }
     var result = new LinkedHashMap<String, Object>();
     result.put("version", version);
     result.put("entry", entry);
@@ -180,13 +200,16 @@ final class CoreDocumentEvidence {
 
   private void requireVersion(String account, String document, long version) {
     if (version < documents.firstVersion(account, document)
-        || version > Repository.number(documents.head(account, document).get("version")))
+        || version > Repository.number(documents.head(account, document).get("version"))) {
       throw missing();
+    }
   }
 
   private static long epoch(String value) {
     try {
-      if (!value.matches("[0-9]+")) throw new NumberFormatException();
+      if (!value.matches("[0-9]+")) {
+        throw new NumberFormatException();
+      }
       return CoreDocumentHistory.version(Long.parseLong(value));
     } catch (IllegalArgumentException invalid) {
       throw problem(400, "invalid_epoch", "epoch must be a supported nonnegative integer.");
@@ -214,18 +237,28 @@ final class CoreDocumentEvidence {
               Json.object(record.toJson().getBytes(java.nio.charset.StandardCharsets.UTF_8))
                   .get("body");
       expanded = language.prepare(Language.Input.exactJson(body));
-    } else expanded = language.expand(content, "");
+    } else {
+      expanded = language.expand(content, "");
+    }
     Node root = language.lookupExact(expanded, "");
     List<String> paths = new ArrayList<>();
     if (root.kind() == Node.Kind.LIST) {
-      for (int i = 0; i < root.size(); i++) paths.add("/items/" + i);
+      for (int i = 0; i < root.size(); i++) {
+        paths.add("/items/" + i);
+      }
     } else if (root.kind() == Node.Kind.OBJECT) {
       for (var field : root.fields().entrySet()) {
         String name = field.getKey();
-        if (Set.of("name", "description", "value", "mergePolicy").contains(name)) continue;
+        if (Set.of("name", "description", "value", "mergePolicy").contains(name)) {
+          continue;
+        }
         if (name.equals("items")) {
-          for (int i = 0; i < field.getValue().size(); i++) paths.add("/items/" + i);
-        } else paths.add("/" + name.replace("~", "~0").replace("/", "~1"));
+          for (int i = 0; i < field.getValue().size(); i++) {
+            paths.add("/items/" + i);
+          }
+        } else {
+          paths.add("/" + name.replace("~", "~0").replace("/", "~1"));
+        }
       }
     }
     return ProviderSigning.wire(language.collapse(expanded, paths.toArray(String[]::new)));

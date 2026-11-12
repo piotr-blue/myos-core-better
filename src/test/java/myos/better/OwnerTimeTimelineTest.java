@@ -98,7 +98,9 @@ class OwnerTimeTimelineTest {
       for (int i = 0; i < expected + 3; i++) {
         var result = engine.step(ACCOUNT, ROOT);
         if (result.status() == TimelineIngress.Status.IDLE
-            || result.status() == TimelineIngress.Status.WAITING) break;
+            || result.status() == TimelineIngress.Status.WAITING) {
+          break;
+        }
         assertEquals(TimelineIngress.Status.APPLIED, result.status(), result::reason);
         var nativeResult =
             RuntimeConfiguration.object(

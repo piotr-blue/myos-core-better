@@ -88,7 +88,9 @@ class HostedTimelineReaderTest {
 
     @Test
     void continuationRechecksCurrentGrantsAndRetainsItsOriginalHistoryBoundary() {
-      for (int i = 1; i <= 3; i++) f.host.append("alice", source.id(), "entry-" + i, f.message(i));
+      for (int i = 1; i <= 3; i++) {
+        f.host.append("alice", source.id(), "entry-" + i, f.message(i));
+      }
       LanguageContent first =
           reader.read(
               source.id(),
@@ -178,8 +180,9 @@ class HostedTimelineReaderTest {
     @Test
     void olderHistoryRequiresExplicitBoundedMigrationAndKeepsItsOriginalEntries() {
       List<HostedTimelines.Published> entries = new ArrayList<>();
-      for (int i = 0; i < 3; i++)
+      for (int i = 0; i < 3; i++) {
         entries.add(f.host.append("alice", source.id(), "entry-" + i, f.message(i)));
+      }
       AtomicStore.Key stateKey =
           new AtomicStore.Key(
               f.host.entries("alice", source.id(), null, 1).rows().getFirst().key().partition(),

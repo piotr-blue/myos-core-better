@@ -34,7 +34,9 @@ class CoreInvitationDeliveryTest {
             (recipient, link) -> {
               assertEquals("guest@example.test", recipient);
               links.add(link);
-              if (links.size() == 1) throw new IllegalStateException("Simulated mail failure");
+              if (links.size() == 1) {
+                throw new IllegalStateException("Simulated mail failure");
+              }
             },
             released::incrementAndGet);
     try (delivery) {
@@ -118,12 +120,13 @@ class CoreInvitationDeliveryTest {
         List.of(
             "http://console.example",
             "https://console.example/elsewhere",
-            "https://console.example/#fragment"))
+            "https://console.example/#fragment")) {
       assertThrows(
           IllegalArgumentException.class,
           () ->
               new CoreInvitationDelivery(
                   f.store, f.secrets, f.clock, URI.create(origin), (_, _) -> {}, () -> {}));
+    }
   }
 
   @Test

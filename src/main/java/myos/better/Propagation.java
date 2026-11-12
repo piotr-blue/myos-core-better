@@ -71,13 +71,26 @@ final class Propagation {
     }
 
     boolean appendTo(List<AtomicStore.Write> publication, List<AtomicStore.Check> conditions) {
-      if (publication.size() + conditions.size() + writes.size() + checks.size() > 100)
+      if (publication.size() + conditions.size() + writes.size() + checks.size() > 100) {
         return false;
+      }
       var keys = new java.util.HashSet<AtomicStore.Key>();
-      for (var write : publication) keys.add(write.key());
-      for (var check : conditions) keys.add(check.key());
-      for (var write : writes) if (!keys.add(write.key())) return false;
-      for (var check : checks) if (!keys.add(check.key())) return false;
+      for (var write : publication) {
+        keys.add(write.key());
+      }
+      for (var check : conditions) {
+        keys.add(check.key());
+      }
+      for (var write : writes) {
+        if (!keys.add(write.key())) {
+          return false;
+        }
+      }
+      for (var check : checks) {
+        if (!keys.add(check.key())) {
+          return false;
+        }
+      }
       publication.addAll(writes);
       conditions.addAll(checks);
       return true;
@@ -118,7 +131,9 @@ final class Propagation {
     value.put("account", account);
     value.put("document", id);
     // Later versions may commit while a parent rejects an earlier one. Preserve the suspension.
-    if (!value.containsKey("blocked")) schedule(value, account, id);
+    if (!value.containsKey("blocked")) {
+      schedule(value, account, id);
+    }
     writes.add(AtomicStore.Write.put(key, before == null ? 0 : before.version(), value));
   }
 
@@ -133,32 +148,44 @@ final class Propagation {
   }
 
   private int drain(int maximum, boolean scanWhenIdle) {
-    if (maximum < 1) throw new IllegalArgumentException("Positive drain limit required");
+    if (maximum < 1) {
+      throw new IllegalArgumentException("Positive drain limit required");
+    }
     signal.tryAcquire();
     int done = 0;
     long now = clock.getAsLong(), due = nextDiscovery.get();
     // Local hints are a latency optimization, not the durable scheduling authority. Reserve
     // occasional work for other processes and restarts even while the local queue stays busy.
-    if (now - due >= 0 && nextDiscovery.compareAndSet(due, now + DISCOVERY_NANOS))
+    if (now - due >= 0 && nextDiscovery.compareAndSet(due, now + DISCOVERY_NANOS)) {
       done += discover(maximum);
+    }
     // A discovered outbox may leave an already-satisfied local hint. Skip a bounded run
     // of these before declaring the worker idle; discovery must not be needed to find
     // the next live local hint.
     for (int attempted = 0; done < maximum && attempted < Math.max(32, maximum); attempted++) {
       AtomicStore.Key key = ready.poll();
-      if (key == null) break;
+      if (key == null) {
+        break;
+      }
       queued.remove(key);
-      if (deliver(key, read(List.of(key)))) done++;
+      if (deliver(key, read(List.of(key)))) {
+        done++;
+      }
     }
-    if (done > 0 || !scanWhenIdle) return done;
-    for (int shard = 0; shard < WORK_SHARDS && done < maximum; shard++)
+    if (done > 0 || !scanWhenIdle) {
+      return done;
+    }
+    for (int shard = 0; shard < WORK_SHARDS && done < maximum; shard++) {
       done += discover(maximum - done);
+    }
     return done;
   }
 
   private int discover(int maximum) {
     AtomicStore.Page page;
-    if (!discovery.tryLock()) return 0;
+    if (!discovery.tryLock()) {
+      return 0;
+    }
     try {
       int shard = nextShard;
       page = store.work("work-" + shard, cursors[shard], Math.min(100, maximum));
@@ -174,7 +201,11 @@ final class Propagation {
               .map(AtomicStore.Row::key)
               .toList();
       Map<AtomicStore.Key, AtomicStore.Row> state = read(keys);
-      for (AtomicStore.Key key : keys) if (deliver(key, state)) done++;
+      for (AtomicStore.Key key : keys) {
+        if (deliver(key, state)) {
+          done++;
+        }
+      }
     }
     return done;
   }
@@ -193,9 +224,12 @@ final class Propagation {
 
   private boolean deliver(AtomicStore.Key key, Map<AtomicStore.Key, AtomicStore.Row> state) {
     AtomicStore.Row candidate = state.get(key);
-    if (candidate == null) return false;
-    if (candidate.key().sort().equals("WAKE") && !candidate.value().containsKey("work"))
+    if (candidate == null) {
       return false;
+    }
+    if (candidate.key().sort().equals("WAKE") && !candidate.value().containsKey("work")) {
+      return false;
+    }
     AtomicStore.Key source =
         Repository.key(
             (String) candidate.value().get("account"),
@@ -212,7 +246,9 @@ final class Propagation {
     } finally {
       synchronized (active) {
         active.remove(source);
-        if (again.remove(source)) offer(source);
+        if (again.remove(source)) {
+          offer(source);
+        }
       }
     }
   }
@@ -223,7 +259,9 @@ final class Propagation {
     String source = (String) candidate.value().get("document");
     AtomicStore.Key wakeKey = Repository.key(account, source, "WAKE");
     AtomicStore.Row wake = state.get(wakeKey);
-    if (wake != null && wake.value().containsKey("blocked")) return false;
+    if (wake != null && wake.value().containsKey("blocked")) {
+      return false;
+    }
     AtomicStore.Key gateKey = Repository.key(account, source, "DISPATCH");
     AtomicStore.Key headKey = Repository.key(account, source, "STATE");
     AtomicStore.Row gate = state.get(gateKey);
@@ -234,15 +272,21 @@ final class Propagation {
         candidate.key().equals(wakeKey)
             ? store.get(Repository.key(account, source, "OUT#" + Repository.version(delivered + 1)))
             : candidate;
-    if (outbox == null) return false;
+    if (outbox == null) {
+      return false;
+    }
     Map<String, Object> value = outbox.value();
     long version = Repository.number(value.get("version"));
-    if (delivered + 1 != version) return false;
+    if (delivered + 1 != version) {
+      return false;
+    }
     long attempt = wake == null ? 0 : Repository.number(wake.value().getOrDefault("attempt", 0));
     long retryVersion =
         wake == null ? 0 : Repository.number(wake.value().getOrDefault("retryVersion", 0));
     String hash = (String) value.get("deliveryHash");
-    if (hash == null) hash = Json.hash(Json.bytes(value));
+    if (hash == null) {
+      hash = Json.hash(Json.bytes(value));
+    }
     Acknowledgement acknowledgement = acknowledge(account, source, wake, gate, head, outbox);
     String after = null;
     do {
@@ -254,7 +298,9 @@ final class Propagation {
         String generation = (String) parent.value().get("generation");
         String command =
             "delivery-" + Json.hash(Json.bytes(List.of(source, version, path, generation)));
-        if (version == retryVersion) command += "-r" + attempt;
+        if (version == retryVersion) {
+          command += "-r" + attempt;
+        }
         Core.Result result;
         try {
           result =
@@ -298,7 +344,9 @@ final class Propagation {
               hash);
           return false;
         }
-        if (result == null) return false; // An earlier version must arrive first.
+        if (result == null) {
+          return false; // An earlier version must arrive first.
+        }
         if (!result.status().equals("APPLIED") && !result.status().equals("IGNORED")) {
           block(
               account,
@@ -320,7 +368,9 @@ final class Propagation {
         acknowledgement.committed || store.commit(acknowledgement.writes, acknowledgement.checks);
     // A failed condition commonly means another version arrived during delivery.
     // Re-read promptly; the durable receipt prevents repeating the parent effect.
-    if (!committed || !acknowledgement.removeWake) hint(account, source);
+    if (!committed || !acknowledgement.removeWake) {
+      hint(account, source);
+    }
     return committed;
   }
 
@@ -350,7 +400,9 @@ final class Propagation {
         writes.add(AtomicStore.Write.put(wake.key(), wake.version(), idle));
         checks.add(new AtomicStore.Check(head.key(), head.version()));
         removeWake = true;
-      } else checks.add(new AtomicStore.Check(wake.key(), wake.version()));
+      } else {
+        checks.add(new AtomicStore.Check(wake.key(), wake.version()));
+      }
     }
     return new Acknowledgement(writes, checks, removeWake);
   }
@@ -373,7 +425,9 @@ final class Propagation {
     failure.put("status", status);
     failure.put("attempt", attempt);
     failure.put("observedAt", System.currentTimeMillis());
-    if (diagnostic != null) failure.put("diagnostic", diagnostic);
+    if (diagnostic != null) {
+      failure.put("diagnostic", diagnostic);
+    }
     var value =
         wake == null ? new LinkedHashMap<String, Object>() : new LinkedHashMap<>(wake.value());
     value.put("account", account);
@@ -413,7 +467,9 @@ final class Propagation {
   Map<String, Object> inspect(String account, String source) {
     AtomicStore.Row gate = store.get(Repository.key(account, source, "DISPATCH"));
     AtomicStore.Row head = store.get(Repository.key(account, source, "STATE"));
-    if (head == null) throw new MissingDocument();
+    if (head == null) {
+      throw new MissingDocument();
+    }
     AtomicStore.Row wake = store.get(Repository.key(account, source, "WAKE"));
     long delivered = gate == null ? 0 : Repository.number(gate.value().get("version"));
     long committed = Repository.number(head.value().get("documentVersion"));
@@ -427,8 +483,9 @@ final class Propagation {
         wake != null && wake.value().containsKey("blocked")
             ? "BLOCKED"
             : committed == delivered ? "CURRENT" : "PENDING");
-    if (wake != null && wake.value().containsKey("blocked"))
+    if (wake != null && wake.value().containsKey("blocked")) {
       result.put("failure", wake.value().get("blocked"));
+    }
     return result;
   }
 
@@ -439,10 +496,13 @@ final class Propagation {
     AtomicStore.Key wakeKey = Repository.key(account, source, "WAKE");
     for (int i = 0; i < 16; i++) {
       AtomicStore.Row previous = store.get(receiptKey);
-      if (previous != null) return previous.value();
+      if (previous != null) {
+        return previous.value();
+      }
       AtomicStore.Row wake = store.get(wakeKey);
-      if (wake == null || !(wake.value().get("blocked") instanceof Map<?, ?> failure))
+      if (wake == null || !(wake.value().get("blocked") instanceof Map<?, ?> failure)) {
         throw new IllegalArgumentException("Document propagation is not blocked");
+      }
       long attempt = Math.addExact(Repository.number(wake.value().getOrDefault("attempt", 0)), 1);
       long version = Repository.number(failure.get("version"));
       var value = new LinkedHashMap<>(wake.value());
@@ -467,14 +527,21 @@ final class Propagation {
   void hint(String account, String id) {
     AtomicStore.Key key = Repository.key(account, id, "WAKE");
     synchronized (active) {
-      if (active.contains(key)) again.add(key);
-      else offer(key);
+      if (active.contains(key)) {
+        again.add(key);
+      } else {
+        offer(key);
+      }
     }
   }
 
   private void offer(AtomicStore.Key key) {
-    if (queued.add(key) && !ready.offer(key)) queued.remove(key);
-    if (signal.availablePermits() < WORK_SHARDS) signal.release();
+    if (queued.add(key) && !ready.offer(key)) {
+      queued.remove(key);
+    }
+    if (signal.availablePermits() < WORK_SHARDS) {
+      signal.release();
+    }
   }
 
   void awaitWork(long milliseconds) throws InterruptedException {

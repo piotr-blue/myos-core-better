@@ -90,8 +90,11 @@ class SharedInputDefinitionsTest {
       assertEquals(
           1, ((Number) f.service.graphs().readValue("alice", root, "/stats/total")).intValue());
     } finally {
-      if (prior == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", prior);
+      if (prior == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", prior);
+      }
     }
   }
 }

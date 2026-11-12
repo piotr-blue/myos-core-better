@@ -15,7 +15,9 @@ final class HostedTimelineWriter {
 
   static LanguageContent actor(
       ProviderSigning signing, String account, Map<String, Object> policy) {
-    if (policy.isEmpty()) return signing.typed("Principal Actor", Map.of("account", account));
+    if (policy.isEmpty()) {
+      return signing.typed("Principal Actor", Map.of("account", account));
+    }
     validate(policy);
     return signing.typed(
         "Principal Actor",
@@ -26,24 +28,28 @@ final class HostedTimelineWriter {
     if (!policy.keySet().equals(Set.of("kind", "userId"))
         || !"HUMAN_REPRESENTATIVE".equals(policy.get("kind"))
         || !(policy.get("userId") instanceof String user)
-        || !Repository.identifier(user).equals(user))
+        || !Repository.identifier(user).equals(user)) {
       throw new IllegalStateException("Unsupported Timeline writer policy");
+    }
   }
 
   static List<AtomicStore.Check> authorize(
       AtomicStore store, String account, Map<String, Object> policy, CoreAccounts.Session session) {
-    if (policy.isEmpty()) return List.of();
+    if (policy.isEmpty()) {
+      return List.of();
+    }
     validate(policy);
     if (session == null
         || !account.equals(session.principal().account())
         || !policy.get("userId").equals(session.userId())
         || !session.principal().user()
             && (session.principal().credential() == null
-                || session.principal().credential().owner() == null))
+                || session.principal().credential().owner() == null)) {
       throw new ConsoleProblem(
           403,
           "representative_writer_required",
           "This Timeline requires its authenticated representative.");
+    }
     return CoreCommandAuthority.verify(
         store, account, CoreCommandAuthority.capture(session), "timelines/entries");
   }

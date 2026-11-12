@@ -29,7 +29,9 @@ final class TimelinePermissions implements AutoCloseable {
 
   /** Installed by the host before workers start, never selected by a document or request. */
   void useLocalHistory(LocalHistory value) {
-    if (local != null) throw new IllegalStateException("Local access history already installed");
+    if (local != null) {
+      throw new IllegalStateException("Local access history already installed");
+    }
     local = Objects.requireNonNull(value);
   }
 
@@ -75,9 +77,10 @@ final class TimelinePermissions implements AutoCloseable {
     privateSources.forEach(a -> sources.put(a.source().timeline(), a));
     Map<BlueId, TimelineReadAccess.Requirement> bySource = new HashMap<>();
     requirements.forEach(r -> bySource.put(r.timeline(), r));
-    if (!sources.keySet().equals(bySource.keySet()))
+    if (!sources.keySet().equals(bySource.keySet())) {
       throw new Unavailable(
           "Every private receiving source needs one document read-access requirement");
+    }
     List<Binding> bindings = new ArrayList<>();
     for (TimelineReadAccess.Requirement requirement : requirements) {
       TimelineArchive source = sources.get(requirement.timeline());
@@ -111,11 +114,14 @@ final class TimelinePermissions implements AutoCloseable {
     List<Map<String, Object>> facts = new ArrayList<>();
     for (Binding binding : selection.bindings()) {
       // A public control occurrence never depends on the private permission it may change.
-      if (!binding.requirement().timeline().value().equals(order.timeline())) continue;
+      if (!binding.requirement().timeline().value().equals(order.timeline())) {
+        continue;
+      }
       TimelineInputs.Cut cut = cuts.get(binding.control().source().timeline().value());
-      if (cut == null || cut.completeBefore() <= order.timestamp())
+      if (cut == null || cut.completeBefore() <= order.timestamp()) {
         return new Decision(
             TimelineIngress.Status.WAITING, "Control history does not close this input", List.of());
+      }
       Set<String> allowed = new HashSet<>();
       List<Map<String, Object>> grants = new ArrayList<>();
       for (BlueId grant :
@@ -125,21 +131,26 @@ final class TimelinePermissions implements AutoCloseable {
         Optional<TimelineAccessHistory.Result> protectedState =
             local == null ? Optional.empty() : local.at(binding.control(), grant, order);
         TimelineAccessHistory.Result result;
-        if (protectedState.isPresent()) result = protectedState.orElseThrow();
-        else {
+        if (protectedState.isPresent()) {
+          result = protectedState.orElseThrow();
+        } else {
           LanguageDocument initial = TimelineReadAccess.grant(selection.document(), grant);
           result =
               history.at(binding.control(), binding.discovery(), initial, cut.position(), order);
         }
-        if (!result.caughtUp())
+        if (!result.caughtUp()) {
           return new Decision(
               TimelineIngress.Status.RETRY, "Verified access history is catching up", List.of());
+        }
         if (result.state().isPresent()) {
           TimelineAccessHistory.State state = result.state().orElseThrow();
-          if (state.timelines().contains(binding.requirement().timeline()))
+          if (state.timelines().contains(binding.requirement().timeline())) {
             allowed.addAll(state.keys());
+          }
           grants.add(Map.of("initial", grant.value(), "executed", state.document().value()));
-        } else grants.add(Map.of("initial", grant.value(), "published", false));
+        } else {
+          grants.add(Map.of("initial", grant.value(), "published", false));
+        }
       }
       facts.add(
           Map.of(
@@ -159,11 +170,12 @@ final class TimelinePermissions implements AutoCloseable {
               grants,
               "requiredKeys",
               binding.requirement().keys().stream().sorted().toList()));
-      if (!allowed.containsAll(binding.requirement().keys()))
+      if (!allowed.containsAll(binding.requirement().keys())) {
         return new Decision(
             TimelineIngress.Status.PENDING_ACCESS,
             "Required readers lack established access at this original input",
             List.copyOf(facts));
+      }
     }
     return new Decision(
         TimelineIngress.Status.APPLIED, "Historical read access established", List.copyOf(facts));

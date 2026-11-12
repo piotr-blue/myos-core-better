@@ -48,9 +48,13 @@ final class TimelineReadAccess {
       synchronized (this) {
         Reference reference = documents.get(documentId);
         if (reference != null) {
-          if (reference.policy() == null) return List.of();
+          if (reference.policy() == null) {
+            return List.of();
+          }
           Entry found = entries.get(reference.policy());
-          if (found != null) return found.requirements();
+          if (found != null) {
+            return found.requirements();
+          }
         }
       }
       // Capture the selected node once: separate view observations would reopen a cold
@@ -72,15 +76,22 @@ final class TimelineReadAccess {
       long weight = 256;
       for (Requirement requirement : decoded) {
         weight += 256 + 2L * requirement.timeline().value().length();
-        for (String key : requirement.keys()) weight += 64 + 2L * key.length();
-        for (BlueId grant : requirement.grants()) weight += 64 + 2L * grant.value().length();
+        for (String key : requirement.keys()) {
+          weight += 64 + 2L * key.length();
+        }
+        for (BlueId grant : requirement.grants()) {
+          weight += 64 + 2L * grant.value().length();
+        }
       }
       synchronized (this) {
         Entry previous = entries.remove(identity);
-        if (previous != null) bytes -= previous.weight();
+        if (previous != null) {
+          bytes -= previous.weight();
+        }
         if (weight <= MAXIMUM_BYTES) {
-          while (bytes + weight > MAXIMUM_BYTES || entries.size() >= 128)
+          while (bytes + weight > MAXIMUM_BYTES || entries.size() >= 128) {
             bytes -= entries.pollFirstEntry().getValue().weight();
+          }
           entries.put(identity, new Entry(decoded, weight));
           bytes += weight;
           remember(documentId, identity);
@@ -102,10 +113,15 @@ final class TimelineReadAccess {
               + 2L * document.value().length()
               + (policy == null ? 0 : 2L * policy.value().length());
       Reference previous = documents.remove(document);
-      if (previous != null) referenceBytes -= previous.weight();
-      if (weight > MAXIMUM_BYTES) return;
-      while (referenceBytes > MAXIMUM_BYTES - weight || documents.size() >= 4096)
+      if (previous != null) {
+        referenceBytes -= previous.weight();
+      }
+      if (weight > MAXIMUM_BYTES) {
+        return;
+      }
+      while (referenceBytes > MAXIMUM_BYTES - weight || documents.size() >= 4096) {
         referenceBytes -= documents.pollFirstEntry().getValue().weight();
+      }
       documents.put(document, new Reference(policy, weight));
       referenceBytes += weight;
     }
@@ -113,7 +129,9 @@ final class TimelineReadAccess {
 
   static List<Requirement> requirements(LanguageDocument document) {
     LanguageView policy = document.at(POINTER);
-    if (!policy.exists()) return List.of();
+    if (!policy.exists()) {
+      return List.of();
+    }
     return parse(policy);
   }
 
@@ -126,7 +144,9 @@ final class TimelineReadAccess {
       int size = bounded(grants, "grants");
       for (int j = 0; j < size; j++) {
         LanguageView candidate = grants.at("/items/" + j);
-        if (!id(candidate).equals(expected)) continue;
+        if (!id(candidate).equals(expected)) {
+          continue;
+        }
         LanguageContent content = candidate.content().orElseThrow();
         return Language.newBuilder().content(content).build().read(expected);
       }
@@ -136,8 +156,9 @@ final class TimelineReadAccess {
 
   private static List<Requirement> parse(LanguageView policy) {
     if (!new HashSet<>(policy.keys()).equals(Set.of("profile", "requirements"))
-        || !PROFILE.equals(policy.at("/profile").text()))
+        || !PROFILE.equals(policy.at("/profile").text())) {
       throw new IllegalArgumentException("Unsupported document Timeline read-access policy");
+    }
     LanguageView list = policy.at("/requirements");
     int size = bounded(list, "requirements");
     Set<BlueId> sources = new HashSet<>();
@@ -145,26 +166,33 @@ final class TimelineReadAccess {
     Set<BlueId> allGrants = new HashSet<>();
     for (int i = 0; i < size; i++) {
       LanguageView item = list.at("/items/" + i);
-      if (!new HashSet<>(item.keys()).equals(Set.of("timeline", "keys", "grants")))
+      if (!new HashSet<>(item.keys()).equals(Set.of("timeline", "keys", "grants"))) {
         throw new IllegalArgumentException("Read access requires timeline, keys and grants");
+      }
       BlueId timeline = id(item.at("/timeline"));
-      if (!sources.add(timeline)) throw new IllegalArgumentException("Duplicate access timeline");
+      if (!sources.add(timeline)) {
+        throw new IllegalArgumentException("Duplicate access timeline");
+      }
       LanguageView keys = item.at("/keys"), grants = item.at("/grants");
       int keyCount = bounded(keys, "keys"), grantCount = bounded(grants, "grants");
       Set<String> selectedKeys = new LinkedHashSet<>();
       for (int j = 0; j < keyCount; j++) {
         String key = keys.at("/items/" + j).text();
-        if (!key.matches("[0-9a-f]{64}") || !selectedKeys.add(key))
+        if (!key.matches("[0-9a-f]{64}") || !selectedKeys.add(key)) {
           throw new IllegalArgumentException("Distinct canonical Ed25519 reader keys required");
+        }
       }
       Set<BlueId> selectedGrants = new LinkedHashSet<>();
-      for (int j = 0; j < grantCount; j++)
-        if (!selectedGrants.add(id(grants.at("/items/" + j))))
+      for (int j = 0; j < grantCount; j++) {
+        if (!selectedGrants.add(id(grants.at("/items/" + j)))) {
           throw new IllegalArgumentException("Duplicate access grant");
+        }
+      }
       result.add(new Requirement(timeline, selectedKeys, selectedGrants));
       allGrants.addAll(selectedGrants);
-      if (allGrants.size() > 32)
+      if (allGrants.size() > 32) {
         throw new IllegalArgumentException("At most 32 distinct access grants per document");
+      }
     }
     return List.copyOf(result);
   }
@@ -188,8 +216,9 @@ final class TimelineReadAccess {
 
   private static int bounded(LanguageView list, String field) {
     int size = list.size();
-    if (size < 1 || size > 32)
+    if (size < 1 || size > 32) {
       throw new IllegalArgumentException("Read-access " + field + " requires 1..32 values");
+    }
     return size;
   }
 

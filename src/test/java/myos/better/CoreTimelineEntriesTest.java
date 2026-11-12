@@ -41,7 +41,9 @@ class CoreTimelineEntriesTest {
       assertTrue(JsonText.of(message).contains(f.initial));
       f.fixture.runner.start();
       long until = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(8);
-      while (f.value() == 0 && System.nanoTime() < until) Thread.sleep(10);
+      while (f.value() == 0 && System.nanoTime() < until) {
+        Thread.sleep(10);
+      }
       assertEquals(1, f.value());
       assertEquals(first, f.entries.append("owner", f.timeline, "one", input));
       assertEquals(1, f.fixture.timelines.hosted().head("owner", f.timeline).count());

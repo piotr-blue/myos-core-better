@@ -58,14 +58,18 @@ final class NotifyingStore implements AtomicStore {
 
   public boolean commit(List<Write> writes, List<Check> checks) {
     boolean committed = delegate.commit(writes, checks);
-    if (committed) published(writes);
+    if (committed) {
+      published(writes);
+    }
     return committed;
   }
 
   public boolean commitWithContent(
       List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
     boolean committed = delegate.commitWithContent(writes, checks, account, pages);
-    if (committed) published(writes);
+    if (committed) {
+      published(writes);
+    }
     return committed;
   }
 

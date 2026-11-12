@@ -37,16 +37,19 @@ final class TimelinePolling {
 
   Map<String, Object> declaration(
       String name, TimelineArchive.Source source, Map<String, Object> reader) {
-    if (source.publicRead() == (reader != null))
+    if (source.publicRead() == (reader != null)) {
       throw new IllegalArgumentException(
           "Public polling is unsigned; private polling requires pinned reader custody");
+    }
     Map<String, Object> row = new LinkedHashMap<>();
     row.put("format", FORMAT);
     row.put("account", source.account());
     row.put("source", Repository.identifier(name));
     row.put("provider", source.provider().value());
     row.put("timeline", source.timeline().value());
-    if (reader != null) row.put("reader", Map.copyOf(reader));
+    if (reader != null) {
+      row.put("reader", Map.copyOf(reader));
+    }
     AtomicStore.Key key = key(source.account(), name);
     row.put("work", index(Math.floorMod(key.hashCode(), SHARDS)));
     row.put("position", key.partition() + "#" + key.sort());
@@ -54,14 +57,17 @@ final class TimelinePolling {
   }
 
   AtomicStore.Page page(int shard, String after, int maximum) {
-    if (shard < 0 || shard >= SHARDS || maximum < 1 || maximum > 64)
+    if (shard < 0 || shard >= SHARDS || maximum < 1 || maximum > 64) {
       throw new IllegalArgumentException("Invalid polling page");
+    }
     return store.work(index(shard), after, maximum);
   }
 
   AtomicStore.Row registered(String account, String name) {
     AtomicStore.Row row = store.get(key(account, name));
-    if (row != null) validate(row);
+    if (row != null) {
+      validate(row);
+    }
     return row;
   }
 
@@ -75,9 +81,13 @@ final class TimelinePolling {
   AtomicStore.Row current(AtomicStore.Row hint) {
     validate(hint);
     AtomicStore.Row row = store.get(hint.key());
-    if (row == null) return null;
+    if (row == null) {
+      return null;
+    }
     validate(row);
-    if (!row.equals(hint)) throw new IllegalStateException("Polling registration changed");
+    if (!row.equals(hint)) {
+      throw new IllegalStateException("Polling registration changed");
+    }
     return row;
   }
 
@@ -89,17 +99,22 @@ final class TimelinePolling {
     AtomicStore.Key retryKey = retryKey(hint);
     var rows = store.getAll(List.of(hint.key(), retryKey));
     AtomicStore.Row row = rows.get(hint.key());
-    if (row == null) return new Attempt(null, null);
+    if (row == null) {
+      return new Attempt(null, null);
+    }
     validate(row);
-    if (!row.equals(hint)) throw new IllegalStateException("Polling registration changed");
+    if (!row.equals(hint)) {
+      throw new IllegalStateException("Polling registration changed");
+    }
     return new Attempt(row, retry(retryKey, rows.get(retryKey)));
   }
 
   void requireSource(AtomicStore.Row row, TimelineArchive archive) {
     validate(row);
     Map<String, Object> expected = declaration(text(row, "source"), archive.source(), reader(row));
-    if (!expected.equals(row.value()))
+    if (!expected.equals(row.value())) {
       throw new IllegalStateException("Polling registration differs from adopted source");
+    }
   }
 
   static Map<String, Object> reader(AtomicStore.Row row) {
@@ -120,7 +135,9 @@ final class TimelinePolling {
     }
 
     TimelineFailure failure() {
-      if (!failing()) throw new IllegalStateException("No polling failure");
+      if (!failing()) {
+        throw new IllegalStateException("No polling failure");
+      }
       String code = (String) record.value().get("error");
       return record.value().containsKey("category")
           ? new TimelineFailure(
@@ -169,13 +186,17 @@ final class TimelinePolling {
     for (AtomicStore.Row registration : registrations) {
       AtomicStore.Key key = retryKey(registration);
       Retry retry = retry(key, rows.get(key));
-      if (retry.failing()) failures.put(text(registration, "timeline"), retry.status());
+      if (retry.failing()) {
+        failures.put(text(registration, "timeline"), retry.status());
+      }
     }
     return Collections.unmodifiableMap(failures);
   }
 
   private Retry retry(AtomicStore.Key key, AtomicStore.Row row) {
-    if (row == null) return new Retry(null, true);
+    if (row == null) {
+      return new Retry(null, true);
+    }
     Set<String> fields =
         new HashSet<>(
             row.value().containsKey("category")
@@ -183,8 +204,9 @@ final class TimelinePolling {
                 : Set.of("scope", "failures", "after", "error"));
     if (row.value().containsKey("integrity")) {
       fields.add("integrity");
-      if (!(row.value().get("integrity") instanceof Boolean))
+      if (!(row.value().get("integrity") instanceof Boolean)) {
         throw new IllegalStateException("Invalid polling integrity latch");
+      }
     }
     if (!row.key().equals(key)
         || !row.value().keySet().equals(fields)
@@ -193,16 +215,22 @@ final class TimelinePolling {
         || Repository.number(row.value().get("failures")) > 16
         || Repository.number(row.value().get("after")) < 0
         || !(row.value().get("error") instanceof String error)
-        || !error.matches("[A-Za-z0-9_$]{1,120}"))
+        || !error.matches("[A-Za-z0-9_$]{1,120}")) {
       throw new IllegalStateException("Invalid polling retry state");
+    }
     if (Repository.number(row.value().get("failures")) == 0
         && (Repository.number(row.value().get("after")) != 0
-            || !"None".equals(row.value().get("error"))))
+            || !"None".equals(row.value().get("error")))) {
       throw new IllegalStateException("Invalid cleared polling retry state");
+    }
     Retry result = new Retry(row, false);
-    if (row.value().containsKey("category") && !(row.value().get("recoverable") instanceof Boolean))
+    if (row.value().containsKey("category")
+        && !(row.value().get("recoverable") instanceof Boolean)) {
       throw new IllegalStateException("Invalid polling recovery policy");
-    if (result.failing()) result.failure();
+    }
+    if (result.failing()) {
+      result.failure();
+    }
     return new Retry(
         row, !result.manual() && clock.getAsLong() >= Repository.number(row.value().get("after")));
   }
@@ -218,8 +246,9 @@ final class TimelinePolling {
   /** Publish only against the retry generation observed before starting the provider request. */
   Map<String, Object> failed(
       AtomicStore.Row registration, Retry before, long interval, TimelineFailure failure) {
-    if (!before.ready())
+    if (!before.ready()) {
       return before.failing() ? before.status() : Map.of("automatic", true, "status", "PENDING");
+    }
     long failures =
         before.record() == null
             ? 1
@@ -252,15 +281,21 @@ final class TimelinePolling {
       OwnerSourceFailures.failed(tx, text(registration, "timeline"));
       tx.publish(List.of(write), checks);
       committed = tx.commit();
-    } else committed = store.commit(List.of(write), checks);
-    if (committed) return new Retry(write.next(), false).status();
+    } else {
+      committed = store.commit(List.of(write), checks);
+    }
+    if (committed) {
+      return new Retry(write.next(), false).status();
+    }
     Retry current = retry(registration);
     return current.failing() ? current.status() : Map.of("automatic", true, "status", "PENDING");
   }
 
   void succeeded(Retry before) {
     boolean integrity = before.integrity();
-    if (!before.failing() && !integrity) return;
+    if (!before.failing() && !integrity) {
+      return;
+    }
     // Keep the revision after recovery. Delete/recreate would let an older success clear a new
     // failure.
     var writes =
@@ -275,13 +310,17 @@ final class TimelinePolling {
               before.record().key().partition(),
               "POLL#" + before.record().key().sort().substring("POLL_RETRY#".length()));
       var registration = store.get(registrationKey);
-      if (registration == null) return;
+      if (registration == null) {
+        return;
+      }
       validate(registration);
       var tx = new OwnerMetadata(store, text(registration, "account")).begin();
       OwnerSourceFailures.recovered(tx, text(registration, "timeline"));
       tx.publish(writes, List.of(new AtomicStore.Check(registrationKey, registration.version())));
       tx.commit();
-    } else store.commit(writes, List.of());
+    } else {
+      store.commit(writes, List.of());
+    }
   }
 
   void reset(AtomicStore.Row registration) {
@@ -290,14 +329,18 @@ final class TimelinePolling {
       var cleared =
           new LinkedHashMap<String, Object>(
               Map.of("scope", scope, "failures", 0, "after", 0, "error", "None"));
-      if (before.integrity()) cleared.put("integrity", true);
+      if (before.integrity()) {
+        cleared.put("integrity", true);
+      }
       if (store.commit(
           List.of(
               AtomicStore.Write.put(
                   retryKey(registration),
                   before.record() == null ? 0 : before.record().version(),
                   cleared)),
-          List.of(new AtomicStore.Check(registration.key(), registration.version())))) return;
+          List.of(new AtomicStore.Check(registration.key(), registration.version())))) {
+        return;
+      }
     }
     throw new IllegalStateException("Concurrent polling retry reset");
   }
@@ -310,15 +353,18 @@ final class TimelinePolling {
     Set<String> fields =
         new HashSet<>(
             Set.of("format", "account", "source", "provider", "timeline", "work", "position"));
-    if (row.value().containsKey("reader")) fields.add("reader");
+    if (row.value().containsKey("reader")) {
+      fields.add("reader");
+    }
     AtomicStore.Key key = key(text(row, "account"), text(row, "source"));
     if (row.version() != 1
         || !row.key().equals(key)
         || !fields.equals(row.value().keySet())
         || !FORMAT.equals(row.value().get("format"))
         || !index(Math.floorMod(key.hashCode(), SHARDS)).equals(row.value().get("work"))
-        || !(key.partition() + "#" + key.sort()).equals(row.value().get("position")))
+        || !(key.partition() + "#" + key.sort()).equals(row.value().get("position"))) {
       throw new IllegalStateException("Invalid polling registration");
+    }
   }
 
   static String text(AtomicStore.Row row, String field) {

@@ -362,7 +362,11 @@ class CoreOwnershipTest {
     }
 
     void ready() {
-      for (int i = 0; i < 100; i++) if (store.backfillPage()) return;
+      for (int i = 0; i < 100; i++) {
+        if (store.backfillPage()) {
+          return;
+        }
+      }
       fail("Directory backfill did not complete");
     }
 

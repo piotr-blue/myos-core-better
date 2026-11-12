@@ -96,15 +96,18 @@ final class HostedTimelines {
       Map<String, Object> writer) {
     Repository.identifier(account);
     Repository.identifier(command);
-    if (name == null || name.isBlank() || name.length() > 200)
+    if (name == null || name.isBlank() || name.length() > 200) {
       throw new IllegalArgumentException("Timeline name must contain 1..200 characters");
+    }
     String scope = scope(account);
     AtomicStore.Key receipt = new AtomicStore.Key(scope, "CREATE#" + digest(command));
     String fingerprint =
         fixedUrl == null
             ? digest(publicRead ? List.of("create-public", name) : List.of("create", name))
             : digest(List.of("create-control", name, fixedUrl));
-    if (!writer.isEmpty()) fingerprint = digest(List.of(fingerprint, writer));
+    if (!writer.isEmpty()) {
+      fingerprint = digest(List.of(fingerprint, writer));
+    }
     String resource =
         digest(List.of(namespace, signing.provider().blueId().value(), account, command));
     String url =
@@ -149,7 +152,9 @@ final class HostedTimelines {
       pause(attempt);
       AtomicStore.Row prior = receipt(receipt, fingerprint);
       if (prior != null) {
-        if (publicRead) publishPublicOwner(account, timeline.blueId());
+        if (publicRead) {
+          publishPublicOwner(account, timeline.blueId());
+        }
         return created(prior.value());
       }
       Map<String, Object> result = new LinkedHashMap<>(initial);
@@ -170,7 +175,9 @@ final class HostedTimelines {
               receipt,
               fingerprint);
       if (committed != null) {
-        if (publicRead) publishPublicOwner(account, timeline.blueId());
+        if (publicRead) {
+          publishPublicOwner(account, timeline.blueId());
+        }
         return created(committed);
       }
     }
@@ -180,10 +187,13 @@ final class HostedTimelines {
   /** Public discovery is separate from private grant membership. */
   Optional<String> publicOwner(BlueId timeline) {
     var row = repository.store.get(publicSourceKey(timeline));
-    if (row == null) return Optional.empty();
+    if (row == null) {
+      return Optional.empty();
+    }
     String owner = (String) row.value().get("owner");
-    if (!head(owner, timeline).created().timeline().at("/publicRead").bool())
+    if (!head(owner, timeline).created().timeline().at("/publicRead").bool()) {
       throw new IllegalStateException("Public source index refers to a private Timeline");
+    }
     return Optional.of(owner);
   }
 
@@ -197,8 +207,9 @@ final class HostedTimelines {
     var value = Map.<String, Object>of("owner", owner);
     repository.store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of());
     var row = repository.store.get(key);
-    if (row == null || row.version() != 1 || !row.value().equals(value))
+    if (row == null || row.version() != 1 || !row.value().equals(value)) {
       throw new IllegalStateException("Conflicting public Timeline owner");
+    }
   }
 
   Head head(String account, BlueId timeline) {
@@ -206,26 +217,32 @@ final class HostedTimelines {
   }
 
   AtomicStore.Page list(String account, String after, int limit) {
-    if (limit < 1 || limit > 100)
+    if (limit < 1 || limit > 100) {
       throw new IllegalArgumentException("Timeline page limit must be 1..100");
-    if (after != null && !after.startsWith("TIMELINE#"))
+    }
+    if (after != null && !after.startsWith("TIMELINE#")) {
       throw new IllegalArgumentException("Invalid Timeline cursor");
+    }
     return repository.store.query(scope(account), "TIMELINE#", after, limit);
   }
 
   Created resource(String account, String resource) {
-    if (!resource.matches("[a-f0-9]{64}"))
+    if (!resource.matches("[a-f0-9]{64}")) {
       throw new IllegalArgumentException("Invalid Timeline resource");
+    }
     AtomicStore.Row row =
         repository.store.get(new AtomicStore.Key(scope(account), "RESOURCE#" + resource));
-    if (row == null) throw new Missing();
+    if (row == null) {
+      throw new Missing();
+    }
     return head(account, new BlueId((String) row.value().get("timeline"))).created();
   }
 
   AtomicStore.Page entries(String account, BlueId timeline, String after, int limit) {
     state(account, timeline);
-    if (limit < 1 || limit > 100 || after != null && !after.matches("ENTRY#[0-9]{20}"))
+    if (limit < 1 || limit > 100 || after != null && !after.matches("ENTRY#[0-9]{20}")) {
       throw new IllegalArgumentException("Invalid entry page");
+    }
     return repository.store.query(
         key(account, timeline.value(), "STATE").partition(), "ENTRY#", after, limit);
   }
@@ -313,34 +330,40 @@ final class HostedTimelines {
     var policy =
         writer(state(account, timeline)); // Establish ownership before caller-supplied content.
     HostedTimelineWriter.authorize(repository.store, account, policy, session);
-    if (message.toJson().getBytes(StandardCharsets.UTF_8).length > 256 * 1024)
+    if (message.toJson().getBytes(StandardCharsets.UTF_8).length > 256 * 1024) {
       throw new IllegalArgumentException("Timeline message exceeds 256 KiB");
+    }
     LanguageContent actor = HostedTimelineWriter.actor(signing, account, policy);
     String fingerprint =
         digest(
             List.of("append", timeline.value(), message.blueId().value(), actor.blueId().value()));
-    if (assertPrevious)
+    if (assertPrevious) {
       fingerprint =
           digest(
               List.of(
                   fingerprint,
                   "previous",
                   expectedPrevious == null ? "" : expectedPrevious.value()));
+    }
     AtomicStore.Key receipt = new AtomicStore.Key(scope(account), "APPEND#" + digest(command));
     try (DocumentLocks.Lease ignored =
         locks.acquire(key(account, timeline.value(), "STATE").partition())) {
       for (int attempt = 0; attempt < 16; attempt++) {
         pause(attempt);
         AtomicStore.Row prior = receipt(receipt, fingerprint);
-        if (prior != null) return published(account, prior.value());
+        if (prior != null) {
+          return published(account, prior.value());
+        }
         AtomicStore.Row before = state(account, timeline);
-        if (!policy.equals(writer(before)))
+        if (!policy.equals(writer(before))) {
           throw new IllegalStateException("Timeline writer changed");
+        }
         var writerChecks =
             HostedTimelineWriter.authorize(repository.store, account, policy, session);
-        if (assertPrevious && !Objects.equals(expectedPrevious, head(before).last()))
+        if (assertPrevious && !Objects.equals(expectedPrevious, head(before).last())) {
           throw new ConsoleProblem(
               409, "PREVIOUS_ENTRY_MISMATCH", "Timeline head no longer matches prevEntry.");
+        }
         beforePublication.run();
         Prepared prepared =
             prepare(
@@ -381,13 +404,16 @@ final class HostedTimelines {
           }
           tx.publish(writes, writerChecks);
           committed = tx.commit() ? prepared.metadata() : null;
-        } else committed = publish(writes, receipt, fingerprint, writerChecks);
+        } else {
+          committed = publish(writes, receipt, fingerprint, writerChecks);
+        }
         if (committed != null) {
           // A successful local publication already owns this exact result. An uncertain response
           // may instead recover a peer's different winning occurrence, which must be loaded.
           if (prepared.value().entry().blueId().value().equals(committed.get("entry"))
-              && Repository.number(committed.get("position")) == prepared.value().position())
+              && Repository.number(committed.get("position")) == prepared.value().position()) {
             return prepared.value();
+          }
           return published(account, committed);
         }
       }
@@ -429,15 +455,21 @@ final class HostedTimelines {
     long time =
         Math.max(
             authorityBound, Math.max(now(), Math.max(head.completeBefore(), head.timestamp() + 1)));
-    if (time > MAX_TIME) throw new IllegalStateException("Timeline timestamp range exhausted");
+    if (time > MAX_TIME) {
+      throw new IllegalStateException("Timeline timestamp range exhausted");
+    }
     Map<String, Object> entry = new LinkedHashMap<>();
     entry.put("type", ref(signing.coordination().export("Timeline Entry")));
     entry.put("timeline", ref(timeline));
     entry.put("timestamp", time);
     entry.put("actor", wire(actor));
     entry.put("message", wire(message));
-    if (head.last() != null) entry.put("prevEntry", ref(head.last()));
-    if (operation) entry.put("operation", wire(message));
+    if (head.last() != null) {
+      entry.put("prevEntry", ref(head.last()));
+    }
+    if (operation) {
+      entry.put("operation", wire(message));
+    }
     Language entryLanguage =
         signing.language().toBuilder()
             .content(head.created().timeline())
@@ -495,7 +527,7 @@ final class HostedTimelines {
                     key(account, timeline.value(), "ENTRY_ID#" + value.blueId()),
                     0,
                     Map.of("position", position))));
-    if (OwnerGraphs.enabled() && retainContent)
+    if (OwnerGraphs.enabled() && retainContent) {
       publication.add(
           AtomicStore.Write.put(
               authorityKey(account),
@@ -507,6 +539,7 @@ final class HostedTimelines {
                   Math.max(
                       time,
                       authority == null ? 0 : Repository.number(authority.value().get("last"))))));
+    }
     var target = operation ? message.at("/document").observation("exactId") : null;
     return new Prepared(
         new Published(position, value, complete),
@@ -531,8 +564,9 @@ final class HostedTimelines {
       var before = repository.store.get(authorityKey(account));
       if (requiredTimestamp >= 0
           && before != null
-          && Repository.number(before.value().get("before")) > requiredTimestamp)
+          && Repository.number(before.value().get("before")) > requiredTimestamp) {
         return Repository.number(before.value().get("before"));
+      }
       long bound =
           Math.max(
               now(),
@@ -562,18 +596,24 @@ final class HostedTimelines {
                   before == null ? 1 : before.version() + 1,
                   "before",
                   bound)));
-      if (tx.commit()) return bound;
+      if (tx.commit()) {
+        return bound;
+      }
     }
     throw contention();
   }
 
   /** Enrollment requires the exact verified archive head and an unchanged owned publisher head. */
   void enroll(TimelineArchive archive) {
-    if (!OwnerGraphs.enabled() || archive.storage() != repository.store) return;
+    if (!OwnerGraphs.enabled() || archive.storage() != repository.store) {
+      return;
+    }
     var source = archive.source();
     String account = source.account();
     var frontiers = new OwnerFrontiers(repository.store, account);
-    if (frontiers.local(source.timeline().value())) return;
+    if (frontiers.local(source.timeline().value())) {
+      return;
+    }
     AtomicStore.Row owned;
     try {
       owned = state(account, source.timeline());
@@ -581,9 +621,13 @@ final class HostedTimelines {
       return;
     }
     var head = head(owned);
-    if (!head.created().timeline().at("/url").text().equals(source.url())) return;
+    if (!head.created().timeline().at("/url").text().equals(source.url())) {
+      return;
+    }
     var prefix = archive.prefix();
-    if (!Objects.equals(prefix.headId().orElse(null), head.last())) return;
+    if (!Objects.equals(prefix.headId().orElse(null), head.last())) {
+      return;
+    }
     var authority = repository.store.get(authorityKey(account));
     var tx = frontiers.metadata.begin();
     OwnerSources.project(frontiers, tx, archive, archive.view().version());
@@ -626,7 +670,9 @@ final class HostedTimelines {
           TimelinePublisher.forTimeline(
               signing.coordination(), signing.provider(), source.timeline());
       validators.put(key, found);
-      while (validators.size() > 4) validators.remove(validators.keySet().iterator().next());
+      while (validators.size() > 4) {
+        validators.remove(validators.keySet().iterator().next());
+      }
     }
     return found;
   }
@@ -634,7 +680,9 @@ final class HostedTimelines {
   /** Reserved public control history. External owner routes cannot choose its identity or actor. */
   Created control() {
     Created selected = reservedControl;
-    if (selected != null) return selected;
+    if (selected != null) {
+      return selected;
+    }
     synchronized (this) {
       if (reservedControl == null) {
         bindControl();
@@ -662,18 +710,21 @@ final class HostedTimelines {
     for (int attempt = 0; attempt < 3; attempt++) {
       AtomicStore.Row row = repository.store.get(key);
       if (row != null) {
-        if (row.version() != 1 || !row.value().equals(value))
+        if (row.version() != 1 || !row.value().equals(value)) {
           throw new IllegalArgumentException(
               "Provider control history already belongs to another namespace");
+        }
         return;
       }
       try {
-        if (repository.store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of()))
+        if (repository.store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of())) {
           return;
+        }
       } catch (RuntimeException uncertain) {
         AtomicStore.Row committed = repository.store.get(key);
-        if (committed != null && committed.version() == 1 && committed.value().equals(value))
+        if (committed != null && committed.version() == 1 && committed.value().equals(value)) {
           return;
+        }
         throw uncertain;
       }
     }
@@ -711,11 +762,17 @@ final class HostedTimelines {
     AtomicStore.Row state = state(account, timeline);
     // Source discovery precedes the first entry. Its own retained definition is already content,
     // even when the append-content index is empty. Reader authorization happens before this call.
-    if (id.equals(timeline)) return head(state).created().timeline();
-    if (Repository.number(state.value().getOrDefault("contentThrough", 0L)) != head(state).count())
+    if (id.equals(timeline)) {
+      return head(state).created().timeline();
+    }
+    if (Repository.number(state.value().getOrDefault("contentThrough", 0L))
+        != head(state).count()) {
       throw new IllegalStateException("Timeline content index requires migration");
+    }
     TimelineRecords records = sourceRecords(account, state.value());
-    if (!records.contains(id) && !packages.contains(id)) throw new Missing();
+    if (!records.contains(id) && !packages.contains(id)) {
+      throw new Missing();
+    }
     Language language =
         signing.language().toBuilder()
             .content(head(state).created().timeline())
@@ -729,7 +786,9 @@ final class HostedTimelines {
    */
   TimelineRecords retainedContent(String account, BlueId timeline, String url) {
     AtomicStore.Row state = state(account, timeline);
-    if (!head(state).created().timeline().at("/url").text().equals(url)) throw new Missing();
+    if (!head(state).created().timeline().at("/url").text().equals(url)) {
+      throw new Missing();
+    }
     return sourceRecords(account, state.value());
   }
 
@@ -742,27 +801,33 @@ final class HostedTimelines {
    * safely.
    */
   long indexContent(String account, BlueId timeline, int maximumEntries) {
-    if (maximumEntries < 1 || maximumEntries > 16)
+    if (maximumEntries < 1 || maximumEntries > 16) {
       throw new IllegalArgumentException("Migration batch must be 1..16 entries");
+    }
     for (int attempt = 0; attempt < 16; attempt++) {
       pause(attempt);
       AtomicStore.Row before = state(account, timeline);
       long through = Repository.number(before.value().getOrDefault("contentThrough", 0L));
       long count = head(before).count();
-      if (through == count) return through;
-      if (through < 0 || through > count)
+      if (through == count) {
+        return through;
+      }
+      if (through < 0 || through > count) {
         throw new IllegalStateException("Invalid Timeline content boundary");
+      }
       TimelineRecords records = sourceRecords(account, before.value());
       long end = Math.min(count, through + maximumEntries);
-      for (long position = through + 1; position <= end; position++)
+      for (long position = through + 1; position <= end; position++) {
         records.retain(entry(account, timeline, position).attestation());
+      }
       Map<String, Object> after = new LinkedHashMap<>(before.value());
       after.put("contentThrough", end);
       after.put("contentRoot", records.root());
       records.flush();
       if (repository.store.commit(
-          List.of(AtomicStore.Write.put(before.key(), before.version(), after)), List.of()))
+          List.of(AtomicStore.Write.put(before.key(), before.version(), after)), List.of())) {
         return end;
+      }
     }
     throw contention();
   }
@@ -774,11 +839,15 @@ final class HostedTimelines {
 
   Published entry(String account, BlueId timeline, long position) {
     state(account, timeline);
-    if (position < 1) throw new IllegalArgumentException("Positive entry position required");
+    if (position < 1) {
+      throw new IllegalArgumentException("Positive entry position required");
+    }
     AtomicStore.Row row =
         repository.store.get(
             key(account, timeline.value(), "ENTRY#" + Repository.version(position)));
-    if (row == null) throw new Missing();
+    if (row == null) {
+      throw new Missing();
+    }
     return published(account, row.value());
   }
 
@@ -786,12 +855,17 @@ final class HostedTimelines {
     Head current = head(account, timeline);
     AtomicStore.Row index =
         repository.store.get(key(account, timeline.value(), "ENTRY_ID#" + entry));
-    if (index == null) throw new Missing();
+    if (index == null) {
+      throw new Missing();
+    }
     long position = Repository.number(index.value().get("position"));
-    if (position < 1 || position > current.count()) throw new Missing();
+    if (position < 1 || position > current.count()) {
+      throw new Missing();
+    }
     Published result = entry(account, timeline, position);
-    if (!entry.equals(result.entry().blueId()))
+    if (!entry.equals(result.entry().blueId())) {
       throw new IllegalStateException("Stored entry index mismatch");
+    }
     return result;
   }
 
@@ -799,22 +873,29 @@ final class HostedTimelines {
   Snapshot snapshot(String account, BlueId timeline, BlueId checkpoint, long minimum) {
     Head current = head(account, timeline);
     Checkpoint selected;
-    if (checkpoint == null) selected = seal(account, timeline, minimum == 0 ? null : minimum);
-    else {
+    if (checkpoint == null) {
+      selected = seal(account, timeline, minimum == 0 ? null : minimum);
+    } else {
       AtomicStore.Row row =
           repository.store.get(key(account, timeline.value(), "CHECKPOINT#" + checkpoint));
-      if (row == null) throw new Missing();
-      if (row.version() != 1) throw new IllegalStateException("Mutable Timeline checkpoint");
+      if (row == null) {
+        throw new Missing();
+      }
+      if (row.version() != 1) {
+        throw new IllegalStateException("Mutable Timeline checkpoint");
+      }
       selected =
           checkpoint(
               account,
               Repository.number(row.value().get("count")),
               Repository.number(row.value().get("completeBefore")),
               (String) row.value().get("content"));
-      if (!checkpoint.equals(selected.attestation().blueId()))
+      if (!checkpoint.equals(selected.attestation().blueId())) {
         throw new IllegalStateException("Stored checkpoint identity mismatch");
-      if (selected.count() < 0 || selected.count() > current.count())
+      }
+      if (selected.count() < 0 || selected.count() > current.count()) {
         throw new IllegalStateException("Checkpoint outside retained history");
+      }
     }
     return new Snapshot(account, timeline, selected);
   }
@@ -842,11 +923,16 @@ final class HostedTimelines {
     long position(BlueId entry) {
       AtomicStore.Row index =
           repository.store.get(key(account, timeline.value(), "ENTRY_ID#" + entry));
-      if (index == null) throw new Missing();
+      if (index == null) {
+        throw new Missing();
+      }
       long position = Repository.number(index.value().get("position"));
-      if (position > checkpoint.count()) throw new Missing();
-      if (!entry.value().equals(row(position).value().get("entry")))
+      if (position > checkpoint.count()) {
+        throw new Missing();
+      }
+      if (!entry.value().equals(row(position).value().get("entry"))) {
         throw new IllegalStateException("Stored entry index mismatch");
+      }
       return position;
     }
 
@@ -854,8 +940,11 @@ final class HostedTimelines {
       long low = 1, high = checkpoint.count();
       while (low <= high) {
         long middle = low + (high - low) / 2;
-        if (timestamp(middle) <= timestamp) low = middle + 1;
-        else high = middle - 1;
+        if (timestamp(middle) <= timestamp) {
+          low = middle + 1;
+        } else {
+          high = middle - 1;
+        }
       }
       return high;
     }
@@ -870,13 +959,18 @@ final class HostedTimelines {
     }
 
     private AtomicStore.Row row(long position) {
-      if (position < 1 || position > checkpoint.count()) throw new Missing();
+      if (position < 1 || position > checkpoint.count()) {
+        throw new Missing();
+      }
       AtomicStore.Row row =
           repository.store.get(
               key(account, timeline.value(), "ENTRY#" + Repository.version(position)));
-      if (row == null) throw new IllegalStateException("Retained Timeline entry unavailable");
-      if (row.version() != 1 || Repository.number(row.value().get("position")) != position)
+      if (row == null) {
+        throw new IllegalStateException("Retained Timeline entry unavailable");
+      }
+      if (row.version() != 1 || Repository.number(row.value().get("position")) != position) {
         throw new IllegalStateException("Stored Timeline entry position mismatch");
+      }
       return row;
     }
   }
@@ -886,21 +980,27 @@ final class HostedTimelines {
    */
   long before(String account, BlueId timeline, long through, long timestamp) {
     Head current = head(account, timeline);
-    if (through < 0 || through > current.count())
+    if (through < 0 || through > current.count()) {
       throw new IllegalArgumentException("Invalid timeline boundary");
+    }
     long low = 1, high = through;
     while (low <= high) {
       long middle = low + (high - low) / 2;
       AtomicStore.Row row =
           repository.store.get(
               key(account, timeline.value(), "ENTRY#" + Repository.version(middle)));
-      if (row == null) throw new IllegalStateException("Retained timeline entry unavailable");
+      if (row == null) {
+        throw new IllegalStateException("Retained timeline entry unavailable");
+      }
       long time =
           row.value().containsKey("timestamp")
               ? Repository.number(row.value().get("timestamp"))
               : entry(account, timeline, middle).entry().at("/timestamp").integer();
-      if (time < timestamp) low = middle + 1;
-      else high = middle - 1;
+      if (time < timestamp) {
+        low = middle + 1;
+      } else {
+        high = middle - 1;
+      }
     }
     return high;
   }
@@ -908,8 +1008,9 @@ final class HostedTimelines {
   /** Returns only after the clock fence and retained signed checkpoint commit together. */
   @SuppressWarnings("try")
   Checkpoint seal(String account, BlueId timeline, Long minimum) {
-    if (minimum != null && (minimum < 0 || minimum > MAX_TIME + 1))
+    if (minimum != null && (minimum < 0 || minimum > MAX_TIME + 1)) {
       throw new IllegalArgumentException("Invalid completeness bound");
+    }
     try (DocumentLocks.Lease ignored =
         locks.acquire(key(account, timeline.value(), "STATE").partition())) {
       for (int attempt = 0; attempt < 16; attempt++) {
@@ -919,14 +1020,17 @@ final class HostedTimelines {
         if (minimum != null
             && minimum <= head.completeBefore()
             && before.value().containsKey("checkpointCount")
-            && Repository.number(before.value().get("checkpointCount")) == head.count())
+            && Repository.number(before.value().get("checkpointCount")) == head.count()) {
           return checkpoint(
               account,
               head.count(),
               head.completeBefore(),
               (String) before.value().get("checkpoint"));
+        }
         long bound = Math.max(now(), Math.max(head.completeBefore(), head.timestamp() + 1));
-        if (minimum != null && minimum > bound) throw new BoundUnavailable();
+        if (minimum != null && minimum > bound) {
+          throw new BoundUnavailable();
+        }
         LanguageContent signed = signing.checkpoint(timeline, head.last(), bound);
         Language context =
             signing.language().toBuilder().content(head.created().timeline()).build();
@@ -943,18 +1047,23 @@ final class HostedTimelines {
         Map<String, Object> retained =
             Map.of("count", head.count(), "completeBefore", bound, "content", address);
         AtomicStore.Row prior = repository.store.get(checkpoint);
-        if (prior != null && !sameCheckpoint(prior, head.count(), bound, address))
+        if (prior != null && !sameCheckpoint(prior, head.count(), bound, address)) {
           throw new IllegalStateException("Checkpoint identity collision");
+        }
         List<AtomicStore.Write> writes = new ArrayList<>();
         writes.add(AtomicStore.Write.put(before.key(), before.version(), after));
-        if (prior == null) writes.add(AtomicStore.Write.put(checkpoint, 0, retained));
+        if (prior == null) {
+          writes.add(AtomicStore.Write.put(checkpoint, 0, retained));
+        }
         try {
-          if (repository.store.commit(writes, List.of()))
+          if (repository.store.commit(writes, List.of())) {
             return new Checkpoint(head.count(), bound, complete);
+          }
         } catch (RuntimeException uncertain) {
           AtomicStore.Row committed = repository.store.get(checkpoint);
-          if (committed != null && sameCheckpoint(committed, head.count(), bound, address))
+          if (committed != null && sameCheckpoint(committed, head.count(), bound, address)) {
             return checkpoint(account, head.count(), bound, address);
+          }
           throw uncertain;
         }
       }
@@ -985,20 +1094,23 @@ final class HostedTimelines {
     Published result =
         new Published(
             Repository.number(value.get("position")), loaded.member("object"), loaded.value());
-    if (!result.entry().blueId().value().equals(value.get("entry")))
+    if (!result.entry().blueId().value().equals(value.get("entry"))) {
       throw new IllegalStateException("Stored entry identity mismatch");
+    }
     return result;
   }
 
   private Created created(Map<String, Object> value) {
     if (!FORMAT.equals(value.get("format"))
-        && !HostedTimelineWriter.REPRESENTED_FORMAT.equals(value.get("format")))
+        && !HostedTimelineWriter.REPRESENTED_FORMAT.equals(value.get("format"))) {
       throw new IllegalStateException("Unsupported hosted Timeline");
-    if (HostedTimelineWriter.REPRESENTED_FORMAT.equals(value.get("format")))
+    }
+    if (HostedTimelineWriter.REPRESENTED_FORMAT.equals(value.get("format"))) {
       HostedTimelineWriter.validate(
           RuntimeConfiguration.object(value.get("writer"), "Timeline writer"));
-    else if (value.containsKey("writer"))
+    } else if (value.containsKey("writer")) {
       throw new IllegalStateException("Writer requires represented Timeline format");
+    }
     String exact = (String) value.get("timeline");
     LanguageDocument timeline;
     synchronized (definitions) {
@@ -1010,11 +1122,14 @@ final class HostedTimelines {
           .at("/provider")
           .observation("exactId")
           .text()
-          .equals(signing.provider().blueId().value()))
+          .equals(signing.provider().blueId().value())) {
         throw new IllegalStateException("Timeline provider mismatch");
+      }
       if (exact.length() <= 16 * 1024) {
         synchronized (definitions) {
-          if (definitions.size() >= 128) definitions.remove(definitions.keySet().iterator().next());
+          if (definitions.size() >= 128) {
+            definitions.remove(definitions.keySet().iterator().next());
+          }
           definitions.put(exact, timeline);
         }
       }
@@ -1034,9 +1149,12 @@ final class HostedTimelines {
 
   private AtomicStore.Row state(String account, BlueId timeline) {
     AtomicStore.Row row = repository.store.get(key(account, timeline.value(), "STATE"));
-    if (row == null) throw new Missing();
-    if (!head(row).created().id().equals(timeline))
+    if (row == null) {
+      throw new Missing();
+    }
+    if (!head(row).created().id().equals(timeline)) {
       throw new IllegalStateException("Stored Timeline identity mismatch");
+    }
     return row;
   }
 
@@ -1055,7 +1173,9 @@ final class HostedTimelines {
           repository.store, account, writer(state(account, timeline)), session);
       return true;
     } catch (ConsoleProblem denied) {
-      if (denied.status == 403 || denied.status == 401) return false;
+      if (denied.status == 403 || denied.status == 401) {
+        return false;
+      }
       throw denied;
     } catch (Missing absent) {
       return false;
@@ -1064,7 +1184,9 @@ final class HostedTimelines {
 
   private AtomicStore.Row receipt(AtomicStore.Key key, String fingerprint) {
     AtomicStore.Row row = repository.store.get(key);
-    if (row != null && !fingerprint.equals(row.value().get("fingerprint"))) throw new Conflict();
+    if (row != null && !fingerprint.equals(row.value().get("fingerprint"))) {
+      throw new Conflict();
+    }
     return row;
   }
 
@@ -1079,7 +1201,9 @@ final class HostedTimelines {
       String fingerprint,
       List<AtomicStore.Check> checks) {
     try {
-      if (!repository.store.commit(writes, checks)) return null;
+      if (!repository.store.commit(writes, checks)) {
+        return null;
+      }
       return writes.stream()
           .filter(write -> write.key().equals(receipt))
           .findFirst()
@@ -1088,7 +1212,9 @@ final class HostedTimelines {
           .value();
     } catch (RuntimeException uncertain) {
       AtomicStore.Row committed = receipt(receipt, fingerprint);
-      if (committed != null) return committed.value();
+      if (committed != null) {
+        return committed.value();
+      }
       throw uncertain;
     }
   }
@@ -1106,18 +1232,21 @@ final class HostedTimelines {
     for (int attempt = 0; attempt < 3; attempt++) {
       AtomicStore.Row row = repository.store.get(key);
       if (row != null) {
-        if (row.version() != 1 || !row.value().equals(value))
+        if (row.version() != 1 || !row.value().equals(value)) {
           throw new IllegalArgumentException(
               "Hosted provider changed; explicit migration required");
+        }
         return;
       }
       try {
-        if (repository.store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of()))
+        if (repository.store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of())) {
           return;
+        }
       } catch (RuntimeException uncertain) {
         AtomicStore.Row committed = repository.store.get(key);
-        if (committed != null && committed.version() == 1 && committed.value().equals(value))
+        if (committed != null && committed.version() == 1 && committed.value().equals(value)) {
           return;
+        }
         throw uncertain;
       }
     }
@@ -1134,8 +1263,9 @@ final class HostedTimelines {
 
   private long now() {
     long time = clock.getAsLong();
-    if (time < 0 || time > MAX_TIME + 1)
+    if (time < 0 || time > MAX_TIME + 1) {
       throw new IllegalStateException("Provider clock outside protocol range");
+    }
     return time;
   }
 
@@ -1148,9 +1278,12 @@ final class HostedTimelines {
   }
 
   private static void pause(int attempt) {
-    if (attempt == 0) return;
-    if (Thread.currentThread().isInterrupted())
+    if (attempt == 0) {
+      return;
+    }
+    if (Thread.currentThread().isInterrupted()) {
       throw new IllegalStateException("Timeline publication interrupted");
+    }
     java.util.concurrent.locks.LockSupport.parkNanos(
         java.util.concurrent.ThreadLocalRandom.current()
             .nextLong(100_000, 1_000_000L << Math.min(attempt, 5)));

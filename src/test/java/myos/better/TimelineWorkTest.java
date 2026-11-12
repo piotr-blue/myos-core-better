@@ -148,7 +148,9 @@ class TimelineWorkTest {
     @Test
     void waitingHintCapacityKeepsTheDurableFallbackForEveryOtherWaiter() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 40; i++) f.subscribe("alice", "w" + i, List.of("feed"));
+      for (int i = 0; i < 40; i++) {
+        f.subscribe("alice", "w" + i, List.of("feed"));
+      }
       f.settle(
           (account, document) ->
               new TimelineIngress.Outcome(TimelineIngress.Status.WAITING, "Need coverage"));
@@ -164,7 +166,9 @@ class TimelineWorkTest {
     @Test
     void quietCoveragePrioritizesTheWaitingReceiverBeforeScanningIdleSubscribers() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 128; i++) f.subscribeDirected("alice", "d" + i, Set.of());
+      for (int i = 0; i < 128; i++) {
+        f.subscribeDirected("alice", "d" + i, Set.of());
+      }
       f.subscribeDirected("alice", "waiting", Set.of());
       f.settle(
           (account, document) ->
@@ -186,7 +190,9 @@ class TimelineWorkTest {
     @Test
     void addressedPreparationFinishesBeforeQueuedUnrelatedReceivers() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 128; i++) f.subscribeDirected("alice", "d" + i, Set.of());
+      for (int i = 0; i < 128; i++) {
+        f.subscribeDirected("alice", "d" + i, Set.of());
+      }
       f.work.signal(TimelineWork.receiver("alice", "d127"));
       List<String> called = new ArrayList<>();
       AtomicInteger attempts = new AtomicInteger();
@@ -206,7 +212,9 @@ class TimelineWorkTest {
     @Test
     void idleSubscribersDoNotRequireOneTransactionPerSmallNotificationBatch() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 255; i++) f.subscribeDirected("alice", "d%03d".formatted(i), Set.of());
+      for (int i = 0; i < 255; i++) {
+        f.subscribeDirected("alice", "d%03d".formatted(i), Set.of());
+      }
       f.subscribeDirected("alice", "z-observer", Set.of("feed"));
       f.settle();
       f.seen.clear();
@@ -223,7 +231,9 @@ class TimelineWorkTest {
     @Test
     void idleSiblingsStayAsleepButObserversWaitingAndLegacyReceiversWake() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 128; i++) f.subscribeDirected("alice", "d" + i, Set.of());
+      for (int i = 0; i < 128; i++) {
+        f.subscribeDirected("alice", "d" + i, Set.of());
+      }
       f.subscribeDirected("alice", "observer", Set.of("feed"));
       f.subscribeDirected("alice", "waiting", Set.of());
       f.subscribe("alice", "legacy", List.of("feed"));
@@ -245,7 +255,9 @@ class TimelineWorkTest {
     @Test
     void overlappingAcquisitionsKeepEveryRecipientAndUnknownEventsFallBackToBroadcast() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 41; i++) f.subscribeDirected("alice", "d" + i, Set.of());
+      for (int i = 0; i < 41; i++) {
+        f.subscribeDirected("alice", "d" + i, Set.of());
+      }
       f.settle();
       f.seen.clear();
       f.acquireDirected("alice", 1, Set.of("d0"));
@@ -262,7 +274,9 @@ class TimelineWorkTest {
     @Test
     void aConcurrentRecipientCannotBeLostBehindAnAlreadyVisitedPage() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 41; i++) f.subscribeDirected("alice", "d%02d".formatted(i), Set.of());
+      for (int i = 0; i < 41; i++) {
+        f.subscribeDirected("alice", "d%02d".formatted(i), Set.of());
+      }
       f.settle();
       f.seen.clear();
       f.acquireDirected("alice", 1, Set.of("d40"));
@@ -279,7 +293,9 @@ class TimelineWorkTest {
     @Test
     void controlChangesDoNotWakeIdleBusinessReceiversButPreserveWaitersAndDirectInputs() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 128; i++) f.subscribeInputs("d" + i, Set.of("feed"));
+      for (int i = 0; i < 128; i++) {
+        f.subscribeInputs("d" + i, Set.of("feed"));
+      }
       f.subscribeInputs("observer", Set.of("feed", "control"));
       f.subscribeInputs("waiting", Set.of("feed"));
       f.subscribeInputs("pending", Set.of("feed"));
@@ -440,7 +456,9 @@ class TimelineWorkTest {
     @Test
     void pagedFanoutIsTenantScopedAndAConcurrentPrefixRevisitsEarlierSubscribers() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 41; i++) f.subscribe("alice", "d%02d".formatted(i), List.of("feed"));
+      for (int i = 0; i < 41; i++) {
+        f.subscribe("alice", "d%02d".formatted(i), List.of("feed"));
+      }
       f.subscribe("bob", "d00", List.of("feed"));
       f.settle();
       f.seen.clear();
@@ -491,7 +509,9 @@ class TimelineWorkTest {
       FaultStore store = new FaultStore();
       Fixture own = new Fixture(store, "own"), foreign = new Fixture(store, "foreign");
       own.subscribe("alice", "ready", List.of("feed"));
-      for (int i = 0; i < 1024; i++) foreign.subscribe("bob", "d" + i, List.of("feed"));
+      for (int i = 0; i < 1024; i++) {
+        foreign.subscribe("bob", "d" + i, List.of("feed"));
+      }
       AtomicStore.Row untouched = store.get(TimelineWork.receiver("bob", "d0"));
       store.gets = store.returnedWork = store.queries = 0;
       own.settle();
@@ -535,7 +555,9 @@ class TimelineWorkTest {
     @Test
     void legacyFanoutRecoversAllSubscribersAfterLostReplyAndRestartWithoutGlobalDiscovery() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 41; i++) f.subscribe("alice", "d%02d".formatted(i), List.of("feed"));
+      for (int i = 0; i < 41; i++) {
+        f.subscribe("alice", "d%02d".formatted(i), List.of("feed"));
+      }
       f.subscribe("alice", "failed", List.of("feed"));
       f.settle(
           (account, document) ->
@@ -544,8 +566,9 @@ class TimelineWorkTest {
                   : idle());
       f.acquire("alice", "feed", 1);
       f.legacy(TimelineWork.source("alice", "feed"), "SUB#d16");
-      for (int i = 0; i < 41; i++)
+      for (int i = 0; i < 41; i++) {
         f.legacy(TimelineWork.receiver("alice", "d%02d".formatted(i)), null);
+      }
       f.legacy(TimelineWork.receiver("alice", "failed"), null);
       f.work = f.newWorker();
       f.store.loseResponse = true;
@@ -665,7 +688,9 @@ class TimelineWorkTest {
       f.subscribe("alice", "good", List.of("feed"));
       f.settle(
           (account, document) -> {
-            if (document.equals("bad")) throw new TimelineCheckpoints.MissingHistory(document);
+            if (document.equals("bad")) {
+              throw new TimelineCheckpoints.MissingHistory(document);
+            }
             return f.idle.step(account, document);
           });
       assertEquals("FAILED", f.work.status("alice", "bad").get("status"));
@@ -728,9 +753,12 @@ class TimelineWorkTest {
       AtomicStore.Row before = store.get(key);
       Map<String, Object> value = new LinkedHashMap<>(before.value());
       value.remove("scope");
-      if (value.containsKey("work"))
+      if (value.containsKey("work")) {
         value.put("work", "timeline-" + Math.floorMod(key.partition().hashCode(), 16));
-      if (after != null) value.put("after", after);
+      }
+      if (after != null) {
+        value.put("after", after);
+      }
       assertTrue(
           store.commit(List.of(AtomicStore.Write.put(key, before.version(), value)), List.of()));
     }
@@ -741,8 +769,9 @@ class TimelineWorkTest {
 
     void bind(String account) {
       AtomicStore.Key key = new AtomicStore.Key("A#" + account + "#TIMELINE_CONFIG", "STATE");
-      if (store.get(key) == null)
+      if (store.get(key) == null) {
         assertTrue(store.commit(List.of(AtomicStore.Write.put(key, 0, binding)), List.of()));
+      }
     }
 
     final Set<String> seen = new HashSet<>();

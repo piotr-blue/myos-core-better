@@ -182,7 +182,9 @@ class CoreImagesTest {
 
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean committed = delegate.commit(writes, checks);
-      if (committed) throw new IllegalStateException("Injected lost acknowledgement");
+      if (committed) {
+        throw new IllegalStateException("Injected lost acknowledgement");
+      }
       return false;
     }
   }

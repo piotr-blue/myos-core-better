@@ -66,8 +66,9 @@ class CoreReaderKeysTest {
               Map.<String, Object>of("readerKeyId", "x", "readerPublicKey", "y"),
               Map.<String, Object>of("readerKeyId", ""),
               Map.<String, Object>of("readerPublicKey", " "),
-              Map.<String, Object>of("readerKeyId", 7)))
+              Map.<String, Object>of("readerKeyId", 7))) {
         assertEquals(400, problem(() -> keys.select("alice", selector)).status);
+      }
       var withNull = new HashMap<String, Object>();
       withNull.put("readerPublicKey", null);
       assertEquals(400, problem(() -> keys.select("alice", withNull)).status);
@@ -165,8 +166,9 @@ class CoreReaderKeysTest {
       assertEquals(
           503,
           problem(() -> new CoreReaderKeys(store, null).create("alice", "Reader", "one")).status);
-      for (String name : List.of("", " ", "x".repeat(121)))
+      for (String name : List.of("", " ", "x".repeat(121))) {
         assertEquals(400, problem(() -> keys(store).create("alice", name, "one")).status);
+      }
       assertTrue(store.query("CORE_READERS#alice", "", null, 100).rows().isEmpty());
     }
   }
@@ -204,7 +206,9 @@ class CoreReaderKeysTest {
                     }
                     if (method.getName().equals("commit")
                         && Boolean.TRUE.equals(result)
-                        && lose.getAndSet(false)) throw new IllegalStateException("response lost");
+                        && lose.getAndSet(false)) {
+                      throw new IllegalStateException("response lost");
+                    }
                     return result;
                   });
       assertThrows(IllegalStateException.class, () -> keys(store).create("alice", "Lost", "lost"));

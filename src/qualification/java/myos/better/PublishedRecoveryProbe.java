@@ -30,9 +30,10 @@ public final class PublishedRecoveryProbe {
     var results = new ArrayList<Object>();
     for (int count : List.of(1, 128, 1024)) {
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++) {
         children.put(
             "child-" + i, Map.of("count", i, "history", ProviderSigning.ref(history.blueId())));
+      }
       var source =
           Map.of(
               "children",
@@ -74,8 +75,9 @@ public final class PublishedRecoveryProbe {
                         "probe", page, session.identity(), member, Language.create())
                     : pages.reviewedMember("probe", page, member, Language.create());
             double millis = (System.nanoTime() - started) / 1e6;
-            if (value == null || !expected.equals(value.blueId()))
+            if (value == null || !expected.equals(value.blueId())) {
               throw new AssertionError("Member changed");
+            }
             pair.put(
                 mode,
                 Map.of(
@@ -88,8 +90,9 @@ public final class PublishedRecoveryProbe {
           samples.add(pair);
         }
         if (!Arrays.equals(
-            Json.bytes(snapshot), Json.bytes(new CanonicalSnapshots(store).load("probe", page))))
+            Json.bytes(snapshot), Json.bytes(new CanonicalSnapshots(store).load("probe", page)))) {
           throw new AssertionError("Portable snapshot changed");
+        }
         results.add(Map.of("members", count + 1, "privateHistory", 128, "samples", samples));
       }
     }

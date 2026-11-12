@@ -11,8 +11,9 @@ public final class DashboardRuntimeCatalogue {
   private DashboardRuntimeCatalogue() {}
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 2)
+    if (args.length != 2) {
       throw new IllegalArgumentException("runtime manifest and output file required");
+    }
     Path manifest = Path.of(args[0]);
     try (var store = new MemoryStore()) {
       var loaded = RuntimeConfiguration.load(manifest, store, null);

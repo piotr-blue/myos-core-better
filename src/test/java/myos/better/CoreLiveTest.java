@@ -94,16 +94,19 @@ class CoreLiveTest {
       first.take(0);
       // The 513th distinct resource is the specified bounded-queue reset threshold.
       List<AtomicStore.Write> writes = new ArrayList<>();
-      for (int n = 0; n < 513; n++)
+      for (int n = 0; n < 513; n++) {
         writes.add(
             AtomicStore.Write.put(
                 new AtomicStore.Key("CORE_ADMISSIONS#alice", "admission-" + n),
                 0,
                 Map.of("status", "SUCCEEDED")));
+      }
       live.committed(writes);
       assertEquals(true, first.take(0).get("reset"));
       List<CoreLive.Subscription> subscriptions = new ArrayList<>();
-      for (int n = 1; n < 16; n++) subscriptions.add(live.subscribe("alice"));
+      for (int n = 1; n < 16; n++) {
+        subscriptions.add(live.subscribe("alice"));
+      }
       assertEquals(429, assertThrows(ConsoleProblem.class, () -> live.subscribe("alice")).status);
       subscriptions.removeFirst().close();
       subscriptions.add(live.subscribe("alice"));

@@ -162,12 +162,13 @@ class OwnerInitializationsTest {
                     f.initializations.retry(tx, "a", "retry", "wrong/0");
                     return null;
                   }));
-      for (int i = 0; i < 2; i++)
+      for (int i = 0; i < 2; i++) {
         f.frontiers.change(
             tx -> {
               f.initializations.retry(tx, "a", "retry", claim.permit().evaluation());
               return null;
             });
+      }
       var next = f.claim("a", 60).orElseThrow();
       assertNotEquals(claim.permit().evaluation(), next.permit().evaluation());
       f.settle(next, 70, 29, "APPLIED");
@@ -180,7 +181,9 @@ class OwnerInitializationsTest {
   void pendingDiscoveryIsOrderedBoundedAndDoesNotStarveEarlierWork() {
     try (var store = new JsonBoundaryStore()) {
       var f = new Fixture(store, 2 * MAX);
-      for (int i = 0; i < 70; i++) f.register("root-" + i);
+      for (int i = 0; i < 70; i++) {
+        f.register("root-" + i);
+      }
       assertEquals(64, f.initializations.ready(f.frontiers.metadata.begin(), 0, 64).size());
       var claim = f.claim("root-0", 0).orElseThrow();
       f.frontiers.change(

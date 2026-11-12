@@ -80,7 +80,9 @@ class OwnerTimeIntegrationTest {
       int applied = 0;
       for (int n = 0; n < expected + 2; n++) {
         var result = engine.step(ACCOUNT, ROOT);
-        if (result.status() == TimelineIngress.Status.IDLE) break;
+        if (result.status() == TimelineIngress.Status.IDLE) {
+          break;
+        }
         assertEquals(TimelineIngress.Status.APPLIED, result.status(), result::reason);
         applied++;
       }

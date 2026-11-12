@@ -7,6 +7,8 @@ record Link(String document, long version, String generation) {
         || document.isBlank()
         || version < 0
         || generation == null
-        || generation.isBlank()) throw new IllegalArgumentException("Invalid embedding link");
+        || generation.isBlank()) {
+      throw new IllegalArgumentException("Invalid embedding link");
+    }
   }
 }

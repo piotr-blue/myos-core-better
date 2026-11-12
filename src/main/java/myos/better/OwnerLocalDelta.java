@@ -43,8 +43,9 @@ final class OwnerLocalDelta {
             .toList());
     Set<String> receipts = new HashSet<>();
     for (var selected : claim.sources()) {
-      if (selected.binding().kind() != OwnerFrontiers.Kind.OWNER || selected.receipt() == null)
+      if (selected.binding().kind() != OwnerFrontiers.Kind.OWNER || selected.receipt() == null) {
         continue;
+      }
       var source = records.get("local-completion", selected.receipt());
       if (source == null) {
         timing.fallback = "NO_LOCAL_COMPLETION";
@@ -52,11 +53,15 @@ final class OwnerLocalDelta {
       }
       String prefix = "embedding:" + member + ":";
       String binding = selected.binding().id();
-      if (!binding.startsWith(prefix)) return false;
+      if (!binding.startsWith(prefix)) {
+        return false;
+      }
       String path = binding.substring(prefix.length(), binding.lastIndexOf(':'));
       var edge = records.snapshots.embedding(account, previousPage, member, path);
       var nativeResult = object(source.get("native"));
-      if (!edge.target().equals(object(nativeResult.get("after")).get("root"))) return false;
+      if (!edge.target().equals(object(nativeResult.get("after")).get("root"))) {
+        return false;
+      }
       attachments.add(
           Map.of(
               "path",
@@ -77,8 +82,9 @@ final class OwnerLocalDelta {
             return false;
           }
         }
-        if (source.get("eventContent") instanceof String catalogue && !catalogue.isEmpty())
+        if (source.get("eventContent") instanceof String catalogue && !catalogue.isEmpty()) {
           processor.withContent(records.emissions.provider(account, catalogue));
+        }
         processor.withContent(
             records.snapshots.contentProvider(account, (String) source.get("page")));
         changedMembers.putAll(object(source.get("members")));
@@ -127,20 +133,22 @@ final class OwnerLocalDelta {
             : records.snapshots.retained(account, previousPage, source);
     // The selected archive already retains the complete original-entry closure. Persist
     // its immutable catalogue root and only the source definitions omitted by that archive.
-    if (source != null)
+    if (source != null) {
       source
           .definitions()
           .forEach(
               (id, record) -> {
                 if (!changedContent.containsKey(id.value())
                     && !borrowedContent.containsKey(id.value())
-                    && !retained.test(id))
+                    && !retained.test(id)) {
                   changedContent.put(id.value(), Json.object(record.toJson()));
+                }
               });
-    else
+    } else {
       ((blue.LanguageContent) scope.request().event())
           .records(retained)
           .forEach((id, record) -> changedContent.put(id.value(), Json.object(record.toJson())));
+    }
     changedContent.putAll(
         processor.localContent(
             outcome,
@@ -204,7 +212,9 @@ final class OwnerLocalDelta {
                 Map.copyOf(changedAdmissions),
                 "views",
                 Map.copyOf(changedViews)));
-    if (!birthDelta.isEmpty()) localResult.put("birth", birthDelta);
+    if (!birthDelta.isEmpty()) {
+      localResult.put("birth", birthDelta);
+    }
     return localResult;
   }
 

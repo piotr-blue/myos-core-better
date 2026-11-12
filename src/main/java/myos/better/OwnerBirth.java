@@ -18,7 +18,9 @@ final class OwnerBirth {
       String page,
       String eventContent) {
     var proof = execution.singleBirthCompletion(outcome);
-    if (proof.isEmpty()) return Map.of();
+    if (proof.isEmpty()) {
+      return Map.of();
+    }
     var after = outcome.after();
     var members = new HashMap<String, Object>();
     var admissions = new HashMap<String, Object>();

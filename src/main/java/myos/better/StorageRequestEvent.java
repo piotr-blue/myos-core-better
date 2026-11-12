@@ -25,7 +25,9 @@ final class StorageRequestEvent extends Event {
   public String caller = "";
 
   static <T> T call(String operation, int requestedItems, Supplier<T> request) {
-    if (!TYPE.isEnabled()) return request.get();
+    if (!TYPE.isEnabled()) {
+      return request.get();
+    }
     var event = new StorageRequestEvent();
     event.operation = operation;
     event.requestedItems = requestedItems;

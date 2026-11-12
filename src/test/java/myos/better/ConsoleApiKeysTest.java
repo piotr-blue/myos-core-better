@@ -82,7 +82,7 @@ class ConsoleApiKeysTest {
                   Map.of("source", "message: Hello"))
               .statusCode());
       assertEquals(404, f.get("timelines/" + timeline, "bob").statusCode());
-      for (String method : List.of("GET", "POST", "DELETE"))
+      for (String method : List.of("GET", "POST", "DELETE")) {
         assertEquals(
             403,
             request(
@@ -93,6 +93,7 @@ class ConsoleApiKeysTest {
                     "forbidden",
                     method.equals("POST") ? Map.of("name", "Escalated") : Map.of())
                 .statusCode());
+      }
       assertEquals(404, deletion(f, key, "bob").statusCode());
       assertEquals(200, deletion(f, key, "alice").statusCode());
       assertEquals(401, f.get("documents", token).statusCode());

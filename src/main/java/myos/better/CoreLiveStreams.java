@@ -29,8 +29,9 @@ final class CoreLiveStreams implements AutoCloseable {
   }
 
   void open(HttpExchange exchange, CoreLive updates, String account, Runnable authorize) {
-    if (closed || !capacity.tryAcquire())
+    if (closed || !capacity.tryAcquire()) {
       throw new ConsoleProblem(503, "LIVE_CAPACITY", "Reconnect shortly.");
+    }
     CoreLive.Subscription subscription;
     try {
       subscription = updates.subscribe(account);
@@ -69,21 +70,27 @@ final class CoreLiveStreams implements AutoCloseable {
       while (!closed && !connection.subscription.stopped()) {
         var change = connection.subscription.take(10_000);
         authorize.run();
-        if (connection.subscription.stopped()) break;
+        if (connection.subscription.stopped()) {
+          break;
+        }
         String frame =
             change == null
                 ? ": heartbeat\n\n"
                 : "event: change\ndata: " + JsonText.of(change) + "\n\n";
         output.write(frame.getBytes(StandardCharsets.UTF_8));
         output.flush();
-        if (change != null) Thread.sleep(25);
+        if (change != null) {
+          Thread.sleep(25);
+        }
       }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
     } catch (java.io.IOException | ConsoleProblem disconnected) {
       /* Reconnect requires fresh authorization. */
     } finally {
-      if (deadline != null) deadline.cancel(false);
+      if (deadline != null) {
+        deadline.cancel(false);
+      }
       connection.close();
       active.remove(connection);
       capacity.release();
@@ -115,8 +122,9 @@ final class CoreLiveStreams implements AutoCloseable {
     executor.shutdownNow();
     deadlines.shutdownNow();
     try {
-      if (!executor.awaitTermination(5, TimeUnit.SECONDS))
+      if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
         throw new IllegalStateException("Live streams did not stop");
+      }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Live shutdown interrupted", interrupted);

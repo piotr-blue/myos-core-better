@@ -35,8 +35,9 @@ final class QualificationSourcePrefix {
     var publisher =
         TimelinePublisher.forTimeline(
             QualificationTimeline.COORDINATION, source.provider, source.timeline);
-    if (!publisher.retainValue(reviewed))
+    if (!publisher.retainValue(reviewed)) {
       throw new IllegalStateException("Reviewed target header could not be retained");
+    }
     publisher.shareValidationWith(archive.readContext(Map.of()).verifier());
   }
 
@@ -53,7 +54,9 @@ final class QualificationSourcePrefix {
     var marker = language.readJson("{\"purpose\":\"qualification-content-import\"}");
     var orders = document.at("/orders");
     var keys = orders.keys();
-    if (keys.size() != definitions.size()) throw new AssertionError("Incomplete seed corpus");
+    if (keys.size() != definitions.size()) {
+      throw new AssertionError("Incomplete seed corpus");
+    }
     for (int i = 0; i < keys.size(); i += ORDERS_PER_BATCH) {
       List<Object> references = new ArrayList<>();
       for (int n = i; n < Math.min(i + ORDERS_PER_BATCH, keys.size()); n++) {
@@ -101,6 +104,8 @@ final class QualificationSourcePrefix {
   }
 
   void replay(TimelineArchive oracle) {
-    for (var batch : batches) oracle.acquire(batch.range(), batch.records());
+    for (var batch : batches) {
+      oracle.acquire(batch.range(), batch.records());
+    }
   }
 }

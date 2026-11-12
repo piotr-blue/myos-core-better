@@ -99,8 +99,9 @@ class OwnerGasWorkTest {
         (account, owner) -> {
           assertEquals("alice", account);
           var ready = f.frontiers.ready(clock.get(), 1);
-          if (ready.isEmpty())
+          if (ready.isEmpty()) {
             return new TimelineIngress.Outcome(TimelineIngress.Status.IDLE, "No work");
+          }
           var claim = f.claim(ready.getFirst(), clock.get()).orElseThrow();
           f.complete(claim, 1);
           return new TimelineIngress.Outcome(TimelineIngress.Status.APPLIED, "Applied");

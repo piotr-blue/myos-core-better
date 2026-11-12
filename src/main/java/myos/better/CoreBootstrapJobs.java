@@ -121,7 +121,9 @@ final class CoreBootstrapJobs implements AutoCloseable {
             "REGISTRATION_STORED",
             id -> {
               var key = key(account, id);
-              if (store.get(key) != null) return List.of();
+              if (store.get(key) != null) {
+                return List.of();
+              }
               var job = new LinkedHashMap<String, Object>();
               job.put("format", "myos.core-bootstrap-job/1");
               job.put("account", account);
@@ -136,49 +138,71 @@ final class CoreBootstrapJobs implements AutoCloseable {
               job.put("position", position(clock.millis()));
               return List.of(AtomicStore.Write.put(key, 0, job));
             });
-    if ("PENDING".equals(receipt.get("status")))
+    if ("PENDING".equals(receipt.get("status"))) {
       wake(key(account, (String) receipt.get("admissionId")));
+    }
     return receipt;
   }
 
   synchronized void start() {
-    if (started || stopped) return;
+    if (started || stopped) {
+      return;
+    }
     started = true;
     schedule(0);
   }
 
   private synchronized void wake(AtomicStore.Key key) {
-    if (stopped) return;
-    if (hints.size() < MAX_HINTS) hints.add(key);
-    if (started && !dispatching) schedule(0);
+    if (stopped) {
+      return;
+    }
+    if (hints.size() < MAX_HINTS) {
+      hints.add(key);
+    }
+    if (started && !dispatching) {
+      schedule(0);
+    }
   }
 
   private void schedule(long delay) {
-    if (stopped) return;
-    if (scheduled != null) scheduled.cancel(false);
+    if (stopped) {
+      return;
+    }
+    if (scheduled != null) {
+      scheduled.cancel(false);
+    }
     scheduled = scheduler.schedule(health.guard(this::dispatch), delay, TimeUnit.MILLISECONDS);
   }
 
   private void dispatch() {
     synchronized (this) {
-      if (stopped) return;
+      if (stopped) {
+        return;
+      }
       dispatching = true;
     }
     try {
       if (System.nanoTime() >= nextDiscovery) {
         var page = store.work(SHARD, after, 32);
         after = page.after();
-        for (var row : page.rows())
-          if (Repository.number(row.value().get("due")) <= clock.millis()) wake(row.key());
+        for (var row : page.rows()) {
+          if (Repository.number(row.value().get("due")) <= clock.millis()) {
+            wake(row.key());
+          }
+        }
         nextDiscovery = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
       }
       for (; ; ) {
         AtomicStore.Key key;
         synchronized (this) {
-          if (stopped || inFlight.size() >= WORKERS || hints.isEmpty()) break;
+          if (stopped || inFlight.size() >= WORKERS || hints.isEmpty()) {
+            break;
+          }
           key = hints.iterator().next();
           hints.remove(key);
-          if (!inFlight.add(key)) continue;
+          if (!inFlight.add(key)) {
+            continue;
+          }
         }
         try {
           workers.execute(
@@ -189,7 +213,9 @@ final class CoreBootstrapJobs implements AutoCloseable {
                     } finally {
                       synchronized (this) {
                         inFlight.remove(key);
-                        if (!stopped && !dispatching) schedule(0);
+                        if (!stopped && !dispatching) {
+                          schedule(0);
+                        }
                       }
                     }
                   }));
@@ -215,14 +241,18 @@ final class CoreBootstrapJobs implements AutoCloseable {
   /** One durable attempt, also used by fault tests without timing or scheduler sleeps. */
   void process(AtomicStore.Key key) {
     var row = store.get(key);
-    if (row == null || Repository.number(row.value().get("due")) > clock.millis()) return;
+    if (row == null || Repository.number(row.value().get("due")) > clock.millis()) {
+      return;
+    }
     String account = (String) row.value().get("account");
     String command = (String) row.value().get("command");
     try {
-      if (!"myos.core-bootstrap-job/1".equals(row.value().get("format")))
+      if (!"myos.core-bootstrap-job/1".equals(row.value().get("format"))) {
         throw new IllegalStateException("Unsupported bootstrap job");
-      if (!key.equals(key(account, CoreAdmissions.identity(account, ROUTE, command))))
+      }
+      if (!key.equals(key(account, CoreAdmissions.identity(account, ROUTE, command)))) {
         throw new IllegalStateException("Bootstrap job identity mismatch");
+      }
       var input = read(account, (String) row.value().get("input"));
       admissions.submit(
           account,
@@ -235,7 +265,9 @@ final class CoreBootstrapJobs implements AutoCloseable {
       // A crash between the terminal receipt and deletion is safe: submit returns that receipt
       // without rerunning the accepted action on the next attempt.
       var current = store.get(key);
-      if (current != null) store.commit(List.of(AtomicStore.Write.delete(current)), List.of());
+      if (current != null) {
+        store.commit(List.of(AtomicStore.Write.delete(current)), List.of());
+      }
     } catch (RuntimeException unavailable) {
       defer(key, unavailable);
     }
@@ -262,11 +294,14 @@ final class CoreBootstrapJobs implements AutoCloseable {
         var writes = new ArrayList<AtomicStore.Write>();
         writes.add(AtomicStore.Write.put(key, row.version(), accepted));
         CoreBootstrapParticipants.stage(store, account, command, prepared, writes, checks);
-        if (!blobs.commit(writes, checks))
+        if (!blobs.commit(writes, checks)) {
           throw new ConsoleProblem(503, "BOOTSTRAP_BUSY", "Retry the accepted bootstrap command.");
+        }
       } else if ("ACCEPTED".equals(row.value().get("phase"))) {
         prepared = read(account, (String) row.value().get("prepared"));
-      } else throw new IllegalStateException("Invalid bootstrap job phase");
+      } else {
+        throw new IllegalStateException("Invalid bootstrap job phase");
+      }
       return action.execute(account, command, prepared);
     } catch (ConsoleProblem rejected) {
       throw CoreAdmissions.rejected(rejected);
@@ -280,7 +315,9 @@ final class CoreBootstrapJobs implements AutoCloseable {
   private void defer(AtomicStore.Key key, RuntimeException failure) {
     try {
       var row = store.get(key);
-      if (row == null) return;
+      if (row == null) {
+        return;
+      }
       long attempt = Math.incrementExact(Repository.number(row.value().get("attempt")));
       long due = Math.addExact(clock.millis(), Math.min(30_000, 250L << Math.min(7, attempt - 1)));
       var value = new LinkedHashMap<>(row.value());
@@ -317,7 +354,9 @@ final class CoreBootstrapJobs implements AutoCloseable {
   @Override
   public void close() {
     synchronized (this) {
-      if (stopped) return;
+      if (stopped) {
+        return;
+      }
       stopped = true;
       hints.clear();
       scheduler.shutdownNow();
@@ -325,8 +364,9 @@ final class CoreBootstrapJobs implements AutoCloseable {
     }
     try {
       if (!scheduler.awaitTermination(25, TimeUnit.SECONDS)
-          || !workers.awaitTermination(25, TimeUnit.SECONDS))
+          || !workers.awaitTermination(25, TimeUnit.SECONDS)) {
         throw new IllegalStateException("Bootstrap workers did not stop");
+      }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Interrupted while stopping bootstrap workers");

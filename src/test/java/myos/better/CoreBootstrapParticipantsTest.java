@@ -127,7 +127,11 @@ class CoreBootstrapParticipantsTest {
   }
 
   private static void ready(PublicDirectoryStore store) {
-    for (int i = 0; i < 100; i++) if (store.backfillPage()) return;
+    for (int i = 0; i < 100; i++) {
+      if (store.backfillPage()) {
+        return;
+      }
+    }
     fail("Directory backfill did not finish");
   }
 }

@@ -35,7 +35,9 @@ final class CoreOperationValues {
 
   LanguageContent child(LanguageContent value, String path) {
     var selected = value.at(path).content().orElse(null);
-    if (selected != null) language = language.toBuilder().content(selected).build();
+    if (selected != null) {
+      language = language.toBuilder().content(selected).build();
+    }
     return selected;
   }
 
@@ -44,11 +46,15 @@ final class CoreOperationValues {
   }
 
   int size(LanguageContent value) {
-    if (!value.resolve().kind().equals("list")) return 0;
+    if (!value.resolve().kind().equals("list")) {
+      return 0;
+    }
     try {
       return value.resolve().size();
     } catch (LanguageException absent) {
-      if (absent.category().equals("InvalidOperation")) return 0;
+      if (absent.category().equals("InvalidOperation")) {
+        return 0;
+      }
       throw absent;
     }
   }
@@ -60,8 +66,12 @@ final class CoreOperationValues {
 
   String core(LanguageContent value) {
     var type = value.resolve().type();
-    if (type.isEmpty()) return null;
-    if (coreTypes.containsKey(type.orElseThrow())) return coreTypes.get(type.orElseThrow());
+    if (type.isEmpty()) {
+      return null;
+    }
+    if (coreTypes.containsKey(type.orElseThrow())) {
+      return coreTypes.get(type.orElseThrow());
+    }
     var definition = language.define(type.orElseThrow());
     for (String primitive : List.of("Text", "Integer", "Double", "Boolean", "List", "Dictionary")) {
       var base =
@@ -129,7 +139,9 @@ final class CoreOperationValues {
                     "node", Map.of("$literal", Map.of("blueId", actual.blueId().value())),
                     "pattern", Map.of("blueId", pattern.blueId().value()))));
     var result = evaluator.compile(expression).execute();
-    if (!result.succeeded()) throw new Unresolved(result.failure());
+    if (!result.succeeded()) {
+      throw new Unresolved(result.failure());
+    }
     return Boolean.TRUE.equals(result.value());
   }
 

@@ -16,8 +16,9 @@ public final class LocalExecutionTiming {
         (com.sun.management.ThreadMXBean) java.lang.management.ManagementFactory.getThreadMXBean();
     int warmup = args.length > 0 ? Integer.parseInt(args[0]) : 1024;
     int samples = args.length > 1 ? Integer.parseInt(args[1]) : 1024;
-    if (warmup < 1 || warmup > 65_536 || samples < 1 || samples > 65_536)
+    if (warmup < 1 || warmup > 65_536 || samples < 1 || samples > 65_536) {
       throw new IllegalArgumentException("Warm-up and sample counts must be 1..65536");
+    }
     CanonicalRuntime.Session session = runtime.open(source);
     try {
       session.initialize().requireApplied();

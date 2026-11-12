@@ -334,7 +334,9 @@ class CanonicalAdmissionsTest {
 
     @Override
     public byte[] content(String account, String identity) {
-      if (identity.equals(forbidden)) throw new AssertionError("Historical dependency fetched");
+      if (identity.equals(forbidden)) {
+        throw new AssertionError("Historical dependency fetched");
+      }
       return delegate.content(account, identity);
     }
   }

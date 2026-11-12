@@ -20,8 +20,12 @@ final class TimelineConfiguration {
     result.put("format", "myos.timeline-config/1");
     result.put("namespace", NativeInput.namespace(namespace));
     result.put("coordination", coordination.value());
-    if (privateAccess) result.put("privateAccess", TimelineReadAccess.PROFILE);
-    if (directory) result.put("directory", TimelineDirectory.PROFILE);
+    if (privateAccess) {
+      result.put("privateAccess", TimelineReadAccess.PROFILE);
+    }
+    if (directory) {
+      result.put("directory", TimelineDirectory.PROFILE);
+    }
     return Map.copyOf(result);
   }
 
@@ -92,24 +96,29 @@ final class TimelineConfiguration {
         config,
         Set.of("coordination", "namespace", "sources", "automatic", "privateAccess", "directory"));
     boolean durableDirectory = config.containsKey("directory");
-    if (durableDirectory && !TimelineDirectory.PROFILE.equals(config.get("directory")))
+    if (durableDirectory && !TimelineDirectory.PROFILE.equals(config.get("directory"))) {
       throw new IllegalArgumentException("Unsupported durable source directory profile");
+    }
     boolean privateAccess = config.containsKey("privateAccess");
-    if (privateAccess && !TimelineReadAccess.PROFILE.equals(config.get("privateAccess")))
+    if (privateAccess && !TimelineReadAccess.PROFILE.equals(config.get("privateAccess"))) {
       throw new IllegalArgumentException("Unsupported private Timeline access policy");
+    }
     BlueId packageId = new BlueId(text(config.get("coordination"), "coordination"));
     BluePackage coordination = publications.get(packageId);
-    if (coordination == null)
+    if (coordination == null) {
       throw new IllegalArgumentException(
           "Timeline Coordination package must be explicitly selected");
+    }
     String namespace = NativeInput.namespace(text(config.get("namespace"), "namespace"));
-    if (suppliedNamespace != null && !namespace.equals(suppliedNamespace))
+    if (suppliedNamespace != null && !namespace.equals(suppliedNamespace)) {
       throw new IllegalArgumentException(
           "Timeline namespace differs from MYOS_ADMISSION_NAMESPACE");
+    }
     List<?> sources = list(config.get("sources"), "sources");
-    if (!durableDirectory && sources.isEmpty() || sources.size() > 64)
+    if (!durableDirectory && sources.isEmpty() || sources.size() > 64) {
       throw new IllegalArgumentException(
           "Configure 1..64 bootstrap sources, or 0..64 with a durable directory");
+    }
     Repository repository = new Repository(store);
     List<TimelineService.Adopted> adopted = new ArrayList<>();
     Language base = language.build();
@@ -126,9 +135,10 @@ final class TimelineConfiguration {
     for (Object raw : sources) {
       Map<String, Object> source = object(raw, "source");
       fields(source, Set.of("account", "name", "provider", "timeline", "reader"));
-      if (durableDirectory && source.containsKey("reader"))
+      if (durableDirectory && source.containsKey("reader")) {
         throw new IllegalArgumentException(
             "Durable source directories require explicit acquisition, not stored reader custody");
+      }
       String account = Repository.identifier(text(source.get("account"), "account"));
       String name = Repository.identifier(text(source.get("name"), "name"));
       LanguageDocument provider =
@@ -172,8 +182,9 @@ final class TimelineConfiguration {
     try (var input = Files.newInputStream(file)) {
       bytes = input.readNBytes(256 * 1024 + 1);
     }
-    if (bytes.length > 256 * 1024)
+    if (bytes.length > 256 * 1024) {
       throw new IllegalArgumentException("Source definition exceeds 256 KiB");
+    }
     LanguageDocument document =
         language.read(
             Language.Input.exactJson(
@@ -182,8 +193,9 @@ final class TimelineConfiguration {
                     .decode(java.nio.ByteBuffer.wrap(bytes))
                     .toString()),
             Language.Goal.VALUE);
-    if (!expected.equals(document.blueId()))
+    if (!expected.equals(document.blueId())) {
       throw new IllegalArgumentException("Source definition BlueId mismatch");
+    }
     return document;
   }
 }

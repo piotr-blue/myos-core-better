@@ -79,8 +79,9 @@ public final class PublishedAdmissionProbe {
           var parsed = contracts.operationRequest(prepared, evidence).orElseThrow();
           double millis = (System.nanoTime() - started) / 1e6;
           if (messageId != null
-              && (!messageId.equals(prepared.blueId()) || !expected.equals(parsed)))
+              && (!messageId.equals(prepared.blueId()) || !expected.equals(parsed))) {
             throw new AssertionError("Admission identity or operation grammar changed");
+          }
           messageId = prepared.blueId();
           expected = parsed;
           pair.put(

@@ -80,8 +80,11 @@ class CoreApiKeysTest {
               underlying,
               (method, args) -> {},
               (method, result) -> {
-                if (method.equals("commit") && Boolean.TRUE.equals(result) && lose.getAndSet(false))
+                if (method.equals("commit")
+                    && Boolean.TRUE.equals(result)
+                    && lose.getAndSet(false)) {
                   throw new IllegalStateException("reply lost");
+                }
               });
       var f = new Fixture(wrapped);
       lose.set(true);
@@ -163,8 +166,9 @@ class CoreApiKeysTest {
     @Test
     void keyCommandsAndListingsAreScopedToTheHumanEvenInsideOneSharedAccount() {
       var f = new Fixture();
-      for (String user : List.of("alice", "bob"))
+      for (String user : List.of("alice", "bob")) {
         CorePermissionsTest.member(f.store, "team", user, "ADMIN", "ACTIVE", 1);
+      }
       var alice = f.session("alice", "team");
       var bob = f.session("bob", "team");
       var a = f.keys.create(alice, "same", Map.of("name", "Private"));
@@ -195,8 +199,9 @@ class CoreApiKeysTest {
           proxy(
               underlying,
               (method, args) -> {
-                if (method.equals("commit") && race.getAndSet(false))
+                if (method.equals("commit") && race.getAndSet(false)) {
                   CorePermissionsTest.member(underlying, "team", "alice", "WRITE", "REMOVED", 1);
+                }
               },
               (method, result) -> {});
       var f = new Fixture(wrapped);
@@ -213,12 +218,15 @@ class CoreApiKeysTest {
     @Test
     void originalUnpagedListingIsCompleteWhileExplicitCursorsBindUserAndMembership() {
       var f = new Fixture();
-      for (String user : List.of("alice", "bob"))
+      for (String user : List.of("alice", "bob")) {
         CorePermissionsTest.member(f.store, "team", user, "READ_ALL", "ACTIVE", 1);
+      }
       var alice = f.session("alice", "team");
       var bob = f.session("bob", "team");
       // 51 crosses the former default 50-row page; the native SDK expects a complete list.
-      for (int i = 0; i < 51; i++) f.keys.create(alice, "key-" + i, Map.of("name", "Key " + i));
+      for (int i = 0; i < 51; i++) {
+        f.keys.create(alice, "key-" + i, Map.of("name", "Key " + i));
+      }
       assertEquals(51, items(f.keys.list(alice, Map.of())).size());
       var first = f.keys.list(alice, Map.of("limit", "1"));
       String token = (String) first.get("nextPageToken");

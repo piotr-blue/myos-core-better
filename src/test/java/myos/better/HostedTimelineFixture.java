@@ -111,8 +111,9 @@ final class HostedTimelineFixture {
 
     public byte[] content(String account, String id) {
       contentCalls++;
-      if (unavailable.contains(id))
+      if (unavailable.contains(id)) {
         throw new IllegalStateException("Earlier entry body unavailable");
+      }
       return delegate.content(account, id);
     }
 
@@ -124,7 +125,9 @@ final class HostedTimelineFixture {
     public boolean commit(List<Write> writes, List<Check> checks) {
       Runnable race = beforeCommit;
       beforeCommit = null;
-      if (race != null) race.run();
+      if (race != null) {
+        race.run();
+      }
       boolean result = delegate.commit(writes, checks);
       if (result && loseResponse) {
         loseResponse = false;

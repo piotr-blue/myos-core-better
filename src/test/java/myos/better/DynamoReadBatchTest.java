@@ -27,9 +27,12 @@ class DynamoReadBatchTest {
             DynamoDbClient.class.getClassLoader(),
             new Class<?>[] {DynamoDbClient.class},
             (proxy, method, args) -> {
-              if (method.getName().equals("batchGetItem"))
+              if (method.getName().equals("batchGetItem")) {
                 return handler.apply((BatchGetItemRequest) args[0]);
-              if (method.getName().equals("close")) return null;
+              }
+              if (method.getName().equals("close")) {
+                return null;
+              }
               throw new AssertionError("Unexpected SDK call: " + method.getName());
             });
   }
@@ -64,7 +67,7 @@ class DynamoReadBatchTest {
         client(
             request -> {
               calls.add(request);
-              if (calls.size() == 1)
+              if (calls.size() == 1) {
                 return BatchGetItemResponse.builder()
                     .responses(Map.of("table", List.of(second)))
                     .unprocessedKeys(
@@ -75,6 +78,7 @@ class DynamoReadBatchTest {
                                 .keys(List.of(key("first")))
                                 .build()))
                     .build();
+              }
               return BatchGetItemResponse.builder()
                   .responses(Map.of("table", List.of(first)))
                   .build();
@@ -131,7 +135,7 @@ class DynamoReadBatchTest {
             client(
                 request -> {
                   calls.add(request);
-                  if (calls.size() == 1)
+                  if (calls.size() == 1) {
                     return BatchGetItemResponse.builder()
                         .responses(Map.of("table", List.of(contentItem("alice", second, b))))
                         .unprocessedKeys(
@@ -142,6 +146,7 @@ class DynamoReadBatchTest {
                                     .keys(List.of(contentKey("alice", first)))
                                     .build()))
                         .build();
+                  }
                   return BatchGetItemResponse.builder()
                       .responses(Map.of("table", List.of(contentItem("alice", first, a))))
                       .build();

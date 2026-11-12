@@ -38,9 +38,12 @@ final class CoreImages {
       long revision,
       byte[] bytes) {
     accounts.imageOwner(session, accountImage);
-    if (revision < 0) throw new IllegalArgumentException("Nonnegative expectedRevision required");
-    if (!DECODERS.tryAcquire())
+    if (revision < 0) {
+      throw new IllegalArgumentException("Nonnegative expectedRevision required");
+    }
+    if (!DECODERS.tryAcquire()) {
       throw new ConsoleProblem(503, "image_busy", "Image processing is busy. Retry this upload.");
+    }
     byte[] normalized;
     try {
       normalized = AvatarImages.normalize(bytes);
@@ -57,15 +60,18 @@ final class CoreImages {
       Map<String, Object> input) {
     RuntimeConfiguration.fields(input, Set.of("expectedRevision"));
     Object raw = input.get("expectedRevision");
-    if (!(raw instanceof Number))
+    if (!(raw instanceof Number)) {
       throw new IllegalArgumentException("Integer expectedRevision required");
+    }
     long revision;
     try {
       revision = new java.math.BigDecimal(raw.toString()).longValueExact();
     } catch (ArithmeticException invalid) {
       throw new IllegalArgumentException("Integer expectedRevision required", invalid);
     }
-    if (revision < 0) throw new IllegalArgumentException("Nonnegative expectedRevision required");
+    if (revision < 0) {
+      throw new IllegalArgumentException("Nonnegative expectedRevision required");
+    }
     return change(session, accountImage, command, revision, null);
   }
 
@@ -96,18 +102,23 @@ final class CoreImages {
                   + Repository.identifier(command));
       var prior = store.get(receiptKey);
       if (prior != null) {
-        if (!fingerprint.equals(prior.value().get("fingerprint")))
+        if (!fingerprint.equals(prior.value().get("fingerprint"))) {
           throw new ConsoleProblem(
               409, "idempotency_conflict", "The image command has different parameters.");
+        }
         return RuntimeConfiguration.object(prior.value().get("result"), "image receipt");
       }
-      if (owner.revision() != expected)
+      if (owner.revision() != expected) {
         throw new ConsoleProblem(
             409, "profile_stale", "The profile changed. Reload before saving.");
+      }
       var next = new LinkedHashMap<>(owner.row().value());
       boolean changed = bytes != null || next.containsKey("avatarVersion");
-      if (bytes == null) next.remove("avatarVersion");
-      else next.put("avatarVersion", version);
+      if (bytes == null) {
+        next.remove("avatarVersion");
+      } else {
+        next.put("avatarVersion", version);
+      }
       long revision = changed ? Math.incrementExact(expected) : expected;
       next.put("revision", revision);
       var result = accounts.imageProfile(owner, next, revision);
@@ -115,22 +126,29 @@ final class CoreImages {
       List<AtomicStore.Check> checks = new ArrayList<>();
       if (changed) {
         writes.add(AtomicStore.Write.put(owner.row().key(), owner.row().version(), next));
-        if (bytes != null)
+        if (bytes != null) {
           writes.add(
               AtomicStore.Write.put(
                   imageKey(owner.principal().account(), owner.resource(), version),
                   0,
                   Map.of("png", Base64.getEncoder().encodeToString(bytes))));
+        }
         if (owner.row().value().get("avatarVersion") instanceof String previous) {
           var old = store.get(imageKey(owner.principal().account(), owner.resource(), previous));
-          if (old == null) throw new IllegalStateException("Current profile image is missing");
+          if (old == null) {
+            throw new IllegalStateException("Current profile image is missing");
+          }
           writes.add(AtomicStore.Write.delete(old));
         }
-      } else checks.add(new AtomicStore.Check(owner.row().key(), owner.row().version()));
+      } else {
+        checks.add(new AtomicStore.Check(owner.row().key(), owner.row().version()));
+      }
       writes.add(
           AtomicStore.Write.put(
               receiptKey, 0, Map.of("fingerprint", fingerprint, "result", result)));
-      if (store.commit(writes, checks)) return result;
+      if (store.commit(writes, checks)) {
+        return result;
+      }
     }
     throw new ConsoleProblem(
         503, "image_busy", "The profile changed concurrently. Retry this command.");
@@ -142,9 +160,13 @@ final class CoreImages {
     Repository.identifier(version);
     String resource = accountImage ? "ACCOUNT" : "USER";
     var profile = store.get(new AtomicStore.Key("CORE_ACCOUNT#" + id, resource));
-    if (profile == null || !version.equals(profile.value().get("avatarVersion"))) throw missing();
+    if (profile == null || !version.equals(profile.value().get("avatarVersion"))) {
+      throw missing();
+    }
     var image = store.get(imageKey(id, resource, version));
-    if (image == null) throw missing(); // Replacement/deletion may commit between these reads.
+    if (image == null) {
+      throw missing(); // Replacement/deletion may commit between these reads.
+    }
     return new Image(version, Base64.getDecoder().decode((String) image.value().get("png")));
   }
 

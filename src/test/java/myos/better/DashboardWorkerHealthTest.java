@@ -170,7 +170,9 @@ class DashboardWorkerHealthTest {
             AtomicStore.class.getClassLoader(),
             new Class<?>[] {AtomicStore.class},
             (proxy, method, arguments) -> {
-              if (method.getName().equals("work")) beforeWork.run();
+              if (method.getName().equals("work")) {
+                beforeWork.run();
+              }
               try {
                 return method.invoke(delegate, arguments);
               } catch (InvocationTargetException failure) {

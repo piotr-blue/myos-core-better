@@ -212,8 +212,9 @@ class CoreInvitationsTest {
                 if (method.equals("commit")
                     && writesInvitation(args)
                     && Boolean.TRUE.equals(result)
-                    && once.compareAndSet(false, true))
+                    && once.compareAndSet(false, true)) {
                   throw new IllegalStateException("Simulated lost reply");
+                }
                 return result;
               });
       assertThrows(
@@ -241,8 +242,9 @@ class CoreInvitationsTest {
                 if (method.equals("commit")
                     && writesInvitation(args)
                     && Boolean.TRUE.equals(result)
-                    && once.compareAndSet(false, true))
+                    && once.compareAndSet(false, true)) {
                   throw new IllegalStateException("Simulated lost acceptance reply");
+                }
                 return result;
               });
       assertThrows(
@@ -261,8 +263,9 @@ class CoreInvitationsTest {
               (method, args, action) -> {
                 if (method.equals("commit")
                     && writesInvitation(args)
-                    && removed.compareAndSet(false, true))
+                    && removed.compareAndSet(false, true)) {
                   f.change("owner", 1, 1, "ADMIN", "REMOVED");
+                }
                 return action.call();
               });
       problem(
@@ -346,7 +349,9 @@ class CoreInvitationsTest {
       var input =
           new LinkedHashMap<String, Object>(
               Map.of("email", recipient + "@example.test", "role", role));
-      if (target != null) input.put("targetUserId", target);
+      if (target != null) {
+        input.put("targetUserId", target);
+      }
       return invitations(store).issue(owner, command, input);
     }
 

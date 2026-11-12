@@ -23,7 +23,9 @@ public final class GraphMemberLookupProbe {
     var contracts = Contracts.newBuilder().language(language).build();
     for (int count : List.of(16, 256)) {
       var children = new LinkedHashMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       String source =
           JsonText.of(
               Map.of(
@@ -54,7 +56,9 @@ public final class GraphMemberLookupProbe {
           long start = System.nanoTime();
           Object value = view.readValue("lookup", child, "/count");
           long elapsed = System.nanoTime() - start;
-          if (!BigInteger.ZERO.equals(value)) throw new AssertionError("Wrong member value");
+          if (!BigInteger.ZERO.equals(value)) {
+            throw new AssertionError("Wrong member value");
+          }
           if (i >= 50) {
             times.add(elapsed / 1e6);
             bytes.add(threads.getThreadAllocatedBytes(Thread.currentThread().threadId()) - before);

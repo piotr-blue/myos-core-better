@@ -166,7 +166,9 @@ class CorePackagesTest {
                   Map.of("keyType", Map.of("blueId", PAYMENT.exports().get(name).value()))));
       assertEquals(expected, packages.source("alice", source, List.of()));
       Object tooDeep = 0;
-      for (int i = 0; i < 130; i++) tooDeep = List.of(tooDeep);
+      for (int i = 0; i < 130; i++) {
+        tooDeep = List.of(tooDeep);
+      }
       Object invalid = tooDeep;
       assertThrows(
           CoreSourceInputs.Invalid.class, () -> packages.source("alice", invalid, List.of()));
@@ -198,7 +200,9 @@ class CorePackagesTest {
     boolean denyReads;
 
     public Row get(Key key) {
-      if (denyReads) throw new AssertionError("Unexpected account package read");
+      if (denyReads) {
+        throw new AssertionError("Unexpected account package read");
+      }
       return delegate.get(key);
     }
 

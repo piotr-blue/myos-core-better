@@ -11,10 +11,14 @@ final class PublicAddress {
         || address.isLoopbackAddress()
         || address.isLinkLocalAddress()
         || address.isSiteLocalAddress()
-        || address.isMulticastAddress()) return false;
+        || address.isMulticastAddress()) {
+      return false;
+    }
     byte[] bytes = address.getAddress();
     int first = bytes[0] & 255, second = bytes[1] & 255;
-    if (bytes.length == 16) return (first & 0xe0) == 0x20;
+    if (bytes.length == 16) {
+      return (first & 0xe0) == 0x20;
+    }
     return first != 0
         && first != 10
         && first != 127

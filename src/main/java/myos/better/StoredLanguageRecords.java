@@ -13,8 +13,9 @@ record StoredLanguageRecords(String account, AtomicStore store, Function<BlueId,
 
     Location {
       if (inline == null) {
-        if (address == null || !address.matches("[a-f0-9]{64}"))
+        if (address == null || !address.matches("[a-f0-9]{64}")) {
           throw new IllegalArgumentException("Invalid immutable record address");
+        }
       } else if (address != null || blocks) {
         throw new IllegalArgumentException("A packed record has no separate block address");
       }
@@ -25,13 +26,16 @@ record StoredLanguageRecords(String account, AtomicStore store, Function<BlueId,
     }
 
     String link(ContentBlocks destination) {
-      if (inline != null)
+      if (inline != null) {
         return destination.put(inline.getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      }
       return blocks ? address : destination.wrap(address);
     }
 
     byte[] read(Repository.Blobs blobs) {
-      if (inline != null) return inline.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+      if (inline != null) {
+        return inline.getBytes(java.nio.charset.StandardCharsets.UTF_8);
+      }
       return blocks ? new ContentBlocks(blobs).get(address) : blobs.get(address);
     }
   }
@@ -47,8 +51,9 @@ record StoredLanguageRecords(String account, AtomicStore store, Function<BlueId,
   }
 
   void requireDestination(String expected, AtomicStore destination) {
-    if (!account.equals(expected) || store != destination)
+    if (!account.equals(expected) || store != destination) {
       throw new IllegalArgumentException("Record storage scope mismatch");
+    }
   }
 
   boolean contains(BlueId id) {
@@ -59,7 +64,9 @@ record StoredLanguageRecords(String account, AtomicStore store, Function<BlueId,
     Repository.Blobs blobs = new Repository(store).blobs(account);
     return id -> {
       Location location = find.apply(id);
-      if (location == null) return java.util.Optional.empty();
+      if (location == null) {
+        return java.util.Optional.empty();
+      }
       byte[] body = location.read(blobs);
       return java.util.Optional.of(
           blue.LanguageRecord.fromJson(new String(body, java.nio.charset.StandardCharsets.UTF_8)));

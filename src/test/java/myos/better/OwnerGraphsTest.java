@@ -194,12 +194,13 @@ class OwnerGraphsTest {
       engine.create("alice", root, "create", document);
       var published = new OwnerRecords(store, "alice");
       var gas = new OwnerGas("alice");
-      if (accountGas)
+      if (accountGas) {
         published.frontiers.change(
             tx -> {
               gas.initialize(tx, "runtime-test", waitForCredit ? 0 : OwnerGas.DEFAULT_ALLOCATION);
               return null;
             });
+      }
       assertTrue(
           published.head(root).value().containsKey("local"), "Missing eligible owner checkpoint");
       assertTrue(
@@ -293,7 +294,9 @@ class OwnerGraphsTest {
           // Every operation opens fresh owner processors from protected durable storage.
           engine = new OwnerGraphs(store, contracts, service, ingress);
           if (accountGas && waitForCredit && step == 1) {
-            for (int attempt = 0; attempt < count * 2 + 5; attempt++) engine.step("alice", root);
+            for (int attempt = 0; attempt < count * 2 + 5; attempt++) {
+              engine.step("alice", root);
+            }
             var waiting = new OwnerRecords(store, "alice");
             assertEquals(1L, waiting.head(root).version());
             assertEquals("0", gas.summary(waiting.read).get("spent"));
@@ -301,14 +304,17 @@ class OwnerGraphsTest {
             waiting.frontiers.change(
                 tx -> {
                   gas.credit(tx, "fund", OwnerGas.DEFAULT_ALLOCATION, "test", "fixture-credit");
-                  for (String owner : gas.runnableWaiters(tx, 64))
+                  for (String owner : gas.runnableWaiters(tx, 64)) {
                     waiting.frontiers.retry(tx, owner);
+                  }
                   return null;
                 });
           }
           for (int n = 0; n < count * 3 + 10; n++) {
             var result = engine.step("alice", root);
-            if (result.status() == TimelineIngress.Status.IDLE) break;
+            if (result.status() == TimelineIngress.Status.IDLE) {
+              break;
+            }
           }
           var records = new OwnerRecords(store, "alice");
           var actual = records.head(root);
@@ -319,14 +325,16 @@ class OwnerGraphsTest {
             owners.add(root);
             whole.embeddings().forEach(edge -> owners.add(OwnerGraphs.address(edge.target())));
             long expectedGas = 0;
-            for (String owner : owners)
-              for (long version = 2; version <= records.head(owner).version(); version++)
+            for (String owner : owners) {
+              for (long version = 2; version <= records.head(owner).version(); version++) {
                 expectedGas =
                     Math.addExact(
                         expectedGas,
                         Repository.number(
                             ((Map<?, ?>) records.history(owner, version).get("result"))
                                 .get("gas")));
+              }
+            }
             assertTrue(expectedGas > 0);
             assertEquals(Long.toString(expectedGas), gas.summary(records.read).get("spent"));
             assertEquals("0", gas.summary(records.read).get("reserved"));

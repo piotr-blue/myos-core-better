@@ -23,7 +23,9 @@ class DocumentControlRecoveryTest {
       var alice = deferred(store, "alice");
       var bob = deferred(store, "bob");
       var controls = new DocumentControls(store);
-      if (action.equals("resume")) controls.apply("alice", OWNER, "pause", "pause");
+      if (action.equals("resume")) {
+        controls.apply("alice", OWNER, "pause", "pause");
+      }
       store.afterCommit = afterCommit;
       store.armed = true;
       assertThrows(
@@ -111,10 +113,14 @@ class DocumentControlRecoveryTest {
           armed && writes.stream().anyMatch(w -> w.key().sort().startsWith("CONTROL_CMD#"));
       if (interrupt) {
         armed = false;
-        if (!afterCommit) throw new LostAcknowledgment();
+        if (!afterCommit) {
+          throw new LostAcknowledgment();
+        }
       }
       boolean committed = delegate.commit(writes, checks);
-      if (interrupt && committed) throw new LostAcknowledgment();
+      if (interrupt && committed) {
+        throw new LostAcknowledgment();
+      }
       return committed;
     }
 

@@ -17,7 +17,9 @@ final class TimelineCoverage {
       AtomicStore store, String account, List<TimelineInputs.Cut> cuts, long timestamp) {
     long required = Math.addExact(timestamp, 1);
     for (TimelineInputs.Cut cut : cuts) {
-      if (cut.completeBefore() >= required) continue;
+      if (cut.completeBefore() >= required) {
+        continue;
+      }
       AtomicStore.Key key = key(account, cut.timeline());
       boolean published = false;
       for (int attempt = 0; attempt < 8; attempt++) {
@@ -34,17 +36,23 @@ final class TimelineCoverage {
           break;
         }
       }
-      if (!published)
+      if (!published) {
         throw new IllegalStateException("Source coverage demand publication conflicted");
+      }
     }
   }
 
   static long minimum(AtomicStore.Row row) {
-    if (row == null) return 0;
-    if (!FORMAT.equals(row.value().get("format")))
+    if (row == null) {
+      return 0;
+    }
+    if (!FORMAT.equals(row.value().get("format"))) {
       throw new IllegalStateException("Invalid source coverage demand");
+    }
     long minimum = Repository.number(row.value().get("minimum"));
-    if (minimum < 1) throw new IllegalStateException("Invalid minimum source coverage");
+    if (minimum < 1) {
+      throw new IllegalStateException("Invalid minimum source coverage");
+    }
     return minimum;
   }
 

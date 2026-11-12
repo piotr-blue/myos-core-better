@@ -24,8 +24,12 @@ class DynamoPublicDirectoryTest {
                 DynamoDbClient.class.getClassLoader(),
                 new Class<?>[] {DynamoDbClient.class},
                 (proxy, method, args) -> {
-                  if (method.getName().equals("close")) return null;
-                  if (!method.getName().equals("scan")) throw new AssertionError(method.getName());
+                  if (method.getName().equals("close")) {
+                    return null;
+                  }
+                  if (!method.getName().equals("scan")) {
+                    throw new AssertionError(method.getName());
+                  }
                   calls.add((ScanRequest) args[0]);
                   return calls.size() == 1
                       ? ScanResponse.builder().lastEvaluatedKey(key).build()

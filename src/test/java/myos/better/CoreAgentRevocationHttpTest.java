@@ -86,11 +86,13 @@ class CoreAgentRevocationHttpTest {
             .header("Authorization", "Bearer " + user)
             .header("Origin", "https://console.example")
             .header("Idempotency-Key", command);
-    if (input == null) request.method(method, HttpRequest.BodyPublishers.noBody());
-    else
+    if (input == null) {
+      request.method(method, HttpRequest.BodyPublishers.noBody());
+    } else {
       request
           .header("Content-Type", "application/json")
           .method(method, HttpRequest.BodyPublishers.ofString(JsonText.of(input)));
+    }
     return f.http.send(request.build(), HttpResponse.BodyHandlers.ofString());
   }
 }

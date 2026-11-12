@@ -87,8 +87,9 @@ class TimelineReadAccessTest {
     Map<String, Object> extra = new LinkedHashMap<>(requirement);
     extra.put("allow", true);
     invalid.add(extra);
-    for (Map<String, Object> entry : invalid)
+    for (Map<String, Object> entry : invalid) {
       assertThrows(IllegalArgumentException.class, () -> read(List.of(entry)));
+    }
     assertThrows(IllegalArgumentException.class, () -> read(List.of(requirement, requirement)));
     assertThrows(IllegalArgumentException.class, () -> read(List.of()));
   }
@@ -156,8 +157,12 @@ class TimelineReadAccessTest {
       var checkpoint = authored.checkpoint();
       var cold = reader.restoreCheckpoint(checkpoint.record(), checkpoint.identity());
       assertEquals(first, cache.read(cold).getFirst().timeline());
-      if (i == 0) oldest = cold;
-      if (i == 1) hot = cold;
+      if (i == 0) {
+        oldest = cold;
+      }
+      if (i == 1) {
+        hot = cold;
+      }
       if (hot != null) {
         int loaded = reads.get();
         assertEquals(first, cache.read(hot).getFirst().timeline());

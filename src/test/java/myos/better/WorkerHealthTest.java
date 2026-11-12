@@ -70,8 +70,9 @@ class WorkerHealthTest {
         intercept(
             new MemoryStore(),
             () -> {
-              if (attempts.incrementAndGet() == 1)
+              if (attempts.incrementAndGet() == 1) {
                 throw new IllegalStateException("temporary read failure");
+              }
               recovered.countDown();
             });
     try (var runner = new OwnerWorkRunner(store, "fixture", () -> 0L, account -> fail())) {
@@ -108,7 +109,9 @@ class WorkerHealthTest {
             AtomicStore.class.getClassLoader(),
             new Class<?>[] {AtomicStore.class},
             (proxy, method, arguments) -> {
-              if (method.getName().equals("work")) beforeWork.run();
+              if (method.getName().equals("work")) {
+                beforeWork.run();
+              }
               try {
                 return method.invoke(delegate, arguments);
               } catch (InvocationTargetException failure) {

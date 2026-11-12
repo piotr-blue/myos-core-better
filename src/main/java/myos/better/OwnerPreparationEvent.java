@@ -26,7 +26,9 @@ final class OwnerPreparationEvent extends Event {
     var event = new OwnerPreparationEvent();
     event.owner = owner;
     event.stage = stage;
-    if (event.isEnabled()) event.begin();
+    if (event.isEnabled()) {
+      event.begin();
+    }
     return event;
   }
 
@@ -39,7 +41,9 @@ final class OwnerPreparationEvent extends Event {
 
   static <T> T measure(String owner, String stage, Supplier<T> work) {
     var event = new OwnerPreparationEvent();
-    if (!event.isEnabled()) return work.get();
+    if (!event.isEnabled()) {
+      return work.get();
+    }
     event.owner = owner;
     event.stage = stage;
     event.begin();

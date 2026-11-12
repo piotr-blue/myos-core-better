@@ -69,7 +69,9 @@ class CoreOperationContextTest {
     {
       var values = new Values();
       var data = map();
-      for (int i = 0; i < 205; i++) data.put("field/~" + i, "x".repeat(1300));
+      for (int i = 0; i < 205; i++) {
+        data.put("field/~" + i, "x".repeat(1300));
+      }
       var root = values.source(data);
       var failure = assertThrows(ConsoleProblem.class, () -> project(root, "", null));
       assertEquals(413, failure.status);
@@ -312,7 +314,9 @@ class CoreOperationContextTest {
 
   private static Map<String, Object> map(Object... entries) {
     var result = new LinkedHashMap<String, Object>();
-    for (int i = 0; i < entries.length; i += 2) result.put((String) entries[i], entries[i + 1]);
+    for (int i = 0; i < entries.length; i += 2) {
+      result.put((String) entries[i], entries[i + 1]);
+    }
     return result;
   }
 

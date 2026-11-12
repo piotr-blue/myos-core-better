@@ -93,20 +93,26 @@ final class CoreAgents {
     var patch = new LinkedHashMap<>(input);
     patch.remove("expectedRevision");
     require(!patch.isEmpty(), 422, "invalid_account_input", "Provide an Agent setting.");
-    if (patch.containsKey("name")) name(patch.get("name"));
-    if (patch.containsKey("role")) role(patch.get("role"));
-    if (patch.containsKey("status"))
+    if (patch.containsKey("name")) {
+      name(patch.get("name"));
+    }
+    if (patch.containsKey("role")) {
+      role(patch.get("role"));
+    }
+    if (patch.containsKey("status")) {
       require(
           "ACTIVE".equals(patch.get("status")) || "PAUSED".equals(patch.get("status")),
           422,
           "invalid_account_input",
           "Invalid Agent status.");
-    if (patch.containsKey("inclusion"))
+    }
+    if (patch.containsKey("inclusion")) {
       require(
           patch.get("inclusion") instanceof Boolean,
           422,
           "invalid_account_input",
           "Provide a boolean inclusion policy.");
+    }
     return mutate(
         session,
         command,
@@ -119,20 +125,24 @@ final class CoreAgents {
               409,
               "agent_stale",
               "Agent settings changed.");
-          if ("BUILT_IN".equals(row.value().get("kind")))
+          if ("BUILT_IN".equals(row.value().get("kind"))) {
             require(
                 patch.keySet().equals(Set.of("inclusion")),
                 422,
                 "invalid_account_input",
                 "Only inclusion is configurable for the built-in Agent.");
+          }
           boolean changed =
               patch.entrySet().stream()
                   .anyMatch(e -> !Objects.equals(row.value().get(e.getKey()), e.getValue()));
           var value = new LinkedHashMap<>(row.value());
           value.putAll(patch);
           value.put("revision", changed ? revision + 1 : revision);
-          if (changed) writes.add(AtomicStore.Write.put(row.key(), row.version(), value));
-          else checks.add(new AtomicStore.Check(row.key(), row.version()));
+          if (changed) {
+            writes.add(AtomicStore.Write.put(row.key(), row.version(), value));
+          } else {
+            checks.add(new AtomicStore.Check(row.key(), row.version()));
+          }
           return metadata(value);
         });
   }
@@ -145,7 +155,7 @@ final class CoreAgents {
     String after = null;
     do {
       var page = store.query(key.partition(), "AGENT_CONNECTION#" + agent + "#", after, 100);
-      for (var row : page.rows())
+      for (var row : page.rows()) {
         result.add(
             select(
                 row.value(),
@@ -157,6 +167,7 @@ final class CoreAgents {
                 "revision",
                 "approvedAt",
                 "revokedAt"));
+      }
       after = page.after();
       require(
           result.size() <= 1000,
@@ -215,7 +226,9 @@ final class CoreAgents {
             value.put("revision", Math.incrementExact(revision));
             value.put("revokedAt", clock.millis());
             writes.add(AtomicStore.Write.put(selected.key(), selected.version(), value));
-          } else checks.add(new AtomicStore.Check(selected.key(), selected.version()));
+          } else {
+            checks.add(new AtomicStore.Check(selected.key(), selected.version()));
+          }
           checks.add(new AtomicStore.Check(selectedAgent.key(), selectedAgent.version()));
           return connectionMetadata(value);
         });
@@ -267,7 +280,9 @@ final class CoreAgents {
       writes.add(
           AtomicStore.Write.put(
               receiptKey, 0, Map.of("fingerprint", fingerprint, "result", result)));
-      if (store.commit(writes, checks)) return result;
+      if (store.commit(writes, checks)) {
+        return result;
+      }
     }
     throw new ConsoleProblem(503, "account_busy", "Retry with the same idempotency key.");
   }
@@ -326,7 +341,11 @@ final class CoreAgents {
 
   private static Map<String, Object> select(Map<String, Object> row, String... fields) {
     var result = new LinkedHashMap<String, Object>();
-    for (String field : fields) if (row.get(field) != null) result.put(field, row.get(field));
+    for (String field : fields) {
+      if (row.get(field) != null) {
+        result.put(field, row.get(field));
+      }
+    }
     return result;
   }
 
@@ -365,6 +384,8 @@ final class CoreAgents {
   }
 
   private static void require(boolean condition, int status, String code, String message) {
-    if (!condition) throw new ConsoleProblem(status, code, message);
+    if (!condition) {
+      throw new ConsoleProblem(status, code, message);
+    }
   }
 }

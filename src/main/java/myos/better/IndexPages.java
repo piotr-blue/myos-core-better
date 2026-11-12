@@ -12,7 +12,9 @@ final class IndexPages<P> {
   private long bytes;
 
   IndexPages(long limit) {
-    if (limit < 0) throw new IllegalArgumentException("Negative index cache capacity");
+    if (limit < 0) {
+      throw new IllegalArgumentException("Negative index cache capacity");
+    }
     this.limit = limit;
   }
 
@@ -24,8 +26,12 @@ final class IndexPages<P> {
   synchronized void put(String key, P page, int encodedBytes) {
     long weight = 512L + key.length() * 2L + encodedBytes * 8L;
     Entry<P> old = pages.remove(key);
-    if (old != null) bytes -= old.weight();
-    if (weight > limit) return;
+    if (old != null) {
+      bytes -= old.weight();
+    }
+    if (weight > limit) {
+      return;
+    }
     while (bytes + weight > limit && !pages.isEmpty()) {
       var iterator = pages.entrySet().iterator();
       bytes -= iterator.next().getValue().weight();

@@ -65,9 +65,10 @@ final class AvatarUpload {
             } catch (NumberFormatException invalid) {
               throw new ConsoleProblem(422, "invalid_profile_revision", "Revision is too large");
             }
-          } else
+          } else {
             throw new ConsoleProblem(
                 422, "invalid_avatar_input", "Provide only file and expectedRevision");
+          }
         }
       }
       check(
@@ -132,6 +133,8 @@ final class AvatarUpload {
   }
 
   private static void check(boolean condition, int status, String code, String message) {
-    if (!condition) throw new ConsoleProblem(status, code, message);
+    if (!condition) {
+      throw new ConsoleProblem(status, code, message);
+    }
   }
 }

@@ -27,7 +27,9 @@ final class TimelineAccessHistory implements AutoCloseable {
           || changes < 1
           || changes > 1024
           || batches < 1
-          || batches > 32) throw new IllegalArgumentException("Invalid access replay limits");
+          || batches > 32) {
+        throw new IllegalArgumentException("Invalid access replay limits");
+      }
     }
   }
 
@@ -74,7 +76,9 @@ final class TimelineAccessHistory implements AutoCloseable {
             initial.blueId());
     Slot slot;
     synchronized (replays) {
-      if (closed) throw new IllegalStateException("Access history is closed");
+      if (closed) {
+        throw new IllegalStateException("Access history is closed");
+      }
       slot = replays.get(key);
       if (slot == null) {
         if (replays.size() == limits.replays()) {
@@ -84,12 +88,16 @@ final class TimelineAccessHistory implements AutoCloseable {
             Slot candidate = entries.next().getValue();
             if (candidate.users == 0) {
               entries.remove();
-              if (candidate.replay != null) candidate.replay.close();
+              if (candidate.replay != null) {
+                candidate.replay.close();
+              }
               evicted = true;
               break;
             }
           }
-          if (!evicted) return new Result(false, Optional.empty());
+          if (!evicted) {
+            return new Result(false, Optional.empty());
+          }
         }
         slot = new Slot();
         replays.put(key, slot);
@@ -102,8 +110,9 @@ final class TimelineAccessHistory implements AutoCloseable {
       synchronized (slot) {
         try {
           Replay replay = slot.replay;
-          if (replay == null)
+          if (replay == null) {
             slot.replay = replay = new Replay(control, discovery, initial, limits);
+          }
           if (replay.historicalAt != null && !order.equals(replay.historicalAt)
               || replay.discarded != null && order.compareTo(replay.discarded) < 0) {
             replay.close();
@@ -113,14 +122,18 @@ final class TimelineAccessHistory implements AutoCloseable {
           }
           return replay.advance(position, order);
         } catch (RuntimeException | Error failure) {
-          if (slot.replay != null) slot.replay.close();
+          if (slot.replay != null) {
+            slot.replay.close();
+          }
           slot.replay = null;
           throw failure;
         }
       }
     } finally {
       synchronized (replays) {
-        if (--slot.users == 0 && slot.retired && slot.replay != null) slot.replay.close();
+        if (--slot.users == 0 && slot.retired && slot.replay != null) {
+          slot.replay.close();
+        }
       }
     }
   }
@@ -144,8 +157,9 @@ final class TimelineAccessHistory implements AutoCloseable {
       this.control = control;
       this.limits = limits;
       if (!control.source().publicRead()
-          || !control.source().timeline().equals(discovery.control()))
+          || !control.source().timeline().equals(discovery.control())) {
         throw new IllegalArgumentException("Expected the adopted reserved public control source");
+      }
       access =
           TimelineAccess.track(
               control.coordination(), control.provider(), discovery.descriptor(), initial);
@@ -157,20 +171,25 @@ final class TimelineAccessHistory implements AutoCloseable {
               ? control.history(position + 1, through, limits.batches())
               : List.of();
       for (int index = 0; index < window.size() && covered <= selected.timestamp(); index++) {
-        if (Thread.currentThread().isInterrupted())
+        if (Thread.currentThread().isInterrupted()) {
           throw new IllegalStateException("Access replay interrupted");
+        }
         TimelineArchive.Batch batch = window.get(index);
         // Empty acquisitions do not move the entry anchor. The archive has verified every
         // intervening proof; the consumer still verifies the last signed proof of the quiet run.
         // Never skip an actual entry: even another grant's operation may expose a contradiction.
-        if (batch.entries().isEmpty())
-          while (index + 1 < window.size() && window.get(index + 1).entries().isEmpty())
+        if (batch.entries().isEmpty()) {
+          while (index + 1 < window.size() && window.get(index + 1).entries().isEmpty()) {
             batch = window.get(++index);
+          }
+        }
         Language language = control.content(batch);
         TimelineAccess.Update update =
             access.advance(language.reference(new BlueId(batch.evidence())));
         for (TimelineAccess.Disposition disposition : update.dispositions()) {
-          if (disposition.document().isEmpty()) continue;
+          if (disposition.document().isEmpty()) {
+            continue;
+          }
           LanguageDocument document = disposition.document().orElseThrow();
           State state = permissions(document);
           TimelineInputs.Order key =
@@ -179,7 +198,9 @@ final class TimelineAccessHistory implements AutoCloseable {
                   control.source().timeline().value(),
                   disposition.entry().value());
           if (historicalAt != null) {
-            if (key.compareTo(selected) <= 0) historicalState = state;
+            if (key.compareTo(selected) <= 0) {
+              historicalState = state;
+            }
           } else {
             changes.put(key, state);
             if (changes.size() > limits.changes()) {
@@ -192,10 +213,15 @@ final class TimelineAccessHistory implements AutoCloseable {
         position = batch.position();
         covered = update.completeBefore();
       }
-      if (covered <= selected.timestamp()) return new Result(false, Optional.empty());
-      if (historicalAt != null) return new Result(true, Optional.ofNullable(historicalState));
-      if (discarded != null && selected.compareTo(discarded) < 0)
+      if (covered <= selected.timestamp()) {
         return new Result(false, Optional.empty());
+      }
+      if (historicalAt != null) {
+        return new Result(true, Optional.ofNullable(historicalState));
+      }
+      if (discarded != null && selected.compareTo(discarded) < 0) {
+        return new Result(false, Optional.empty());
+      }
       var prior = changes.floorEntry(selected);
       return new Result(
           true, Optional.ofNullable(prior == null ? discardedState : prior.getValue()));
@@ -209,11 +235,14 @@ final class TimelineAccessHistory implements AutoCloseable {
   private static State permissions(LanguageDocument document) {
     Set<BlueId> timelines = new LinkedHashSet<>();
     LanguageView allowed = document.at("/allowedTimelines");
-    for (int i = 0; i < allowed.size(); i++)
+    for (int i = 0; i < allowed.size(); i++) {
       timelines.add(new BlueId(allowed.at("/items/" + i).observation("exactId").text()));
+    }
     Set<String> keys = new LinkedHashSet<>();
     allowed = document.at("/allowedKeys");
-    for (int i = 0; i < allowed.size(); i++) keys.add(allowed.at("/items/" + i).text());
+    for (int i = 0; i < allowed.size(); i++) {
+      keys.add(allowed.at("/items/" + i).text());
+    }
     return new State(document.blueId(), timelines, keys);
   }
 
@@ -222,7 +251,9 @@ final class TimelineAccessHistory implements AutoCloseable {
       closed = true;
       for (Slot slot : replays.values()) {
         slot.retired = true;
-        if (slot.users == 0 && slot.replay != null) slot.replay.close();
+        if (slot.users == 0 && slot.replay != null) {
+          slot.replay.close();
+        }
       }
       replays.clear();
     }

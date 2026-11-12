@@ -46,8 +46,9 @@ final class Server implements AutoCloseable {
       TimelineService timelines,
       TimelineTransport transport)
       throws IOException {
-    if (workers < 1 || workers > 32)
+    if (workers < 1 || workers > 32) {
       throw new IllegalArgumentException("Worker count must be 1..32");
+    }
     this.core = core;
     this.timelines = timelines;
     this.durable = durable;
@@ -60,7 +61,9 @@ final class Server implements AutoCloseable {
         timelines != null && timelines.automatic().isPresent()
             ? new TimelineRunner(core, timelines, transport)
             : null;
-    if (timelineRunner == null) transport.close();
+    if (timelineRunner == null) {
+      transport.close();
+    }
   }
 
   int port() {
@@ -69,8 +72,12 @@ final class Server implements AutoCloseable {
 
   void start() {
     server.start();
-    if (timelineRunner != null) timelineRunner.start();
-    for (int i = 0; i < workerCount; i++) worker.submit(health.guard(this::propagate));
+    if (timelineRunner != null) {
+      timelineRunner.start();
+    }
+    for (int i = 0; i < workerCount; i++) {
+      worker.submit(health.guard(this::propagate));
+    }
   }
 
   private void propagate() {
@@ -80,7 +87,9 @@ final class Server implements AutoCloseable {
         if (core.poll(128) == 0) {
           core.awaitWork(Math.min(idleMillis, 250));
           idleMillis = Math.min(1000, idleMillis * 2);
-        } else idleMillis = 10;
+        } else {
+          idleMillis = 10;
+        }
       } catch (InterruptedException error) {
         Thread.currentThread().interrupt();
         break;
@@ -99,7 +108,9 @@ final class Server implements AutoCloseable {
 
   void check() {
     health.check();
-    if (timelineRunner != null) timelineRunner.check();
+    if (timelineRunner != null) {
+      timelineRunner.check();
+    }
   }
 
   void await() throws InterruptedException {
@@ -150,8 +161,9 @@ final class Server implements AutoCloseable {
                     timelineRunner != null,
                     "canonicalGraphs",
                     timelines != null && timelines.graphs() != null));
-        if (timelines != null && timelines.graphs() != null)
+        if (timelines != null && timelines.graphs() != null) {
           health.put("newOwnerGasSchedule", timelines.graphs().ownerGasSchedule());
+        }
         send(exchange, 200, health);
         return;
       }
@@ -289,8 +301,9 @@ final class Server implements AutoCloseable {
             case "/documents/admit" -> {
               if (!java.util.Set.of(
                       "account", "document", "command", "event", "timestamp", "evidence")
-                  .containsAll(body.keySet()))
+                  .containsAll(body.keySet())) {
                 throw new IllegalArgumentException("Unknown native input field");
+              }
               yield core.admit(
                       account,
                       document,
@@ -382,14 +395,17 @@ final class Server implements AutoCloseable {
   }
 
   private TimelineService timelines() {
-    if (timelines == null)
+    if (timelines == null) {
       throw new IllegalArgumentException("Timeline processing is not configured");
+    }
     return timelines;
   }
 
   private static Map<blue.BlueId, blue.LanguageRecord> records(Object raw) {
     Map<String, Object> values = RuntimeConfiguration.object(raw, "records");
-    if (values.size() > 100_000) throw new IllegalArgumentException("Too many content records");
+    if (values.size() > 100_000) {
+      throw new IllegalArgumentException("Too many content records");
+    }
     Map<blue.BlueId, blue.LanguageRecord> records = new java.util.LinkedHashMap<>();
     values.forEach(
         (id, value) ->
@@ -398,8 +414,9 @@ final class Server implements AutoCloseable {
   }
 
   private static String text(Map<String, Object> body, String field) {
-    if (!(body.get(field) instanceof String text))
+    if (!(body.get(field) instanceof String text)) {
       throw new IllegalArgumentException("Text field required: " + field);
+    }
     return text;
   }
 
@@ -414,10 +431,14 @@ final class Server implements AutoCloseable {
 
   @Override
   public synchronized void close() {
-    if (!running) return;
+    if (!running) {
+      return;
+    }
     running = false;
     server.stop(1);
-    if (timelineRunner != null) timelineRunner.close();
+    if (timelineRunner != null) {
+      timelineRunner.close();
+    }
     worker.shutdownNow();
     requests.shutdown();
     try {

@@ -27,10 +27,14 @@ class TimelineAccessHistoryTest {
           PrivateTimelineFixture f = new PrivateTimelineFixture(store);
           TimelineAccessHistory history = new TimelineAccessHistory()) {
         f.pullControl(150);
-        for (int i = 1; i < 32; i++) f.pullControl(150 + i);
+        for (int i = 1; i < 32; i++) {
+          f.pullControl(150 + i);
+        }
         f.permissions(200, List.of());
         f.pullControl(250);
-        for (int i = 1; i < 32; i++) f.pullControl(250 + i);
+        for (int i = 1; i < 32; i++) {
+          f.pullControl(250 + i);
+        }
         f.permissions(300, List.of(f.key));
         f.pullControl(350);
         f.pullPrivate(400);
@@ -141,9 +145,10 @@ class TimelineAccessHistoryTest {
         long through = f.control.view().version();
         var discovery = f.privateSource.discovery().orElseThrow();
         Map<String, Long> before = store.statistics();
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++) {
           assertTrue(
               history.at(f.control, discovery, f.grant.initial(), through, selected).caughtUp());
+        }
         assertEquals(before.get("get.calls"), store.statistics().get("get.calls"));
         assertEquals(before.get("content.calls"), store.statistics().get("content.calls"));
       }
@@ -273,8 +278,9 @@ class TimelineAccessHistoryTest {
       if (block.compareAndSet(true, false)) {
         entered.countDown();
         try {
-          if (!release.await(10, TimeUnit.SECONDS))
+          if (!release.await(10, TimeUnit.SECONDS)) {
             throw new IllegalStateException("Test release timed out");
+          }
         } catch (InterruptedException failure) {
           Thread.currentThread().interrupt();
           throw new IllegalStateException(failure);

@@ -26,7 +26,9 @@ final class CanonicalEmissions {
   }
 
   String retain(String account, String before, List<Contracts.Emission> emissions) {
-    if (emissions.isEmpty()) return before;
+    if (emissions.isEmpty()) {
+      return before;
+    }
     var blobs = repository.blobs(account);
     var blocks = new ContentBlocks(blobs);
     var index = new RadixIndex<>(blobs, String.class);

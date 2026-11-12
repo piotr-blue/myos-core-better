@@ -26,7 +26,9 @@ final class EmbeddingReads {
     budget.depth(depth);
     Version key = new Version(account, link.document(), Math.max(1, link.version()));
     Repository.Document found = pinned.get(key);
-    if (found != null) return found;
+    if (found != null) {
+      return found;
+    }
     budget.document(depth);
     Repository.Document loaded = repository.load(account, key.document(), key.version());
     remember(loaded);
@@ -35,8 +37,9 @@ final class EmbeddingReads {
   }
 
   void remember(Repository.Document document) {
-    if (documents.putIfAbsent(document.localBlueId(), document) == null)
+    if (documents.putIfAbsent(document.localBlueId(), document) == null) {
       content.add((Map<?, ?>) document.checkpoint().get("content"));
+    }
   }
 
   Optional<Repository.Document> document(BlueId id) {
@@ -50,7 +53,9 @@ final class EmbeddingReads {
   Optional<LanguageRecord> find(BlueId id) {
     for (Map<?, ?> records : content) {
       Object response = records.get(id.value());
-      if (response == null) continue;
+      if (response == null) {
+        continue;
+      }
       Map<?, ?> record = (Map<?, ?>) response;
       if (record.containsKey("proof")) {
         String proof = (String) record.get("proof");
@@ -59,8 +64,9 @@ final class EmbeddingReads {
                 ? LanguageRecord.cyclic(proof, (String) record.get("body"))
                 : LanguageRecord.cyclic(proof));
       }
-      if (!"exact".equals(record.get("mode")))
+      if (!"exact".equals(record.get("mode"))) {
         throw new IllegalArgumentException("Checkpoint content must be exact");
+      }
       return Optional.of(LanguageRecord.json((String) record.get("text")));
     }
     return Optional.empty();

@@ -46,13 +46,15 @@ final class GraphOperationCatalogue {
       var selectedChannels = channels.getOrDefault(member, List.of());
       if (!root.isEmpty()
           && entry.getValue().equals(previous.get(member))
-          && selectedChannels.equals(previousChannels.getOrDefault(member, List.of()))) continue;
+          && selectedChannels.equals(previousChannels.getOrDefault(member, List.of()))) {
+        continue;
+      }
       var value =
           describe(entry.getValue(), operations.apply(member), describeChannels(selectedChannels));
       byte[] bytes = Json.bytes(Map.of("format", FORMAT, "view", value));
       // A display projection must not narrow the set of valid canonical documents. Oversized
       // descriptions keep the ordinary inspection path instead of blocking publication.
-      if (bytes.length > 16 * 1024 * 1024)
+      if (bytes.length > 16 * 1024 * 1024) {
         bytes =
             Json.bytes(
                 Map.of(
@@ -60,6 +62,7 @@ final class GraphOperationCatalogue {
                     FORMAT,
                     "view",
                     Map.of("target", entry.getValue(), "deferred", true)));
+      }
       changes.put(member, blocks.put(bytes));
     }
     Set<String> removed = new HashSet<>(previous.keySet());
@@ -84,15 +87,20 @@ final class GraphOperationCatalogue {
   Map<String, Object> read(String account, String root, String member, String expected) {
     var blobs = repository.blobs(account);
     String record = new RadixIndex<>(blobs, String.class).get(root, member);
-    if (record == null)
+    if (record == null) {
       throw new IllegalStateException("Published operation catalogue is incomplete");
+    }
     var envelope = Json.object(new ContentBlocks(blobs).get(record));
-    if (!FORMAT.equals(envelope.get("format")))
+    if (!FORMAT.equals(envelope.get("format"))) {
       throw new IllegalStateException("Unsupported operation catalogue format");
+    }
     var value = RuntimeConfiguration.object(envelope.get("view"), "view");
-    if (!expected.equals(value.get("target")))
+    if (!expected.equals(value.get("target"))) {
       throw new IllegalStateException("Operation catalogue differs from its published member");
-    if (Boolean.TRUE.equals(value.get("deferred"))) return null;
+    }
+    if (Boolean.TRUE.equals(value.get("deferred"))) {
+      return null;
+    }
     return RecordBodies.immutable(value);
   }
 
@@ -139,18 +147,21 @@ final class GraphOperationCatalogue {
   private static Map<String, List<Contracts.ReceivingChannel>> group(
       Contracts.Reception reception) {
     Map<String, List<Contracts.ReceivingChannel>> result = new HashMap<>();
-    if (reception != null)
-      for (var channel : reception.channels())
+    if (reception != null) {
+      for (var channel : reception.channels()) {
         result
             .computeIfAbsent(channel.receiver().member(), ignored -> new ArrayList<>())
             .add(channel);
+      }
+    }
     return result;
   }
 
   private static Map<String, String> identities(Contracts.Graph graph) {
     Map<String, String> result = new HashMap<>();
-    if (graph != null)
+    if (graph != null) {
       graph.members().forEach(member -> result.put(member.key(), member.blueId().value()));
+    }
     return result;
   }
 }

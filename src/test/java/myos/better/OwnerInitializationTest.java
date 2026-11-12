@@ -26,7 +26,7 @@ class OwnerInitializationTest {
       var configuration = Contracts.create();
       var language = Language.newBuilder().mount("Contracts", Contracts.publication()).build();
       Map<String, Object> children = new LinkedHashMap<>();
-      for (int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++) {
         children.put(
             "child-" + i,
             Map.of(
@@ -49,6 +49,7 @@ class OwnerInitializationTest {
                                 "Contracts/Trigger Event",
                                 "event",
                                 Map.of("number", i)))))));
+      }
       var document =
           language.readJson(
               JsonText.of(
@@ -76,9 +77,10 @@ class OwnerInitializationTest {
           int events = member.key().equals(root) ? 0 : 1;
           assertEquals(events, ((List<?>) publication.get("events")).size());
           assertEquals(events, ((List<?>) publication.get("emissions")).size());
-          for (Object raw : (List<?>) publication.get("emissions"))
+          for (Object raw : (List<?>) publication.get("emissions")) {
             assertEquals(
                 member.key(), RuntimeConfiguration.object(raw, "emission").get("document"));
+          }
           totalBytes += Json.bytes(publication).length;
         }
         assertTrue(

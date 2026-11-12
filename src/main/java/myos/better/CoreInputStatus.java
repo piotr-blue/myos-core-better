@@ -21,12 +21,17 @@ final class CoreInputStatus {
     if (OwnerGraphs.handles(owner)) {
       var records = new OwnerRecords(store, account);
       long version = records.inputVersion(owner, entry);
-      if (version == 0) version = retainedVersion(records, contents, account, owner, entry);
-      if (version == 0) return null;
+      if (version == 0) {
+        version = retainedVersion(records, contents, account, owner, entry);
+      }
+      if (version == 0) {
+        return null;
+      }
       var facts = records.history(owner, version);
       var input = RuntimeConfiguration.object(facts.get("input"), "input");
-      if (!entry.equals(input.get("entry")))
+      if (!entry.equals(input.get("entry"))) {
         throw new IllegalStateException("Input receipt index does not match retained history");
+      }
       return Map.of(
           "disposition",
           "CONSUMED",
@@ -53,7 +58,9 @@ final class CoreInputStatus {
       OwnerRecords records, CoreContents contents, String account, String owner, String entry) {
     var publication = records.get("publication", owner);
     long high = Repository.number(publication.get("version"));
-    if (entry.equals(object(publication.get("input")).get("entry"))) return high;
+    if (entry.equals(object(publication.get("input")).get("entry"))) {
+      return high;
+    }
     OwnerFrontiers.Order target;
     try {
       var value =
@@ -67,7 +74,9 @@ final class CoreInputStatus {
               value.at("/timeline").observation("exactId").text(),
               entry);
     } catch (ConsoleProblem missing) {
-      if (missing.status == 404) return 0;
+      if (missing.status == 404) {
+        return 0;
+      }
       throw missing;
     } catch (BlueException | IllegalArgumentException invalid) {
       return 0;
@@ -76,26 +85,35 @@ final class CoreInputStatus {
     // Most misses are polls for an input newer than the head. No earlier history page can
     // contain it; do not load log2(history size) older, potentially wide, admission receipts.
     var latest = order(object(publication.get("input")));
-    if (latest != null && latest.compareTo(target) < 0) return 0;
+    if (latest != null && latest.compareTo(target) < 0) {
+      return 0;
+    }
     long low = 1;
     while (low <= high) {
       long middle = low + (high - low) / 2;
       var input = object(records.history(owner, middle).get("input"));
-      if (entry.equals(input.get("entry"))) return middle;
+      if (entry.equals(input.get("entry"))) {
+        return middle;
+      }
       var observed = order(input);
       if (observed == null) {
         low = middle + 1;
         continue;
       }
-      if (observed.compareTo(target) < 0) low = middle + 1;
-      else high = middle - 1;
+      if (observed.compareTo(target) < 0) {
+        low = middle + 1;
+      } else {
+        high = middle - 1;
+      }
     }
     return 0;
   }
 
   private static OwnerFrontiers.Order order(Map<String, Object> input) {
     var sources = (List<?>) input.getOrDefault("sources", List.of());
-    if (sources.isEmpty()) return null;
+    if (sources.isEmpty()) {
+      return null;
+    }
     var order = object(object(sources.getFirst()).get("order"));
     return new OwnerFrontiers.Order(
         Repository.number(order.get("timestamp")),

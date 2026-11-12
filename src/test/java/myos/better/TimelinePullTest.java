@@ -149,8 +149,9 @@ class TimelinePullTest {
       assertTrue(new TimelinePull(restarted, provider).acquire().duplicate());
       assertEquals(
           1, restarted.view().version(), "An anchored read of the same head adds no history");
-      for (LanguageContent entry : provider.entries)
+      for (LanguageContent entry : provider.entries) {
         assertEquals(7, restarted.content(1).read(entry.blueId()).at("/message/amount").integer());
+      }
       assertThrows(
           IllegalArgumentException.class,
           () -> provider.source.archive(new Repository(store), "bob").content(1));
@@ -299,7 +300,9 @@ class TimelinePullTest {
       provider.changeEntryResponse = value -> value;
       TimelineTransport interrupted =
           (target, request, maximum, timeout) -> {
-            if (target.getPath().endsWith("/entry")) throw new IOException("fixture interruption");
+            if (target.getPath().endsWith("/entry")) {
+              throw new IOException("fixture interruption");
+            }
             return provider.exchange(target, request, maximum, timeout);
           };
       assertThrows(
@@ -353,7 +356,9 @@ class TimelinePullTest {
         TimelineTransport transport =
             (target, request, maximum, timeout) -> {
               if (target.getPath().endsWith("/content")) {
-                if (problem instanceof IOException failure) throw failure;
+                if (problem instanceof IOException failure) {
+                  throw failure;
+                }
                 throw (InterruptedException) problem;
               }
               return provider.exchange(target, request, maximum, timeout);
@@ -373,11 +378,15 @@ class TimelinePullTest {
             provider.source.archive(new Repository(new JsonBoundaryStore()), "alice");
         provider.beforeRead =
             () -> {
-              if (changed && provider.reads == 2) provider.completeBefore++;
+              if (changed && provider.reads == 2) {
+                provider.completeBefore++;
+              }
             };
         provider.changeResponse =
             value -> {
-              if (changed || provider.reads != 2) return value;
+              if (changed || provider.reads != 2) {
+                return value;
+              }
               Map<String, Object> tampered =
                   new LinkedHashMap<>(Json.object(value.toJson().getBytes(StandardCharsets.UTF_8)));
               tampered.put("signature", "0".repeat(128));
@@ -386,7 +395,9 @@ class TimelinePullTest {
             };
         BlueException invalid =
             assertThrows(BlueException.class, () -> new TimelinePull(archive, provider).acquire());
-        if (changed) assertEquals("TIMELINE_CHECKPOINT_CHANGED", invalid.code());
+        if (changed) {
+          assertEquals("TIMELINE_CHECKPOINT_CHANGED", invalid.code());
+        }
         assertEquals(0, archive.view().version());
       }
     }
@@ -398,7 +409,9 @@ class TimelinePullTest {
           provider.source.archive(new Repository(new JsonBoundaryStore()), "alice");
       TimelineTransport failed =
           (target, request, maximum, timeout) -> {
-            if (request == null) return provider.exchange(target, null, maximum, timeout);
+            if (request == null) {
+              return provider.exchange(target, null, maximum, timeout);
+            }
             LanguageContent input =
                 provider.source.language.prepare(Language.Input.exactJson(request));
             LanguageContent failure =
@@ -434,8 +447,9 @@ class TimelinePullTest {
           provider.source.archive(new Repository(new JsonBoundaryStore()), "alice");
       TimelineTransport missingContent =
           (target, request, maximum, timeout) -> {
-            if (!target.getPath().endsWith("/timelines/content"))
+            if (!target.getPath().endsWith("/timelines/content")) {
               return provider.exchange(target, request, maximum, timeout);
+            }
             LanguageContent input =
                 provider.source.language.prepare(Language.Input.exactJson(request));
             assertEquals(

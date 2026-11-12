@@ -183,7 +183,7 @@ class CanonicalEvidenceTest {
 
   private static String source(int count) {
     Map<String, Object> children = new LinkedHashMap<>();
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count; i++) {
       children.put(
           "child-" + i,
           Map.of(
@@ -215,6 +215,7 @@ class CanonicalEvidenceTest {
                                           Map.of(
                                               "$add",
                                               List.of(Map.of("$document", "/count"), 1))))))))));
+    }
     return JsonText.of(
         Map.of(
             "children",
@@ -252,8 +253,9 @@ class CanonicalEvidenceTest {
     }
 
     public byte[] content(String account, String identity) {
-      if (identity.equals(denied))
+      if (identity.equals(denied)) {
         throw new AssertionError("Unrelated predecessor proof was reopened");
+      }
       return identity.equals(corrupt) ? new byte[] {0} : delegate.content(account, identity);
     }
 

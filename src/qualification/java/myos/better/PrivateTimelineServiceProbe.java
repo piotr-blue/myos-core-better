@@ -17,23 +17,29 @@ public final class PrivateTimelineServiceProbe {
     if (!local
         && (args.length != 2
             || !args[0].matches("native-bench-[a-f0-9]{32}")
-            || !args[1].equals("myos-better-qualification-reader-" + args[0].substring(13))))
+            || !args[1].equals("myos-better-qualification-reader-" + args[0].substring(13)))) {
       throw new IllegalArgumentException(
           "Expected local or a fresh native-bench identifier and its exact qualification secret"
               + " name");
+    }
     if (local
         ? System.getenv("MYOS_TABLE") != null
-        : !"myos-better-20261105-documents".equals(System.getenv("MYOS_TABLE")))
+        : !"myos-better-20261105-documents".equals(System.getenv("MYOS_TABLE"))) {
       throw new IllegalArgumentException(
           "Expected isolated local memory or the existing Better qualification table");
+    }
     Path directory = Files.createTempDirectory("myos-private-custody-");
     try (PrivateTimelineProvider provider = new PrivateTimelineProvider(directory)) {
-      if (local) preflight(provider);
-      else cloud(directory, provider, args[0], args[1]);
+      if (local) {
+        preflight(provider);
+      } else {
+        cloud(directory, provider, args[0], args[1]);
+      }
     } finally {
       try (var paths = Files.walk(directory)) {
-        for (Path path : paths.sorted(Comparator.reverseOrder()).toList())
+        for (Path path : paths.sorted(Comparator.reverseOrder()).toList()) {
           Files.deleteIfExists(path);
+        }
       }
     }
   }
@@ -118,7 +124,9 @@ public final class PrivateTimelineServiceProbe {
           .acquire();
       new TimelinePull(control, provider.directTransport()).acquire();
       for (int i = 0; i < 8; i++) {
-        if ("APPLIED".equals(service.step(core, account, child).get("status"))) break;
+        if ("APPLIED".equals(service.step(core, account, child).get("status"))) {
+          break;
+        }
       }
       core.drain(32);
       require(
@@ -424,6 +432,8 @@ public final class PrivateTimelineServiceProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new AssertionError(message);
+    if (!condition) {
+      throw new AssertionError(message);
+    }
   }
 }

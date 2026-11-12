@@ -33,8 +33,9 @@ final class HostedTimelineReader {
             signing.coordination(), signing.provider(), source.created().timeline(), pageSize);
     // Authenticate even on the public control source, and before consulting any content selector.
     TimelineRequests.Reader reader = parser.reader(envelope);
-    if (reader.operation() != operation)
+    if (reader.operation() != operation) {
       throw new IllegalArgumentException("Reader operation does not match the route");
+    }
     String owner = access.authorize(timeline, reader.publicKey());
     LanguageContent request = reader.request();
     return switch (operation) {

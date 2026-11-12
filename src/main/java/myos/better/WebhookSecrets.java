@@ -31,17 +31,22 @@ final class WebhookSecrets {
   static WebhookSecrets configured(Map<String, String> environment, SigningSecret.Source source) {
     String arn = environment.get("MYOS_WEBHOOK_SECRET_ARN"),
         version = environment.get("MYOS_WEBHOOK_SECRET_VERSION");
-    if (arn == null && version == null) return null;
-    if (arn == null || version == null)
+    if (arn == null && version == null) {
+      return null;
+    }
+    if (arn == null || version == null) {
       throw new IllegalArgumentException("Pinned webhook secret ARN and version are required");
+    }
     String value = source.read(new SigningSecret.Reference(arn, version));
     try {
       var body = Json.object(value.getBytes(StandardCharsets.UTF_8));
       if (!body.keySet().equals(Set.of("format", "seed"))
-          || !"myos.better.webhook-key/1".equals(body.get("format")))
+          || !"myos.better.webhook-key/1".equals(body.get("format"))) {
         throw new IllegalArgumentException();
-      if (!(body.get("seed") instanceof String seed) || !seed.matches("[A-Za-z0-9]{64}"))
+      }
+      if (!(body.get("seed") instanceof String seed) || !seed.matches("[A-Za-z0-9]{64}")) {
         throw new IllegalArgumentException();
+      }
       return new WebhookSecrets(
           MessageDigest.getInstance("SHA-256")
               .digest(("myos.better.webhook-key/1\n" + seed).getBytes(StandardCharsets.UTF_8)));

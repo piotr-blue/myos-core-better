@@ -110,12 +110,13 @@ class CoreAdministratorsTest {
             CoreAdministrators.NONE.session(
                 session("operator@example.test", true, Long.MAX_VALUE)));
     for (String arn :
-        List.of("plain-name", "arn:aws:secretsmanager:us-east-1:123456789012:secret:admins"))
+        List.of("plain-name", "arn:aws:secretsmanager:us-east-1:123456789012:secret:admins")) {
       assertThrows(
           IllegalArgumentException.class,
           () ->
               CoreAdministrators.configured(
                   Map.of("AWS_REGION", "eu-west-1", "CORE_ADMIN_ALLOWLIST_SECRET_ARN", arn)));
+    }
   }
 
   @Test

@@ -38,8 +38,9 @@ class CognitoDirectoryTest {
                 (proxy, method, arguments) -> {
                   if (method.isDefault()
                       && method.getParameterCount() == 1
-                      && method.getParameterTypes()[0] == java.util.function.Consumer.class)
+                      && method.getParameterTypes()[0] == java.util.function.Consumer.class) {
                     return InvocationHandler.invokeDefault(proxy, method, arguments);
+                  }
                   return switch (method.getName()) {
                     case "signUp" ->
                         SignUpResponse.builder()
@@ -47,11 +48,12 @@ class CognitoDirectoryTest {
                             .userConfirmed(false)
                             .build();
                     case "confirmSignUp" -> {
-                      if (failConfirmation.get())
+                      if (failConfirmation.get()) {
                         throw CodeMismatchException.builder()
                             .message("fixture failure")
                             .statusCode(400)
                             .build();
+                      }
                       yield ConfirmSignUpResponse.builder().build();
                     }
                     case "initiateAuth" ->

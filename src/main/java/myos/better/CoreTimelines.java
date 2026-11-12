@@ -35,28 +35,35 @@ final class CoreTimelines {
   }
 
   void close() {
-    if (imports != null) imports.close();
+    if (imports != null) {
+      imports.close();
+    }
   }
 
   Map<String, Object> importTimeline(String account, Map<String, Object> input) {
-    if (imports == null)
+    if (imports == null) {
       throw new ConsoleProblem(
           503, "provider_unconfigured", "Managed Timeline imports are not configured.");
+    }
     BlueId id = new BlueId(RuntimeConfiguration.text(input.get("timelineId"), "timelineId"));
-    if (console.owned(account, id.value()))
+    if (console.owned(account, id.value())) {
       throw new ConsoleProblem(
           409, "timeline_already_imported", "Timeline is already owned by this account.");
+    }
     return imports.add(account, input);
   }
 
   Map<String, Object> retry(String account, BlueId timeline, Map<String, Object> input) {
     RuntimeConfiguration.fields(input, Set.of());
-    if (imports != null && imports.contains(account, timeline))
+    if (imports != null && imports.contains(account, timeline)) {
       return imports.retry(account, timeline);
+    }
     hosted.head(account, timeline);
     if (console.processing() != null) {
       var registered = console.processing().pollingRegistration(account, timeline.value());
-      if (registered != null) console.processing().polling().orElseThrow().reset(registered);
+      if (registered != null) {
+        console.processing().polling().orElseThrow().reset(registered);
+      }
     }
     console.published(account, timeline);
     return read(account, timeline);
@@ -86,11 +93,12 @@ final class CoreTimelines {
 
   Map<String, Object> guarantees(
       String account, BlueId timeline, String command, Map<String, Object> input) {
-    if (imports != null && imports.contains(account, timeline))
+    if (imports != null && imports.contains(account, timeline)) {
       throw new ConsoleProblem(
           422,
           "provider_proof_unavailable",
           "Generate proofs through the remote provider protocol for imported read access.");
+    }
     return guarantees.read(account, timeline, command, input);
   }
 
@@ -109,7 +117,9 @@ final class CoreTimelines {
           List.of());
       row = store.get(key);
     }
-    if (row == null) throw new IllegalStateException("Timeline metadata not retained");
+    if (row == null) {
+      throw new IllegalStateException("Timeline metadata not retained");
+    }
     return Map.of(
         "timelineId",
         created.id().value(),
@@ -126,7 +136,9 @@ final class CoreTimelines {
   }
 
   Map<String, Object> read(String account, BlueId id) {
-    if (imports != null && imports.contains(account, id)) return imports.read(account, id);
+    if (imports != null && imports.contains(account, id)) {
+      return imports.read(account, id);
+    }
     var head = hosted.head(account, id);
     contents.retain(account, head.created().timeline(), false);
     var result = new LinkedHashMap<String, Object>();
@@ -138,8 +150,12 @@ final class CoreTimelines {
     result.put("completeBefore", head.completeBefore());
     result.put("head", head.last() == null ? null : head.last().value());
     var row = store.get(metadata(account, id));
-    if (row != null) result.put("createdAt", row.value().get("createdAt"));
-    if (head.timestamp() >= 0) result.put("lastChangedAt", instant(head.timestamp()));
+    if (row != null) {
+      result.put("createdAt", row.value().get("createdAt"));
+    }
+    if (head.timestamp() >= 0) {
+      result.put("lastChangedAt", instant(head.timestamp()));
+    }
     return result;
   }
 
@@ -151,8 +167,9 @@ final class CoreTimelines {
     var state = pages.decode(account, "timelines", query);
     String after = (String) state.get("after");
     String phase = (String) state.getOrDefault("phase", "owned");
-    if (!Set.of("owned", "imported").contains(phase))
+    if (!Set.of("owned", "imported").contains(phase)) {
       throw new IllegalArgumentException("Invalid Timeline listing cursor");
+    }
     List<Object> items = new ArrayList<>();
     for (int inspected = 0;
         inspected < 200 && items.size() < filter.limit() && !phase.equals("done");
@@ -173,28 +190,33 @@ final class CoreTimelines {
                         .value()
                         .get(phase.equals("owned") ? "timeline" : "timelineId"));
         var item = read(account, id);
-        if (filter.matches(item.get("name"), item.get("timelineId"), item.get("createdAt")))
+        if (filter.matches(item.get("name"), item.get("timelineId"), item.get("createdAt"))) {
           items.add(item);
+        }
       }
       after = batch.after();
-      if (after == null)
+      if (after == null) {
         phase =
             phase.equals("owned")
                     && imports != null
                     && !imports.list(account, null).rows().isEmpty()
                 ? "imported"
                 : "done";
+      }
     }
     var cursor = new LinkedHashMap<String, Object>();
     cursor.put("phase", phase);
-    if (after != null) cursor.put("after", after);
+    if (after != null) {
+      cursor.put("after", after);
+    }
     return page(
         items, phase.equals("done") ? null : pages.encode(account, "timelines", query, cursor));
   }
 
   Map<String, Object> entries(String account, BlueId timeline, Map<String, String> query) {
-    if (imports != null && imports.contains(account, timeline))
+    if (imports != null && imports.contains(account, timeline)) {
       return imports.entries(account, timeline, query);
+    }
     RuntimeConfiguration.fields(
         new HashMap<>(query), Set.of("limit", "pageToken", "beforeUs", "afterEntryBlueId"));
     int limit = CoreListFilter.limit(query);
@@ -205,21 +227,25 @@ final class CoreTimelines {
     long after = state.isEmpty() ? 0L : Repository.number(state.get("after"));
     if (state.isEmpty() && query.containsKey("beforeUs")) {
       long before = Long.parseLong(query.get("beforeUs"));
-      if (before < 0 || before > HostedTimelines.MAX_TIME + 2)
+      if (before < 0 || before > HostedTimelines.MAX_TIME + 2) {
         throw new IllegalArgumentException("Invalid beforeUs");
+      }
       through = hosted.before(account, timeline, through, before);
     }
     if (state.isEmpty() && query.containsKey("afterEntryBlueId")) {
       after = hosted.entry(account, timeline, new BlueId(query.get("afterEntryBlueId"))).position();
-      if (after > through)
+      if (after > through) {
         throw new IllegalArgumentException("afterEntryBlueId is outside the selected range");
+      }
     }
-    if (after < 0 || through < after || through > head.count())
+    if (after < 0 || through < after || through > head.count()) {
       throw new IllegalArgumentException("Invalid timeline page");
+    }
     List<Object> items = new ArrayList<>();
     long end = Math.min(through, after + limit);
-    for (long position = after + 1; position <= end; position++)
+    for (long position = after + 1; position <= end; position++) {
       items.add(project(account, timeline, hosted.entry(account, timeline, position)));
+    }
     var result =
         page(
             items,
@@ -232,32 +258,38 @@ final class CoreTimelines {
   }
 
   Map<String, Object> entry(String account, BlueId timeline, BlueId entry) {
-    if (imports != null && imports.contains(account, timeline))
+    if (imports != null && imports.contains(account, timeline)) {
       return imports.entry(account, timeline, entry);
+    }
     return project(account, timeline, hosted.entry(account, timeline, entry));
   }
 
   Map<String, Object> append(
       String account, BlueId timeline, String command, Map<String, Object> input) {
-    if (imports != null && imports.contains(account, timeline))
+    if (imports != null && imports.contains(account, timeline)) {
       throw new ConsoleProblem(
           403, "timeline_read_only", "Imported read access does not allow append.");
+    }
     hosted.head(account, timeline);
     RuntimeConfiguration.fields(
         input, Set.of("inputMode", "actor", "message", "prevEntry", "documentId", "authority"));
     actor(account, timeline, input);
-    if (!input.containsKey("message")) throw new IllegalArgumentException("message is required");
-    if (input.containsKey("authority") || input.containsKey("documentId"))
+    if (!input.containsKey("message")) {
+      throw new IllegalArgumentException("message is required");
+    }
+    if (input.containsKey("authority") || input.containsKey("documentId")) {
       throw new ConsoleProblem(
           501, "CORE_PARITY_PENDING", "Document-targeted entry admission is not yet ported.");
+    }
     LanguageContent message =
         contents.prepare(
             account,
             input.get("message"),
             RuntimeConfiguration.text(input.getOrDefault("inputMode", "source"), "inputMode"),
             "value");
-    if (hosted.operationMessage(account, timeline, message))
+    if (hosted.operationMessage(account, timeline, message)) {
       throw new IllegalArgumentException("Use document-targeted admission for operation requests");
+    }
     BlueId previous =
         input.get("prevEntry") == null
             ? null
@@ -302,14 +334,17 @@ final class CoreTimelines {
             "prevEntry",
             "authority",
             "mandateSessionId"));
-    if (input.containsKey("authority") || input.containsKey("mandateSessionId"))
+    if (input.containsKey("authority") || input.containsKey("mandateSessionId")) {
       throw new ConsoleProblem(
           501, "CORE_PARITY_PENDING", "Delegated operation authority is not yet ported.");
+    }
     Map<String, Object> reference = RuntimeConfiguration.object(input.get("timeline"), "timeline");
     RuntimeConfiguration.fields(reference, Set.of("blueId"));
     BlueId timeline =
         new BlueId(RuntimeConfiguration.text(reference.get("blueId"), "timeline.blueId"));
-    if (!input.containsKey("message")) throw new IllegalArgumentException("message is required");
+    if (!input.containsKey("message")) {
+      throw new IllegalArgumentException("message is required");
+    }
     ConsoleDocuments.Evidence evidence = reviewedDocument.get();
     LanguageContent message =
         contents.prepare(
@@ -378,14 +413,18 @@ final class CoreTimelines {
 
   Map<String, Object> updateAccess(
       String account, BlueId timeline, String command, Map<String, Object> input) {
-    if (accessUpdates != null) return accessUpdates.update(account, timeline, command, input);
+    if (accessUpdates != null) {
+      return accessUpdates.update(account, timeline, command, input);
+    }
     hosted.head(account, timeline);
     RuntimeConfiguration.fields(input, Set.of("accessId", "allowedKeys", "executionSelection"));
-    if (input.containsKey("executionSelection"))
+    if (input.containsKey("executionSelection")) {
       throw new ConsoleProblem(
           501, "CORE_PARITY_PENDING", "Access follower execution selection is not yet ported.");
-    if (!(input.get("allowedKeys") instanceof List<?> keys))
+    }
+    if (!(input.get("allowedKeys") instanceof List<?> keys)) {
       throw new IllegalArgumentException("allowedKeys is required");
+    }
     List<String> allowed =
         keys.stream().map(key -> RuntimeConfiguration.text(key, "allowedKey")).toList();
     HostedAccess permissions = hosted.access();
@@ -395,8 +434,9 @@ final class CoreTimelines {
             : new BlueId(RuntimeConfiguration.text(input.get("accessId"), "accessId"));
     if (selected != null
         && permissions.grants(account, timeline).stream()
-            .noneMatch(value -> value.initial().blueId().equals(selected)))
+            .noneMatch(value -> value.initial().blueId().equals(selected))) {
       throw new HostedTimelines.Missing();
+    }
     HostedAccess.Permissions change = new HostedAccess.Permissions(List.of(timeline), allowed);
     return access(
         selected == null
@@ -413,9 +453,10 @@ final class CoreTimelines {
   }
 
   private LanguageContent actor(LanguageContent actor, Map<String, Object> input) {
-    if (input.containsKey("actor") && !actor.blueId().value().equals(input.get("actor")))
+    if (input.containsKey("actor") && !actor.blueId().value().equals(input.get("actor"))) {
       throw new ConsoleProblem(
           403, "ACTOR_NOT_AUTHORIZED", "This account cannot publish as that actor.");
+    }
     return actor;
   }
 

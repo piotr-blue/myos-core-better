@@ -114,10 +114,11 @@ class CoreDocumentsTest {
                 Map.of("epoch", "-1"),
                 Map.of("epoch", "9223372036854775807"),
                 Map.of("epoch", "999999999999999999999"),
-                Map.of("entryBlueId", "invalid")))
+                Map.of("entryBlueId", "invalid"))) {
           assertEquals(
               400,
               assertThrows(ConsoleProblem.class, () -> f.api.evidence("alice", id, query)).status);
+        }
         assertEquals(
             404,
             assertThrows(

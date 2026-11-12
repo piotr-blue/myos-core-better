@@ -71,7 +71,9 @@ final class HostedTimelineReadProbe {
                       publisher(measured, signing, account), signing, 256, 1024 * 1024)
                   : reads;
           Sample sample = sample(selected, measured, tail, account);
-          if (retain) (tail == shortTail ? shorter : longer).add(sample);
+          if (retain) {
+            (tail == shortTail ? shorter : longer).add(sample);
+          }
         }
       }
       results.put(
@@ -157,7 +159,9 @@ final class HostedTimelineReadProbe {
     Map<String, Long> after = store.statistics(), calls = new TreeMap<>();
     before.forEach(
         (name, count) -> {
-          if (name.endsWith(".calls")) calls.put(name, after.get(name) - count);
+          if (name.endsWith(".calls")) {
+            calls.put(name, after.get(name) - count);
+          }
         });
     TimelineReader.Page page = tail.pending().accept(response);
     require(
@@ -190,6 +194,8 @@ final class HostedTimelineReadProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new AssertionError(message);
+    if (!condition) {
+      throw new AssertionError(message);
+    }
   }
 }

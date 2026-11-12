@@ -108,7 +108,9 @@ class CorePendingRecipientsTest {
 
             public void signup(String email, String link) {
               sent.add(email + " " + link);
-              if (sent.size() == 1) throw new IllegalStateException("Simulated provider outage");
+              if (sent.size() == 1) {
+                throw new IllegalStateException("Simulated provider outage");
+              }
             }
           };
       try (var delivery =

@@ -252,8 +252,9 @@ class OwnerGasTest {
   @Test
   void waitersAreFairBoundedAndCannotSpendTheSameAvailableBudget() {
     try (var f = new Fixture(0)) {
-      for (int i = 0; i < 65; i++)
+      for (int i = 0; i < 65; i++) {
         assertNull(f.authorize(request("owner-" + i, "claim", 10, 1000)).permit());
+      }
       f.write(tx -> f.gas.credit(tx, "fund", 650, "operator", "test"));
       var read = f.frontiers.metadata.begin();
       assertEquals(64, f.gas.runnableWaiters(read, 64).size());
@@ -390,10 +391,14 @@ class OwnerGasTest {
       boolean interrupt = armed && writes.stream().anyMatch(w -> w.key().sort().equals("MANIFEST"));
       if (interrupt) {
         armed = false;
-        if (!afterCommit) throw new LostAcknowledgment();
+        if (!afterCommit) {
+          throw new LostAcknowledgment();
+        }
       }
       boolean committed = delegate.commit(writes, checks);
-      if (interrupt && committed) throw new LostAcknowledgment();
+      if (interrupt && committed) {
+        throw new LostAcknowledgment();
+      }
       return committed;
     }
 

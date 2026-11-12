@@ -14,7 +14,9 @@ record NativeInput(String runtimeCommand, Object event, AdmissionEvidence eviden
 
   static String admissionScope() {
     String scope = ADMISSION.get();
-    if (scope == null) throw new IllegalStateException("No host admission in progress");
+    if (scope == null) {
+      throw new IllegalStateException("No host admission in progress");
+    }
     return scope;
   }
 
@@ -22,8 +24,11 @@ record NativeInput(String runtimeCommand, Object event, AdmissionEvidence eviden
     String previous = ADMISSION.get();
     ADMISSION.set(scope);
     return () -> {
-      if (previous == null) ADMISSION.remove();
-      else ADMISSION.set(previous);
+      if (previous == null) {
+        ADMISSION.remove();
+      } else {
+        ADMISSION.set(previous);
+      }
     };
   }
 
@@ -34,8 +39,9 @@ record NativeInput(String runtimeCommand, Object event, AdmissionEvidence eviden
   }
 
   static String namespace(String value) {
-    if (value == null || !value.matches("[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}"))
+    if (value == null || !value.matches("[A-Za-z0-9][A-Za-z0-9._:/-]{0,255}")) {
       throw new IllegalArgumentException("A stable native admission namespace is required");
+    }
     return value;
   }
 
@@ -59,15 +65,21 @@ record NativeInput(String runtimeCommand, Object event, AdmissionEvidence eviden
       long timestamp,
       Object rawEvidence) {
     String scoped = scopedCommand(namespace, account, document, command);
-    if (event == null) throw new IllegalArgumentException("Event is required");
-    if (!(rawEvidence instanceof Map<?, ?> map))
+    if (event == null) {
+      throw new IllegalArgumentException("Event is required");
+    }
+    if (!(rawEvidence instanceof Map<?, ?> map)) {
       throw new IllegalArgumentException(
           "Native evidence must be an object keyed by channel blueId");
+    }
     Map<BlueId, Object> proofs = new LinkedHashMap<>();
     for (var entry : map.entrySet()) {
-      if (!(entry.getKey() instanceof String type))
+      if (!(entry.getKey() instanceof String type)) {
         throw new IllegalArgumentException("Native evidence keys must be channel blueIds");
-      if (entry.getValue() == null) throw new IllegalArgumentException("Null admission proof");
+      }
+      if (entry.getValue() == null) {
+        throw new IllegalArgumentException("Null admission proof");
+      }
       proofs.put(new BlueId(type), entry.getValue());
     }
     AdmissionEvidence evidence = AdmissionEvidence.copyOf(proofs);
@@ -84,8 +96,9 @@ record NativeInput(String runtimeCommand, Object event, AdmissionEvidence eviden
             "timestamp", timestamp,
             "evidence", durableProofs);
     byte[] bytes = Json.bytes(audit);
-    if (bytes.length > MAX_BYTES)
+    if (bytes.length > MAX_BYTES) {
       throw new IllegalArgumentException("Native input exceeds 128 KiB");
+    }
     Map<String, Object> captured = Json.object(bytes);
     return new NativeInput(scoped, captured.get("event"), evidence, captured);
   }

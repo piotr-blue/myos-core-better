@@ -35,8 +35,9 @@ class CoreNativeIsolationHttpTest {
     ConsoleLogin login =
         new ConsoleLogin() {
           public User verify(String token) {
-            if (!Set.of("alice", "bob").contains(Objects.toString(token, "")))
+            if (!Set.of("alice", "bob").contains(Objects.toString(token, ""))) {
               throw new ConsoleProblem(401, "SIGN_IN", "Sign in");
+            }
             return new User(token, token + "@example.invalid");
           }
 
@@ -78,7 +79,9 @@ class CoreNativeIsolationHttpTest {
               token.equals("alice") ? 200 : 404,
               response.statusCode(),
               suffix + ": " + response.body());
-          if (token.equals("bob")) assertFalse(response.body().contains("Private document"));
+          if (token.equals("bob")) {
+            assertFalse(response.body().contains("Private document"));
+          }
         }
         var missing =
             http.send(

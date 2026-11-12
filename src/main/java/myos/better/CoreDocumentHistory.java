@@ -25,9 +25,10 @@ final class CoreDocumentHistory {
 
   Map<String, Object> position(String account, String document, long version) {
     long first = documents.firstVersion(account, document);
-    if (version < first)
+    if (version < first) {
       throw new ConsoleProblem(
           404, "EPOCH_NOT_FOUND", "This member did not exist at the selected epoch.");
+    }
     var facts = documents.history(account, document, version);
     var publication = documents.publication(account, document, version);
     var result = position(account, document, version, publication, facts);
@@ -120,11 +121,14 @@ final class CoreDocumentHistory {
     long through = cursor.isEmpty() ? head : Repository.number(cursor.get("through"));
     long first = documents.firstVersion(account, document);
     long after = cursor.isEmpty() ? first - 1 : Repository.number(cursor.get("after"));
-    if (after < 0 || after > through || through > head)
+    if (after < 0 || after > through || through > head) {
       throw new IllegalArgumentException("Invalid history boundary");
+    }
     List<Object> items = new ArrayList<>();
     long end = Math.min(through, after + limit);
-    for (long version = after + 1; version <= end; version++) items.add(item.apply(version));
+    for (long version = after + 1; version <= end; version++) {
+      items.add(item.apply(version));
+    }
     var result = new LinkedHashMap<String, Object>();
     result.put("items", items);
     result.put(
@@ -144,8 +148,9 @@ final class CoreDocumentHistory {
     var facts = documents.history(account, document, version);
     var events = events(account, document, epoch);
     var result = new LinkedHashMap<String, Object>();
-    for (String key : List.of("epoch", "documentRef", "positionRef", "receiptRef"))
+    for (String key : List.of("epoch", "documentRef", "positionRef", "receiptRef")) {
       result.put(key, position.get(key));
+    }
     result.put("documentId", lineage);
     result.put(
         "emitted",
@@ -207,8 +212,9 @@ final class CoreDocumentHistory {
   }
 
   static long version(long epoch) {
-    if (epoch < 0 || epoch == Long.MAX_VALUE)
+    if (epoch < 0 || epoch == Long.MAX_VALUE) {
       throw new IllegalArgumentException("Epoch is outside the supported range");
+    }
     return epoch + 1;
   }
 
@@ -220,8 +226,9 @@ final class CoreDocumentHistory {
 
   private static Object entryRef(Map<String, Object> facts) {
     Object input = facts.get("input");
-    if (input instanceof Map<?, ?> map && map.get("entry") instanceof String id)
+    if (input instanceof Map<?, ?> map && map.get("entry") instanceof String id) {
       return Map.of("blueId", id);
+    }
     return null;
   }
 }

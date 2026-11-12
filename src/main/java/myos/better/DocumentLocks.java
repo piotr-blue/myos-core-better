@@ -15,7 +15,9 @@ final class DocumentLocks {
 
   Lease tryAcquire(String key) {
     Entry entry = retain(key);
-    if (entry.lock.tryLock()) return new Lease(key, entry);
+    if (entry.lock.tryLock()) {
+      return new Lease(key, entry);
+    }
     release(key, entry);
     return null;
   }
@@ -38,7 +40,9 @@ final class DocumentLocks {
     entries.compute(
         key,
         (ignored, present) -> {
-          if (present != entry) throw new IllegalStateException("Document lock lease was lost");
+          if (present != entry) {
+            throw new IllegalStateException("Document lock lease was lost");
+          }
           return --entry.references == 0 ? null : entry;
         });
   }
@@ -61,7 +65,9 @@ final class DocumentLocks {
 
     @Override
     public void close() {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
       entry.lock.unlock();
       closed = true;
       release(key, entry);

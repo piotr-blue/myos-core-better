@@ -164,7 +164,9 @@ class GraphOperationCatalogueTest {
             String childId = GraphDocuments.id("graph-changes", root, child);
             var response = cold.operations("owner", childId);
             assertResponse(expected(session, child), response, childId, result.version());
-            if (!operation.equals("rename")) assertEquals(List.of(), response.get("channels"));
+            if (!operation.equals("rename")) {
+              assertEquals(List.of(), response.get("channels"));
+            }
             assertEquals(0L, cold.statistics().get("graphSessions.loads"));
           }
         }
@@ -329,7 +331,9 @@ class GraphOperationCatalogueTest {
       operations.add(value);
     }
     for (var channel : session.reception().channels()) {
-      if (!member.equals(channel.receiver().member())) continue;
+      if (!member.equals(channel.receiver().member())) {
+        continue;
+      }
       var value = new LinkedHashMap<String, Object>();
       value.put("name", channel.receiver().channel());
       value.put("generation", channel.receiver().generation());
@@ -385,12 +389,16 @@ class GraphOperationCatalogueTest {
       boolean result = delegate.commit(writes, checks);
       if (result
           && override != null
-          && writes.stream().anyMatch(w -> w.key().equals(override.key()))) override = null;
+          && writes.stream().anyMatch(w -> w.key().equals(override.key()))) {
+        override = null;
+      }
       return result;
     }
 
     public byte[] content(String account, String identity) {
-      if (denied.contains(identity)) throw new AssertionError("Execution content was opened");
+      if (denied.contains(identity)) {
+        throw new AssertionError("Execution content was opened");
+      }
       return delegate.content(account, identity);
     }
 

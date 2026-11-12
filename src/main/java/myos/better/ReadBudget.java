@@ -18,8 +18,9 @@ final class ReadBudget {
     static final Limits STANDARD = new Limits(256, 262_144, 4 * 1024 * 1024, 64);
 
     Limits {
-      if (documents < 1 || values < 1 || characters < 1 || depth < 0)
+      if (documents < 1 || values < 1 || characters < 1 || depth < 0) {
         throw new IllegalArgumentException("Positive read bounds and nonnegative depth required");
+      }
     }
   }
 
@@ -61,15 +62,21 @@ final class ReadBudget {
 
   void document(int depth) {
     depth(depth);
-    if (++documents > limits.documents()) throw new Exceeded(purpose, "document count");
+    if (++documents > limits.documents()) {
+      throw new Exceeded(purpose, "document count");
+    }
   }
 
   void depth(int depth) {
-    if (depth > limits.depth()) throw new Exceeded(purpose, "embedding depth");
+    if (depth > limits.depth()) {
+      throw new Exceeded(purpose, "embedding depth");
+    }
   }
 
   void link() {
-    if (++values > limits.values()) throw new Exceeded(purpose, "projected value count");
+    if (++values > limits.values()) {
+      throw new Exceeded(purpose, "projected value count");
+    }
   }
 
   /** Bound the first uncached projection, not just the subsequent host copy. */
@@ -78,7 +85,9 @@ final class ReadBudget {
     try {
       value = session.read(pointer, remainingProjection());
     } catch (BlueException error) {
-      if (!error.code().equals("PROJECTION_LIMIT_EXCEEDED")) throw error;
+      if (!error.code().equals("PROJECTION_LIMIT_EXCEEDED")) {
+        throw error;
+      }
       throw exceededProjection(error);
     }
     projection(value);
@@ -106,18 +115,26 @@ final class ReadBudget {
         continue;
       }
       Object item = current.next();
-      if (++values > limits.values()) throw new Exceeded(purpose, "projected value count");
-      if (item instanceof Map<?, ?> map) pending.push(map.entrySet().iterator());
-      else if (item instanceof Map.Entry<?, ?> entry) {
+      if (++values > limits.values()) {
+        throw new Exceeded(purpose, "projected value count");
+      }
+      if (item instanceof Map<?, ?> map) {
+        pending.push(map.entrySet().iterator());
+      } else if (item instanceof Map.Entry<?, ?> entry) {
         text((String) entry.getKey());
         pending.push(Collections.singletonList(entry.getValue()).iterator());
-      } else if (item instanceof Iterable<?> items) pending.push(items.iterator());
-      else if (item instanceof String text) text(text);
+      } else if (item instanceof Iterable<?> items) {
+        pending.push(items.iterator());
+      } else if (item instanceof String text) {
+        text(text);
+      }
     }
   }
 
   private void text(String text) {
     characters += text.length();
-    if (characters > limits.characters()) throw new Exceeded(purpose, "projected text length");
+    if (characters > limits.characters()) {
+      throw new Exceeded(purpose, "projected text length");
+    }
   }
 }

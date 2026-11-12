@@ -30,10 +30,14 @@ class PropagationReadTest {
   void automaticWorkersDoNotScanEveryShardOnEveryIdlePoll() {
     java.util.concurrent.atomic.AtomicLong clock = new java.util.concurrent.atomic.AtomicLong();
     Propagation automatic = new Propagation(store, delivery -> null, clock::get);
-    for (int n = 0; n < 1000; n++) assertEquals(0, automatic.poll(128));
+    for (int n = 0; n < 1000; n++) {
+      assertEquals(0, automatic.poll(128));
+    }
     assertEquals(0, store.scans);
     clock.set(java.util.concurrent.TimeUnit.MILLISECONDS.toNanos(250));
-    for (int n = 0; n < 1000; n++) assertEquals(0, automatic.poll(128));
+    for (int n = 0; n < 1000; n++) {
+      assertEquals(0, automatic.poll(128));
+    }
     assertEquals(1, store.scans, "one shared discovery reservation, not one full scan per worker");
     clock.set(java.util.concurrent.TimeUnit.MILLISECONDS.toNanos(500));
     assertEquals(0, automatic.poll(128));
@@ -68,7 +72,9 @@ class PropagationReadTest {
 
   @Test
   void discoveredPageUsesBoundedBatchesAcrossIndependentSources() {
-    for (int i = 0; i < 64; i++) publish("source-" + i, false);
+    for (int i = 0; i < 64; i++) {
+      publish("source-" + i, false);
+    }
 
     assertEquals(64, propagation.drain(100));
 
@@ -76,7 +82,9 @@ class PropagationReadTest {
     assertEquals(3, store.batches.size());
     assertTrue(store.batches.stream().allMatch(keys -> keys.size() <= 100));
     assertTrue(store.reads.stream().allMatch(key -> key.sort().startsWith("OUT#")));
-    for (int i = 0; i < 64; i++) assertDelivered("source-" + i);
+    for (int i = 0; i < 64; i++) {
+      assertDelivered("source-" + i);
+    }
   }
 
   @Test
@@ -162,7 +170,9 @@ class PropagationReadTest {
     outbox.put("version", 1);
     outbox.put("timestamp", 0);
     outbox.put("events", List.of());
-    if (legacy) outbox.putAll(schedule);
+    if (legacy) {
+      outbox.putAll(schedule);
+    }
     List<AtomicStore.Write> writes = new ArrayList<>();
     writes.add(AtomicStore.Write.put(key(id, "STATE"), 0, Map.of("documentVersion", 1)));
     writes.add(AtomicStore.Write.put(key(id, "OUT#" + Repository.version(1)), 0, outbox));
@@ -171,7 +181,9 @@ class PropagationReadTest {
             key(id, "PARENT#parent"),
             0,
             Map.of("parent", "parent-" + id, "path", "/child", "generation", "initial")));
-    if (!legacy) writes.add(AtomicStore.Write.put(key(id, "WAKE"), 0, schedule));
+    if (!legacy) {
+      writes.add(AtomicStore.Write.put(key(id, "WAKE"), 0, schedule));
+    }
     assertTrue(store.delegate.commit(writes, List.of()));
     return Map.copyOf(outbox);
   }

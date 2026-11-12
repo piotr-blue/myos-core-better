@@ -104,14 +104,16 @@ class TimelinePollingTest {
       TimelinePolling ours = new TimelinePolling(store, binding("ours")),
           other = new TimelinePolling(store, binding("other"));
       TimelineDirectory foreign = directory(store, "other", other);
-      for (int i = 0; i < 128; i++)
+      for (int i = 0; i < 128; i++) {
         foreign.adopt("foreign" + i, "input", TimelineServiceFixture.definitions(source));
+      }
       TimelineDirectory selected = directory(store, "ours", ours);
       selected.adopt("alice", "input", TimelineServiceFixture.definitions(source));
       long before = store.statistics().get("work.calls");
       List<AtomicStore.Row> rows = new ArrayList<>();
-      for (int shard = 0; shard < TimelinePolling.SHARDS; shard++)
+      for (int shard = 0; shard < TimelinePolling.SHARDS; shard++) {
         rows.addAll(ours.page(shard, null, 16).rows());
+      }
       assertEquals(1, rows.size());
       assertEquals(4, store.statistics().get("work.calls") - before);
       assertEquals("alice", rows.getFirst().value().get("account"));

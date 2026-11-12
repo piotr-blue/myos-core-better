@@ -65,8 +65,9 @@ class OwnerGasRecoveryTest {
       assertEquals(0, f.amount("spent"));
       assertEquals(
           0, (int) f.frontiers.change(tx -> recovery.pulse(tx, 100, (cut, owners) -> fail())));
-      for (var claim : claims)
+      for (var claim : claims) {
         assertThrows(IllegalStateException.class, () -> f.complete(claim, 1));
+      }
       assertTrue(f.claim("owner-0", 101).isPresent());
     }
   }

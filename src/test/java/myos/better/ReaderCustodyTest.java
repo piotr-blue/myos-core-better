@@ -23,7 +23,9 @@ class ReaderCustodyTest {
                 SecretsManagerClient.class.getClassLoader(),
                 new Class<?>[] {SecretsManagerClient.class},
                 (proxy, method, args) -> {
-                  if (method.getName().equals("close")) return null;
+                  if (method.getName().equals("close")) {
+                    return null;
+                  }
                   if (method.getName().equals("getSecretValue")) {
                     reads++;
                     GetSecretValueRequest request = (GetSecretValueRequest) args[0];
@@ -32,10 +34,11 @@ class ReaderCustodyTest {
                       invisibleReads--;
                       throw ResourceNotFoundException.builder().message("Not yet visible").build();
                     }
-                    if (result == null || !request.versionId().equals(result.versionId()))
+                    if (result == null || !request.versionId().equals(result.versionId())) {
                       throw ResourceNotFoundException.builder()
                           .message("Missing immutable version")
                           .build();
+                    }
                     return result;
                   }
                   if (method.getName().equals("createSecret")) {

@@ -65,12 +65,13 @@ final class GraphDocuments implements AutoCloseable {
     graphs.publisher(
         (account, graph, version, reception, writes) -> {
           timelines.subscribe(writes, account, graph, reception);
-          if (version == 1)
+          if (version == 1) {
             writes.add(
                 AtomicStore.Write.put(
                     RootDocuments.root(account, graph),
                     0,
                     Map.of("document", graph, "name", graph)));
+          }
         });
   }
 
@@ -102,12 +103,16 @@ final class GraphDocuments implements AutoCloseable {
 
   TimelineIngress.Outcome step(
       GraphTimelineIngress ingress, String account, String id, TimelineIngress.Sources sources) {
-    if (OwnerGraphs.handles(id)) return owners.step(account, id);
+    if (OwnerGraphs.handles(id)) {
+      return owners.step(account, id);
+    }
     return ingress.step(graphs, account, graph(id), sources);
   }
 
   TimelineIngress.Outcome resumeInitialization(String account, String graph) {
-    if (owners == null) throw new IllegalStateException("Owner execution is unavailable");
+    if (owners == null) {
+      throw new IllegalStateException("Owner execution is unavailable");
+    }
     return owners.resumeInitialization(account, graph);
   }
 
@@ -151,11 +156,12 @@ final class GraphDocuments implements AutoCloseable {
 
   private <T> T inspect(String account, String id, Long version, MemberRead<T> read) {
     String graph = graph(id);
-    if (version == null)
+    if (version == null) {
       return graphs.inspect(
           account,
           graph,
           context -> read.apply(context.session(), context.head().version(), member(context, id)));
+    }
     Map<String, Object> publication = graphs.history(account, graph, version);
     String selected = member(account, id, publication);
     Map<String, Object> snapshot = graphs.snapshot(account, graph, version);
@@ -183,22 +189,31 @@ final class GraphDocuments implements AutoCloseable {
 
   long firstVersion(String account, String id) {
     var head = graphs.head(account, graph(id));
-    if (id.equals(graph(id))) return 1;
+    if (id.equals(graph(id))) {
+      return 1;
+    }
     String key = member(account, id, head.value());
     String cacheKey = account + ":" + id;
     synchronized (births) {
-      if (births.containsKey(cacheKey)) return births.get(cacheKey);
+      if (births.containsKey(cacheKey)) {
+        return births.get(cacheKey);
+      }
     }
     // Native member keys are never recycled, and snapshots retain admitted members.
     long low = 1, high = head.version();
     while (low < high) {
       long middle = low + (high - low) / 2;
-      if (graphs.containsMember(account, graph(id), middle, key)) high = middle;
-      else low = middle + 1;
+      if (graphs.containsMember(account, graph(id), middle, key)) {
+        high = middle;
+      } else {
+        low = middle + 1;
+      }
     }
     synchronized (births) {
       births.put(cacheKey, low);
-      while (births.size() > 256) births.remove(births.keySet().iterator().next());
+      while (births.size() > 256) {
+        births.remove(births.keySet().iterator().next());
+      }
     }
     return low;
   }
@@ -225,13 +240,14 @@ final class GraphDocuments implements AutoCloseable {
                     new CoreRelationships.Endpoint(
                         id(graph, root, selected), identities.get(selected).value()));
     var edges = new ArrayList<CoreRelationships.Edge>();
-    for (var edge : incident)
+    for (var edge : incident) {
       edges.add(
           new CoreRelationships.Edge(
               endpoint.apply((String) edge.get("target")),
               endpoint.apply((String) edge.get("source")),
               (String) edge.get("path"),
               Repository.number(edge.get("generation"))));
+    }
     return new CoreRelationships.View(head.version(), edges);
   }
 
@@ -239,10 +255,14 @@ final class GraphDocuments implements AutoCloseable {
     var publication = graphs.history(account, graph(id), version);
     String selected = member(account, id, publication);
     var retained = graphs.retainedMember(account, graph(id), version, selected);
-    if (retained != null) return retained;
+    if (retained != null) {
+      return retained;
+    }
     String page = (String) publication.get("page");
     var recovered = graphs.reviewedMember(account, page, selected, language);
-    if (recovered != null) return recovered;
+    if (recovered != null) {
+      return recovered;
+    }
     return graphs.snapshotContent(
         account, page, graphs.memberIdentity(account, page, selected), language);
   }
@@ -262,7 +282,9 @@ final class GraphDocuments implements AutoCloseable {
     var publication = graphs.history(account, graph(id), version);
     String selected = member(account, id, publication);
     var retained = graphs.retainedMember(account, graph(id), version, selected);
-    if (retained != null) return retained.expand("");
+    if (retained != null) {
+      return retained.expand("");
+    }
     String page = (String) publication.get("page");
     return graphs.snapshotPresentation(
         account, page, graphs.memberIdentity(account, page, selected), language);
@@ -284,9 +306,10 @@ final class GraphDocuments implements AutoCloseable {
     String page = (String) publication.get("page");
     var current = graphs.memberReference(account, page, member(account, id, publication), language);
     var initial = current.at("/contracts/initialized/document").observation("exactId");
-    if (initial.isMissing())
+    if (initial.isMissing()) {
       throw new ConsoleProblem(
           409, "NOT_INITIALIZED", "This member has no initialized document identity.");
+    }
     return graphs.snapshotContent(account, page, new BlueId(initial.text()), language);
   }
 
@@ -384,7 +407,9 @@ final class GraphDocuments implements AutoCloseable {
     var head = graphs.head(account, graph(id));
     String selected = member(account, id, head.value());
     var published = graphs.operations(account, head.value(), selected);
-    if (published != null) return operationResponse(id, head.version(), published);
+    if (published != null) {
+      return operationResponse(id, head.version(), published);
+    }
     // Older publications retain the existing strict inspection path. Their next publication
     // creates the derived catalogue without rewriting any prior canonical history.
     return inspect(
@@ -425,8 +450,9 @@ final class GraphDocuments implements AutoCloseable {
                     new IllegalArgumentException(
                         "Operation Request requires its explicit document target"));
     var membership = graphs.target(account, graph(id), head.value(), target);
-    if (membership == null || !membership.members().containsKey(selected))
+    if (membership == null || !membership.members().containsKey(selected)) {
       throw new IllegalArgumentException("Operation target does not belong to this document");
+    }
   }
 
   Optional<Contracts.OperationRequest> operationRequest(
@@ -439,30 +465,35 @@ final class GraphDocuments implements AutoCloseable {
   LanguageContent operationMessage(
       String account, String id, String target, Map<String, Object> message) {
     var head = graphs.head(account, graph(id));
-    if (OwnerGraphs.handles(graph(id))) OwnerGraphs.configurationFor(contracts, head.value());
+    if (OwnerGraphs.handles(graph(id))) {
+      OwnerGraphs.configurationFor(contracts, head.value());
+    }
     String member = member(account, id, head.value());
     String root = (String) head.value().getOrDefault("lineage", "");
     String selectedId = target;
     long version;
     if (selectedId == null) {
       var first = graphs.lineage.find(account, root, "member:" + member);
-      if (first == null || first.members().size() != 1)
+      if (first == null || first.members().size() != 1) {
         throw new IllegalStateException("Initial member address is unavailable");
+      }
       var entry = first.members().entrySet().iterator().next();
       selectedId = entry.getKey();
       version = entry.getValue();
     } else {
       var membership = graphs.lineage.find(account, root, selectedId);
-      if (membership == null || !membership.members().containsKey(member))
+      if (membership == null || !membership.members().containsKey(member)) {
         throw new IllegalArgumentException("Target does not belong to this graph member");
+      }
       version = membership.members().get(member);
     }
     // The committed admission belongs to this exact historical member. Recover its lazy
     // content view instead of validating the entire closure again, or keeping old graphs
     // alive in a document-count cache whose retained bytes cannot be bounded.
     LanguageDocument selected = content(account, id, version);
-    if (!selected.blueId().value().equals(selectedId))
+    if (!selected.blueId().value().equals(selectedId)) {
       throw new IllegalStateException("Historical member identity differs");
+    }
     Map<String, Object> addressed = new LinkedHashMap<>(message);
     addressed.put("document", Map.of("blueId", selected.blueId().value()));
     return Language.newBuilder()
@@ -479,7 +510,9 @@ final class GraphDocuments implements AutoCloseable {
     String member = member(account, id, head.value());
     String root = graphs.memberKey(account, page, null);
     int offset = cursor == null ? 0 : Integer.parseInt(cursor);
-    if (offset < 0) throw new IllegalArgumentException("Invalid child cursor");
+    if (offset < 0) {
+      throw new IllegalArgumentException("Invalid child cursor");
+    }
     // Child listings need the parent's frozen relationships, not execution or content admission.
     var selected =
         graphs.incident(account, page, member).stream()
@@ -566,18 +599,21 @@ final class GraphDocuments implements AutoCloseable {
                 row.get("result"),
                 "performance",
                 graphs.measurement(account, graph(id), version)));
-    if (row.containsKey("publishedAt")) result.put("publishedAt", row.get("publishedAt"));
+    if (row.containsKey("publishedAt")) {
+      result.put("publishedAt", row.get("publishedAt"));
+    }
     return result;
   }
 
   List<LanguageContent> emissions(String account, String id, long version) {
     var row = graphs.history(account, graph(id), version);
     if (!(row.get("emissions") instanceof List<?> emissions)) {
-      if (!id.equals(graph(id)))
+      if (!id.equals(graph(id))) {
         throw new ConsoleProblem(
             409,
             "MEMBER_EVENTS_NOT_RETAINED",
             "This historical publication predates per-member event retention.");
+      }
       return ((List<?>) row.get("events"))
           .stream()
               .map(value -> language.prepare(Language.Input.json(JsonText.of(value))))
@@ -587,10 +623,11 @@ final class GraphDocuments implements AutoCloseable {
     List<LanguageContent> result = new ArrayList<>();
     for (Object raw : emissions) {
       var emission = RuntimeConfiguration.object(raw, "emission");
-      if (key.equals(emission.get("document")))
+      if (key.equals(emission.get("document"))) {
         result.add(
             graphs.content(
                 account, graph(id), version, new BlueId((String) emission.get("event")), language));
+      }
     }
     return List.copyOf(result);
   }

@@ -16,7 +16,9 @@ class OwnerIdleRoutingTest {
   void unchangedIdlePolicyDoesNotReadEveryExcludedInputAfterReopen(int gap) {
     try (var store = new MeasuredStore(new JsonBoundaryStore())) {
       var setup = owner(store);
-      for (int i = 1; i <= gap; i++) accept(setup, i, "other-" + i, "other");
+      for (int i = 1; i <= gap; i++) {
+        accept(setup, i, "other-" + i, "other");
+      }
       assertEquals(0, setup.sources("owner").getFirst().position());
       var cold = new OwnerFrontiers(store, "account");
       var before = store.statistics();
@@ -82,8 +84,9 @@ class OwnerIdleRoutingTest {
   @Test
   void queuedApplicableInputsRemainOrderedAcrossExcludedGaps() {
     var scheduler = owner(new MemoryStore());
-    for (int i = 1; i <= 90; i++)
+    for (int i = 1; i <= 90; i++) {
       accept(scheduler, i, "input-" + i, i % 30 == 1 ? "target" : "other");
+    }
     scheduler.sealLocalBefore(91);
     assertEquals("input-1", complete(scheduler));
     assertEquals("input-31", complete(scheduler));

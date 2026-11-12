@@ -11,8 +11,9 @@ public final class TimelineCatchupProbe {
   private TimelineCatchupProbe() {}
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 1 || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}"))
+    if (args.length != 1 || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}")) {
       throw new IllegalArgumentException("Expected fresh native-bench-* account");
+    }
     String account = args[0];
     boolean durable = System.getenv("MYOS_TABLE") != null;
     Path directory = Files.createTempDirectory("myos-timeline-catchup-");
@@ -21,7 +22,9 @@ public final class TimelineCatchupProbe {
     String child;
     long started = System.nanoTime();
     try (QualificationProvider provider = new QualificationProvider(directory)) {
-      for (int i = 0; i < 40; i++) provider.active.append();
+      for (int i = 0; i < 40; i++) {
+        provider.active.append();
+      }
       provider.quiet.completeBefore(41);
       provider.active.pauseAfterAcceptance();
       TimelineServiceProbe.configure(
@@ -135,8 +138,9 @@ public final class TimelineCatchupProbe {
       throw failure;
     } finally {
       try (var paths = Files.walk(directory)) {
-        for (Path path : paths.sorted(Comparator.reverseOrder()).toList())
+        for (Path path : paths.sorted(Comparator.reverseOrder()).toList()) {
           Files.deleteIfExists(path);
+        }
       }
     }
   }
@@ -178,7 +182,9 @@ public final class TimelineCatchupProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new AssertionError(message);
+    if (!condition) {
+      throw new AssertionError(message);
+    }
   }
 
   private static String artifact(Class<?> type) throws Exception {

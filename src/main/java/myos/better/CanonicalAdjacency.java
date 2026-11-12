@@ -25,21 +25,24 @@ final class CanonicalAdjacency {
       Map<String, Object> edges) {
     boolean rebuild = root == null;
     Map<String, Changes> changed = new HashMap<>();
-    if (!rebuild)
+    if (!rebuild) {
       before.forEach(
           (key, reference) -> {
             if (!reference.equals(after.get(key))) {
               var edge = read.apply(reference);
-              for (String member : members(edge))
+              for (String member : members(edge)) {
                 changed.computeIfAbsent(member, ignored -> new Changes()).remove(key);
+              }
             }
           });
+    }
     after.forEach(
         (key, reference) -> {
           if (rebuild || !reference.equals(before.get(key))) {
             var edge = RuntimeConfiguration.object(edges.get(key), "embedding");
-            for (String member : members(edge))
+            for (String member : members(edge)) {
               changed.computeIfAbsent(member, ignored -> new Changes()).put(key, reference);
+            }
           }
         });
     String previous = rebuild ? RadixIndex.EMPTY : root;
@@ -50,15 +53,20 @@ final class CanonicalAdjacency {
           String old = index.get(previous, member);
           String next =
               index.update(old == null ? RadixIndex.EMPTY : old, change.put, change.remove);
-          if (next.isEmpty()) removals.add(member);
-          else replacements.put(member, next);
+          if (next.isEmpty()) {
+            removals.add(member);
+          } else {
+            replacements.put(member, next);
+          }
         });
     return index.update(previous, replacements, removals);
   }
 
   Map<String, String> incident(String root, String member) {
     String selected = index.get(root, member);
-    if (selected == null) return Map.of();
+    if (selected == null) {
+      return Map.of();
+    }
     Map<String, String> result = new LinkedHashMap<>();
     index.forEach(selected, result::put);
     return result;

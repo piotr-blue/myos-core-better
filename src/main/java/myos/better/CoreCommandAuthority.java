@@ -18,11 +18,13 @@ final class CoreCommandAuthority {
         principal.user()
             || principal.credential() != null && principal.credential().owner() != null);
     value.put("membershipGeneration", session.membershipGeneration());
-    if (principal.impersonation() != null)
+    if (principal.impersonation() != null) {
       value.put("impersonationDigest", principal.impersonation().digest());
+    }
     if (!principal.user()) {
-      if (principal.credentialId() == null)
+      if (principal.credentialId() == null) {
         throw new ConsoleProblem(403, "credential_required", "A verified credential is required.");
+      }
       value.put("credentialId", principal.credentialId());
       value.put("credentialDigest", session.tokenDigest());
     }
@@ -44,8 +46,9 @@ final class CoreCommandAuthority {
       checks.add(new AtomicStore.Check(key, row == null ? 0 : row.version()));
     }
     var workspace = rows.get(accountKey);
-    if (workspace != null && !"ACTIVE".equals(workspace.value().getOrDefault("status", "ACTIVE")))
+    if (workspace != null && !"ACTIVE".equals(workspace.value().getOrDefault("status", "ACTIVE"))) {
       throw new ConsoleProblem(403, "account_unavailable", "Workspace is unavailable.");
+    }
     String role = "OWNER";
     if (memberBound) {
       var member = rows.get(memberKey);
@@ -53,23 +56,27 @@ final class CoreCommandAuthority {
       if (member == null && user.equals(account)) {
         generation = 1;
       } else {
-        if (member == null || !"ACTIVE".equals(member.value().get("status")))
+        if (member == null || !"ACTIVE".equals(member.value().get("status"))) {
           throw new ConsoleProblem(403, "membership_inactive", "Workspace membership is inactive.");
+        }
         generation = Repository.number(member.value().get("generation"));
         role = (String) member.value().get("role");
       }
-      if (generation != Repository.number(subject.get("membershipGeneration")))
+      if (generation != Repository.number(subject.get("membershipGeneration"))) {
         throw new ConsoleProblem(403, "membership_changed", "Workspace membership changed.");
+      }
     }
-    if (subject.containsKey("credentialId"))
+    if (subject.containsKey("credentialId")) {
       checks.add(
           new ApiKeys(store)
               .guard(
                   account,
                   (String) subject.get("credentialId"),
                   (String) subject.get("credentialDigest")));
-    if (subject.get("impersonationDigest") instanceof String digest)
+    }
+    if (subject.get("impersonationDigest") instanceof String digest) {
       checks.add(CoreImpersonations.guard(store, digest, System.currentTimeMillis()));
+    }
     CorePermissions.request(role, "POST", route);
     return List.copyOf(checks);
   }

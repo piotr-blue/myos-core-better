@@ -106,10 +106,11 @@ class CoreTimelineGuaranteesTest {
             Map.of("limit", true),
             Map.of("beforeUs", -1),
             Map.of("beforeUs", 9_007_199_254_740_993L),
-            Map.of("unexpected", 1)))
+            Map.of("unexpected", 1))) {
       assertThrows(
           IllegalArgumentException.class,
           () -> f.api.guarantees("alice", f.timeline, "invalid", input));
+    }
     assertEquals(
         409,
         assertThrows(

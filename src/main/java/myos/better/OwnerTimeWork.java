@@ -54,11 +54,15 @@ final class OwnerTimeWork implements AutoCloseable {
             || !frontiers.ready(tx, activeAfterMicros / 1000, 1).isEmpty();
     AtomicStore.Row before = store.get(key(account));
     if (alarm == null && !active) {
-      if (before != null) tx.publish(List.of(AtomicStore.Write.delete(before)), List.of());
+      if (before != null) {
+        tx.publish(List.of(AtomicStore.Write.delete(before)), List.of());
+      }
       return;
     }
     long due = active ? activeAfterMicros : alarm;
-    if (alarm != null) due = Math.min(due, alarm);
+    if (alarm != null) {
+      due = Math.min(due, alarm);
+    }
     Map<String, Object> value =
         Map.of(
             "account",
@@ -73,11 +77,12 @@ final class OwnerTimeWork implements AutoCloseable {
             String.format(Locale.ROOT, "%016d", due));
     if (before != null && before.value().equals(value)) {
       tx.publish(List.of(), List.of(new AtomicStore.Check(before.key(), before.version())));
-    } else
+    } else {
       tx.publish(
           List.of(
               AtomicStore.Write.put(key(account), before == null ? 0 : before.version(), value)),
           List.of());
+    }
   }
 
   void start() {
@@ -92,7 +97,9 @@ final class OwnerTimeWork implements AutoCloseable {
   int process(String account) {
     var row = store.get(key(account));
     long now = clockMicros.getAsLong();
-    if (row == null || Repository.number(row.value().get("due")) > now) return 0;
+    if (row == null || Repository.number(row.value().get("due")) > now) {
+      return 0;
+    }
     String owner = (String) row.value().get("owner");
     var frontiers = new OwnerFrontiers(store, account);
     frontiers.change(
@@ -111,7 +118,9 @@ final class OwnerTimeWork implements AutoCloseable {
           count++;
           continue;
         }
-        if (result.status() != TimelineIngress.Status.IDLE) delayMicros = 1_000_000;
+        if (result.status() != TimelineIngress.Status.IDLE) {
+          delayMicros = 1_000_000;
+        }
         break;
       }
     } finally {

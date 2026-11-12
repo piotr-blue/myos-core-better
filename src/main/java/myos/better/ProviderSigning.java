@@ -60,7 +60,9 @@ final class ProviderSigning {
     Map<String, Object> fields = new LinkedHashMap<>();
     fields.put("timeline", ref(timeline));
     fields.put("completeBefore", before);
-    if (last != null) fields.put("lastEntry", ref(last));
+    if (last != null) {
+      fields.put("lastEntry", ref(last));
+    }
     LanguageContent guarantee = typed("Timeline Completeness Guarantee", fields);
     return typed(
         "Timeline Attestation",

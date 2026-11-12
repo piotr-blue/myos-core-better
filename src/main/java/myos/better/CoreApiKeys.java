@@ -38,15 +38,18 @@ final class CoreApiKeys {
     session.principal().requireUser();
     RuntimeConfiguration.fields(input, Set.of("name"));
     String name = RuntimeConfiguration.text(input.get("name"), "name").strip();
-    if (name.isEmpty() || name.length() > 160)
+    if (name.isEmpty() || name.length() > 160) {
       throw new IllegalArgumentException("Key name must contain 1–160 characters");
+    }
     String account = session.principal().account(), user = session.userId();
     var receiptKey = owned(account, user, "CREATE#" + Repository.identifier(command));
     String fingerprint = Json.hash(Json.bytes(Map.of("name", name)));
     for (int attempt = 0; attempt < 8; attempt++) {
       var authority = authority(session);
       var prior = store.get(receiptKey);
-      if (prior != null) return replay(prior, fingerprint, authority, account, user);
+      if (prior != null) {
+        return replay(prior, fingerprint, authority, account, user);
+      }
       // Preserve pre-migration commands rather than minting a second credential for their retry.
       var legacy = store.get(new AtomicStore.Key("API_KEYS#" + account, "CREATE#" + command));
       if (legacy != null && CorePermissions.administrator(authority.membership().role())) {
@@ -99,7 +102,9 @@ final class CoreApiKeys {
               AtomicStore.Write.put(ApiKeys.authority(id), 0, credential),
               AtomicStore.Write.put(owned(account, user, "KEY#" + id), 0, value),
               AtomicStore.Write.put(receiptKey, 0, retained)),
-          authority.checks())) return result;
+          authority.checks())) {
+        return result;
+      }
     }
     throw new ConsoleProblem(503, "key_busy", "Retry key creation with the same idempotency key.");
   }
@@ -133,23 +138,30 @@ final class CoreApiKeys {
               : owned(account, user, "");
       var batch =
           store.query(source.partition(), "KEY#", after, Math.min(100, limit - items.size()));
-      for (var row : batch.rows()) items.add(metadata(row.value(), authority.membership()));
+      for (var row : batch.rows()) {
+        items.add(metadata(row.value(), authority.membership()));
+      }
       after = batch.after();
       if (after == null && phase.equals("legacy")) {
         phase = "owned";
-      } else if (after == null) break;
+      } else if (after == null) {
+        break;
+      }
       next = new LinkedHashMap<>();
       next.put("phase", phase);
-      if (after != null) next.put("after", after);
+      if (after != null) {
+        next.put("after", after);
+      }
       if (items.size() == limit) {
         if (!paged
             && (after != null
                 || !store
                     .query(owned(account, user, "").partition(), "KEY#", null, 1)
                     .rows()
-                    .isEmpty()))
+                    .isEmpty())) {
           throw new ConsoleProblem(
               422, "key_listing_bound", "Use explicit pagination for more than 4096 keys.");
+        }
         break;
       }
       next = null;
@@ -163,21 +175,30 @@ final class CoreApiKeys {
   }
 
   Map<String, Object> revoke(CoreAccounts.Session session, String id) {
-    if (!id.matches("[a-f0-9]{32}")) throw missing();
+    if (!id.matches("[a-f0-9]{32}")) {
+      throw missing();
+    }
     String account = session.principal().account(), user = session.userId();
     for (int attempt = 0; attempt < 8; attempt++) {
       var authority = authority(session);
       var row = store.get(ApiKeys.authority(id));
-      if (row == null || !account.equals(row.value().get("account"))) throw missing();
+      if (row == null || !account.equals(row.value().get("account"))) {
+        throw missing();
+      }
       boolean legacy = !row.value().containsKey("userId");
       if (legacy
           ? !CorePermissions.administrator(authority.membership().role())
-          : !user.equals(row.value().get("userId"))) throw missing();
+          : !user.equals(row.value().get("userId"))) {
+        throw missing();
+      }
       var listedKey = legacy ? ApiKeys.listing(account, id) : owned(account, user, "KEY#" + id);
       var listed = store.get(listedKey);
-      if (listed == null) throw new IllegalStateException("Missing credential listing");
-      if ("revoked".equals(row.value().get("status")))
+      if (listed == null) {
+        throw new IllegalStateException("Missing credential listing");
+      }
+      if ("revoked".equals(row.value().get("status"))) {
         return Map.of("apiKey", metadata(listed.value(), authority.membership()));
+      }
       var credential = new LinkedHashMap<>(row.value());
       var view = new LinkedHashMap<>(listed.value());
       for (var value : List.of(credential, view)) {
@@ -188,7 +209,9 @@ final class CoreApiKeys {
           List.of(
               AtomicStore.Write.put(row.key(), row.version(), credential),
               AtomicStore.Write.put(listed.key(), listed.version(), view)),
-          authority.checks())) return Map.of("apiKey", metadata(view, authority.membership()));
+          authority.checks())) {
+        return Map.of("apiKey", metadata(view, authority.membership()));
+      }
     }
     throw new ConsoleProblem(503, "key_busy", "Retry revoking the same API key.");
   }
@@ -199,8 +222,9 @@ final class CoreApiKeys {
       Authority authority,
       String account,
       String user) {
-    if (!fingerprint.equals(receipt.value().get("fingerprint")))
+    if (!fingerprint.equals(receipt.value().get("fingerprint"))) {
       throw new ConsoleProblem(409, "idempotency_conflict", "Key creation input changed.");
+    }
     var key = store.get(ApiKeys.authority((String) receipt.value().get("credentialId")));
     if (key == null
         || !"active".equals(key.value().get("status"))
@@ -208,8 +232,9 @@ final class CoreApiKeys {
         || !user.equals(key.value().get("userId"))
         || Repository.number(key.value().get("membershipGeneration"))
             != authority.membership().generation()
-        || clock.millis() >= Repository.number(receipt.value().get("expiresAt")))
+        || clock.millis() >= Repository.number(receipt.value().get("expiresAt"))) {
       throw new ConsoleProblem(409, "replay_expired", "Use a new request to create a new key.");
+    }
     available();
     return Json.object(
         secrets
@@ -225,20 +250,23 @@ final class CoreApiKeys {
     var current = store.getAll(List.of(accountKey, memberKey));
     var selected = current.get(accountKey);
     var member = current.get(memberKey);
-    if (selected != null && !"ACTIVE".equals(selected.value().getOrDefault("status", "ACTIVE")))
+    if (selected != null && !"ACTIVE".equals(selected.value().getOrDefault("status", "ACTIVE"))) {
       throw new ConsoleProblem(403, "account_unavailable", "Workspace is unavailable.");
+    }
     if (member == null && !account.equals(user)
-        || member != null && !"ACTIVE".equals(member.value().get("status")))
+        || member != null && !"ACTIVE".equals(member.value().get("status"))) {
       throw new ConsoleProblem(
           403, "membership_required", "An active account membership is required.");
+    }
     var membership =
         member == null
             ? new CoreAccounts.Membership(1, 1, "OWNER")
             : CoreAccounts.Membership.from(member.value());
     if (membership.generation() != session.membershipGeneration()
-        || session.membership() != null && !session.membership().equals(membership))
+        || session.membership() != null && !session.membership().equals(membership)) {
       throw new ConsoleProblem(
           409, "membership_stale", "Reload the changed membership before continuing.");
+    }
     return new Authority(
         membership,
         List.of(
@@ -250,8 +278,9 @@ final class CoreApiKeys {
 
   static Map<String, Object> metadata(Map<String, Object> value, CoreAccounts.Membership member) {
     var result = new LinkedHashMap<String, Object>();
-    for (String field : List.of("id", "name", "keyPrefix", "status"))
+    for (String field : List.of("id", "name", "keyPrefix", "status")) {
       result.put(field, value.get(field));
+    }
     result.put("created", value.get("createdAt"));
     result.put("revoked", value.get("revokedAt"));
     long generation = Repository.number(value.getOrDefault("membershipGeneration", 1));
@@ -278,10 +307,11 @@ final class CoreApiKeys {
   }
 
   private void available() {
-    if (secrets == null)
+    if (secrets == null) {
       throw new ConsoleProblem(
           503,
           "credential_custody_unavailable",
           "Pinned credential encryption custody is not configured.");
+    }
   }
 }

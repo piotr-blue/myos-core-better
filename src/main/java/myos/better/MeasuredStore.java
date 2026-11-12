@@ -22,8 +22,16 @@ final class MeasuredStore implements AtomicStore {
     this.delegate = delegate;
     for (String name :
         List.of(
-            "get", "getAll", "query", "work", "commit", "content", "contentAll", "publishContent"))
+            "get",
+            "getAll",
+            "query",
+            "work",
+            "commit",
+            "content",
+            "contentAll",
+            "publishContent")) {
       counters.put(name, new Counter());
+    }
   }
 
   private <T> T measure(String operation, Supplier<T> action) {
@@ -60,7 +68,9 @@ final class MeasuredStore implements AtomicStore {
 
   public boolean commit(List<Write> writes, List<Check> checks) {
     boolean result = measure("commit", () -> delegate.commit(writes, checks));
-    if (!result) retries.increment();
+    if (!result) {
+      retries.increment();
+    }
     return result;
   }
 
@@ -68,7 +78,9 @@ final class MeasuredStore implements AtomicStore {
       List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
     boolean result =
         measure("commit", () -> delegate.commitWithContent(writes, checks, account, pages));
-    if (!result) retries.increment();
+    if (!result) {
+      retries.increment();
+    }
     return result;
   }
 

@@ -67,15 +67,23 @@ class CoreMembershipsHttpTest {
     var request =
         HttpRequest.newBuilder(URI.create(fixture.url + CoreDashboardApi.BASE + route))
             .header("Authorization", "Bearer " + token);
-    if (account != null) request.header("X-MyOS-Account", account);
-    if (guard != null) request.header("X-MyOS-Session-Context", guard);
-    if (command != null) request.header("Idempotency-Key", command);
-    if (body == null) request.method(method, HttpRequest.BodyPublishers.noBody());
-    else
+    if (account != null) {
+      request.header("X-MyOS-Account", account);
+    }
+    if (guard != null) {
+      request.header("X-MyOS-Session-Context", guard);
+    }
+    if (command != null) {
+      request.header("Idempotency-Key", command);
+    }
+    if (body == null) {
+      request.method(method, HttpRequest.BodyPublishers.noBody());
+    } else {
       request
           .header("Origin", "https://console.example")
           .header("Content-Type", "application/json")
           .method(method, HttpRequest.BodyPublishers.ofString(JsonText.of(body)));
+    }
     return fixture.http.send(request.build(), HttpResponse.BodyHandlers.ofString());
   }
 }

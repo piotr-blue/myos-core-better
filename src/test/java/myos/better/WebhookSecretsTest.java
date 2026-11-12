@@ -34,8 +34,9 @@ class WebhookSecretsTest {
     String first = secrets.seal(value, context), second = secrets.seal(value, context);
     assertNotEquals(first, second);
     assertEquals(value, new WebhookSecrets(key).open(first, context));
-    for (String other : List.of("bob/hook/one", "alice/receipt/one", "alice/hook/two"))
+    for (String other : List.of("bob/hook/one", "alice/receipt/one", "alice/hook/two")) {
       assertThrows(IllegalStateException.class, () -> secrets.open(first, other));
+    }
     byte[] broken = Base64.getDecoder().decode(first);
     broken[broken.length - 1] ^= 1;
     assertThrows(

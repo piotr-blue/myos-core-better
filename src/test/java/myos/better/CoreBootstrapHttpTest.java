@@ -27,7 +27,9 @@ class CoreBootstrapHttpTest {
     ConsoleLogin login =
         new ConsoleLogin() {
           public User verify(String token) {
-            if (!"alice".equals(token)) throw new ConsoleProblem(401, "SIGN_IN", "Sign in");
+            if (!"alice".equals(token)) {
+              throw new ConsoleProblem(401, "SIGN_IN", "Sign in");
+            }
             return user;
           }
 
@@ -105,7 +107,9 @@ class CoreBootstrapHttpTest {
                           HttpResponse.BodyHandlers.ofString());
                   assertEquals(200, result.statusCode(), result.body());
                   var receipt = Json.object(result.body().getBytes(StandardCharsets.UTF_8));
-                  if (!"PENDING".equals(receipt.get("status"))) return receipt;
+                  if (!"PENDING".equals(receipt.get("status"))) {
+                    return receipt;
+                  }
                   Thread.sleep(10);
                 }
               });

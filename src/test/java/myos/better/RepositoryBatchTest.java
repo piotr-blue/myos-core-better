@@ -43,7 +43,9 @@ class RepositoryBatchTest {
         page[0] = (byte) i;
         page[1] = (byte) (i >> 8);
         String id = writer.put(page);
-        if (i == 0) first = id;
+        if (i == 0) {
+          first = id;
+        }
       }
       // No explicit writer flush and no mutable publication, but the initial immutable window
       // is already durable. Mutating the input array cannot corrupt that content address.

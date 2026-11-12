@@ -60,7 +60,9 @@ final class CoreBootstrap {
   }
 
   Map<String, Object> start(String account, String command, Map<String, Object> input) {
-    if (store == null) return execute(account, command, prepare(account, input));
+    if (store == null) {
+      return execute(account, command, prepare(account, input));
+    }
     var key =
         new AtomicStore.Key(
             "CORE_BOOTSTRAP_DIRECT#" + Repository.identifier(account),
@@ -79,15 +81,17 @@ final class CoreBootstrap {
           AtomicStore.Write.put(key, 0, Map.of("fingerprint", fingerprint, "prepared", content)));
       blobs.commit(writes, checks);
       before = store.get(key);
-      if (before == null)
+      if (before == null) {
         throw new ConsoleProblem(
             409,
             "recipient_resolution_changed",
             "Prepare the bootstrap again; participant authority changed.");
+      }
     }
-    if (!fingerprint.equals(before.value().get("fingerprint")))
+    if (!fingerprint.equals(before.value().get("fingerprint"))) {
       throw new ConsoleProblem(
           409, "BOOTSTRAP_CONFLICT", "This bootstrap command already has different input.");
+    }
     var prepared =
         Json.object(new ContentBlocks(blobs).get((String) before.value().get("prepared")));
     return execute(account, command, prepared);
@@ -99,7 +103,9 @@ final class CoreBootstrap {
         input,
         Set.of("document", "inputMode", "packages", "executionSelection", "participantMappings"));
     runtime.validate(input);
-    if (!input.containsKey("document")) throw new IllegalArgumentException("document is required");
+    if (!input.containsKey("document")) {
+      throw new IllegalArgumentException("document is required");
+    }
     List<String> selection =
         input.containsKey("packages")
             ? RuntimeConfiguration.list(input.get("packages"), "packages").stream()
@@ -132,27 +138,32 @@ final class CoreBootstrap {
           Set.of("channelName", "accountId", "email", "representativeId", "agentId", "partyPath"));
       if ((mapping.containsKey("email") || mapping.containsKey("representativeId"))
               && resolver == null
-          || mapping.containsKey("agentId"))
+          || mapping.containsKey("agentId")) {
         throw new ConsoleProblem(
             501,
             "BOOTSTRAP_PARTICIPANT_UNSUPPORTED",
             "This participant resolver is not configured. No timelines" + " were created.");
+      }
       String target =
           resolver == null
               ? RuntimeConfiguration.text(mapping.get("accountId"), "accountId")
               : resolver.account(mapping);
-      if (!target.equals(account) && collaborative == null)
+      if (!target.equals(account) && collaborative == null) {
         throw new ConsoleProblem(
             501, "BOOTSTRAP_PARTICIPANT_UNSUPPORTED", "Collaborative bootstrap is not configured.");
+      }
       var selected = new LinkedHashMap<String, Object>();
       selected.put(
           "channelName", RuntimeConfiguration.text(mapping.get("channelName"), "channelName"));
-      if (mapping.containsKey("partyPath")) selected.put("partyPath", mapping.get("partyPath"));
+      if (mapping.containsKey("partyPath")) {
+        selected.put("partyPath", mapping.get("partyPath"));
+      }
       mappings.add(selected);
       String channel = (String) selected.get("channelName");
       participants.put(channel, target);
-      if (mapping.containsKey("representativeId"))
+      if (mapping.containsKey("representativeId")) {
         writers.put(channel, (String) mapping.get("representativeId"));
+      }
     }
     var request =
         Map.<String, Object>of("source", definition.toJson(), "participantMappings", mappings);
@@ -174,49 +185,64 @@ final class CoreBootstrap {
       if (!participant.partyPath().isEmpty()) {
         var party = BootstrapPartyPaths.at(definition, participant.partyPath());
         var declarations = new ArrayList<LanguageView>();
-        if (participant.representativeName().isEmpty()) declarations.add(party);
-        else {
+        if (participant.representativeName().isEmpty()) {
+          declarations.add(party);
+        } else {
           String parent = participants.get(participant.partyRole());
-          if (target != null && !target.equals(parent)) throw participantMismatch();
+          if (target != null && !target.equals(parent)) {
+            throw participantMismatch();
+          }
           target = parent;
         }
         declarations.add(BootstrapPartyPaths.at(definition, participant.writerPath()));
         for (var declared : declarations) {
           var locator = new LinkedHashMap<>(CoreBootstrapParticipants.locator(declared));
           if (locator.containsKey("agentId")
-              || resolver == null && locator.containsKey("representativeId"))
+              || resolver == null && locator.containsKey("representativeId")) {
             throw new ConsoleProblem(
                 501,
                 "BOOTSTRAP_PARTICIPANT_UNSUPPORTED",
                 "This representative resolver is not configured.");
-          if (locator.isEmpty()) continue;
-          if (target != null && !locator.containsKey("accountId") && !locator.containsKey("email"))
+          }
+          if (locator.isEmpty()) {
+            continue;
+          }
+          if (target != null
+              && !locator.containsKey("accountId")
+              && !locator.containsKey("email")) {
             locator.put("accountId", target);
-          if (locator.containsKey("email") && resolver == null)
+          }
+          if (locator.containsKey("email") && resolver == null) {
             throw new ConsoleProblem(
                 501, "BOOTSTRAP_PARTICIPANT_UNSUPPORTED", "Email resolution is not configured.");
+          }
           String selected =
               resolver == null
                   ? RuntimeConfiguration.text(locator.get("accountId"), "accountId")
                   : resolver.account(locator);
-          if (target != null && !target.equals(selected)) throw participantMismatch();
+          if (target != null && !target.equals(selected)) {
+            throw participantMismatch();
+          }
           target = selected;
           if (locator.get("representativeId") instanceof String human) {
-            if (writer != null && !writer.equals(human))
+            if (writer != null && !writer.equals(human)) {
               throw new ConsoleProblem(
                   422,
                   "representative_mismatch",
                   "Authored and supplied representatives must agree.");
+            }
             writer = human;
           }
           identified = true;
         }
-        if (!participant.representativeName().isEmpty() && writer == null)
+        if (!participant.representativeName().isEmpty() && writer == null) {
           throw new ConsoleProblem(
               422, "representative_id_required", "Representative must name its User.");
+        }
         if (target != null) {
-          if (participant.representativeName().isEmpty())
+          if (participant.representativeName().isEmpty()) {
             selectReader(resolver, target, party.at("/readerKeys"), readerKeys, grantedKeys);
+          }
           selectReader(
               resolver,
               target,
@@ -225,26 +251,32 @@ final class CoreBootstrap {
               grantedKeys);
         }
       }
-      if (!explicit.contains(role) && !identified)
+      if (!explicit.contains(role) && !identified) {
         throw new ConsoleProblem(
             422, "MISSING_MAPPING", "Provide a participant mapping for " + role + ".");
+      }
       if (resolver != null) {
         var locator = new LinkedHashMap<String, Object>();
         locator.put("accountId", Objects.requireNonNull(target));
-        if (writer != null) locator.put("representativeId", writer);
+        if (writer != null) {
+          locator.put("representativeId", writer);
+        }
         target = resolver.account(locator);
       }
       participants.put(role, Objects.requireNonNull(target));
-      if (writer != null) writers.put(role, writer);
+      if (writer != null) {
+        writers.put(role, writer);
+      }
     }
     if (!plan.activation().isEmpty()) {
       var readers = definition.at(plan.activation() + "/parameters/readers");
       for (String name : readers.declaredFields()) {
         var group = readers.at("/" + BootstrapPartyPaths.escape(name));
         var locator = CoreBootstrapParticipants.locator(group);
-        if (locator.containsKey("representativeId") || locator.containsKey("agentId"))
+        if (locator.containsKey("representativeId") || locator.containsKey("agentId")) {
           throw new ConsoleProblem(
               422, "reader_account_required", "Reader groups select an account, not a writer.");
+        }
         String target =
             resolver == null
                 ? RuntimeConfiguration.text(locator.get("accountId"), "reader accountId")
@@ -258,10 +290,15 @@ final class CoreBootstrap {
     var prepared =
         new LinkedHashMap<String, Object>(
             Map.of("request", request, "packages", selection, "records", records));
-    if (resolver != null && !resolver.checks().isEmpty())
+    if (resolver != null && !resolver.checks().isEmpty()) {
       prepared.put("participantChecks", resolver.checks());
-    if (!readerAccounts.isEmpty()) prepared.put("readerAccounts", readerAccounts);
-    if (!writers.isEmpty()) prepared.put("participantWriters", writers);
+    }
+    if (!readerAccounts.isEmpty()) {
+      prepared.put("readerAccounts", readerAccounts);
+    }
+    if (!writers.isEmpty()) {
+      prepared.put("participantWriters", writers);
+    }
     if (resolver != null && !resolver.pending().isEmpty()) {
       prepared.put("pendingRecipients", resolver.pending());
       prepared.put("recipientRuntime", runtime.selection());
@@ -270,21 +307,25 @@ final class CoreBootstrap {
       prepared.put("readerKeys", readerKeys);
       prepared.put("grantedReaderKeys", List.copyOf(grantedKeys));
     }
-    if (!participants.containsValue(account))
+    if (!participants.containsValue(account)) {
       throw new ConsoleProblem(
           403, "initiator_required", "The initiating account must be a participant.");
+    }
     boolean resolvedEmail = resolver != null && resolver.selectedByEmail();
     if (resolvedEmail
         || !writers.isEmpty()
         || !readerAccounts.isEmpty()
         || !readerKeys.isEmpty()
         || participants.values().stream().anyMatch(target -> !target.equals(account))) {
-      if (collaborative == null)
+      if (collaborative == null) {
         throw new ConsoleProblem(
             501, "BOOTSTRAP_PARTICIPANT_UNSUPPORTED", "Collaborative bootstrap is not configured.");
+      }
       var recipients = new TreeSet<>(participants.values());
       recipients.addAll(readerAccounts.values());
-      if (resolver != null) recipients.removeAll(resolver.pending().values());
+      if (resolver != null) {
+        recipients.removeAll(resolver.pending().values());
+      }
       collaborative.validate(account, recipients);
       prepared.put("participantAccounts", participants);
     }
@@ -302,10 +343,13 @@ final class CoreBootstrap {
       LanguageView keys,
       Map<String, String> selected,
       Set<String> grants) {
-    if (!keys.exists()) return;
-    if (resolver == null)
+    if (!keys.exists()) {
+      return;
+    }
+    if (resolver == null) {
       throw new ConsoleProblem(
           503, "reader_resolution_unavailable", "Managed reader selection is not configured.");
+    }
     String id = resolver.readerKey(account, keys);
     selected.put(account, id);
     grants.add((String) store.get(CoreReaderKeys.key(account, id)).value().get("publicKey"));
@@ -313,13 +357,17 @@ final class CoreBootstrap {
 
   /** Replays the exact prepared input after durable acceptance, including after restart. */
   Map<String, Object> execute(String account, String command, Map<String, Object> prepared) {
-    if (store != null) CoreBootstrapParticipants.accept(store, account, command, prepared);
+    if (store != null) {
+      CoreBootstrapParticipants.accept(store, account, command, prepared);
+    }
     var request = RuntimeConfiguration.object(prepared.get("request"), "prepared bootstrap");
     var selection =
         RuntimeConfiguration.list(prepared.get("packages"), "packages").stream()
             .map(String.class::cast)
             .toList();
-    if (installed != null) installed.installSelection(account, "bootstrap/" + command, selection);
+    if (installed != null) {
+      installed.installSelection(account, "bootstrap/" + command, selection);
+    }
     var records = RuntimeConfiguration.object(prepared.get("records"), "prepared content");
     Language replay =
         contents.language(account).toBuilder()
@@ -332,9 +380,10 @@ final class CoreBootstrap {
                 })
             .build();
     if (prepared.containsKey("participantAccounts")) {
-      if (collaborative == null)
+      if (collaborative == null) {
         throw new ConsoleProblem(
             503, "BOOTSTRAP_UNAVAILABLE", "Resume with collaborative bootstrap configured.");
+      }
       return collaborative.start(account, command, prepared, replay);
     }
     var result = documents.bootstrap(account, command, request, replay);
@@ -342,10 +391,12 @@ final class CoreBootstrap {
   }
 
   Map<String, Object> recipients(String account, String admission, Map<String, Object> receipt) {
-    if (!"DOCUMENT_BOOTSTRAP".equals(receipt.get("kind")))
+    if (!"DOCUMENT_BOOTSTRAP".equals(receipt.get("kind"))) {
       throw new ConsoleProblem(404, "BOOTSTRAP_NOT_FOUND", "This admission is not a bootstrap.");
-    if (!(receipt.get("details") instanceof Map<?, ?> details))
+    }
+    if (!(receipt.get("details") instanceof Map<?, ?> details)) {
       return Map.of("admissionId", admission, "recipients", List.of());
+    }
     String id = (String) details.get("sessionId");
     var source = documents.source(account, id);
     if (source.get("participantAccounts") instanceof Map<?, ?> assignments) {
@@ -356,12 +407,13 @@ final class CoreBootstrap {
                   .computeIfAbsent((String) target, ignored -> new ArrayList<>())
                   .add(Map.of("name", role, "kind", "PARTICIPANT")));
       rolesByAccount.computeIfAbsent(account, ignored -> new ArrayList<>());
-      if (source.get("readerAccounts") instanceof Map<?, ?> readers)
+      if (source.get("readerAccounts") instanceof Map<?, ?> readers) {
         readers.forEach(
             (name, target) ->
                 rolesByAccount
                     .computeIfAbsent((String) target, ignored -> new ArrayList<>())
                     .add(Map.of("name", name, "kind", "READER")));
+      }
       return Map.of(
           "admissionId",
           admission,

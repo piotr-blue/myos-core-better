@@ -15,20 +15,24 @@ public final class GraphSessionRenewalProbe {
 
   public static void main(String[] args) {
     int writes = args.length == 0 ? 1 : Integer.parseInt(args[0]);
-    if (writes < 1 || writes > 16) throw new IllegalArgumentException("Writes must be 1 to 16");
+    if (writes < 1 || writes > 16) {
+      throw new IllegalArgumentException("Writes must be 1 to 16");
+    }
     var language = Language.newBuilder().mount("Contracts", Contracts.publication()).build();
     var contracts = Contracts.newBuilder().language(language).build();
     var results = new ArrayList<Object>();
     for (int count : List.of(16, 256, 1024)) {
       var children = new LinkedHashMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       var rules = new LinkedHashMap<String, Object>();
       rules.put(
           "embedded",
           Map.of("type", "Contracts/Process Embedded", "collectionPaths", List.of("/children")));
       rules.put("input", Map.of("type", "Contracts/External Channel"));
       var changes = new ArrayList<Object>();
-      for (int write = 1; write <= writes; write++)
+      for (int write = 1; write <= writes; write++) {
         changes.add(
             Map.of(
                 "$appendChange",
@@ -39,6 +43,7 @@ public final class GraphSessionRenewalProbe {
                     "/count",
                     "val",
                     Map.of("$add", List.of(Map.of("$document", "/count"), write)))));
+      }
       rules.put(
           "add",
           Map.of(
@@ -68,7 +73,9 @@ public final class GraphSessionRenewalProbe {
                   i,
                   AdmissionEvidence.empty());
           double millis = (System.nanoTime() - started) / 1e6;
-          if (!"APPLIED".equals(result.status())) throw new AssertionError(result.status());
+          if (!"APPLIED".equals(result.status())) {
+            throw new AssertionError(result.status());
+          }
           samples.add(
               Map.of(
                   "input",
@@ -87,8 +94,9 @@ public final class GraphSessionRenewalProbe {
                   result.identity()));
         }
         if (!BigInteger.valueOf(12L * writes)
-            .equals(graphs.inspect("renewal", "graph-renewal", c -> c.session().read("/count"))))
+            .equals(graphs.inspect("renewal", "graph-renewal", c -> c.session().read("/count")))) {
           throw new AssertionError("Incorrect final count");
+        }
         results.add(
             Map.of(
                 "members",

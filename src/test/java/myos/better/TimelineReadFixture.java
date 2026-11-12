@@ -35,7 +35,9 @@ final class TimelineReadFixture implements TimelineTransport {
 
   TimelineReadFixture(TimelineFixture source, int size) {
     this.source = source;
-    for (int i = 1; i <= size; i++) append("{kind: Tick, amount: 7}");
+    for (int i = 1; i <= size; i++) {
+      append("{kind: Tick, amount: 7}");
+    }
   }
 
   void append(String message) {

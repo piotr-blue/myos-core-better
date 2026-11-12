@@ -47,13 +47,15 @@ class CoreRuntimeCatalogueTest {
         for (Object raw : (List<?>) runtime.catalog().get("items")) {
           var p = RuntimeConfiguration.object(raw, "package");
           ids.add(p.get("blueId"));
-          for (Object dependency : (List<?>) p.get("dependencies"))
+          for (Object dependency : (List<?>) p.get("dependencies")) {
             assertTrue(
                 ((List<?>) runtime.selection().get("supportedPackages"))
                     .contains(RuntimeConfiguration.object(dependency, "dependency").get("blueId")));
+          }
         }
-        for (Object raw : (List<?>) reviewed.get("packages"))
+        for (Object raw : (List<?>) reviewed.get("packages")) {
           assertTrue(ids.contains(RuntimeConfiguration.object(raw, "package").get("blueId")));
+        }
         assertTrue(JsonText.of(runtime.catalog()).contains("Activation"));
         var changed = new LinkedHashMap<>(runtime.selection());
         changed.put("hostHistory", "different");
@@ -65,8 +67,11 @@ class CoreRuntimeCatalogueTest {
                 .status);
       }
     } finally {
-      if (previous == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", previous);
+      if (previous == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", previous);
+      }
     }
   }
 }

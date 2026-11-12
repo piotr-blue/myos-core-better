@@ -37,8 +37,9 @@ class CorePublicDirectoryTest {
 
   @Test
   void pausedMigrationKeepsItsCursorAndContinuesCapturingProfileChanges() {
-    for (int i = 0; i < 150; i++)
+    for (int i = 0; i < 150; i++) {
       account(physical, "account-%03d".formatted(i), "Legacy studio", "ACTIVE");
+    }
     assertFalse(store.backfillPage());
     var before = physical.get(CorePublicDirectory.BACKFILL);
     var paused = new PublicDirectoryStore(physical, false);
@@ -109,24 +110,35 @@ class CorePublicDirectoryTest {
       var expected = new TreeMap<String, List<String>>();
       for (int account = 0; account < 12; account++) {
         String id = "a%02d".formatted(account);
-        if (!accounts[account] || !selectedAccounts.isEmpty() && !selectedAccounts.contains(id))
+        if (!accounts[account] || !selectedAccounts.isEmpty() && !selectedAccounts.contains(id)) {
           continue;
+        }
         boolean nameMatches = names[account].toLowerCase(Locale.ROOT).contains(term);
         var people = new ArrayList<String>();
         for (int person = 0; person < 8; person++) {
-          if (!users[person] || !memberships[account][person]) continue;
-          if (!selectedEmails.isEmpty() && !selectedEmails.contains(emails[person])) continue;
-          if (!emails[person].startsWith(term) && (selectedEmails.isEmpty() || !nameMatches))
+          if (!users[person] || !memberships[account][person]) {
             continue;
+          }
+          if (!selectedEmails.isEmpty() && !selectedEmails.contains(emails[person])) {
+            continue;
+          }
+          if (!emails[person].startsWith(term) && (selectedEmails.isEmpty() || !nameMatches)) {
+            continue;
+          }
           people.add("u" + person);
         }
-        if ((!selectedEmails.isEmpty() && people.isEmpty()) || (!nameMatches && people.isEmpty()))
+        if ((!selectedEmails.isEmpty() && people.isEmpty()) || (!nameMatches && people.isEmpty())) {
           continue;
+        }
         expected.put(id, people);
       }
       var input = new LinkedHashMap<String, Object>(Map.of("q", term, "limit", 3));
-      if (!selectedEmails.isEmpty()) input.put("emails", List.copyOf(selectedEmails));
-      if (!selectedAccounts.isEmpty()) input.put("accountIds", List.copyOf(selectedAccounts));
+      if (!selectedEmails.isEmpty()) {
+        input.put("emails", List.copyOf(selectedEmails));
+      }
+      if (!selectedAccounts.isEmpty()) {
+        input.put("accountIds", List.copyOf(selectedAccounts));
+      }
       var actual = new TreeMap<String, List<String>>();
       for (int page = 0; ; page++) {
         assertTrue(page < 5, "Directory continuation did not terminate");
@@ -136,7 +148,9 @@ class CorePublicDirectoryTest {
           assertNull(
               actual.put(id, people(item).stream().map(p -> (String) p.get("userId")).toList()));
         }
-        if (result.get("nextPageToken") == null) break;
+        if (result.get("nextPageToken") == null) {
+          break;
+        }
         input.put("pageToken", result.get("nextPageToken"));
       }
       assertEquals(expected, actual, "Step " + step + ": " + input);
@@ -220,11 +234,15 @@ class CorePublicDirectoryTest {
 
   @Test
   void previewAndPageLimitsRemainStableWithDuplicateEmailsAndManyMemberships() {
-    for (String id : List.of("a", "b", "c")) account(store, id, "Studio", "ACTIVE");
+    for (String id : List.of("a", "b", "c")) {
+      account(store, id, "Studio", "ACTIVE");
+    }
     for (int i = 0; i < 25; i++) {
       String id = "u%02d".formatted(i);
       user(store, id, "shared@example.test");
-      for (String account : List.of("a", "b", "c")) member(store, account, id, "ACTIVE");
+      for (String account : List.of("a", "b", "c")) {
+        member(store, account, id, "ACTIVE");
+      }
     }
     ready(store);
     var first = query(Map.of("emails", List.of("shared@example.test"), "limit", 1));
@@ -266,8 +284,9 @@ class CorePublicDirectoryTest {
 
   @Test
   void oldRowsBackfillAcrossRestartAndNeverAdvertiseAPartialDirectory() {
-    for (int i = 0; i < 150; i++)
+    for (int i = 0; i < 150; i++) {
       account(physical, "account-%03d".formatted(i), "Legacy studio", "ACTIVE");
+    }
     assertEquals(
         503, assertThrows(ConsoleProblem.class, () -> query(Map.of("q", "legacy"))).status);
     assertFalse(store.backfillPage());
@@ -279,7 +298,9 @@ class CorePublicDirectoryTest {
     String token = null;
     do {
       var input = new LinkedHashMap<String, Object>(Map.of("q", "legacy", "limit", 50));
-      if (token != null) input.put("pageToken", token);
+      if (token != null) {
+        input.put("pageToken", token);
+      }
       var page = query(input);
       seen.addAll(ids(page));
       token = (String) page.get("nextPageToken");
@@ -325,7 +346,9 @@ class CorePublicDirectoryTest {
             (ignored, method, args) -> {
               if (Set.of("commit", "commitWithContent").contains(method.getName())) {
                 var action = hook.getAndSet(null);
-                if (action != null) action.run();
+                if (action != null) {
+                  action.run();
+                }
               }
               return invoke(method, physical, args);
             });
@@ -345,7 +368,9 @@ class CorePublicDirectoryTest {
               Object result = invoke(method, physical, args);
               if (Set.of("commit", "commitWithContent").contains(method.getName())
                   && Boolean.TRUE.equals(result)
-                  && lose.getAndSet(false)) throw new IllegalStateException("lost reply");
+                  && lose.getAndSet(false)) {
+                throw new IllegalStateException("lost reply");
+              }
               return result;
             });
     var ambiguous = new PublicDirectoryStore(intercepted);
@@ -364,13 +389,16 @@ class CorePublicDirectoryTest {
         proxy(
             (ignored, method, args) -> {
               if (Set.of("get", "getAll", "content", "contentAll", "query")
-                  .contains(method.getName())) reads.incrementAndGet();
+                  .contains(method.getName())) {
+                reads.incrementAndGet();
+              }
               return invoke(method, physical, args);
             });
     var documents = new PublicDirectoryStore(intercepted);
     var writes = new ArrayList<AtomicStore.Write>();
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 100; i++) {
       writes.add(AtomicStore.Write.put(new AtomicStore.Key("DOC", "" + i), 0, Map.of("value", i)));
+    }
     assertTrue(documents.commit(writes, List.of()));
     assertEquals(0, reads.get());
     assertNull(physical.get(new AtomicStore.Key(CorePublicDirectory.PARTITION, "MANIFEST")));
@@ -379,7 +407,9 @@ class CorePublicDirectoryTest {
   @Test
   void aLongNameCanPublishMoreThanOneHundredIndexEntriesAtomically() {
     StringBuilder name = new StringBuilder();
-    for (int i = 0; i < 40; i++) name.append("%03d-".formatted(i));
+    for (int i = 0; i < 40; i++) {
+      name.append("%03d-".formatted(i));
+    }
     account(store, "office", name.toString(), "ACTIVE");
     ready(store);
     assertEquals(List.of("office"), ids(query(Map.of("q", "021-022"))));
@@ -390,7 +420,11 @@ class CorePublicDirectoryTest {
   }
 
   private static void ready(PublicDirectoryStore store) {
-    for (int i = 0; i < 100; i++) if (store.backfillPage()) return;
+    for (int i = 0; i < 100; i++) {
+      if (store.backfillPage()) {
+        return;
+      }
+    }
     fail("Baseline did not complete within the bounded fixture");
   }
 

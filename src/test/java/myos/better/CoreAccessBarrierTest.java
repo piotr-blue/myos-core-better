@@ -94,10 +94,12 @@ class CoreAccessBarrierTest {
             "identity",
             "accounts",
             "accounts/lookup",
-            "invitations/token/accept"))
+            "invitations/token/accept")) {
       assertFalse(CoreDashboardApi.accountScoped(CoreDashboardApi.BASE + route), route);
-    for (String route : List.of("account", "documents", "api-keys", "account/users/alice"))
+    }
+    for (String route : List.of("account", "documents", "api-keys", "account/users/alice")) {
       assertTrue(CoreDashboardApi.accountScoped(CoreDashboardApi.BASE + route), route);
+    }
     assertTrue(CoreDashboardApi.changesAuthority(CoreDashboardApi.BASE + "api-keys/id", "DELETE"));
     assertTrue(CoreDashboardApi.changesAuthority("/api/api-keys/id", "DELETE"));
     assertTrue(

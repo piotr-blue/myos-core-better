@@ -301,7 +301,9 @@ class TimelineExecutionTest {
     public boolean commit(List<Write> writes, List<Check> checks) {
       Runnable action = beforeCommit;
       beforeCommit = null;
-      if (action != null) action.run();
+      if (action != null) {
+        action.run();
+      }
       boolean result = delegate.commit(writes, checks);
       if (result && loseResponse) {
         loseResponse = false;

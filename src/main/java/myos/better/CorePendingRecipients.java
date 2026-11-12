@@ -42,8 +42,9 @@ final class CorePendingRecipients {
     for (var entry : pending.entrySet()) {
       String email = CoreUserIdentities.email(entry.getKey()), account = (String) entry.getValue();
       long generation = Math.incrementExact(Objects.requireNonNull(expected.get(key(email))));
-      if (!account.equals(account(email, generation)))
+      if (!account.equals(account(email, generation))) {
         throw new IllegalStateException("Invalid reserved recipient");
+      }
       put(
           writes,
           expected,
@@ -87,8 +88,9 @@ final class CorePendingRecipients {
       var frozenRuntime = new LinkedHashMap<String, Object>();
       frozenRuntime.put("selection", runtime);
       frozenRuntime.put("origin", "bootstrap");
-      if (OwnerRecords.EDITION.equals(runtime.get("hostExecution")))
+      if (OwnerRecords.EDITION.equals(runtime.get("hostExecution"))) {
         frozenRuntime.put("initialGas", OwnerGas.initialAllocation());
+      }
       put(writes, expected, CoreWorkspaces.accountKey(account, "RUNTIME"), frozenRuntime);
       put(writes, expected, CoreUserIdentities.emailKey(email), Map.of("format", 1));
       var delivery = new LinkedHashMap<String, Object>();
@@ -111,13 +113,17 @@ final class CorePendingRecipients {
     var runtime = store.get(CoreWorkspaces.accountKey(account, "RUNTIME"));
     if (runtime == null
         || !"bootstrap".equals(runtime.value().get("origin"))
-        || !runtime.value().containsKey("initialGas")) return;
+        || !runtime.value().containsKey("initialGas")) {
+      return;
+    }
     var allocation = RuntimeConfiguration.object(runtime.value().get("initialGas"), "initial gas");
     for (int attempt = 0; attempt < 8; attempt++) {
       var tx = new OwnerMetadata(store, account).begin();
       new OwnerGas(account).provision(tx, allocation);
       tx.publish(List.of(), List.of(new AtomicStore.Check(runtime.key(), runtime.version())));
-      if (tx.commit()) return;
+      if (tx.commit()) {
+        return;
+      }
     }
     throw new ConsoleProblem(
         503, "recipient_provisioning_busy", "Retry recipient runtime provisioning.");
@@ -129,7 +135,9 @@ final class CorePendingRecipients {
       AtomicStore.Key key,
       Map<String, Object> value) {
     Long version = expected.remove(key);
-    if (version == null) throw new IllegalStateException("Unobserved recipient mutation");
+    if (version == null) {
+      throw new IllegalStateException("Unobserved recipient mutation");
+    }
     writes.add(AtomicStore.Write.put(key, version, value));
   }
 }

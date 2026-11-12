@@ -142,8 +142,9 @@ class WebhookHttpTransportTest {
             "https://example.com/#fragment",
             "https://example.com:8443",
             "https://[::1]",
-            "/relative"))
+            "/relative")) {
       assertEquals(400, assertThrows(ConsoleProblem.class, () -> WebhookTarget.parse(uri)).status);
+    }
     for (String ip :
         List.of(
             "0.0.0.0",
@@ -158,7 +159,9 @@ class WebhookHttpTransportTest {
             "255.255.255.255",
             "::1",
             "fc00::1",
-            "fe80::1")) assertFalse(PublicAddress.allowed(InetAddress.getByName(ip)), ip);
+            "fe80::1")) {
+      assertFalse(PublicAddress.allowed(InetAddress.getByName(ip)), ip);
+    }
     InetAddress publicIp = InetAddress.getByName("8.8.8.8"),
         privateIp = InetAddress.getByName("127.0.0.1");
     var queries = new AtomicInteger();

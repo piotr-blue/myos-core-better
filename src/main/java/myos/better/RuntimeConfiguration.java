@@ -43,8 +43,9 @@ final class RuntimeConfiguration {
       Path manifest, AtomicStore store, String admissionNamespace) {
     try {
       Path selected = manifest.toRealPath();
-      if (Files.size(selected) > 256 * 1024)
+      if (Files.size(selected) > 256 * 1024) {
         throw new IllegalArgumentException("Runtime manifest exceeds 256 KiB");
+      }
       Map<String, Object> config = Json.object(Files.readAllBytes(selected));
       fields(
           config,
@@ -56,8 +57,9 @@ final class RuntimeConfiguration {
               "creationEdition",
               "timelines",
               "ownerGasSchedule"));
-      if (!"myos.runtime/1".equals(config.get("format")))
+      if (!"myos.runtime/1".equals(config.get("format"))) {
         throw new IllegalArgumentException("Unsupported runtime manifest format");
+      }
       String creation =
           text(config.getOrDefault("creationEdition", CanonicalRuntime.EDITION), "creationEdition");
       Map<String, CanonicalRuntime.Builder> builders = new java.util.LinkedHashMap<>();
@@ -65,20 +67,24 @@ final class RuntimeConfiguration {
           list(config.getOrDefault("editions", List.of(CanonicalRuntime.EDITION)), "editions")) {
         String edition = text(raw, "edition");
         CanonicalRuntime.Builder runtime = CanonicalRuntime.newBuilder().edition(edition);
-        if (builders.putIfAbsent(edition, runtime) != null)
+        if (builders.putIfAbsent(edition, runtime) != null) {
           throw new IllegalArgumentException("Duplicate local edition: " + edition);
+        }
       }
-      if (config.containsKey("ownerGasSchedule"))
+      if (config.containsKey("ownerGasSchedule")) {
         throw new IllegalArgumentException(
             "Remove ownerGasSchedule: this runtime has one accounting policy");
+      }
       blue.GasSchedule gasSchedule = blue.GasSchedule.STANDARD;
-      if (!builders.containsKey(creation))
+      if (!builders.containsKey(creation)) {
         throw new IllegalArgumentException("Creation edition must be explicitly supported");
+      }
       for (Object feature : list(config.getOrDefault("features", List.of()), "features")) {
-        if ("document-dispatch".equals(feature))
+        if ("document-dispatch".equals(feature)) {
           builders.values().forEach(CanonicalRuntime.Builder::enableDocumentDispatch);
-        else if (!"canonical-graphs".equals(feature) && !"time".equals(feature))
+        } else if (!"canonical-graphs".equals(feature) && !"time".equals(feature)) {
           throw new IllegalArgumentException("Unsupported runtime feature: " + feature);
+        }
       }
       Language.Builder language = Language.newBuilder();
       PackageLoader loader = PackageLoader.create();
@@ -87,8 +93,9 @@ final class RuntimeConfiguration {
       Map<BlueId, BluePackage> publications = new LinkedHashMap<>();
       Map<BlueId, BluePackage> requirements = new LinkedHashMap<>();
       List<?> packages = list(config.getOrDefault("packages", List.of()), "packages");
-      if (packages.size() > 64)
+      if (packages.size() > 64) {
         throw new IllegalArgumentException("At most 64 package archives per runtime");
+      }
       for (Object raw : packages) {
         Map<String, Object> declaration = object(raw, "package");
         fields(declaration, Set.of("archive", "blueId", "mounts", "purpose"));
@@ -104,20 +111,29 @@ final class RuntimeConfiguration {
         BluePackage root =
             loader.open(archive, new BlueId(text(declaration.get("blueId"), "blueId")));
         publications.put(root.blueId(), root);
-        if (executable) requirements.put(root.blueId(), root);
+        if (executable) {
+          requirements.put(root.blueId(), root);
+        }
         Map<String, Object> mounts = object(declaration.get("mounts"), "mounts");
         for (var entry : mounts.entrySet()) {
-          if (!prefixes.add(entry.getKey()))
+          if (!prefixes.add(entry.getKey())) {
             throw new IllegalArgumentException("Duplicate package prefix: " + entry.getKey());
-          if (prefixes.size() > 256)
+          }
+          if (prefixes.size() > 256) {
             throw new IllegalArgumentException("At most 256 package mounts per runtime");
+          }
           BluePackage mounted = root;
           List<?> route = list(entry.getValue(), "import route");
-          if (route.size() > 16)
+          if (route.size() > 16) {
             throw new IllegalArgumentException("Import route exceeds 16 steps");
-          for (Object prefix : route) mounted = mounted.imported(text(prefix, "import prefix"));
+          }
+          for (Object prefix : route) {
+            mounted = mounted.imported(text(prefix, "import prefix"));
+          }
           publications.put(mounted.blueId(), mounted);
-          if (executable) requirements.put(mounted.blueId(), mounted);
+          if (executable) {
+            requirements.put(mounted.blueId(), mounted);
+          }
           language.mount(entry.getKey(), mounted);
           displayMounts.put(entry.getKey(), mounted);
         }
@@ -125,8 +141,9 @@ final class RuntimeConfiguration {
       PublicPackages publicPackages = new PublicPackages(publications.values(), displayMounts);
       TimelineService timelines = null;
       if (config.containsKey("timelines")) {
-        if (store == null)
+        if (store == null) {
           throw new IllegalArgumentException("Timeline configuration requires a host store");
+        }
         timelines =
             TimelineConfiguration.load(
                 selected.getParent(),
@@ -141,7 +158,9 @@ final class RuntimeConfiguration {
         builders
             .values()
             .forEach(builder -> builder.timelineChannels(selectedTimelines.channels()));
-      } else if (admissionNamespace != null) NativeInput.namespace(admissionNamespace);
+      } else if (admissionNamespace != null) {
+        NativeInput.namespace(admissionNamespace);
+      }
       Language configured = language.build();
       boolean timeEnabled =
           list(config.getOrDefault("features", List.of()), "features").contains("time");
@@ -149,22 +168,27 @@ final class RuntimeConfiguration {
         if (timelines == null
             || !OwnerGraphs.enabled()
             || !list(config.getOrDefault("features", List.of()), "features")
-                .contains("canonical-graphs"))
+                .contains("canonical-graphs")) {
           throw new IllegalArgumentException(
               "Time requires canonical graphs with independent owners");
+        }
         var timePublications =
             publications.values().stream().filter(p -> TimeBindings.supports(p.blueId())).toList();
-        if (timePublications.size() != 1)
+        if (timePublications.size() != 1) {
           throw new IllegalArgumentException("Time requires exactly one supported package edition");
+        }
         timelines.enableTime(configured, timePublications.getFirst());
       }
-      for (BluePackage publication : requirements.values())
-        if (!timeEnabled || !TimeBindings.supports(publication.blueId()))
+      for (BluePackage publication : requirements.values()) {
+        if (!timeEnabled || !TimeBindings.supports(publication.blueId())) {
           builders.values().forEach(builder -> builder.require(publication));
+        }
+      }
       if (list(config.getOrDefault("features", List.of()), "features")
           .contains("canonical-graphs")) {
-        if (timelines == null)
+        if (timelines == null) {
           throw new IllegalArgumentException("Canonical graphs require configured Timelines");
+        }
         timelines.enableCanonicalGraphs(configured, requirements.values(), gasSchedule);
       }
       Map<String, CanonicalRuntime> runtimes = new java.util.LinkedHashMap<>();
@@ -173,7 +197,9 @@ final class RuntimeConfiguration {
       RuntimeCatalog catalog =
           new RuntimeCatalog(
               runtimes.get(creation), List.copyOf(runtimes.values()), publicPackages);
-      if (timelines != null) timelines.bind();
+      if (timelines != null) {
+        timelines.bind();
+      }
       return new Loaded(catalog, Optional.ofNullable(timelines), admissionNamespace);
     } catch (IOException failure) {
       throw new UncheckedIOException(failure);
@@ -185,34 +211,39 @@ final class RuntimeConfiguration {
     Path selected = directory.resolve(relative).normalize();
     if (relative.isAbsolute()
         || !selected.startsWith(directory)
-        || !selected.toRealPath().startsWith(directory))
+        || !selected.toRealPath().startsWith(directory)) {
       throw new IllegalArgumentException(
           "Configuration files must remain within the runtime directory");
+    }
     return selected.toRealPath();
   }
 
   static void fields(Map<String, Object> object, Set<String> allowed) {
-    if (!allowed.containsAll(object.keySet()))
+    if (!allowed.containsAll(object.keySet())) {
       throw new IllegalArgumentException("Unknown runtime configuration field");
+    }
   }
 
   static String text(Object value, String name) {
-    if (!(value instanceof String text) || text.isEmpty())
+    if (!(value instanceof String text) || text.isEmpty()) {
       throw new IllegalArgumentException("Nonempty text required: " + name);
+    }
     return text;
   }
 
   static List<?> list(Object value, String name) {
-    if (!(value instanceof List<?> list))
+    if (!(value instanceof List<?> list)) {
       throw new IllegalArgumentException("List required: " + name);
+    }
     return list;
   }
 
   @SuppressWarnings("unchecked")
   static Map<String, Object> object(Object value, String name) {
     if (!(value instanceof Map<?, ?> map)
-        || map.keySet().stream().anyMatch(key -> !(key instanceof String)))
+        || map.keySet().stream().anyMatch(key -> !(key instanceof String))) {
       throw new IllegalArgumentException("Object required: " + name);
+    }
     return (Map<String, Object>) value;
   }
 }

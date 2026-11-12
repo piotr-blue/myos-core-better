@@ -95,7 +95,9 @@ class CoreOperationsTest {
       f.runner.start();
       long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(8);
       while (((Number) f.service.graphs().readValue(account, id, "/count")).intValue() != 7
-          && System.nanoTime() < deadline) Thread.sleep(10);
+          && System.nanoTime() < deadline) {
+        Thread.sleep(10);
+      }
       assertEquals(
           7,
           ((Number) f.service.graphs().readValue(account, id, "/count")).intValue(),
@@ -150,7 +152,9 @@ class CoreOperationsTest {
       String secondEntry = (String) object(second.get("entryRef")).get("blueId");
       long secondDeadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(8);
       while (((Number) f.service.graphs().readValue(account, id, "/count")).intValue() != 14
-          && System.nanoTime() < secondDeadline) Thread.sleep(10);
+          && System.nanoTime() < secondDeadline) {
+        Thread.sleep(10);
+      }
       assertEquals(14, ((Number) f.service.graphs().readValue(account, id, "/count")).intValue());
       assertEquals(
           1, ((List<?>) documents.input(account, id, secondEntry).get("localHistory")).size());

@@ -91,8 +91,9 @@ class BatchRecordEncodingTest {
                 AtomicStore.class.getClassLoader(),
                 new Class<?>[] {AtomicStore.class},
                 (proxy, method, arguments) -> {
-                  if (method.getName().equals("publishContent") && fail.get())
+                  if (method.getName().equals("publishContent") && fail.get()) {
                     throw new IllegalStateException("injected publication failure");
+                  }
                   try {
                     return method.invoke(durable, arguments);
                   } catch (InvocationTargetException exception) {

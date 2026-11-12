@@ -54,7 +54,9 @@ class OwnerIdleCutTest {
       var attempts = new AtomicInteger();
       TimelineWork.Receiver receiver =
           (account, owner) -> {
-            if (attempts.incrementAndGet() == 1) return engine.step(account, owner);
+            if (attempts.incrementAndGet() == 1) {
+              return engine.step(account, owner);
+            }
             return new TimelineIngress.Outcome(TimelineIngress.Status.IDLE, "Observed ready input");
           };
       assertEquals(1, work.drain(receiver, 1));
@@ -70,7 +72,9 @@ class OwnerIdleCutTest {
       TimelineWork.acquired(store, writes, "alice", "blocker", 1, false);
       assertTrue(store.commit(writes, List.of()));
       work.signal(TimelineWork.source("alice", "blocker"));
-      for (int i = 0; i < 4 && attempts.get() < 2; i++) work.drain(receiver, 4);
+      for (int i = 0; i < 4 && attempts.get() < 2; i++) {
+        work.drain(receiver, 4);
+      }
       assertEquals(2, attempts.get());
       assertEquals("IDLE", work.status("alice", OWNER).get("status"));
     }

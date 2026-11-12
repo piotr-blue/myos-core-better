@@ -49,8 +49,9 @@ class ServerTest {
         HttpClient client = HttpClient.newHttpClient()) {
       server.start();
       String base = "http://127.0.0.1:" + server.port();
-      for (String invalid : java.util.List.of("{", "null", "[]"))
+      for (String invalid : java.util.List.of("{", "null", "[]")) {
         assertEquals(400, post(client, base + "/documents/create", invalid).statusCode());
+      }
       assertEquals(
           404,
           post(

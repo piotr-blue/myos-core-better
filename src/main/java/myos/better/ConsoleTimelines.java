@@ -86,7 +86,9 @@ final class ConsoleTimelines {
   }
 
   void published(String account, BlueId timeline) {
-    if (inputs != null) inputs.published(account, timeline);
+    if (inputs != null) {
+      inputs.published(account, timeline);
+    }
   }
 
   BluePackage coordination() {
@@ -102,7 +104,9 @@ final class ConsoleTimelines {
   }
 
   void wakeDocument(String account, String document) {
-    if (inputs != null) inputs.wakeDocument(account, DocumentControls.owner(document));
+    if (inputs != null) {
+      inputs.wakeDocument(account, DocumentControls.owner(document));
+    }
   }
 
   boolean inputsAvailable() {
@@ -193,16 +197,20 @@ final class ConsoleTimelines {
             : null;
     boolean exact = Boolean.TRUE.equals(input.get("requireExactDocumentVersion"));
     if (input.containsKey("requireExactDocumentVersion")
-        && !(input.get("requireExactDocumentVersion") instanceof Boolean))
+        && !(input.get("requireExactDocumentVersion") instanceof Boolean)) {
       throw new IllegalArgumentException("Exact version selection must be a Boolean");
-    if (exact && target == null)
+    }
+    if (exact && target == null) {
       throw new IllegalArgumentException("Exact version calls require a target identity");
+    }
     Map<String, Object> message = new LinkedHashMap<>();
     message.put("type", ProviderSigning.ref(Contracts.publication().export("Operation Request")));
     message.put("channel", RuntimeConfiguration.text(input.get("channel"), "channel"));
     message.put("operation", RuntimeConfiguration.text(input.get("operation"), "operation"));
     message.put("request", input.getOrDefault("request", Map.of()));
-    if (exact) message.put("requireExactDocumentVersion", true);
+    if (exact) {
+      message.put("requireExactDocumentVersion", true);
+    }
     LanguageContent content;
     try (var trace = HostPhaseEvent.start("operation.author", account, document)) {
       content =
@@ -249,9 +257,10 @@ final class ConsoleTimelines {
   }
 
   private OwnedTimelineInputs inputs() {
-    if (inputs == null)
+    if (inputs == null) {
       throw new ConsoleProblem(
           503, "INPUTS_NOT_CONFIGURED", "Document Timeline inputs are not configured.");
+    }
     return inputs;
   }
 
@@ -343,7 +352,9 @@ final class ConsoleTimelines {
     String source = RuntimeConfiguration.text(input.get("source"), "source");
     LanguageContent message = language.prepare(Language.Input.yaml(source));
     HostedTimelines.Published result = timelines.append(account, id, command, message);
-    if (inputs != null) inputs.published(account, id);
+    if (inputs != null) {
+      inputs.published(account, id);
+    }
     return published(result);
   }
 

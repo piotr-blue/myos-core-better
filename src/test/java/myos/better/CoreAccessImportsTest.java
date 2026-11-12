@@ -202,7 +202,9 @@ class CoreAccessImportsTest {
               .mount("Contracts", Contracts.publication())
               .build();
       service.bind();
-      if (graph) service.enableCanonicalGraphs(language, List.of());
+      if (graph) {
+        service.enableCanonicalGraphs(language, List.of());
+      }
       var runtime =
           CanonicalRuntime.newBuilder()
               .language(language)
@@ -230,7 +232,9 @@ class CoreAccessImportsTest {
       TimelineTransport transport =
           (target, request, bytes, timeout) -> {
             var reply = source.transport.exchange(target, request, bytes, timeout);
-            if (!falsify || !target.getPath().endsWith("/access/get")) return reply;
+            if (!falsify || !target.getPath().endsWith("/access/get")) {
+              return reply;
+            }
             var envelope = Json.object(reply.body());
             var body =
                 new LinkedHashMap<>(
@@ -273,7 +277,9 @@ class CoreAccessImportsTest {
     void drain(String account, String id) {
       for (int i = 0; i < 20; i++) {
         String status = (String) service.step(core, account, id).get("status");
-        if (status.equals("IDLE")) return;
+        if (status.equals("IDLE")) {
+          return;
+        }
         assertNotEquals("WAITING", status);
       }
       fail("Access follower did not become idle");

@@ -15,7 +15,9 @@ final class OwnerGasClaims {
 
   /** Called after native readiness and policy checks, inside the claim transaction. */
   OwnerFrontiers.Deferred authorize(OwnerMetadata.Transaction tx, OwnerFrontiers.Claim claim) {
-    if (!ledger.enabled(tx)) return null;
+    if (!ledger.enabled(tx)) {
+      return null;
+    }
     String basis =
         Json.hash(
             Json.bytes(
@@ -38,8 +40,9 @@ final class OwnerGasClaims {
             OwnerGas.MAX_INVOCATION,
             claim.expires());
     var decision = ledger.authorize(tx, request);
-    if (decision.permit() == null)
+    if (decision.permit() == null) {
       return new OwnerFrontiers.Deferred(Long.MAX_VALUE, JsonText.of(decision.waiting()));
+    }
     OwnerRecords.put(tx, key(claim), decision.permit());
     return null;
   }
@@ -51,7 +54,9 @@ final class OwnerGasClaims {
       long usage,
       String disposition,
       String receipt) {
-    if (!ledger.enabled(tx)) return;
+    if (!ledger.enabled(tx)) {
+      return;
+    }
     var permit = permit(tx, claim);
     ledger.settle(tx, permit, usage, disposition, receipt, "claim/" + claim.token());
     tx.remove(key(claim));
@@ -59,16 +64,22 @@ final class OwnerGasClaims {
 
   /** Must run after the caller has fenced the still-current native claim. */
   void release(OwnerMetadata.Transaction tx, OwnerFrontiers.Claim claim) {
-    if (!ledger.enabled(tx)) return;
+    if (!ledger.enabled(tx)) {
+      return;
+    }
     var value = OwnerRecords.object(tx, key(claim));
-    if (value == null) return;
+    if (value == null) {
+      return;
+    }
     ledger.release(tx, checked(value, claim));
     tx.remove(key(claim));
   }
 
   private OwnerGas.Permit permit(OwnerMetadata.Transaction tx, OwnerFrontiers.Claim claim) {
     var value = OwnerRecords.object(tx, key(claim));
-    if (value == null) throw new IllegalStateException("Native claim has no gas authorization");
+    if (value == null) {
+      throw new IllegalStateException("Native claim has no gas authorization");
+    }
     return checked(value, claim);
   }
 
@@ -77,8 +88,9 @@ final class OwnerGasClaims {
     if (!permit.request().instance().equals(claim.owner())
         || !permit.request().owner().equals(claim.owner())
         || !permit.request().fence().equals(claim.token())
-        || permit.request().expires() != claim.expires())
+        || permit.request().expires() != claim.expires()) {
       throw new IllegalStateException("Gas authorization belongs to another native claim");
+    }
     return permit;
   }
 

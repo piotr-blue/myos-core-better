@@ -70,8 +70,9 @@ class OwnedTimelineInputsTest {
       NativeTimelineApi nativeApi = new NativeTimelineApi(f.host, f.signing);
       TimelineTransport transport =
           (uri, request, maximum, timeout) -> {
-            if (request == null)
+            if (request == null) {
               return new TimelineTransport.Reply(200, Json.bytes(nativeApi.descriptor()));
+            }
             String endpoint = f.protocol.provider.at("/endpoint").text();
             assertTrue(uri.toString().startsWith(endpoint + "/"));
             return new TimelineTransport.Reply(
@@ -136,8 +137,9 @@ class OwnedTimelineInputsTest {
         f.clock.addAndGet(100);
         runner.start();
         long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(8);
-        while (!Integer.valueOf(42).equals(count(core)) && System.nanoTime() < deadline)
+        while (!Integer.valueOf(42).equals(count(core)) && System.nanoTime() < deadline) {
           Thread.sleep(20);
+        }
         assertEquals(42, count(core));
         assertTrue(secrets.reads > 0);
         assertEquals(1, secrets.creates);

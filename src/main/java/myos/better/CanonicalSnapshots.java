@@ -64,7 +64,9 @@ final class CanonicalSnapshots {
                 && SnapshotContent.definitions(manifest).isEmpty()
             ? rows.cachedKeys(content)
             : null;
-    if (cached != null) return id -> cached.contains(id.value());
+    if (cached != null) {
+      return id -> cached.contains(id.value());
+    }
     var index = new SnapshotContent(blobs, manifest);
     var keys = hints.stream().map(blue.BlueId::value).toList();
     var selected = index.getAll(keys);
@@ -89,20 +91,27 @@ final class CanonicalSnapshots {
     var next = new LinkedHashMap<>(previous);
     var timelines = new LinkedHashMap<>(SnapshotContent.timelines(previous));
     var prior = timelines.get(source.timeline());
-    if (prior == null || source.position() > prior.position())
+    if (prior == null || source.position() > prior.position()) {
       timelines.put(
           source.timeline(), new SnapshotContent.Timeline(source.position(), source.content()));
-    else if (source.position() == prior.position() && !source.content().equals(prior.content()))
+    } else if (source.position() == prior.position() && !source.content().equals(prior.content())) {
       throw new IllegalStateException("Conflicting retained timeline catalogue");
+    }
     next.put("timelineContent", Map.copyOf(timelines));
     var definitions = new java.util.TreeSet<>(SnapshotContent.definitions(previous));
-    if (!source.definitionContent().isEmpty()) definitions.add(source.definitionContent());
-    if (!definitions.isEmpty()) next.put("definitionContent", List.copyOf(definitions));
+    if (!source.definitionContent().isEmpty()) {
+      definitions.add(source.definitionContent());
+    }
+    if (!definitions.isEmpty()) {
+      next.put("definitionContent", List.copyOf(definitions));
+    }
     return next;
   }
 
   String saveDelta(String account, String previous, Map<String, Object> snapshot) {
-    if (previous == null) throw new IllegalArgumentException("A delta needs a retained snapshot");
+    if (previous == null) {
+      throw new IllegalArgumentException("A delta needs a retained snapshot");
+    }
     return save(account, previous, snapshot, true, null);
   }
 
@@ -111,7 +120,9 @@ final class CanonicalSnapshots {
       String previous,
       Map<String, Object> snapshot,
       java.util.function.Function<String, blue.LanguageDocument> completed) {
-    if (previous == null) throw new IllegalArgumentException("A delta needs a retained snapshot");
+    if (previous == null) {
+      throw new IllegalArgumentException("A delta needs a retained snapshot");
+    }
     return save(account, previous, snapshot, true, completed);
   }
 
@@ -174,8 +185,9 @@ final class CanonicalSnapshots {
     Repository.Blobs blobs = repository.blobs(account);
     Map<String, Object> before = previous == null ? Map.of() : read(blobs, previous);
     Map<String, Object> contentBase = source == null ? before : read(blobs, source);
-    if (source != null && !supported(contentBase))
+    if (source != null && !supported(contentBase)) {
       throw new IllegalStateException("Unsupported inherited content catalogue");
+    }
     Map<String, Object> wire = object(snapshot.get("snapshot"));
     Map<String, Object> header = new LinkedHashMap<>(wire);
     header.remove("documents");
@@ -228,30 +240,37 @@ final class CanonicalSnapshots {
                     root(contentBase, "content"),
                     object(snapshot.get("content")),
                     delta ? SnapshotRows.Update.MERGE : SnapshotRows.Update.REPLACE)));
-    if (header.get("root") instanceof String rootMember && documents.containsKey(rootMember))
+    if (header.get("root") instanceof String rootMember && documents.containsKey(rootMember)) {
       manifest.put("liveIdentities", liveIdentities(blobs, rootMember, documents, edges));
-    if (!SnapshotContent.timelines(contentBase).isEmpty())
+    }
+    if (!SnapshotContent.timelines(contentBase).isEmpty()) {
       manifest.put("timelineContent", SnapshotContent.timelines(contentBase));
-    if (!SnapshotContent.definitions(contentBase).isEmpty())
+    }
+    if (!SnapshotContent.definitions(contentBase).isEmpty()) {
       manifest.put("definitionContent", SnapshotContent.definitions(contentBase));
+    }
     if (completed != null) {
       Map<String, Object> changed = new HashMap<>();
       for (var entry : rows.references(index, documentRoot).entrySet()) {
         if (before.containsKey("admissions")
-            && entry.getValue().equals(previousDocuments.get(entry.getKey()))) continue;
+            && entry.getValue().equals(previousDocuments.get(entry.getKey()))) {
+          continue;
+        }
         var value = completed.apply(entry.getKey());
         String expected = (String) object(documents.get(entry.getKey())).get("blueId");
-        if (!value.blueId().value().equals(expected))
+        if (!value.blueId().value().equals(expected)) {
           throw new IllegalStateException("Admission value differs from snapshot member");
+        }
         var checkpoint = value.checkpoint();
         Map<String, Object> admission =
             new LinkedHashMap<>(
                 Map.of("record", checkpoint.record(), "identity", checkpoint.identity()));
         Object prepared =
             object(preparation.getOrDefault("documents", Map.of())).get(entry.getKey());
-        if (prepared != null)
+        if (prepared != null) {
           admission.put(
               "native", Map.of("environment", preparation.get("environment"), "member", prepared));
+        }
         changed.put(entry.getKey(), admission);
       }
       manifest.put(
@@ -283,9 +302,13 @@ final class CanonicalSnapshots {
     queue.add(owner);
     while (!queue.isEmpty()) {
       String member = queue.remove();
-      if (reachable.containsKey(member)) continue;
+      if (reachable.containsKey(member)) {
+        continue;
+      }
       var document = documents.get(member);
-      if (document == null) throw new IllegalStateException("Missing member of pinned graph");
+      if (document == null) {
+        throw new IllegalStateException("Missing member of pinned graph");
+      }
       reachable.put(member, document);
       queue.addAll(outgoing.getOrDefault(member, List.of()));
     }
@@ -311,7 +334,9 @@ final class CanonicalSnapshots {
       String id = (String) object(row.getValue()).get("blueId");
       if (oldDocs.get(row.getKey()) instanceof Map<?, ?> old) {
         String prior = (String) old.get("blueId");
-        if (id.equals(prior)) continue;
+        if (id.equals(prior)) {
+          continue;
+        }
         members.apply(prior).remove(row.getKey());
       }
       members.apply(id).add(row.getKey());
@@ -320,15 +345,20 @@ final class CanonicalSnapshots {
     var deletes = new HashSet<String>();
     updates.forEach(
         (id, keys) -> {
-          if (keys.isEmpty()) deletes.add(id);
-          else puts.put(id, new Members(List.copyOf(keys)));
+          if (keys.isEmpty()) {
+            deletes.add(id);
+          } else {
+            puts.put(id, new Members(List.copyOf(keys)));
+          }
         });
     return index.update(previous, puts, deletes);
   }
 
   private void updateLiveIdentities(
       Repository.Blobs blobs, Map<String, Object> manifest, Map<String, Object> changed) {
-    if (!(manifest.get("liveIdentities") instanceof String prior)) return;
+    if (!(manifest.get("liveIdentities") instanceof String prior)) {
+      return;
+    }
     var old =
         new RadixIndex<>(blobs, String.class).getAll(root(manifest, "documents"), changed.keySet());
     manifest.put(
@@ -338,19 +368,24 @@ final class CanonicalSnapshots {
   Map<String, Object> liveMember(String account, String page, blue.BlueId id) {
     var blobs = repository.blobs(account);
     var manifest = read(blobs, page);
-    if (!(manifest.get("liveIdentities") instanceof String identities))
+    if (!(manifest.get("liveIdentities") instanceof String identities)) {
       throw new blue.BlueException(
           "LOCAL_EXECUTION_UNAVAILABLE", "Predecessor has no live identity index");
+    }
     var members = new RadixIndex<>(blobs, Members.class).get(identities, id.value());
-    if (members == null) return null;
-    if (members.keys().size() != 1)
+    if (members == null) {
+      return null;
+    }
+    if (members.keys().size() != 1) {
       throw new blue.BlueException("LOCAL_EXECUTION_UNAVAILABLE", "Ambiguous live embedding");
+    }
     var metadata =
         new RadixIndex<>(blobs, String.class)
             .get(root(manifest, "documents"), members.keys().getFirst());
     var row = SnapshotRows.record(blobs, metadata);
-    if (!id.value().equals(row.get("blueId")))
+    if (!id.value().equals(row.get("blueId"))) {
       throw new IllegalStateException("Live member identity differs from pinned metadata");
+    }
     return row;
   }
 
@@ -367,16 +402,20 @@ final class CanonicalSnapshots {
       java.util.function.Function<String, blue.LanguageDocument> completed,
       Map<String, Object> preparation) {
     if (!"contracts.appended-checkpoint/1".equals(delta.get("format"))
-        || !base.equals(delta.get("base")))
+        || !base.equals(delta.get("base"))) {
       throw new IllegalStateException("Wrong native checkpoint predecessor");
+    }
     var blobs = repository.blobs(account);
     var manifest = new LinkedHashMap<>(read(blobs, previous));
     if (!supported(manifest)
         || !manifest.containsKey("members")
         || !manifest.containsKey("adjacency")
-        || !manifest.containsKey("admissions")) return null;
-    if (!manifest.containsKey("local") && !base.equals(manifest.get("identity")))
+        || !manifest.containsKey("admissions")) {
+      return null;
+    }
+    if (!manifest.containsKey("local") && !base.equals(manifest.get("identity"))) {
       throw new IllegalStateException("Wrong protected checkpoint predecessor");
+    }
     var index = new RadixIndex<>(blobs, String.class);
     var docs = object(delta.get("documents"));
     String fresh = (String) delta.get("member");
@@ -384,50 +423,68 @@ final class CanonicalSnapshots {
     if (old.containsKey(fresh)
         || !docs.containsKey(fresh)
         || old.size() + 1 != docs.size()
-        || index.get(root(manifest, "members"), GraphMemberIds.suffix(fresh)) != null)
+        || index.get(root(manifest, "members"), GraphMemberIds.suffix(fresh)) != null) {
       throw new IllegalStateException("Wrong membership in checkpoint append");
+    }
     Map<String, Object> links = new HashMap<>(), admissions = new HashMap<>();
     for (Object raw : (List<?>) delta.get("edges")) {
       var edge = object(raw);
       links.put(edgeKey((String) edge.get("source"), (String) edge.get("path")), edge);
     }
-    if (!index.getAll(root(manifest, "edges"), links.keySet()).isEmpty())
+    if (!index.getAll(root(manifest, "edges"), links.keySet()).isEmpty()) {
       throw new IllegalStateException("Checkpoint append replaced an existing edge");
+    }
     var prepared = object(preparation.getOrDefault("documents", Map.of()));
     docs.forEach(
         (key, row) -> {
           var value = completed.apply(key);
-          if (!value.blueId().value().equals(object(row).get("blueId")))
+          if (!value.blueId().value().equals(object(row).get("blueId"))) {
             throw new IllegalStateException("Admission differs from appended document");
+          }
           var admission = value.checkpoint();
           var stored = new LinkedHashMap<String, Object>();
           stored.put("identity", admission.identity());
           stored.put("record", admission.record());
-          if (prepared.containsKey(key))
+          if (prepared.containsKey(key)) {
             stored.put(
                 "native",
                 Map.of("environment", preparation.get("environment"), "member", prepared.get(key)));
+          }
           admissions.put(key, stored);
         });
     // If new edges connect a formerly unreachable component, its whole reachability change
     // belongs to normal checkpoint publication. An indexed append preserves existing live sets.
-    if (!(manifest.get("liveIdentities") instanceof String identities)) return null;
+    if (!(manifest.get("liveIdentities") instanceof String identities)) {
+      return null;
+    }
     var ids = new RadixIndex<>(blobs, Members.class);
     Set<String> endpoints = new HashSet<>();
     boolean linked = false;
     for (Object raw : links.values()) {
       var edge = object(raw);
       String from = (String) edge.get("source"), to = (String) edge.get("target");
-      if (!fresh.equals(from)) endpoints.add(from);
-      if (!fresh.equals(to)) endpoints.add(to);
-      if (!fresh.equals(from) && fresh.equals(to)) linked = true;
+      if (!fresh.equals(from)) {
+        endpoints.add(from);
+      }
+      if (!fresh.equals(to)) {
+        endpoints.add(to);
+      }
+      if (!fresh.equals(from) && fresh.equals(to)) {
+        linked = true;
+      }
     }
-    if (!linked) return null;
+    if (!linked) {
+      return null;
+    }
     var pinned = rows.values(blobs, index.getAll(root(manifest, "documents"), endpoints));
     for (String key : endpoints) {
-      if (!pinned.containsKey(key)) return null;
+      if (!pinned.containsKey(key)) {
+        return null;
+      }
       var members = ids.get(identities, (String) object(pinned.get(key)).get("blueId"));
-      if (members == null || !members.keys().contains(key)) return null;
+      if (members == null || !members.keys().contains(key)) {
+        return null;
+      }
     }
     var edgeRoot = rows.update(blobs, root(manifest, "edges"), links, SnapshotRows.Update.MERGE);
     manifest.put(
@@ -474,13 +531,15 @@ final class CanonicalSnapshots {
             ? preparationManifest(blobs, previous)
             : Map.of();
     boolean delta = "contracts.preparation-delta/1".equals(preparation.get("format"));
-    if (preparation.containsKey("format") && !delta)
+    if (preparation.containsKey("format") && !delta) {
       throw new IllegalArgumentException("Unsupported native preparation format");
+    }
     if (delta
         && (!java.util.Objects.equals(before.get("snapshot"), preparation.get("base"))
             || !java.util.Objects.equals(
-                before.get("environment"), preparation.get("environment"))))
+                before.get("environment"), preparation.get("environment")))) {
       throw new IllegalArgumentException("Native preparation delta has a different predecessor");
+    }
     String rowRoot =
         delta
             ? rows.updatePreparationRows(
@@ -504,8 +563,9 @@ final class CanonicalSnapshots {
   }
 
   Map<String, Object> preparation(String account, Map<String, Object> record) {
-    if (!record.containsKey("format"))
+    if (!record.containsKey("format")) {
       return record; // Previously committed small inline artifacts.
+    }
     Repository.Blobs blobs = repository.blobs(account);
     Map<String, Object> manifest = new LinkedHashMap<>(preparationManifest(blobs, record));
     manifest.put("documents", rows.values(blobs, (String) manifest.get("documents")));
@@ -514,8 +574,9 @@ final class CanonicalSnapshots {
 
   private static Map<String, Object> preparationManifest(
       Repository.Blobs blobs, Map<String, Object> record) {
-    if (!"myos.native-preparation-pages/1".equals(record.get("format")))
+    if (!"myos.native-preparation-pages/1".equals(record.get("format"))) {
       throw new IllegalStateException("Unsupported native preparation pages");
+    }
     return read(blobs, (String) record.get("page"));
   }
 
@@ -572,17 +633,23 @@ final class CanonicalSnapshots {
     if (!manifest.containsKey("members")
         || !manifest.containsKey("adjacency")
         || index.get(root(manifest, "documents"), child) != null
-        || index.get(root(manifest, "members"), GraphMemberIds.suffix(child)) != null) return false;
+        || index.get(root(manifest, "members"), GraphMemberIds.suffix(child)) != null) {
+      return false;
+    }
     var prior = object(birth.get("prior"));
     var selected = index.getAll(root(manifest, "documents"), prior.keySet());
     if (!selected.keySet().equals(prior.keySet())
-        || !JsonText.of(rows.values(blobs, selected)).equals(JsonText.of(prior))) return false;
+        || !JsonText.of(rows.values(blobs, selected)).equals(JsonText.of(prior))) {
+      return false;
+    }
     for (var raw : (List<?>) birth.get("edges")) {
       var edge = object(raw);
       if (index.get(
               root(manifest, "edges"),
               edgeKey((String) edge.get("source"), (String) edge.get("path")))
-          != null) return false;
+          != null) {
+        return false;
+      }
     }
     return true;
   }
@@ -600,7 +667,9 @@ final class CanonicalSnapshots {
       Map<String, Object> birthDelta) {
     var blobs = repository.blobs(account);
     var manifest = new LinkedHashMap<>(read(blobs, previous));
-    if (!supported(manifest)) throw new IllegalStateException("Unsupported predecessor pages");
+    if (!supported(manifest)) {
+      throw new IllegalStateException("Unsupported predecessor pages");
+    }
     if (source != null) {
       source.requireDestination(account, repository.store);
       manifest.putAll(withTimeline(manifest, source));
@@ -608,8 +677,9 @@ final class CanonicalSnapshots {
     manifest.put("format", FORMAT);
     var header = new LinkedHashMap<>(object(manifest.get("header")));
     for (String field :
-        List.of("root", "release", "gasSchedule", "generation", "revision", "runtimes"))
+        List.of("root", "release", "gasSchedule", "generation", "revision", "runtimes")) {
       header.put(field, checkpoint.get(field));
+    }
     manifest.put("header", header);
     // Point lookups only need the index roots. Keep large owner recovery data off that path.
     byte[] localBytes = Json.bytes(checkpoint);
@@ -621,8 +691,9 @@ final class CanonicalSnapshots {
     manifest.put("identity", identity);
     if (!birthDelta.isEmpty()) {
       String child = (String) birthDelta.get("member");
-      if (!documents.containsKey(child) || !admissions.containsKey(child))
+      if (!documents.containsKey(child) || !admissions.containsKey(child)) {
         throw new IllegalStateException("Birth has no native member or admission");
+      }
       var edges = new HashMap<String, Object>();
       for (var raw : (List<?>) birthDelta.get("edges")) {
         var edge = object(raw);
@@ -657,7 +728,9 @@ final class CanonicalSnapshots {
     var additions = new HashMap<String, String>();
     borrowedContent.forEach(
         (key, reference) -> {
-          if (!reference.equals(existing.get(key))) additions.put(key, reference);
+          if (!reference.equals(existing.get(key))) {
+            additions.put(key, reference);
+          }
         });
     manifest.put("content", index.update(contentRoot, additions, java.util.Set.of()));
     manifest.put(
@@ -672,18 +745,22 @@ final class CanonicalSnapshots {
   Map<String, String> contentReferences(String account, String page, java.util.Set<String> keys) {
     var blobs = repository.blobs(account);
     var manifest = read(blobs, page);
-    if (!supported(manifest)) throw new IllegalStateException("Unsupported source pages");
+    if (!supported(manifest)) {
+      throw new IllegalStateException("Unsupported source pages");
+    }
     var found = new SnapshotContent(blobs, manifest).getAll(keys);
-    if (!found.keySet().equals(keys))
+    if (!found.keySet().equals(keys)) {
       throw new IllegalStateException("Source completion names unavailable content");
+    }
     return Map.copyOf(found);
   }
 
   private static Map<String, Object> envelope(
       Repository.Blobs blobs, Map<String, Object> manifest, Map<String, Object> wire) {
     Object local = manifest.get("local");
-    if (local == null)
+    if (local == null) {
       return Map.of("snapshot", wire, "identity", manifest.get("identity"), "content", Map.of());
+    }
     var checkpoint =
         FORMAT.equals(manifest.get("format")) && local instanceof String address
             ? Json.object(new ContentBlocks(blobs).get(address))
@@ -703,10 +780,11 @@ final class CanonicalSnapshots {
   /** Inspect a protected publication, reconstructing its ordinary whole-graph envelope. */
   Map<String, Object> loadPublication(String account, String page, String expectedIdentity) {
     var manifest = read(repository.blobs(account), page);
-    if (!java.util.Objects.equals(expectedIdentity, manifest.get("identity")))
+    if (!java.util.Objects.equals(expectedIdentity, manifest.get("identity"))) {
       throw new blue.BlueException(
           "UNTRUSTED_SNAPSHOT_COMMITMENT",
           "Publication identity does not match its protected pages");
+    }
     return loadForExecution(account, page);
   }
 
@@ -723,8 +801,9 @@ final class CanonicalSnapshots {
       java.util.function.Predicate<String> installed) {
     Repository.Blobs blobs = repository.blobs(account);
     Map<String, Object> manifest = read(blobs, id);
-    if (!supported(manifest))
+    if (!supported(manifest)) {
       throw new IllegalStateException("Unsupported canonical snapshot pages");
+    }
     Map<String, Object> wire = metadata(blobs, manifest);
     return Map.of(
         "snapshot",
@@ -762,12 +841,14 @@ final class CanonicalSnapshots {
       java.util.function.Predicate<String> installed) {
     var index = new SnapshotContent(blobs, manifest);
     java.util.ArrayDeque<String> pending = new java.util.ArrayDeque<>();
-    for (Object raw : (List<?>) wire.get("documents"))
+    for (Object raw : (List<?>) wire.get("documents")) {
       pending.add((String) object(raw).get("blueId"));
+    }
     for (Object raw : (List<?>) wire.get("runtimes")) {
       var runtime = object(raw);
-      for (String field : List.of("type_id", "semantics_id"))
+      for (String field : List.of("type_id", "semantics_id")) {
         pending.add((String) runtime.get(field));
+      }
     }
     Map<String, Object> result = new LinkedHashMap<>();
     java.util.Set<String> seen = new HashSet<>();
@@ -775,7 +856,9 @@ final class CanonicalSnapshots {
       List<String> batch = new ArrayList<>();
       while (!pending.isEmpty() && batch.size() < 4096) {
         String key = pending.removeFirst();
-        if (seen.add(key) && !installed.test(key)) batch.add(key);
+        if (seen.add(key) && !installed.test(key)) {
+          batch.add(key);
+        }
       }
       Map<String, String> selected = index.getAll(batch);
       var pages =
@@ -784,9 +867,10 @@ final class CanonicalSnapshots {
               .filter(java.util.Objects::nonNull)
               .distinct()
               .toList();
-      for (int offset = 0; offset < pages.size(); offset += BlobStore.READ_BATCH_SIZE)
+      for (int offset = 0; offset < pages.size(); offset += BlobStore.READ_BATCH_SIZE) {
         blobs.prefetch(
             pages.subList(offset, Math.min(offset + BlobStore.READ_BATCH_SIZE, pages.size())));
+      }
       for (var entry : selected.entrySet()) {
         String key = entry.getKey();
         Map<String, Object> value = SnapshotRows.record(blobs, entry.getValue());
@@ -810,20 +894,28 @@ final class CanonicalSnapshots {
   // native rule and owning-set proof. Extra reference-shaped data can only cause an extra read.
   private static void references(Object value, java.util.ArrayDeque<String> found) {
     java.util.ArrayDeque<Object> pending = new java.util.ArrayDeque<>();
-    if (value != null) pending.add(value);
+    if (value != null) {
+      pending.add(value);
+    }
     while (!pending.isEmpty()) {
       Object next = pending.removeLast();
       if (next instanceof Map<?, ?> map) {
-        if (map.get("blueId") instanceof String id) found.add(id);
+        if (map.get("blueId") instanceof String id) {
+          found.add(id);
+        }
         map.values()
             .forEach(
                 child -> {
-                  if (child != null) pending.add(child);
+                  if (child != null) {
+                    pending.add(child);
+                  }
                 });
       } else if (next instanceof List<?> list) {
         list.forEach(
             child -> {
-              if (child != null) pending.add(child);
+              if (child != null) {
+                pending.add(child);
+              }
             });
       }
     }
@@ -835,12 +927,17 @@ final class CanonicalSnapshots {
     RadixIndex<String> index = new RadixIndex<>(blobs, String.class);
     var previous = rows.references(index, root(before, "documents")).keySet();
     Map<String, String> added = new HashMap<>();
-    for (String member : members)
-      if (!before.containsKey("members") || !previous.contains(member))
+    for (String member : members) {
+      if (!before.containsKey("members") || !previous.contains(member)) {
         added.put(GraphMemberIds.suffix(member), member);
+      }
+    }
     var removed = new HashSet<String>();
-    for (String member : previous)
-      if (!members.contains(member)) removed.add(GraphMemberIds.suffix(member));
+    for (String member : previous) {
+      if (!members.contains(member)) {
+        removed.add(GraphMemberIds.suffix(member));
+      }
+    }
     return index.update(root(before, "members"), added, removed);
   }
 
@@ -848,23 +945,31 @@ final class CanonicalSnapshots {
   String memberKey(String account, String page, String suffix) {
     var blobs = repository.blobs(account);
     var manifest = read(blobs, page);
-    if (suffix == null) return (String) object(manifest.get("header")).get("root");
+    if (suffix == null) {
+      return (String) object(manifest.get("header")).get("root");
+    }
     var index = new RadixIndex<>(blobs, String.class);
     String member = null;
-    if (manifest.containsKey("members")) member = index.get(root(manifest, "members"), suffix);
-    else {
+    if (manifest.containsKey("members")) {
+      member = index.get(root(manifest, "members"), suffix);
+    } else {
       // Existing publications remain readable. Only their compact metadata index is scanned;
       // the next publication adds the address index without changing any canonical identity.
-      for (String key : rows.references(index, root(manifest, "documents")).keySet())
+      for (String key : rows.references(index, root(manifest, "documents")).keySet()) {
         if (GraphMemberIds.suffix(key).equals(suffix)) {
-          if (member != null) throw new IllegalStateException("Ambiguous graph member address");
+          if (member != null) {
+            throw new IllegalStateException("Ambiguous graph member address");
+          }
           member = key;
         }
+      }
     }
-    if (member == null || member.equals(object(manifest.get("header")).get("root")))
+    if (member == null || member.equals(object(manifest.get("header")).get("root"))) {
       throw new MissingDocument();
-    if (!GraphMemberIds.suffix(member).equals(suffix))
+    }
+    if (!GraphMemberIds.suffix(member).equals(suffix)) {
       throw new IllegalStateException("Graph member address differs from its index");
+    }
     return member;
   }
 
@@ -879,10 +984,13 @@ final class CanonicalSnapshots {
     Map<String, Object> manifest = read(blobs, page);
     RadixIndex<String> index = new RadixIndex<>(blobs, String.class);
     String document = index.get(root(manifest, "documents"), member);
-    if (document == null) throw new IllegalArgumentException("Unknown historical graph member");
+    if (document == null) {
+      throw new IllegalArgumentException("Unknown historical graph member");
+    }
     Map<String, Object> metadata = SnapshotRows.record(blobs, document);
-    if (!member.equals(metadata.get("key")))
+    if (!member.equals(metadata.get("key"))) {
       throw new IllegalStateException("Historical member metadata differs from its index");
+    }
     return new blue.BlueId((String) metadata.get("blueId"));
   }
 
@@ -894,10 +1002,13 @@ final class CanonicalSnapshots {
     var manifest = read(blobs, page);
     var index = new RadixIndex<>(blobs, String.class);
     String reference = index.get(root(manifest, "edges"), edgeKey(source, path));
-    if (reference == null) throw new IllegalArgumentException("Unknown embedding");
+    if (reference == null) {
+      throw new IllegalArgumentException("Unknown embedding");
+    }
     var edge = SnapshotRows.record(blobs, reference);
-    if (!source.equals(edge.get("source")) || !path.equals(edge.get("path")))
+    if (!source.equals(edge.get("source")) || !path.equals(edge.get("path"))) {
       throw new IllegalStateException("Embedding metadata differs from its index");
+    }
     return new Embedding(
         (String) edge.get("target"), ((Number) edge.get("generation")).longValue());
   }
@@ -913,16 +1024,21 @@ final class CanonicalSnapshots {
           new CanonicalAdjacency(blobs, reference -> SnapshotRows.record(blobs, reference))
               .incident((String) manifest.get("adjacency"), member);
       candidates = rows.values(blobs, references);
-    } else candidates = rows.values(blobs, root(manifest, "edges"));
+    } else {
+      candidates = rows.values(blobs, root(manifest, "edges"));
+    }
     List<Map<String, Object>> result = new ArrayList<>();
     for (var entry : candidates.entrySet()) {
       var edge = object(entry.getValue());
       boolean adjacent = member.equals(edge.get("source")) || member.equals(edge.get("target"));
       if (indexed && !adjacent
           || !edgeKey((String) edge.get("source"), (String) edge.get("path"))
-              .equals(entry.getKey()))
+              .equals(entry.getKey())) {
         throw new IllegalStateException("Relationship metadata differs from its index");
-      if (adjacent) result.add(edge);
+      }
+      if (adjacent) {
+        result.add(edge);
+      }
     }
     return result;
   }
@@ -937,7 +1053,9 @@ final class CanonicalSnapshots {
     var references = index.getAll(root(manifest, "documents"), members);
     for (String member : members) {
       String reference = references.get(member);
-      if (reference == null) throw new IllegalStateException("Relationship endpoint is absent");
+      if (reference == null) {
+        throw new IllegalStateException("Relationship endpoint is absent");
+      }
       selected.put(member, reference);
     }
     Map<String, blue.BlueId> result = new HashMap<>();
@@ -945,8 +1063,9 @@ final class CanonicalSnapshots {
         .forEach(
             (key, raw) -> {
               var row = object(raw);
-              if (!key.equals(row.get("key")))
+              if (!key.equals(row.get("key"))) {
                 throw new IllegalStateException("Relationship endpoint differs from its index");
+              }
               result.put(key, new blue.BlueId((String) row.get("blueId")));
             });
     return result;
@@ -972,9 +1091,12 @@ final class CanonicalSnapshots {
         repository.store,
         id -> {
           String reference = index.get(id.value());
-          if (reference == null) return null;
-          if (reference.startsWith("inline:"))
+          if (reference == null) {
+            return null;
+          }
+          if (reference.startsWith("inline:")) {
             return StoredLanguageRecords.Location.inline(reference.substring(7));
+          }
           return reference.startsWith("blocks:")
               ? new StoredLanguageRecords.Location(
                   reference.substring(reference.lastIndexOf(':') + 1), true)
@@ -1002,10 +1124,13 @@ final class CanonicalSnapshots {
             ? new CanonicalAdmissions(repository.store)
                 .find(account, page, member, memberIdentity(account, page, member))
             : SnapshotRows.record(blobs, reference);
-    if (checkpoint == null) return null;
+    if (checkpoint == null) {
+      return null;
+    }
     var record = object(checkpoint.get("record"));
-    if (!memberIdentity(account, page, member).value().equals(record.get("blueId")))
+    if (!memberIdentity(account, page, member).value().equals(record.get("blueId"))) {
       throw new IllegalStateException("Admission checkpoint differs from committed member");
+    }
     return contentLanguage(account, page, language)
         .restoreCheckpoint(record, (String) checkpoint.get("identity"));
   }
@@ -1017,27 +1142,33 @@ final class CanonicalSnapshots {
       String account, String page, Map<String, Object> envelope) {
     var blobs = repository.blobs(account);
     var manifest = read(blobs, page);
-    if (!manifest.containsKey("local") || !manifest.containsKey("admissions"))
+    if (!manifest.containsKey("local") || !manifest.containsKey("admissions")) {
       return java.util.Optional.empty();
+    }
     var admissions = rows.values(blobs, root(manifest, "admissions"));
     Map<String, Object> rows = new LinkedHashMap<>();
     String environment = null;
     for (Object raw : (List<?>) object(envelope.get("snapshot")).get("documents")) {
       var member = object(raw);
       Object admission = admissions.get(member.get("key"));
-      if (admission == null || !(object(admission).get("native") instanceof Map<?, ?>))
+      if (admission == null || !(object(admission).get("native") instanceof Map<?, ?>)) {
         return java.util.Optional.empty(); // Older publications retain ordinary strict recovery.
+      }
       var prepared = object(object(admission).get("native"));
       var row = object(prepared.get("member"));
-      if (!java.util.Objects.equals(row.get("blueId"), member.get("blueId")))
+      if (!java.util.Objects.equals(row.get("blueId"), member.get("blueId"))) {
         throw new IllegalStateException("Native preparation differs from its committed member");
+      }
       String selected = (String) prepared.get("environment");
-      if (selected == null || environment != null && !environment.equals(selected))
+      if (selected == null || environment != null && !environment.equals(selected)) {
         throw new IllegalStateException("Native preparation mixes execution environments");
+      }
       environment = selected;
       rows.put((String) member.get("key"), row);
     }
-    if (environment == null) return java.util.Optional.empty();
+    if (environment == null) {
+      return java.util.Optional.empty();
+    }
     return java.util.Optional.of(
         Map.of(
             "environment",
@@ -1054,7 +1185,9 @@ final class CanonicalSnapshots {
   blue.LanguageDocument retainAdmission(
       String account, String page, String member, blue.Language language) {
     blue.LanguageDocument existing = reviewedMember(account, page, member, language);
-    if (existing != null) return existing;
+    if (existing != null) {
+      return existing;
+    }
     blue.LanguageDocument completed = member(account, page, member, language);
     new CanonicalAdmissions(repository.store).retain(account, page, member, completed);
     return completed;
@@ -1069,12 +1202,14 @@ final class CanonicalSnapshots {
       String account, String page, String expectedIdentity, String member, blue.Language language) {
     var blobs = repository.blobs(account);
     var manifest = read(blobs, page);
-    if (!supported(manifest))
+    if (!supported(manifest)) {
       throw new IllegalStateException("Unsupported canonical snapshot pages");
-    if (!java.util.Objects.equals(expectedIdentity, manifest.get("identity")))
+    }
+    if (!java.util.Objects.equals(expectedIdentity, manifest.get("identity"))) {
       throw new blue.BlueException(
           "UNTRUSTED_SNAPSHOT_COMMITMENT",
           "Publication identity does not match its protected pages");
+    }
     var envelope = envelope(blobs, manifest, metadata(blobs, manifest));
     blue.LanguageDocument completed =
         OwnerGraphs.configurationFor(
@@ -1103,8 +1238,9 @@ final class CanonicalSnapshots {
   Map<String, Object> executionEnvelope(String account, String page) {
     var blobs = repository.blobs(account);
     var manifest = read(blobs, page);
-    if (!supported(manifest))
+    if (!supported(manifest)) {
       throw new IllegalStateException("Unsupported canonical snapshot pages");
+    }
     return envelope(blobs, manifest, metadata(blobs, manifest));
   }
 
@@ -1115,7 +1251,9 @@ final class CanonicalSnapshots {
     // The provider captures immutable roots, never a mutable latest document head.
     return requested -> {
       String reference = content.get(requested.value());
-      if (reference == null) return java.util.Optional.empty();
+      if (reference == null) {
+        return java.util.Optional.empty();
+      }
       Map<String, Object> value = SnapshotRows.record(blobs, reference);
       return java.util.Optional.of(languageRecord(value));
     };
@@ -1127,8 +1265,9 @@ final class CanonicalSnapshots {
   ExecutionSnapshot execution(String account, String page) {
     var blobs = repository.blobs(account);
     var manifest = read(blobs, page);
-    if (!supported(manifest))
+    if (!supported(manifest)) {
       throw new IllegalStateException("Unsupported canonical snapshot pages");
+    }
     var wire = metadata(blobs, manifest);
     var envelope = envelope(blobs, manifest, wire);
     var content = new SnapshotContent(blobs, manifest);
@@ -1179,7 +1318,9 @@ final class CanonicalSnapshots {
   static int compare(String left, String right) {
     for (int l = 0, r = 0; l < left.length() && r < right.length(); ) {
       int a = left.codePointAt(l), b = right.codePointAt(r);
-      if (a != b) return Integer.compare(a, b);
+      if (a != b) {
+        return Integer.compare(a, b);
+      }
       l += Character.charCount(a);
       r += Character.charCount(b);
     }

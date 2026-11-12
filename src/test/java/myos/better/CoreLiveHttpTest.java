@@ -117,8 +117,9 @@ class CoreLiveHttpTest {
   private static Map<String, Object> frame(BufferedReader input) throws IOException {
     String line;
     while ((line = input.readLine()) != null) {
-      if (line.startsWith("data: "))
+      if (line.startsWith("data: ")) {
         return Json.object(line.substring(6).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      }
     }
     throw new EOFException("Stream ended before a data frame");
   }

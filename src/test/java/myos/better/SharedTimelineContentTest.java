@@ -279,7 +279,9 @@ class SharedTimelineContentTest {
   void largeLocalCheckpointIsLoadedOnlyForRecoveryAndReadsLegacyInlineState() {
     try (var store = new JsonBoundaryStore()) {
       var orders = new TreeMap<String, Object>();
-      for (int i = 0; i < 500; i++) orders.put("order-" + i, Map.of("number", i));
+      for (int i = 0; i < 500; i++) {
+        orders.put("order-" + i, Map.of("number", i));
+      }
       var language = Language.newBuilder().mount("Contracts", Contracts.publication()).build();
       var sample =
           fixture(

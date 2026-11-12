@@ -60,8 +60,9 @@ final class CoreTimelineImports implements AutoCloseable {
     var existing = store.get(location);
     if (existing == null) {
       String name = RuntimeConfiguration.text(input.getOrDefault("name", id.value()), "name");
-      if (name.length() > 256)
+      if (name.length() > 256) {
         throw new IllegalArgumentException("Timeline name exceeds 256 characters");
+      }
       CoreTimelineDiscovery.Source source;
       try {
         source = discovery.discover(account, reader, endpoint, id);
@@ -96,15 +97,17 @@ final class CoreTimelineImports implements AutoCloseable {
               source.descriptor().blueId().value());
       store.commit(List.of(AtomicStore.Write.put(location, 0, value)), List.of());
       existing = store.get(location);
-      if (existing == null)
+      if (existing == null) {
         throw new ConsoleProblem(503, "import_busy", "Retry the same Timeline import.");
+      }
     }
     if (!endpoint.equals(existing.value().get("endpoint"))
-        || !reader.equals(existing.value().get("readerKeyId")))
+        || !reader.equals(existing.value().get("readerKeyId"))) {
       throw new ConsoleProblem(
           409,
           "timeline_already_imported",
           "Timeline is already imported with different reader details.");
+    }
     retainControl(account, existing.value());
     bind(account, existing.value());
     return read(account, id);
@@ -138,19 +141,23 @@ final class CoreTimelineImports implements AutoCloseable {
       store.commit(List.of(AtomicStore.Write.put(location, 0, value)), List.of());
       existing = store.get(location);
     }
-    if (existing == null)
+    if (existing == null) {
       throw new ConsoleProblem(503, "import_busy", "Retry the same access import.");
+    }
     if (!endpoint.equals(existing.value().get("endpoint"))
-        || !source.provider().blueId().value().equals(existing.value().get("provider")))
+        || !source.provider().blueId().value().equals(existing.value().get("provider"))) {
       throw new ConsoleProblem(
           409, "timeline_already_imported", "Control source has different provider pins.");
+    }
     bind(account, existing.value());
     return service.originalSource(account, control.value());
   }
 
   private void retainControl(String account, Map<String, Object> imported) {
     BlueId control = id(imported, "control");
-    if (control.equals(id(imported, "timelineId"))) return;
+    if (control.equals(id(imported, "timelineId"))) {
+      return;
+    }
     var row = new LinkedHashMap<>(imported);
     row.put("timelineId", control.value());
     row.put("name", "Provider access history");
@@ -181,20 +188,22 @@ final class CoreTimelineImports implements AutoCloseable {
     if (registration != null) {
       String name = TimelinePolling.text(registration, "source");
       var current = service.source(account, name);
-      if (!provider.blueId().equals(current.source().provider()))
+      if (!provider.blueId().equals(current.source().provider())) {
         throw new IllegalStateException("Imported source provider differs from existing pin");
+      }
       return name;
     }
     String name = alias(timeline.blueId());
     var records = new LinkedHashMap<String, Object>();
     var shared = coordination.records().keySet();
-    for (LanguageDocument value : List.of(provider, timeline))
+    for (LanguageDocument value : List.of(provider, timeline)) {
       value
           .records(shared::contains)
           .forEach(
               (id, record) ->
                   records.putIfAbsent(
                       id.value(), Json.object(record.toJson().getBytes(StandardCharsets.UTF_8))));
+    }
     service.adopt(
         account,
         name,
@@ -219,8 +228,11 @@ final class CoreTimelineImports implements AutoCloseable {
   Map<String, Object> read(String account, BlueId id) {
     var saved = required(account, id).value();
     var result = new LinkedHashMap<String, Object>();
-    for (String field : List.of("timelineId", "endpoint", "readerKeyId", "name", "createdAt"))
-      if (saved.containsKey(field)) result.put(field, saved.get(field));
+    for (String field : List.of("timelineId", "endpoint", "readerKeyId", "name", "createdAt")) {
+      if (saved.containsKey(field)) {
+        result.put(field, saved.get(field));
+      }
+    }
     result.put("id", id.value());
     result.put("blueId", id.value());
     result.put("owned", false);
@@ -231,7 +243,9 @@ final class CoreTimelineImports implements AutoCloseable {
       var head = archive.prefix();
       result.put("completeBefore", head.completeBefore());
       result.put("head", head.headId().map(BlueId::value).orElse(null));
-      if (archive.view().version() > 0) result.put("status", "AVAILABLE");
+      if (archive.view().version() > 0) {
+        result.put("status", "AVAILABLE");
+      }
       var registration = service.pollingRegistration(account, id.value());
       if (registration != null) {
         var failure = service.polling().orElseThrow().retry(registration);
@@ -268,8 +282,9 @@ final class CoreTimelineImports implements AutoCloseable {
 
   Map<String, Object> retry(String account, BlueId id) {
     var row = required(account, id);
-    if (row.value().containsKey("readerKeyId"))
+    if (row.value().containsKey("readerKeyId")) {
       keys.read(account, (String) row.value().get("readerKeyId"));
+    }
     retainControl(account, row.value());
     bind(account, row.value());
     var registration = service.pollingRegistration(account, id.value());
@@ -293,8 +308,9 @@ final class CoreTimelineImports implements AutoCloseable {
             : new TimelineArchive.Cursor(
                 Repository.number(state.get("batch")),
                 Math.toIntExact(Repository.number(state.get("offset"))));
-    if (through < 0 || through > view.version() || cursor.batch() > through + 1)
+    if (through < 0 || through > view.version() || cursor.batch() > through + 1) {
       throw new IllegalArgumentException("Invalid imported Timeline cursor");
+    }
     List<Object> items = new ArrayList<>();
     int limit = CoreListFilter.limit(query);
     while (items.size() < limit && cursor.batch() <= through) {
@@ -348,7 +364,9 @@ final class CoreTimelineImports implements AutoCloseable {
 
   private AtomicStore.Row required(String account, BlueId id) {
     var row = store.get(key(account, id));
-    if (row == null) throw new HostedTimelines.Missing();
+    if (row == null) {
+      throw new HostedTimelines.Missing();
+    }
     return row;
   }
 

@@ -122,8 +122,9 @@ class OwnerTimeRejectionTest {
                 .target();
       }
       f.operation("bad", 5, 6, child);
-      for (int i = 0; i < 2; i++)
+      for (int i = 0; i < 2; i++) {
         assertEquals(TimelineIngress.Status.INAPPLICABLE, f.engine.step(ACCOUNT, ROOT).status());
+      }
       assertEquals(0, f.count());
       assertEquals(1, f.records().head(ROOT).version());
       assertEquals(1, f.records().head(OwnerGraphs.address(child)).version());
@@ -142,8 +143,9 @@ class OwnerTimeRejectionTest {
   void integrityFailuresAreNeverReclassifiedAsUserInputRejections() {
     for (String code :
         java.util.List.of(
-            "TIME_ADMISSION_MISMATCH", "TIME_INVALID_FIRING", "TIME_REGISTRATION_MISMATCH"))
+            "TIME_ADMISSION_MISMATCH", "TIME_INVALID_FIRING", "TIME_REGISTRATION_MISMATCH")) {
       assertThrows(IllegalArgumentException.class, () -> new OwnerRejections.Failure(code));
+    }
   }
 
   @ParameterizedTest
@@ -192,8 +194,9 @@ class OwnerTimeRejectionTest {
       f.engine.create(ACCOUNT, ROOT, "create", document);
       var initial = f.records().head(ROOT);
       f.activate(10);
-      for (int i = 0; i < size; i++)
+      for (int i = 0; i < size; i++) {
         assertEquals(TimelineIngress.Status.INAPPLICABLE, f.engine.step(ACCOUNT, ROOT).status());
+      }
       assertEquals(initial, f.records().head(ROOT));
       assertEquals(0, f.value("/count"));
       f.activate(20);

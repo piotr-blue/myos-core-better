@@ -111,7 +111,9 @@ class CoreEventsTest {
     var store = new JsonBoundaryStore();
     var admissions = new CoreAdmissions(store);
     // 13 admissions cross the 24-fact transaction boundary with only two excess records.
-    for (int i = 0; i < 13; i++) submit(admissions, "alice", "command-" + i);
+    for (int i = 0; i < 13; i++) {
+      submit(admissions, "alice", "command-" + i);
+    }
     var events = new CoreEvents(store, new CorePageTokens(store));
     var page = events.list("alice", "events", Map.of("limit", "100"), null, null, true);
     assertEquals(24, items(page).size());
@@ -153,8 +155,9 @@ class CoreEventsTest {
                   // its outbox query. Returning the old sequence would hide committed events.
                   if (method.getName().equals("query")
                       && args[0].equals("CORE_EVENT_OUTBOX#alice")
-                      && intervene.getAndSet(false))
+                      && intervene.getAndSet(false)) {
                     assertEquals(2L, new CoreEvents(store, pages).project("alice"));
+                  }
                   try {
                     return method.invoke(store, args);
                   } catch (InvocationTargetException failure) {
@@ -186,8 +189,9 @@ class CoreEventsTest {
                   } catch (InvocationTargetException failure) {
                     throw failure.getCause();
                   }
-                  if (method.getName().equals("commit") && fail.getAndSet(false))
+                  if (method.getName().equals("commit") && fail.getAndSet(false)) {
                     throw new IllegalStateException("Simulated lost commit response");
+                  }
                   return result;
                 });
     assertThrows(

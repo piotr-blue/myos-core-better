@@ -15,7 +15,9 @@ class OwnerMetadataTest {
     var store = new MeasuredStore(new JsonBoundaryStore());
     var metadata = new OwnerMetadata(store, "tenant");
     var tx = metadata.begin();
-    for (int i = 0; i < 80; i++) tx.put("owner/" + i, "protected".repeat(700) + i);
+    for (int i = 0; i < 80; i++) {
+      tx.put("owner/" + i, "protected".repeat(700) + i);
+    }
     assertTrue(tx.commit());
     var cold = new OwnerMetadata(store, "tenant").begin();
     var before = store.statistics();
@@ -74,7 +76,9 @@ class OwnerMetadataTest {
   void overlayPaginationDoesNotSkipAnInsertOrExposeADeletedMinimum() {
     var metadata = new OwnerMetadata(new MemoryStore(), "tenant");
     var initial = metadata.begin();
-    for (String key : List.of("q/1", "q/3", "q/5", "q/7")) initial.put(key, key);
+    for (String key : List.of("q/1", "q/3", "q/5", "q/7")) {
+      initial.put(key, key);
+    }
     assertTrue(initial.commit());
     var changed = metadata.begin();
     changed.remove("q/1");

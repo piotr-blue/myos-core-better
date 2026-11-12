@@ -62,8 +62,9 @@ class CoreAccountLookupTest {
             Map.<String, Object>of("q", "studio", "limit", 0),
             Map.<String, Object>of("q", "studio", "limit", 51),
             Map.<String, Object>of("q", "studio", "limit", 1.5),
-            Map.<String, Object>of("q", "studio", "pageToken", 123)))
+            Map.<String, Object>of("q", "studio", "pageToken", 123))) {
       assertThrows(ConsoleProblem.class, () -> CoreAccountLookup.parse(input), input.toString());
+    }
     assertThrows(
         IllegalArgumentException.class,
         () -> CoreAccountLookup.parse(Map.of("accountIds", List.of("a"), "unknown", true)));
@@ -103,19 +104,22 @@ class CoreAccountLookupTest {
             Map.<String, Object>of("q", "studio"),
             Map.<String, Object>of(
                 "accountIds", List.of("a"), "emails", List.of("private@example.test")),
-            Map.<String, Object>of("accountIds", List.of("a"), "q", "wrong")))
+            Map.<String, Object>of("accountIds", List.of("a"), "q", "wrong"))) {
       assertEquals(
           503,
           assertThrows(
                   ConsoleProblem.class,
                   () -> lookup.lookup(caller("reader", "session"), notIndexed))
               .status);
+    }
   }
 
   @Test
   void continuationBindsNormalizedSelectorsLimitCallerAndSession() {
     var store = new JsonBoundaryStore();
-    for (String id : List.of("a", "b", "c")) account(store, id, "ACTIVE");
+    for (String id : List.of("a", "b", "c")) {
+      account(store, id, "ACTIVE");
+    }
     var lookup = new CoreAccountLookup(store, new CorePageTokens(store));
     var caller = caller("reader", "session");
     var first = lookup.lookup(caller, Map.of("accountIds", List.of("c", "a", "b"), "limit", 1));

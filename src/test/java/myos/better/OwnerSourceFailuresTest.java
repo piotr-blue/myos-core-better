@@ -76,8 +76,11 @@ class OwnerSourceFailuresTest {
       polling.succeeded(polling.retry(registration));
       assertEquals(OwnerSourceFailures.DIAGNOSTIC, reopened.blockingFailure("owner").diagnostic());
     } finally {
-      if (previous == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", previous);
+      if (previous == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", previous);
+      }
     }
   }
 }

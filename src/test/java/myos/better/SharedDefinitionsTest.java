@@ -168,7 +168,9 @@ class SharedDefinitionsTest {
     }
 
     public void publishContent(String account, Map<String, byte[]> pages) {
-      if (failContent) throw new IllegalStateException("Injected content failure");
+      if (failContent) {
+        throw new IllegalStateException("Injected content failure");
+      }
       delegate.publishContent(account, pages);
     }
 

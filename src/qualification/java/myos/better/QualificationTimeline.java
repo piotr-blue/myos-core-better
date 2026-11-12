@@ -39,9 +39,12 @@ final class QualificationTimeline {
     // RFC8032 public encoding: little-endian y with x parity in the most significant bit.
     var point = ((EdECPublicKey) keys.getPublic()).getPoint();
     byte[] big = point.getY().toByteArray(), encoded = new byte[32];
-    for (int i = 0; i < Math.min(big.length, encoded.length); i++)
+    for (int i = 0; i < Math.min(big.length, encoded.length); i++) {
       encoded[i] = big[big.length - 1 - i];
-    if (point.isXOdd()) encoded[31] |= (byte) 0x80;
+    }
+    if (point.isXOdd()) {
+      encoded[31] |= (byte) 0x80;
+    }
     Language base = Language.newBuilder().mount("Coordination", COORDINATION).build();
     provider =
         base.readYaml(
@@ -112,7 +115,9 @@ final class QualificationTimeline {
         ("blue.coordination.object\n" + provider.blueId() + "\n" + object.blueId())
             .getBytes(StandardCharsets.UTF_8));
     byte[] signature = signer.sign();
-    if (corrupt) signature[0] ^= 1;
+    if (corrupt) {
+      signature[0] ^= 1;
+    }
     return typed(
         "Provider Attestation",
         "provider: {blueId: '"
@@ -139,7 +144,9 @@ final class QualificationTimeline {
     signer.update(
         ("blue.coordination.guarantee\n" + guarantee.blueId()).getBytes(StandardCharsets.UTF_8));
     byte[] signature = signer.sign();
-    if (corrupt) signature[0] ^= 1;
+    if (corrupt) {
+      signature[0] ^= 1;
+    }
     return typed(
         "Timeline Attestation",
         "timeline: {blueId: '"

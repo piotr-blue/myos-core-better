@@ -24,10 +24,11 @@ final class OwnerInitializationContent {
     var blocks = new ContentBlocks(blobs);
     var index = new RadixIndex<>(blobs, String.class);
     var additions = new LinkedHashMap<String, String>();
-    for (var entry : document.records().entrySet())
+    for (var entry : document.records().entrySet()) {
       additions.put(
           entry.getKey().value(),
           blocks.put(entry.getValue().toJson().getBytes(StandardCharsets.UTF_8)));
+    }
     String catalogue = index.update("", additions, Set.of());
     String retained =
         blobs.put(
@@ -51,11 +52,13 @@ final class OwnerInitializationContent {
   LanguageDocument restore(String account, String retained, String expectedDocument) {
     var blobs = repository.blobs(account);
     byte[] bytes = blobs.get(retained);
-    if (!retained.equals(Json.hash(bytes)))
+    if (!retained.equals(Json.hash(bytes))) {
       throw new IllegalStateException("Initialization input identity mismatch");
+    }
     var record = Json.object(bytes);
-    if (!FORMAT.equals(record.get("format")) || !expectedDocument.equals(record.get("document")))
+    if (!FORMAT.equals(record.get("format")) || !expectedDocument.equals(record.get("document"))) {
       throw new IllegalStateException("Initialization input differs from its protected intent");
+    }
     String catalogue = (String) record.get("catalogue");
     var index = new RadixIndex<>(blobs, String.class);
     var blocks = new ContentBlocks(blobs);

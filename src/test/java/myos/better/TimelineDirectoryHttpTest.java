@@ -133,7 +133,9 @@ class TimelineDirectoryHttpTest {
             "active-provider.json",
             "active-timeline.json",
             "quiet-provider.json",
-            "quiet-timeline.json")) Files.delete(directory.resolve(name));
+            "quiet-timeline.json")) {
+      Files.delete(directory.resolve(name));
+    }
     try (Host host = new Host(fixture, store)) {
       assertEquals("IDLE", host.step(child));
       LanguageContent second = fixture.active.entry(first.blueId(), 2, "{amount: 5}");
@@ -256,7 +258,9 @@ class TimelineDirectoryHttpTest {
               ((Map<?, ?>)
                       ok("/documents/read", Map.of("account", "alice", "document", id)).get("data"))
                   .get("count"))) {
-        if (System.nanoTime() > deadline) fail("Parent did not receive the child event");
+        if (System.nanoTime() > deadline) {
+          fail("Parent did not receive the child event");
+        }
         Thread.sleep(10);
       }
     }

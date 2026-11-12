@@ -19,7 +19,9 @@ final class CognitoConsoleLogin implements ConsoleLogin {
   private CoreAdminDirectory directory;
 
   void directory(CoreAdminDirectory configured) {
-    if (directory != null) throw new IllegalStateException("Identity directory already configured");
+    if (directory != null) {
+      throw new IllegalStateException("Identity directory already configured");
+    }
     directory = Objects.requireNonNull(configured);
   }
 
@@ -74,12 +76,14 @@ final class CognitoConsoleLogin implements ConsoleLogin {
                               .authParameters(
                                   Map.of("USERNAME", email, "PASSWORD", text(input, "password"))))
                   .authenticationResult();
-          if (result == null || result.idToken() == null)
+          if (result == null || result.idToken() == null) {
             throw new ConsoleProblem(
                 401, "CHALLENGE_REQUIRED", "Additional sign-in verification is required.");
+          }
           var user = verifier.apply(result.idToken());
-          if (directory != null)
+          if (directory != null) {
             CoreIdentityObservation.run(() -> directory.verified(user.subject(), user.email()));
+          }
           return Map.of("token", result.idToken(), "expiresIn", result.expiresIn());
         }
         case "signup" -> {
@@ -91,11 +95,12 @@ final class CognitoConsoleLogin implements ConsoleLogin {
                           .password(text(input, "password"))
                           .userAttributes(
                               AttributeType.builder().name("email").value(email).build()));
-          if (directory != null)
+          if (directory != null) {
             CoreIdentityObservation.run(
                 () ->
                     directory.registered(
                         result.userSub(), email, Boolean.TRUE.equals(result.userConfirmed())));
+          }
         }
         case "confirm" -> {
           String code = text(input, "code");
@@ -119,8 +124,9 @@ final class CognitoConsoleLogin implements ConsoleLogin {
               client.confirmSignUp(
                   r -> r.clientId(clientId).username(email).confirmationCode(code));
             }
-          } else
+          } else {
             client.confirmSignUp(r -> r.clientId(clientId).username(email).confirmationCode(code));
+          }
           if (subjectConfirmed) {
             long confirmedAt = clock.millis();
             CoreIdentityObservation.run(() -> directory.confirmed(subject, email, confirmedAt));
@@ -155,8 +161,9 @@ final class CognitoConsoleLogin implements ConsoleLogin {
 
   private static String text(Map<String, Object> input, String name) {
     Object value = input.get(name);
-    if (!(value instanceof String text) || text.isBlank() || text.length() > 2048)
+    if (!(value instanceof String text) || text.isBlank() || text.length() > 2048) {
       throw new ConsoleProblem(400, "INVALID_REQUEST", "A valid " + name + " is required.");
+    }
     return text;
   }
 

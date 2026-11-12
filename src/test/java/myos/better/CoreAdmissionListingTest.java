@@ -116,7 +116,9 @@ class CoreAdmissionListingTest {
   @Test
   void historicalIndexingIsBoundedAndNeverReturnsAPartialFirstListingAsComplete() {
     var store = new JsonBoundaryStore();
-    for (int i = 0; i < 65; i++) historical(store, "legacy-" + i, TIME.plusSeconds(i));
+    for (int i = 0; i < 65; i++) {
+      historical(store, "legacy-" + i, TIME.plusSeconds(i));
+    }
     var listing = new CoreAdmissionListing(store, new CorePageTokens(store));
     assertEquals(
         "ADMISSIONS_INDEXING",
@@ -136,7 +138,9 @@ class CoreAdmissionListingTest {
     var store = new JsonBoundaryStore();
     var listing = new CoreAdmissionListing(store, new CorePageTokens(store));
     listing.list("alice", Map.of()); // A new account has no legacy receipts to index.
-    for (int i = 0; i < 205; i++) submit(store, "row" + i, "contents", "CONTENT", TIME, false);
+    for (int i = 0; i < 205; i++) {
+      submit(store, "row" + i, "contents", "CONTENT", TIME, false);
+    }
     var page = listing.list("alice", Map.of("status", "FAILED"));
     assertTrue(items(page).isEmpty());
     assertEquals(true, page.get("hasMore"));
@@ -150,7 +154,9 @@ class CoreAdmissionListingTest {
     do {
       var query = new HashMap<String, String>();
       query.put("limit", "100");
-      if (token != null) query.put("pageToken", token);
+      if (token != null) {
+        query.put("pageToken", token);
+      }
       var rows = listing.list("alice", query);
       items(rows).forEach(row -> ids.add((String) row.get("admissionId")));
       token = (String) rows.get("nextPageToken");
@@ -190,8 +196,9 @@ class CoreAdmissionListingTest {
             boolean result = store.commit(writes, checks);
             if (result
                 && writes.stream().anyMatch(w -> w.key().sort().equals("BACKFILL#1"))
-                && once.compareAndSet(false, true))
+                && once.compareAndSet(false, true)) {
               throw new IllegalStateException("Lost acknowledgement");
+            }
             return result;
           }
         };
@@ -210,9 +217,10 @@ class CoreAdmissionListingTest {
             Map.of("status", "finished"),
             Map.of("kind", "invented"),
             Map.of("from", "yesterday"),
-            Map.of("from", TIME.plusSeconds(1).toString(), "to", TIME.toString())))
+            Map.of("from", TIME.plusSeconds(1).toString(), "to", TIME.toString()))) {
       assertEquals(
           400, assertThrows(ConsoleProblem.class, () -> listing.list("alice", query)).status);
+    }
     assertThrows(
         IllegalArgumentException.class, () -> listing.list("alice", Map.of("limit", "101")));
     assertThrows(
@@ -230,7 +238,9 @@ class CoreAdmissionListingTest {
             kind,
             kind.equals("CONTENT") ? "CONTENT_STORED" : "CONTROL_APPLIED",
             () -> {
-              if (fail) throw new IllegalArgumentException("Fixture invalid content");
+              if (fail) {
+                throw new IllegalArgumentException("Fixture invalid content");
+              }
               return Map.of();
             });
   }

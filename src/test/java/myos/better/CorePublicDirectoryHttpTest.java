@@ -21,8 +21,9 @@ class CorePublicDirectoryHttpTest {
     ConsoleLogin login =
         new ConsoleLogin() {
           public User verify(String token) {
-            if (!Set.of("alice", "bob").contains(Objects.toString(token, "")))
+            if (!Set.of("alice", "bob").contains(Objects.toString(token, ""))) {
               throw new ConsoleProblem(401, "invalid", "Sign in");
+            }
             return new User(token, token + "@example.test");
           }
 
@@ -60,7 +61,9 @@ class CorePublicDirectoryHttpTest {
       java.net.http.HttpResponse<String> response;
       do {
         response = f.post("blue/v1/accounts/lookup", "alice", "search", Map.of("q", "studio"));
-        if (response.statusCode() != 503) break;
+        if (response.statusCode() != 503) {
+          break;
+        }
         Thread.sleep(10);
       } while (System.nanoTime() < deadline);
       var page = f.json(response);

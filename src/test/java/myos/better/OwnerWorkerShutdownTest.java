@@ -33,7 +33,9 @@ class OwnerWorkerShutdownTest {
                           interrupted = true;
                         }
                       }
-                      if (interrupted) Thread.currentThread().interrupt();
+                      if (interrupted) {
+                        Thread.currentThread().interrupt();
+                      }
                     }
                     try {
                       return method.invoke(delegate, args);

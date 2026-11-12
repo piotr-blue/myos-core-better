@@ -41,8 +41,9 @@ final class OwnerFrontiers {
 
   record Order(long timestamp, String timeline, String entry) implements Comparable<Order> {
     Order {
-      if (timestamp < 0 || timestamp > 9_007_199_254_740_991L)
+      if (timestamp < 0 || timestamp > 9_007_199_254_740_991L) {
         throw new IllegalArgumentException("Invalid source timestamp");
+      }
       component(timeline);
       component(entry);
     }
@@ -70,15 +71,22 @@ final class OwnerFrontiers {
       String target) {
     String key = key("classification", timeline, entry);
     Input prior = get(tx, key, Input.class);
-    if (prior != null && prior.target() != null && target != null && !prior.target().equals(target))
+    if (prior != null
+        && prior.target() != null
+        && target != null
+        && !prior.target().equals(target)) {
       throw new IllegalStateException("Contradicting verified operation target");
+    }
     Input value =
         new Input(
             prior == null ? operation : prior.operation() && operation,
             prior != null && prior.target() != null ? prior.target() : target);
-    if (!value.operation() && value.target() != null)
+    if (!value.operation() && value.target() != null) {
       throw new IllegalStateException("Contradicting verified classification");
-    if (value.equals(prior)) return;
+    }
+    if (value.equals(prior)) {
+      return;
+    }
     put(tx, key, value);
     // Locally accepted entries can precede signed archive acquisition. Remove only candidates
     // now proven inapplicable; an unknown classification always follows ordinary admission.
@@ -94,26 +102,29 @@ final class OwnerFrontiers {
 
   void interest(OwnerMetadata.Transaction tx, String owner, String binding, boolean observed) {
     String interest = Boolean.toString(observed);
-    if (!interest.equals(tx.get(key("interest", owner, binding))))
+    if (!interest.equals(tx.get(key("interest", owner, binding)))) {
       tx.put(
           key("interest-sequence", owner, binding),
           Long.toString(sequence(tx, "accepted-sequence")));
+    }
     tx.put(key("interest", owner, binding), interest);
     indexInterest(tx, owner, binding);
   }
 
   void coverageOnly(OwnerMetadata.Transaction tx, String owner, String binding) {
-    if (!"coverage".equals(tx.get(key("interest", owner, binding))))
+    if (!"coverage".equals(tx.get(key("interest", owner, binding)))) {
       tx.put(
           key("interest-sequence", owner, binding),
           Long.toString(sequence(tx, "accepted-sequence")));
+    }
     tx.put(key("interest", owner, binding), "coverage");
     indexInterest(tx, owner, binding);
   }
 
   void target(OwnerMetadata.Transaction tx, String owner, String identity) {
-    if (tx.get(key("target", owner, identity)) == null)
+    if (tx.get(key("target", owner, identity)) == null) {
       tx.put(key("target-sequence", owner), Long.toString(sequence(tx, "accepted-sequence")));
+    }
     tx.put(key("target", owner, identity), "1");
     tx.put(key("target-owner", identity, owner), owner);
   }
@@ -121,10 +132,16 @@ final class OwnerFrontiers {
   private static boolean relevant(
       OwnerMetadata.Transaction tx, String owner, String binding, Order order) {
     String interest = tx.get(key("interest", owner, binding));
-    if (interest == null || Boolean.parseBoolean(interest)) return true;
+    if (interest == null || Boolean.parseBoolean(interest)) {
+      return true;
+    }
     Input input = get(tx, key("classification", order.timeline(), order.entry()), Input.class);
-    if (input == null) return true;
-    if (!input.operation()) return false;
+    if (input == null) {
+      return true;
+    }
+    if (!input.operation()) {
+      return false;
+    }
     return input.target() == null || tx.get(key("target", owner, input.target())) != null;
   }
 
@@ -139,8 +156,9 @@ final class OwnerFrontiers {
       component(id);
       component(source);
       Objects.requireNonNull(kind);
-      if (generation < 0 || position < 0)
+      if (generation < 0 || position < 0) {
         throw new IllegalArgumentException("Invalid source lifetime");
+      }
     }
   }
 
@@ -178,14 +196,16 @@ final class OwnerFrontiers {
     tx.requireAtLeastFormat(OwnerMetadata.TIME_FORMAT);
     Timer prior = get(tx, key("timer", registration), Timer.class);
     if (prior != null) {
-      if (!prior.original().equals(original))
+      if (!prior.original().equals(original)) {
         throw new IllegalArgumentException("Conflicting Time occurrence");
+      }
       return;
     }
     String occurrence = key("original", original.order().timeline(), original.order().entry());
     Accepted existing = get(tx, occurrence, Accepted.class);
-    if (existing != null && (!existing.original().equals(original) || existing.position() != 0))
+    if (existing != null && (!existing.original().equals(original) || existing.position() != 0)) {
       throw new IllegalArgumentException("Conflicting Time original");
+    }
     put(tx, key("timer", registration), new Timer(original, false));
     // Position zero denotes an original without a Signed Timeline sequence.
     // Reuse the immutable lookup so ordinary timeline reads gain no extra I/O.
@@ -195,10 +215,15 @@ final class OwnerFrontiers {
   /** A clock opens eligibility only; source completeness is still checked at claim time. */
   void activateTimer(OwnerMetadata.Transaction tx, String registration, long nowMicros) {
     Timer timer = get(tx, key("timer", registration), Timer.class);
-    if (timer == null) throw new IllegalArgumentException("Unknown Time occurrence");
-    if (nowMicros < timer.original().order().timestamp())
+    if (timer == null) {
+      throw new IllegalArgumentException("Unknown Time occurrence");
+    }
+    if (nowMicros < timer.original().order().timestamp()) {
       throw new IllegalArgumentException("Time occurrence is not due");
-    if (timer.eligible()) return;
+    }
+    if (timer.eligible()) {
+      return;
+    }
     put(tx, key("timer", registration), new Timer(timer.original(), true));
     Set<String> changed = new LinkedHashSet<>();
     for (Reverse consumer : scan(tx, prefix("timer-consumer", registration), Reverse.class)) {
@@ -210,12 +235,14 @@ final class OwnerFrontiers {
 
   void configureTimerSources(
       OwnerMetadata.Transaction tx, String owner, List<Source> added, Set<String> removed) {
-    if (added.stream().anyMatch(source -> source.kind() != Kind.TIMER))
+    if (added.stream().anyMatch(source -> source.kind() != Kind.TIMER)) {
       throw new IllegalArgumentException("Only Time sources may be added here");
+    }
     for (String id : removed) {
       Binding old = get(tx, key("source", owner, id), Binding.class);
-      if (old != null && old.source().kind() != Kind.TIMER)
+      if (old != null && old.source().kind() != Kind.TIMER) {
         throw new IllegalArgumentException("Only Time sources may be removed here");
+      }
     }
     configure(tx, owner, added, removed);
     propagate(tx, Set.of(owner), Set.of());
@@ -250,8 +277,9 @@ final class OwnerFrontiers {
   }
 
   void register(OwnerMetadata.Transaction tx, String owner, String snapshot, List<Source> sources) {
-    if (get(tx, key("head", owner), Head.class) != null)
+    if (get(tx, key("head", owner), Head.class) != null) {
       throw new IllegalArgumentException("Owner exists");
+    }
     put(tx, key("head", owner), new Head(snapshot, 1, 0, null, false, null));
     configure(tx, owner, sources, Set.of());
     propagate(tx, Set.of(owner), Set.of());
@@ -279,15 +307,18 @@ final class OwnerFrontiers {
             "accepted-sequence"));
     Accepted previous = get(tx, occurrence, Accepted.class);
     if (previous != null) {
-      if (!previous.original().equals(original))
+      if (!previous.original().equals(original)) {
         throw new IllegalArgumentException("Conflicting original entry");
+      }
       return;
     }
     Timeline timeline = get(tx, key("timeline", order.timeline()), Timeline.class);
     Coverage coverage = OwnerCoverage.forTimeline(tx, order.timeline());
     long bound = coverage.local() ? completeness(tx) : coverage.before();
-    if (order.timestamp() < bound || timeline != null && order.timestamp() <= timeline.timestamp())
+    if (order.timestamp() < bound
+        || timeline != null && order.timestamp() <= timeline.timestamp()) {
       throw new IllegalArgumentException("Entry is behind the closed cut or its timeline head");
+    }
     tx.put("accepted-sequence", Long.toString(Math.addExact(sequence(tx, "accepted-sequence"), 1)));
     long position = timeline == null ? 1 : Math.addExact(timeline.position(), 1);
     put(tx, key("timeline", order.timeline()), new Timeline(position, order.timestamp()));
@@ -323,16 +354,19 @@ final class OwnerFrontiers {
     Coverage previous = get(tx, key("source-coverage", timeline), Coverage.class);
     boolean newAuthority = previous == null;
     if (previous == null) {
-      if (get(tx, key("timeline", timeline), Timeline.class) != null)
+      if (get(tx, key("timeline", timeline), Timeline.class) != null) {
         throw new IllegalStateException("Local source cannot become external");
+      }
       previous = new Coverage(0, false);
       put(tx, key("source-coverage", timeline), previous);
     }
-    if (previous.local() || bound < previous.before())
+    if (previous.local() || bound < previous.before()) {
       throw new IllegalArgumentException("Coverage regression or different authority");
+    }
     for (Original entry : entries) {
-      if (!timeline.equals(entry.order().timeline()) || entry.order().timestamp() >= bound)
+      if (!timeline.equals(entry.order().timeline()) || entry.order().timestamp() >= bound) {
         throw new IllegalArgumentException("Original is outside its source prefix");
+      }
       accept(tx, entry);
     }
     OwnerCoverage.updateCoverageCatalog(tx, timeline, new Coverage(bound, false));
@@ -340,7 +374,9 @@ final class OwnerFrontiers {
     tx.put(key("source-evidence", timeline), evidence);
     // An existing source advances one shared bound. Only changing its authority alters
     // dependency topology; ordinary imports never rewrite subscriber coverage.
-    if (newAuthority) refreshAuthority(tx, timeline);
+    if (newAuthority) {
+      refreshAuthority(tx, timeline);
+    }
   }
 
   boolean local(String timeline) {
@@ -354,9 +390,12 @@ final class OwnerFrontiers {
 
   void enrollLocal(OwnerMetadata.Transaction tx, String timeline) {
     Coverage before = get(tx, key("source-coverage", timeline), Coverage.class);
-    if (before == null)
+    if (before == null) {
       throw new IllegalStateException("Acquire the existing prefix before local enrollment");
-    if (before.local()) return;
+    }
+    if (before.local()) {
+      return;
+    }
     OwnerCoverage.ensureCoverageCatalog(tx);
     OwnerCoverage.updateCoverageCatalog(tx, timeline, new Coverage(OwnerCoverage.UNBOUNDED, true));
     put(tx, key("source-coverage", timeline), new Coverage(OwnerCoverage.UNBOUNDED, true));
@@ -364,9 +403,12 @@ final class OwnerFrontiers {
   }
 
   void sealLocal(OwnerMetadata.Transaction tx, long bound) {
-    if (bound < 0 || bound > 9_007_199_254_740_992L)
+    if (bound < 0 || bound > 9_007_199_254_740_992L) {
       throw new IllegalArgumentException("Invalid local bound");
-    if (bound > completeness(tx)) tx.put("complete-before", Long.toString(bound));
+    }
+    if (bound > completeness(tx)) {
+      tx.put("complete-before", Long.toString(bound));
+    }
   }
 
   void project(
@@ -377,9 +419,13 @@ final class OwnerFrontiers {
       String evidence) {
     Coverage coverage = get(tx, key("source-coverage", timeline), Coverage.class);
     if (coverage != null && coverage.local()) {
-      for (Original entry : entries) accept(tx, entry);
+      for (Original entry : entries) {
+        accept(tx, entry);
+      }
       tx.put(key("source-evidence", timeline), evidence);
-    } else acquire(tx, timeline, entries, bound, evidence);
+    } else {
+      acquire(tx, timeline, entries, bound, evidence);
+    }
   }
 
   /** Earliest bounded work page that needs a newer local guarantee; no timeline enumeration. */
@@ -411,8 +457,9 @@ final class OwnerFrontiers {
     for (var candidate : tx.page(prefix("ready"), null, limit)) {
       String owner = candidate.value();
       Frontier frontier = get(tx, key("frontier", owner), Frontier.class);
-      if (frontier == null || OwnerCoverage.covers(tx, owner, frontier.order().timestamp()))
+      if (frontier == null || OwnerCoverage.covers(tx, owner, frontier.order().timestamp())) {
         continue;
+      }
       OwnerCoverage.collectMissing(tx, owner, frontier.order().timestamp(), result);
     }
     return Map.copyOf(result);
@@ -429,14 +476,17 @@ final class OwnerFrontiers {
   Original original(Order order) {
     Accepted found =
         get(metadata.begin(), key("original", order.timeline(), order.entry()), Accepted.class);
-    if (found == null || !found.original().order().equals(order))
+    if (found == null || !found.original().order().equals(order)) {
       throw new IllegalArgumentException("Unknown original");
+    }
     return found.original();
   }
 
   long position(String timeline, String entry) {
     Accepted found = get(metadata.begin(), key("original", timeline, entry), Accepted.class);
-    if (found == null) throw new IllegalArgumentException("Unknown original");
+    if (found == null) {
+      throw new IllegalArgumentException("Unknown original");
+    }
     return found.position();
   }
 
@@ -452,11 +502,14 @@ final class OwnerFrontiers {
    * Lazily adopt old owners once; subsequent integrity checks read only direct Timeline bindings.
    */
   private List<Source> integritySources(OwnerMetadata.Transaction tx, String owner) {
-    if (tx.get(key("integrity-index", owner)) != null)
+    if (tx.get(key("integrity-index", owner)) != null) {
       return scan(tx, prefix("integrity-source", owner), Source.class);
+    }
     var selected =
         sources(tx, owner).stream().filter(source -> source.kind() == Kind.TIMELINE).toList();
-    for (Source source : selected) put(tx, key("integrity-source", owner, source.id()), source);
+    for (Source source : selected) {
+      put(tx, key("integrity-source", owner, source.id()), source);
+    }
     tx.put(key("integrity-index", owner), "1");
     return selected;
   }
@@ -475,11 +528,14 @@ final class OwnerFrontiers {
 
   /** The accepting authority must ensure no future original can have a timestamp below this. */
   void sealLocalBefore(long bound) {
-    if (bound < 0 || bound > 9_007_199_254_740_992L)
+    if (bound < 0 || bound > 9_007_199_254_740_992L) {
       throw new IllegalArgumentException("Invalid bound");
+    }
     change(
         tx -> {
-          if (bound > completeness(tx)) tx.put("complete-before", Long.toString(bound));
+          if (bound > completeness(tx)) {
+            tx.put("complete-before", Long.toString(bound));
+          }
           return null;
         });
   }
@@ -494,7 +550,9 @@ final class OwnerFrontiers {
   }
 
   Optional<Claim> claim(String owner, long now, long leaseMillis, ClaimGate gate) {
-    if (leaseMillis <= 0) throw new IllegalArgumentException("Positive lease required");
+    if (leaseMillis <= 0) {
+      throw new IllegalArgumentException("Positive lease required");
+    }
     String token = UUID.randomUUID().toString();
     // The token identifies one logical claim even when the metadata transaction has to retry.
     return change(tx -> claimInTransaction(tx, owner, token, now, leaseMillis, gate));
@@ -527,7 +585,9 @@ final class OwnerFrontiers {
         || head.claim() != null && head.claim().expires() > now
         || frontier == null
         || !frontier.ready()
-        || !OwnerCoverage.covers(tx, owner, frontier.order().timestamp())) return Optional.empty();
+        || !OwnerCoverage.covers(tx, owner, frontier.order().timestamp())) {
+      return Optional.empty();
+    }
     if (head.through() != null && frontier.order().compareTo(head.through()) <= 0) {
       // Retain the input, but isolate an incompatible historical attachment from
       // independent owners. Retrying the account cannot make this history valid.
@@ -563,7 +623,9 @@ final class OwnerFrontiers {
       put(tx, key("deferred", owner), denied);
       return Optional.empty();
     }
-    if (allowance != null) tx.put(allowance, Integer.toString(attempts + 1));
+    if (allowance != null) {
+      tx.put(allowance, Integer.toString(attempts + 1));
+    }
     put(
         tx,
         key("head", owner),
@@ -577,7 +639,9 @@ final class OwnerFrontiers {
     List<Selected> sources = new ArrayList<>();
     for (Candidate candidate :
         scan(tx, prefix("input", owner) + order.key() + "\0", Candidate.class)) {
-      if (!candidate.ready()) throw new IllegalStateException("Incomplete selected prefix");
+      if (!candidate.ready()) {
+        throw new IllegalStateException("Incomplete selected prefix");
+      }
       Binding binding = get(tx, key("source", owner, candidate.binding()), Binding.class);
       sources.add(
           new Selected(
@@ -637,7 +701,9 @@ final class OwnerFrontiers {
                     closed,
                     added.stream().sorted(Comparator.comparing(Source::id)).toList(),
                     removed.stream().sorted().toList())));
-    if (disposition != null) publication = Json.hash(Json.bytes(List.of(publication, disposition)));
+    if (disposition != null) {
+      publication = Json.hash(Json.bytes(List.of(publication, disposition)));
+    }
     final String expectedPublication = publication;
     change(
         tx -> {
@@ -647,28 +713,32 @@ final class OwnerFrontiers {
                   key("progress", claim.owner(), number(Math.addExact(claim.position(), 1))),
                   Progress.class);
           if (committed != null && committed.claim().equals(claim.token())) {
-            if (!committed.publication().equals(expectedPublication))
+            if (!committed.publication().equals(expectedPublication)) {
               throw new IllegalArgumentException("Claim reused for a different publication");
+            }
             return null;
           }
           Head head = required(tx, claim.owner());
           if (tx.supportsFormat(OwnerMetadata.INTEGRITY_FORMAT)
               && OwnerSourceFailures.blocked(
-                  tx, claim.owner(), integritySources(tx, claim.owner())))
+                  tx, claim.owner(), integritySources(tx, claim.owner()))) {
             throw new OwnerSourceFailures.Failure();
+          }
           if (head.claim() == null
               || !head.claim().equals(claim)
               || head.claim().expires() <= now
               || head.version() != claim.version()
-              || !head.snapshot().equals(claim.snapshot()))
+              || !head.snapshot().equals(claim.snapshot())) {
             throw new IllegalStateException("Superseded owner claim");
+          }
           if (receipt == null
               && (!snapshot.equals(head.snapshot())
                   || closed
                   || !added.isEmpty()
-                  || !removed.isEmpty()))
+                  || !removed.isEmpty())) {
             throw new IllegalArgumentException(
                 "An inapplicable original cannot change native state");
+          }
           long position = Math.addExact(head.position(), 1);
           put(
               tx,
@@ -690,7 +760,9 @@ final class OwnerFrontiers {
           for (Selected selected : claim.sources()) {
             Binding current =
                 get(tx, key("source", claim.owner(), selected.binding().id()), Binding.class);
-            if (current == null || !sameLifetime(current.source(), selected.binding())) continue;
+            if (current == null || !sameLifetime(current.source(), selected.binding())) {
+              continue;
+            }
             Source source = current.source();
             put(
                 tx,
@@ -707,7 +779,9 @@ final class OwnerFrontiers {
           }
           if (closed) {
             for (Binding binding : scan(tx, prefix("source", claim.owner()), Binding.class)) {
-              if (binding.candidate() != null) tx.remove(binding.candidate());
+              if (binding.candidate() != null) {
+                tx.remove(binding.candidate());
+              }
               tx.remove(reverse(binding.source(), claim.owner()));
               unindexInterest(tx, claim.owner(), binding.source());
               OwnerCoverage.removeBinding(tx, claim.owner(), binding.source().id());
@@ -726,7 +800,9 @@ final class OwnerFrontiers {
   void release(Claim claim, java.util.function.Consumer<OwnerMetadata.Transaction> publication) {
     change(
         tx -> {
-          if (release(tx, claim)) publication.accept(tx);
+          if (release(tx, claim)) {
+            publication.accept(tx);
+          }
           return null;
         });
   }
@@ -734,7 +810,9 @@ final class OwnerFrontiers {
   /** Release only this exact claim, composing recovery with its auxiliary liabilities. */
   boolean release(OwnerMetadata.Transaction tx, Claim claim) {
     Head head = required(tx, claim.owner());
-    if (!claim.equals(head.claim())) return false;
+    if (!claim.equals(head.claim())) {
+      return false;
+    }
     put(
         tx,
         key("head", claim.owner()),
@@ -793,9 +871,14 @@ final class OwnerFrontiers {
               String saved = tx.get(allowance);
               if (saved != null) {
                 int attempts = Integer.parseInt(saved);
-                if (attempts < 1) throw new IllegalStateException("Invalid owner attempt count");
-                if (attempts == 1) tx.remove(allowance);
-                else tx.put(allowance, Integer.toString(attempts - 1));
+                if (attempts < 1) {
+                  throw new IllegalStateException("Invalid owner attempt count");
+                }
+                if (attempts == 1) {
+                  tx.remove(allowance);
+                } else {
+                  tx.put(allowance, Integer.toString(attempts - 1));
+                }
               }
             }
             put(tx, key("deferred", claim.owner()), new Deferred(until, diagnostic));
@@ -815,9 +898,12 @@ final class OwnerFrontiers {
 
   /** Compose retry with the durable control acknowledgment in one publication. */
   void retry(OwnerMetadata.Transaction tx, String owner) {
-    if (tx.supportsFormat(OwnerMetadata.INTEGRITY_FORMAT))
+    if (tx.supportsFormat(OwnerMetadata.INTEGRITY_FORMAT)) {
       OwnerSourceFailures.retry(tx, owner, integritySources(tx, owner));
-    for (Source source : sources(tx, owner)) refresh(tx, owner, source.id());
+    }
+    for (Source source : sources(tx, owner)) {
+      refresh(tx, owner, source.id());
+    }
     propagate(tx, Set.of(owner), Set.of());
     tx.remove(key("deferred", owner));
   }
@@ -841,23 +927,38 @@ final class OwnerFrontiers {
     pending.add(owner);
     int examined = 0;
     while (!pending.isEmpty()) {
-      if (++examined > 64) return new Deferred(0, "OWNER_DEPENDENCY_PENDING");
+      if (++examined > 64) {
+        return new Deferred(0, "OWNER_DEPENDENCY_PENDING");
+      }
       String current = pending.removeFirst();
-      if (!visited.add(current)) continue;
+      if (!visited.add(current)) {
+        continue;
+      }
       if (tx.supportsFormat(OwnerMetadata.INTEGRITY_FORMAT)
-          && OwnerSourceFailures.blocked(tx, current, integritySources(tx, current)))
+          && OwnerSourceFailures.blocked(tx, current, integritySources(tx, current))) {
         return new Deferred(Long.MAX_VALUE, OwnerSourceFailures.DIAGNOSTIC);
+      }
       Deferred failure = get(tx, key("deferred", current), Deferred.class);
-      if (failure != null) return failure;
+      if (failure != null) {
+        return failure;
+      }
       Frontier frontier = get(tx, key("frontier", current), Frontier.class);
-      if (frontier == null || frontier.ready()) continue;
+      if (frontier == null || frontier.ready()) {
+        continue;
+      }
       var candidates = tx.page(prefix("input", current) + frontier.order().key() + "\0", null, 65);
-      if (candidates.size() > 64) return new Deferred(0, "OWNER_DEPENDENCY_PENDING");
+      if (candidates.size() > 64) {
+        return new Deferred(0, "OWNER_DEPENDENCY_PENDING");
+      }
       for (var row : candidates) {
         Candidate candidate = decode(row.value(), Candidate.class);
-        if (candidate.ready()) continue;
+        if (candidate.ready()) {
+          continue;
+        }
         Binding binding = get(tx, key("source", current, candidate.binding()), Binding.class);
-        if (binding.source().kind() == Kind.OWNER) pending.add(binding.source().source());
+        if (binding.source().kind() == Kind.OWNER) {
+          pending.add(binding.source().source());
+        }
       }
     }
     return null;
@@ -873,15 +974,20 @@ final class OwnerFrontiers {
   }
 
   long positionAt(String timeline, Order through) {
-    if (through == null) return 0;
+    if (through == null) {
+      return 0;
+    }
     var tx = metadata.begin();
     Timeline head = get(tx, key("timeline", timeline), Timeline.class);
     long low = 0, high = head == null ? 0 : head.position();
     while (low < high) {
       long middle = low + (high - low + 1) / 2;
       Original original = get(tx, key("entry", timeline, number(middle)), Original.class);
-      if (original.order().compareTo(through) <= 0) low = middle;
-      else high = middle - 1;
+      if (original.order().compareTo(through) <= 0) {
+        low = middle;
+      } else {
+        high = middle - 1;
+      }
     }
     return low;
   }
@@ -906,26 +1012,36 @@ final class OwnerFrontiers {
   }
 
   Selection select(OwnerMetadata.Transaction tx, long now, int limit) {
-    if (limit < 1 || limit > 1024) throw new IllegalArgumentException("Limit must be 1..1024");
+    if (limit < 1 || limit > 1024) {
+      throw new IllegalArgumentException("Limit must be 1..1024");
+    }
     List<String> result = new ArrayList<>();
     boolean leased = false;
     String after = null;
     while (result.size() < limit) {
       var page = tx.page(prefix("ready"), after, Math.min(128, limit));
-      if (page.isEmpty()) break;
+      if (page.isEmpty()) {
+        break;
+      }
       for (var entry : page) {
         String owner = entry.value();
         Deferred deferred = get(tx, key("deferred", owner), Deferred.class);
-        if (deferred != null && deferred.until() > now) continue;
+        if (deferred != null && deferred.until() > now) {
+          continue;
+        }
         Frontier frontier = get(tx, key("frontier", owner), Frontier.class);
-        if (!OwnerCoverage.covers(tx, owner, frontier.order().timestamp())) continue;
+        if (!OwnerCoverage.covers(tx, owner, frontier.order().timestamp())) {
+          continue;
+        }
         Head head = required(tx, owner);
         if (head.claim() != null && head.claim().expires() > now) {
           leased = true;
           continue;
         }
         result.add(owner);
-        if (result.size() == limit) break;
+        if (result.size() == limit) {
+          break;
+        }
       }
       after = page.getLast().key();
     }
@@ -939,30 +1055,43 @@ final class OwnerFrontiers {
         tx.supportsFormat(OwnerMetadata.INTEGRITY_FORMAT)
             && tx.get(key("integrity-index", owner)) != null;
     Set<String> additions = new HashSet<>();
-    for (Source source : added)
-      if (!additions.add(source.id()))
+    for (Source source : added) {
+      if (!additions.add(source.id())) {
         throw new IllegalArgumentException("Duplicate source binding");
+      }
+    }
     Set<String> replacements = new HashSet<>(removed);
     replacements.addAll(additions);
     for (String id : replacements) {
       Binding old = get(tx, key("source", owner, id), Binding.class);
-      if (old == null) continue;
+      if (old == null) {
+        continue;
+      }
       previousSources.put(id, old.source());
-      if (integrityIndexed) tx.remove(key("integrity-source", owner, id));
-      if (old.candidate() != null) tx.remove(old.candidate());
+      if (integrityIndexed) {
+        tx.remove(key("integrity-source", owner, id));
+      }
+      if (old.candidate() != null) {
+        tx.remove(old.candidate());
+      }
       tx.remove(key("source", owner, id));
       tx.remove(key("routing-idle", owner, id));
       tx.remove(reverse(old.source(), owner));
       unindexInterest(tx, owner, old.source());
-      if (!additions.contains(id)) OwnerCoverage.removeBinding(tx, owner, id);
+      if (!additions.contains(id)) {
+        OwnerCoverage.removeBinding(tx, owner, id);
+      }
     }
     for (Source source : added) {
       if (source.kind() == Kind.OWNER) {
         source = skipInapplicable(tx, source);
         Head selected = required(tx, source.source());
-        if (source.position() > selected.position())
+        if (source.position() > selected.position()) {
           throw new IllegalArgumentException("Unestablished source position");
-        if (!source.source().equals(owner)) requireAcyclic(tx, owner, source.source());
+        }
+        if (!source.source().equals(owner)) {
+          requireAcyclic(tx, owner, source.source());
+        }
         Head receiver = required(tx, owner);
         Progress next =
             get(
@@ -971,34 +1100,43 @@ final class OwnerFrontiers {
                 Progress.class);
         if (receiver.through() != null
             && next != null
-            && next.order().compareTo(receiver.through()) <= 0)
+            && next.order().compareTo(receiver.through()) <= 0) {
           throw new IllegalStateException("FROZEN_HISTORY_REQUIRED");
+        }
       } else if (source.kind() == Kind.TIMER) {
         Timer timer = get(tx, key("timer", source.source()), Timer.class);
-        if (timer == null || source.position() > 1)
+        if (timer == null || source.position() > 1) {
           throw new IllegalArgumentException("Unestablished Time occurrence");
+        }
         Head receiver = required(tx, owner);
         if (source.position() == 0
             && receiver.through() != null
-            && timer.original().order().compareTo(receiver.through()) <= 0)
+            && timer.original().order().compareTo(receiver.through()) <= 0) {
           throw new IllegalStateException("Time occurrence precedes owner history");
+        }
       } else {
         Timeline timeline = get(tx, key("timeline", source.source()), Timeline.class);
-        if (source.position() > (timeline == null ? 0 : timeline.position()))
+        if (source.position() > (timeline == null ? 0 : timeline.position())) {
           throw new IllegalArgumentException("Unestablished timeline position");
+        }
       }
-      if (source.kind() == Kind.TIMELINE) ensureRouting(tx, source.source());
+      if (source.kind() == Kind.TIMELINE) {
+        ensureRouting(tx, source.source());
+      }
       var previous = previousSources.get(source.id());
       if (previous == null
           || previous.kind() != source.kind()
           || !previous.source().equals(source.source())
-          || previous.generation() != source.generation())
+          || previous.generation() != source.generation()) {
         OwnerSourceFailures.attach(tx, owner, source);
+      }
       put(tx, key("source", owner, source.id()), new Binding(source, null));
-      if (integrityIndexed && source.kind() == Kind.TIMELINE)
+      if (integrityIndexed && source.kind() == Kind.TIMELINE) {
         put(tx, key("integrity-source", owner, source.id()), source);
-      if (source.kind() != Kind.OWNER || !source.source().equals(owner))
+      }
+      if (source.kind() != Kind.OWNER || !source.source().equals(owner)) {
         put(tx, reverse(source, owner), new Reverse(owner, source.id()));
+      }
       indexInterest(tx, owner, source.id());
       refresh(tx, owner, source.id());
       OwnerCoverage.refreshBinding(tx, owner, source.id());
@@ -1029,12 +1167,17 @@ final class OwnerFrontiers {
     pending.add(child);
     while (!pending.isEmpty()) {
       String owner = pending.removeFirst();
-      if (owner.equals(parent))
+      if (owner.equals(parent)) {
         throw new IllegalStateException("A native SCC must publish as one owning unit");
-      if (!visited.add(owner)) continue;
-      for (Binding binding : scan(tx, prefix("source", owner), Binding.class))
-        if (binding.source().kind() == Kind.OWNER && !binding.source().source().equals(owner))
+      }
+      if (!visited.add(owner)) {
+        continue;
+      }
+      for (Binding binding : scan(tx, prefix("source", owner), Binding.class)) {
+        if (binding.source().kind() == Kind.OWNER && !binding.source().source().equals(owner)) {
           pending.addLast(binding.source().source());
+        }
+      }
     }
   }
 
@@ -1046,7 +1189,7 @@ final class OwnerFrontiers {
       OwnerMetadata.Transaction tx, String owner, String bindingId, Accepted arrival) {
     // These independent lookups share one immutable metadata cut. Batch their tree paths
     // before reading values so a cold activation does not pay one remote trip per field.
-    if (arrival != null)
+    if (arrival != null) {
       tx.prefetch(
           List.of(
               key("source", owner, bindingId),
@@ -1058,9 +1201,14 @@ final class OwnerFrontiers {
               key("frontier", owner),
               key("coverage-local", owner),
               key("coverage-external", owner)));
+    }
     Binding binding = get(tx, key("source", owner, bindingId), Binding.class);
-    if (binding == null) return;
-    if (binding.candidate() != null) tx.remove(binding.candidate());
+    if (binding == null) {
+      return;
+    }
+    if (binding.candidate() != null) {
+      tx.remove(binding.candidate());
+    }
     Source source = binding.source();
     String idleKey = key("routing-idle", owner, bindingId);
     String idleCut = tx.get(idleKey);
@@ -1071,7 +1219,9 @@ final class OwnerFrontiers {
         long position = source.position();
         if ("coverage".equals(tx.get(key("interest", owner, bindingId)))) {
           Timeline timeline = get(tx, key("timeline", source.source()), Timeline.class);
-          if (timeline != null) position = timeline.position();
+          if (timeline != null) {
+            position = timeline.position();
+          }
         }
         Original original;
         // No earlier relevant input can exist for an unchanged idle binding: acceptance
@@ -1097,23 +1247,31 @@ final class OwnerFrontiers {
                           key("entry", source.source(), number(Math.addExact(position, 1))),
                           Original.class))
                   != null
-              && !relevant(tx, owner, source.id(), original.order())) position++;
+              && !relevant(tx, owner, source.id(), original.order())) {
+            position++;
+          }
         }
         if (position != source.position()) {
           source =
               new Source(
                   source.id(), source.kind(), source.source(), source.generation(), position);
-          if (source.kind() == Kind.TIMELINE) ensureRouting(tx, source.source());
+          if (source.kind() == Kind.TIMELINE) {
+            ensureRouting(tx, source.source());
+          }
           put(tx, key("source", owner, source.id()), new Binding(source, null));
         }
-        if (original != null)
+        if (original != null) {
           candidate = new Candidate(source.id(), original.order(), true, position + 1, null);
+        }
       } else if (source.kind() == Kind.TIMER) {
         Timer timer = get(tx, key("timer", source.source()), Timer.class);
-        if (timer == null) throw new IllegalStateException("Missing Time occurrence");
-        if (source.position() == 0)
+        if (timer == null) {
+          throw new IllegalStateException("Missing Time occurrence");
+        }
+        if (source.position() == 0) {
           candidate =
               new Candidate(source.id(), timer.original().order(), timer.eligible(), 1, null);
+        }
       } else if (!source.source().equals(owner)) {
         source = skipInapplicable(tx, source);
         Progress progress =
@@ -1121,14 +1279,15 @@ final class OwnerFrontiers {
                 tx,
                 key("progress", source.source(), number(Math.addExact(source.position(), 1))),
                 Progress.class);
-        if (progress != null)
+        if (progress != null) {
           candidate =
               new Candidate(
                   source.id(), progress.order(), true, source.position() + 1, progress.receipt());
-        else {
+        } else {
           Frontier pending = get(tx, key("frontier", source.source()), Frontier.class);
-          if (pending != null)
+          if (pending != null) {
             candidate = new Candidate(source.id(), pending.order(), false, 0, null);
+          }
         }
       }
     }
@@ -1141,11 +1300,13 @@ final class OwnerFrontiers {
                 + (candidate.ready() ? "1" : "0")
                 + "\0"
                 + source.id();
-    if (candidate != null) put(tx, selected, candidate);
-    else if (source.kind() == Kind.TIMELINE
+    if (candidate != null) {
+      put(tx, selected, candidate);
+    } else if (source.kind() == Kind.TIMELINE
         && !required(tx, owner).closed()
-        && !"coverage".equals(tx.get(key("interest", owner, bindingId))))
+        && !"coverage".equals(tx.get(key("interest", owner, bindingId)))) {
       tx.put(idleKey, Long.toString(sequence(tx, "accepted-sequence")));
+    }
     put(tx, key("source", owner, source.id()), new Binding(source, selected));
   }
 
@@ -1156,7 +1317,9 @@ final class OwnerFrontiers {
     while ((next = get(tx, key("progress", source.source(), number(position + 1)), Progress.class))
             != null
         && next.receipt() == null
-        && !OwnerRejections.recorded(tx, source.source(), position + 1)) position++;
+        && !OwnerRejections.recorded(tx, source.source(), position + 1)) {
+      position++;
+    }
     return position == source.position()
         ? source
         : new Source(source.id(), source.kind(), source.source(), source.generation(), position);
@@ -1179,18 +1342,29 @@ final class OwnerFrontiers {
       boolean coverageChanged = OwnerCoverage.publishDependencies(tx, owner);
       boolean different = !Objects.equals(before, after);
       if (different) {
-        if (before != null) tx.remove(prefix("ready") + before.order().key() + "\0" + owner);
-        if (after == null) tx.remove(key("frontier", owner));
-        else {
+        if (before != null) {
+          tx.remove(prefix("ready") + before.order().key() + "\0" + owner);
+        }
+        if (after == null) {
+          tx.remove(key("frontier", owner));
+        } else {
           put(tx, key("frontier", owner), after);
-          if (after.ready()) tx.put(prefix("ready") + after.order().key() + "\0" + owner, owner);
+          if (after.ready()) {
+            tx.put(prefix("ready") + after.order().key() + "\0" + owner, owner);
+          }
         }
       }
-      if (!different && !coverageChanged && !wake.remove(owner)) continue;
+      if (!different && !coverageChanged && !wake.remove(owner)) {
+        continue;
+      }
       for (Reverse consumer : scan(tx, prefix("owner-consumer", owner), Reverse.class)) {
         refresh(tx, consumer.owner(), consumer.binding());
-        if (coverageChanged) OwnerCoverage.refreshBinding(tx, consumer.owner(), consumer.binding());
-        if (queued.add(consumer.owner())) queue.addLast(consumer.owner());
+        if (coverageChanged) {
+          OwnerCoverage.refreshBinding(tx, consumer.owner(), consumer.binding());
+        }
+        if (queued.add(consumer.owner())) {
+          queue.addLast(consumer.owner());
+        }
       }
     }
   }
@@ -1205,34 +1379,44 @@ final class OwnerFrontiers {
   }
 
   private static void unindexInterest(OwnerMetadata.Transaction tx, String owner, Source source) {
-    if (source.kind() == Kind.TIMELINE)
+    if (source.kind() == Kind.TIMELINE) {
       tx.remove(key("timeline-observer", source.source(), owner, source.id()));
+    }
   }
 
   private static void indexInterest(OwnerMetadata.Transaction tx, String owner, String binding) {
     Binding selected = get(tx, key("source", owner, binding), Binding.class);
-    if (selected == null || selected.source().kind() != Kind.TIMELINE) return;
+    if (selected == null || selected.source().kind() != Kind.TIMELINE) {
+      return;
+    }
     String interest = tx.get(key("interest", owner, binding));
     String key = key("timeline-observer", selected.source().source(), owner, binding);
-    if (interest == null || Boolean.parseBoolean(interest))
+    if (interest == null || Boolean.parseBoolean(interest)) {
       put(tx, key, new Reverse(owner, binding));
-    else tx.remove(key);
+    } else {
+      tx.remove(key);
+    }
   }
 
   private static void ensureRouting(OwnerMetadata.Transaction tx, String timeline) {
     String marker = key("timeline-routing", timeline);
-    if (tx.get(marker) != null) return;
+    if (tx.get(marker) != null) {
+      return;
+    }
     Set<String> changed = new LinkedHashSet<>();
     for (Reverse consumer : scan(tx, prefix("timeline-consumer", timeline), Reverse.class)) {
       indexInterest(tx, consumer.owner(), consumer.binding());
       String prefix = prefix("target", consumer.owner()), after = null;
       while (true) {
         var page = tx.page(prefix, after, 128);
-        for (var row : page)
+        for (var row : page) {
           tx.put(
               key("target-owner", row.key().substring(prefix.length()), consumer.owner()),
               consumer.owner());
-        if (page.size() < 128) break;
+        }
+        if (page.size() < 128) {
+          break;
+        }
         after = page.getLast().key();
       }
       OwnerCoverage.refreshBinding(tx, consumer.owner(), consumer.binding());
@@ -1245,18 +1429,22 @@ final class OwnerFrontiers {
   private static List<Reverse> consumers(OwnerMetadata.Transaction tx, Order order) {
     ensureRouting(tx, order.timeline());
     Input input = get(tx, key("classification", order.timeline(), order.entry()), Input.class);
-    if (input == null || input.operation() && input.target() == null)
+    if (input == null || input.operation() && input.target() == null) {
       return scan(tx, prefix("timeline-consumer", order.timeline()), Reverse.class);
+    }
     Set<Reverse> selected =
         new LinkedHashSet<>(scan(tx, prefix("timeline-observer", order.timeline()), Reverse.class));
     if (input.operation()) {
       String after = null;
       while (true) {
         var page = tx.page(prefix("target-owner", input.target()), after, 128);
-        for (var row : page)
+        for (var row : page) {
           selected.addAll(
               scan(tx, prefix("timeline-consumer", order.timeline(), row.value()), Reverse.class));
-        if (page.size() < 128) break;
+        }
+        if (page.size() < 128) {
+          break;
+        }
         after = page.getLast().key();
       }
     }
@@ -1266,12 +1454,17 @@ final class OwnerFrontiers {
   <T> T change(Function<OwnerMetadata.Transaction, T> edit) {
     long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(5);
     for (int retry = 0; retry < 64; retry++) {
-      if (Thread.currentThread().isInterrupted())
+      if (Thread.currentThread().isInterrupted()) {
         throw new java.util.concurrent.CancellationException("Owner publication interrupted");
+      }
       var tx = metadata.begin();
       T result = edit.apply(tx);
-      if (tx.commit()) return result;
-      if (System.nanoTime() >= deadline) break;
+      if (tx.commit()) {
+        return result;
+      }
+      if (System.nanoTime() >= deadline) {
+        break;
+      }
       // Contending writers must yield instead of repeatedly rebuilding the same losing cut.
       // Only metadata is retried here; the already computed native result is retained.
       long bound = Math.min(16_000_000L, 125_000L << Math.min(retry, 7));

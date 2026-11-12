@@ -11,12 +11,16 @@ class TimelineWorkQueueTest {
   @Test
   void addressedWorkPassesQueuedBackgroundWorkWithoutDuplicatingIt() {
     TimelineWorkQueue queue = new TimelineWorkQueue(1001);
-    for (int i = 0; i < 1000; i++) queue.offer(key(i), false);
+    for (int i = 0; i < 1000; i++) {
+      queue.offer(key(i), false);
+    }
     queue.offer(key(999), true);
     queue.offer(key(999), true);
     queue.offer(key(999), false);
     assertEquals(key(999), take(queue));
-    for (int i = 0; i < 999; i++) assertEquals(key(i), take(queue));
+    for (int i = 0; i < 999; i++) {
+      assertEquals(key(i), take(queue));
+    }
     assertNull(queue.poll());
   }
 
@@ -24,10 +28,16 @@ class TimelineWorkQueueTest {
   void priorityBurstsCannotStarveOrdinaryWork() {
     TimelineWorkQueue queue = new TimelineWorkQueue(32);
     queue.offer(key(99), false);
-    for (int i = 0; i < 16; i++) queue.offer(key(i), true);
-    for (int i = 0; i < 8; i++) assertEquals(key(i), take(queue));
+    for (int i = 0; i < 16; i++) {
+      queue.offer(key(i), true);
+    }
+    for (int i = 0; i < 8; i++) {
+      assertEquals(key(i), take(queue));
+    }
     assertEquals(key(99), take(queue));
-    for (int i = 8; i < 16; i++) assertEquals(key(i), take(queue));
+    for (int i = 8; i < 16; i++) {
+      assertEquals(key(i), take(queue));
+    }
   }
 
   @Test
@@ -45,7 +55,9 @@ class TimelineWorkQueueTest {
   @Test
   void catchUpKeepsPriorityButStillYieldsToBackgroundWork() {
     TimelineWorkQueue queue = new TimelineWorkQueue(1001);
-    for (int i = 0; i < 1000; i++) queue.offer(key(i), false);
+    for (int i = 0; i < 1000; i++) {
+      queue.offer(key(i), false);
+    }
     queue.offer(key(1000), true);
     for (int i = 0; i < 8; i++) {
       var job = queue.poll();

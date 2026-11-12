@@ -17,7 +17,7 @@ class OwnerWorkRunnerTest {
   void accountDiscoveryNeverQueuesMoreThanTwoConcurrentWorkers() throws Exception {
     try (var store = new MemoryStore()) {
       var writes = new ArrayList<AtomicStore.Write>();
-      for (int i = 0; i < 4; i++)
+      for (int i = 0; i < 4; i++) {
         writes.add(
             AtomicStore.Write.put(
                 new AtomicStore.Key("account-" + i, "WORK"),
@@ -31,6 +31,7 @@ class OwnerWorkRunnerTest {
                     "test-accounts",
                     "position",
                     "0")));
+      }
       assertTrue(store.commit(writes, List.of()));
       var entered = new CountDownLatch(2);
       var release = new CountDownLatch(1);

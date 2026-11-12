@@ -35,22 +35,29 @@ final class CoreAdminNotifications {
     } catch (RuntimeException invalid) {
       throw invalid();
     }
-    if (expected < 0) throw invalid();
+    if (expected < 0) {
+      throw invalid();
+    }
     List<String> recipients = normalize(input.get("recipients"));
     for (int attempt = 0; attempt < 8; attempt++) {
       administrators.session(session);
       var row = store.get(SETTINGS);
       var before = settings(row);
       long revision = Repository.number(before.get("revision"));
-      if (expected != revision)
+      if (expected != revision) {
         throw new ConsoleProblem(
             409, "admin_settings_stale", "Notification settings changed; reload before saving.");
-      if (recipients.equals(before.get("recipients"))) return before;
+      }
+      if (recipients.equals(before.get("recipients"))) {
+        return before;
+      }
       var value =
           Map.<String, Object>of("revision", Math.addExact(revision, 1), "recipients", recipients);
       if (store.commit(
           List.of(AtomicStore.Write.put(SETTINGS, row == null ? 0 : row.version(), value)),
-          List.of())) return value;
+          List.of())) {
+        return value;
+      }
     }
     throw new ConsoleProblem(
         503, "admin_settings_busy", "Notification settings are temporarily busy.");
@@ -76,8 +83,9 @@ final class CoreAdminNotifications {
       List<AtomicStore.Write> writes,
       List<AtomicStore.Check> checks) {
     if (events.size() > 2
-        || events.stream().map(Lifecycle::kind).distinct().count() != events.size())
+        || events.stream().map(Lifecycle::kind).distinct().count() != events.size()) {
       throw new IllegalArgumentException("Duplicate or excessive lifecycle events");
+    }
     var settings = store.get(SETTINGS);
     @SuppressWarnings("unchecked")
     List<String> recipients = (List<String>) settings(settings).get("recipients");
@@ -85,8 +93,9 @@ final class CoreAdminNotifications {
     long recordedAt = clock.millis();
     for (var event : events) {
       String kind = event.kind();
-      if (!Set.of("REGISTERED", "VERIFIED").contains(kind))
+      if (!Set.of("REGISTERED", "VERIFIED").contains(kind)) {
         throw new IllegalArgumentException("Unknown lifecycle event");
+      }
       String id = Json.hash(Json.bytes(List.of("admin-user-event-v1", directory, kind)));
       var key = eventKey(id);
       var previous = store.get(key);
@@ -100,7 +109,9 @@ final class CoreAdminNotifications {
       value.put("directoryId", directory);
       value.put("kind", kind);
       value.put("email", CoreUserIdentities.email(event.email()));
-      if (event.occurredAt() != null) value.put("occurredAt", event.occurredAt());
+      if (event.occurredAt() != null) {
+        value.put("occurredAt", event.occurredAt());
+      }
       value.put("recordedAt", recordedAt);
       value.put("recipients", recipients);
       value.put("status", recipients.isEmpty() ? "COMPLETE" : "PENDING");
@@ -110,8 +121,9 @@ final class CoreAdminNotifications {
       }
       writes.add(AtomicStore.Write.put(key, 0, value));
     }
-    if (captured)
+    if (captured) {
       checks.add(new AtomicStore.Check(SETTINGS, settings == null ? 0 : settings.version()));
+    }
   }
 
   static AtomicStore.Key eventKey(String id) {
@@ -123,7 +135,9 @@ final class CoreAdminNotifications {
   }
 
   private static List<String> normalize(Object value) {
-    if (!(value instanceof List<?> list) || list.size() > 100) throw invalid();
+    if (!(value instanceof List<?> list) || list.size() > 100) {
+      throw invalid();
+    }
     var result = new TreeSet<String>();
     for (var recipient : list) {
       try {

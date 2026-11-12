@@ -83,7 +83,9 @@ final class NativeAdmissionFixture {
                 receiver.generation()));
     byte[] supplied =
         Base64.getDecoder().decode((String) ((Map<?, ?>) context.evidence()).get("signature"));
-    if (!MessageDigest.isEqual(expected, supplied)) context.reject("Invalid scoped permit");
+    if (!MessageDigest.isEqual(expected, supplied)) {
+      context.reject("Invalid scoped permit");
+    }
     return Map.of("channel", receiver.channel(), "input", context.inputId().value());
   }
 

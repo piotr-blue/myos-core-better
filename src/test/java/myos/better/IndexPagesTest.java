@@ -76,7 +76,9 @@ class IndexPagesTest {
     var repository = new Repository(new JsonBoundaryStore());
     var writer = repository.blobs("alice");
     var values = new TreeMap<String, String>();
-    for (int i = 0; i < 1000; i++) values.put(String.format("%04d", i), "value" + i);
+    for (int i = 0; i < 1000; i++) {
+      values.put(String.format("%04d", i), "value" + i);
+    }
     String root = new OrderedIndex(writer).update("", values);
     writer.flush();
     assertEquals(values, new OrderedIndex(repository.blobs("alice")).getAll(root, values.keySet()));
@@ -91,7 +93,9 @@ class IndexPagesTest {
           }
 
           public void prefetch(List<String> ids) {
-            if (!ids.isEmpty()) throw new AssertionError("Repeated byte prefetch");
+            if (!ids.isEmpty()) {
+              throw new AssertionError("Repeated byte prefetch");
+            }
           }
 
           public OrderedIndex.Page orderedPage(String id) {

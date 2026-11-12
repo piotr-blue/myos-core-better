@@ -9,7 +9,9 @@ public final class CanonicalScaleProbe {
   private CanonicalScaleProbe() {}
 
   public static void main(String[] args) {
-    if (args.length != 2) throw new IllegalArgumentException("Expected table and isolated account");
+    if (args.length != 2) {
+      throw new IllegalArgumentException("Expected table and isolated account");
+    }
     List<Object> rows = new ArrayList<>();
     int[] counts =
         Arrays.stream(System.getProperty("blue.probe.orders", "1,128,1024").split(","))
@@ -48,23 +50,28 @@ public final class CanonicalScaleProbe {
                 host.process(args[1], graph, "call-" + n, event, n + 1L, AdmissionEvidence.empty());
             double duration = (System.nanoTime() - started) / 1e6;
             if (!expected.receipt().equals(actual.receipt())
-                || !reference.identity().equals(actual.identity()))
+                || !reference.identity().equals(actual.identity())) {
               throw new AssertionError("Inline receipt or identity differs");
-            if (!BigInteger.valueOf(42L * (n + 1)).equals(reference.read("/paidTotal")))
+            }
+            if (!BigInteger.valueOf(42L * (n + 1)).equals(reference.read("/paidTotal"))) {
               throw new AssertionError("Payment did not reach Agreement");
+            }
             long changed =
                 members(reference).entrySet().stream()
                     .filter(e -> !e.getValue().equals(before.get(e.getKey())))
                     .count();
-            if (changed != 3) throw new AssertionError("Unrelated members changed: " + changed);
+            if (changed != 3) {
+              throw new AssertionError("Unrelated members changed: " + changed);
+            }
             if (n > 1) {
               engine.add(actual.executionNanos() / 1e6);
               durable.add(duration);
             }
           }
           if (!Arrays.equals(
-              Json.bytes(reference.snapshot()), Json.bytes(host.snapshot(args[1], graph))))
+              Json.bytes(reference.snapshot()), Json.bytes(host.snapshot(args[1], graph)))) {
             throw new AssertionError("Persisted snapshot differs");
+          }
           rows.add(
               Map.of(
                   "orders",
@@ -98,8 +105,9 @@ public final class CanonicalScaleProbe {
 
   private static Map<String, String> members(Contracts.Session session) {
     Map<String, String> values = new HashMap<>();
-    for (Contracts.Member member : session.graph().members())
+    for (Contracts.Member member : session.graph().members()) {
       values.put(member.key(), member.blueId().value());
+    }
     return values;
   }
 }

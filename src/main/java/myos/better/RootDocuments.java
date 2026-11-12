@@ -32,7 +32,9 @@ final class RootDocuments {
   }
 
   Map<String, Object> list(String account, String after) {
-    if (after != null) Repository.identifier(after);
+    if (after != null) {
+      Repository.identifier(after);
+    }
     AtomicStore.Page page =
         store.query("A#" + Repository.identifier(account) + "#ROOTS", "", after, 50);
     Map<String, Object> result = new LinkedHashMap<>();

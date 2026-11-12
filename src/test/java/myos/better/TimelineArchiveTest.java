@@ -43,7 +43,9 @@ class TimelineArchiveTest {
             f.range(previous, entry.blueId(), index + 1, List.of(entry)).toJson(), Map.of());
         entries.add(entry);
         previous = entry.blueId();
-        if (index == 1) old = archive.view();
+        if (index == 1) {
+          old = archive.view();
+        }
       }
       var view = archive.view();
       for (int index : List.of(0, 16, 32)) {
@@ -109,21 +111,23 @@ class TimelineArchiveTest {
         writes, "alice", "observer", List.of(timeline), Set.of(timeline), Set.of(timeline));
     assertTrue(store.commit(writes, List.of()));
     work.hint(TimelineWork.receiver("alice", "observer"));
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
       work.drain(
           (a, d) -> new TimelineIngress.Outcome(TimelineIngress.Status.IDLE, "caught up"), 128);
+    }
     TimelineArchive archive = f.archive(new Repository(store), "alice");
     LanguageContent event = f.entry(null, 1, "{message: hello}");
     archive.acquire(f.range(null, event.blueId(), 2, List.of(event)).toJson(), Map.of());
     work.hint(TimelineWork.source("alice", timeline));
     Set<String> invoked = new HashSet<>();
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < 4; i++) {
       work.drain(
           (a, d) -> {
             invoked.add(d);
             return new TimelineIngress.Outcome(TimelineIngress.Status.IDLE, "caught up");
           },
           128);
+    }
     assertEquals(Set.of("observer"), invoked);
   }
 
@@ -183,9 +187,10 @@ class TimelineArchiveTest {
       TimelineArchive writer = archive(f, store);
       var entry = f.entry(null, 1, "{kind: Historical}");
       writer.acquire(f.range(null, entry.blueId(), 2, List.of(entry)).toJson(), Map.of());
-      for (int bound = 3; bound <= 130; bound++)
+      for (int bound = 3; bound <= 130; bound++) {
         writer.acquire(
             f.range(entry.blueId(), entry.blueId(), bound, List.of()).toJson(), Map.of());
+      }
       var reader = archive(f, store);
       store.historyReads.clear();
       var frontiers = new OwnerFrontiers(store, "alice");
@@ -205,8 +210,9 @@ class TimelineArchiveTest {
       TimelineArchive writer = archive(f, store);
       LanguageContent entry = f.entry(null, 1, "{}");
       writer.acquire(f.range(null, entry.blueId(), 2, List.of(entry)).toJson(), Map.of());
-      for (int i = 3; i <= 130; i++)
+      for (int i = 3; i <= 130; i++) {
         writer.acquire(f.range(entry.blueId(), entry.blueId(), i, List.of()).toJson(), Map.of());
+      }
       store.historyReads.clear();
       TimelineArchive restarted = archive(f, store);
       TimelineArchive.View view = restarted.view();
@@ -244,8 +250,9 @@ class TimelineArchiveTest {
       TimelineArchive legacy = f.archive(new Repository(store), "alice");
       LanguageContent first = f.entry(null, 1, "{}");
       legacy.acquire(f.range(null, first.blueId(), 2, List.of(first)).toJson(), Map.of());
-      for (int i = 3; i <= 130; i++)
+      for (int i = 3; i <= 130; i++) {
         legacy.acquire(f.range(first.blueId(), first.blueId(), i, List.of()).toJson(), Map.of());
+      }
       LanguageContent next = f.entry(first.blueId(), 131, "{}");
       legacy.acquire(f.range(first.blueId(), next.blueId(), 132, List.of(next)).toJson(), Map.of());
       TimelineArchive migrated = archive(f, store);
@@ -287,9 +294,10 @@ class TimelineArchiveTest {
       TimelineArchive archive = f.archive(new Repository(store), "alice");
       LanguageContent first = f.entry(null, 1, "{amount: 7}");
       archive.acquire(f.range(null, first.blueId(), 2, List.of(first)).toJson(), Map.of());
-      for (int bound = 3; bound <= 66; bound++)
+      for (int bound = 3; bound <= 66; bound++) {
         archive.acquire(
             f.range(first.blueId(), first.blueId(), bound, List.of()).toJson(), Map.of());
+      }
       TimelineArchive.View before = archive.view();
       LanguageContent second = f.entry(first.blueId(), 67, "{amount: 9}");
       archive.acquire(
@@ -784,8 +792,12 @@ class TimelineArchiveTest {
     final Map<String, byte[]> contentOverrides = new HashMap<>();
 
     public Row get(Key key) {
-      if (key.sort().startsWith("H#")) historyReads.add(key.sort());
-      if (overrides.containsKey(key)) return overrides.get(key);
+      if (key.sort().startsWith("H#")) {
+        historyReads.add(key.sort());
+      }
+      if (overrides.containsKey(key)) {
+        return overrides.get(key);
+      }
       return delegate.get(key);
     }
 
@@ -793,7 +805,9 @@ class TimelineArchiveTest {
       historyBatchSizes.add(keys.size());
       Runnable action = beforeBatchRead;
       beforeBatchRead = null;
-      if (action != null) action.run();
+      if (action != null) {
+        action.run();
+      }
       return AtomicStore.super.getAll(keys);
     }
 
@@ -806,7 +820,9 @@ class TimelineArchiveTest {
     }
 
     public byte[] content(String account, String identity) {
-      if (contentOverrides.containsKey(identity)) return contentOverrides.get(identity);
+      if (contentOverrides.containsKey(identity)) {
+        return contentOverrides.get(identity);
+      }
       return delegate.content(account, identity);
     }
 
@@ -822,11 +838,16 @@ class TimelineArchiveTest {
     public boolean commit(List<Write> writes, List<Check> checks) {
       Runnable action = beforeCommit;
       beforeCommit = null;
-      if (action != null) action.run();
-      if (refuse) return false;
+      if (action != null) {
+        action.run();
+      }
+      if (refuse) {
+        return false;
+      }
       boolean result = delegate.commit(writes, checks);
-      if (result && writes.stream().anyMatch(write -> write.key().sort().equals("STATE")))
+      if (result && writes.stream().anyMatch(write -> write.key().sort().equals("STATE"))) {
         publications++;
+      }
       if (result && loseResponse) {
         loseResponse = false;
         throw new IllegalStateException("Simulated lost commit response");

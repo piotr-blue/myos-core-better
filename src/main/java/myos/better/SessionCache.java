@@ -18,7 +18,9 @@ final class SessionCache implements AutoCloseable {
           || maximumBytes < 1
           || maximumBytes > 2L * 1024 * 1024 * 1024
           || maximumUses < 1
-          || maximumUses > 1024) throw new IllegalArgumentException("Invalid session cache bounds");
+          || maximumUses > 1024) {
+        throw new IllegalArgumentException("Invalid session cache bounds");
+      }
     }
   }
 
@@ -79,10 +81,14 @@ final class SessionCache implements AutoCloseable {
     @Override
     public void close() {
       synchronized (SessionCache.this) {
-        if (closed) return;
+        if (closed) {
+          return;
+        }
         closed = true;
         entry.pinned = false;
-        if (!readOnly) entry.uses++;
+        if (!readOnly) {
+          entry.uses++;
+        }
         if (!keep) {
           abandoned++;
           discard(entry);
@@ -100,8 +106,9 @@ final class SessionCache implements AutoCloseable {
     private final Map<String, Entry> prepared = new LinkedHashMap<>();
 
     void retain(String key, long version, CanonicalRuntime.Session session, long checkpointBytes) {
-      if (version < 1 || checkpointBytes < 0 || prepared.containsKey(key))
+      if (version < 1 || checkpointBytes < 0 || prepared.containsKey(key)) {
         throw new IllegalArgumentException("Invalid pending session");
+      }
       prepared.put(key, new Entry(key, version, session, weight(checkpointBytes)));
     }
 
@@ -110,8 +117,9 @@ final class SessionCache implements AutoCloseable {
         for (Entry entry : prepared.values()) {
           // A peer or a receiver can load the committed version before this local handoff.
           // Never replace its engine, including an actively leased one.
-          if (entries.containsKey(entry.key)) entry.session.close();
-          else {
+          if (entries.containsKey(entry.key)) {
+            entry.session.close();
+          } else {
             entries.put(entry.key, entry);
             bytes += entry.weight;
           }
@@ -139,7 +147,9 @@ final class SessionCache implements AutoCloseable {
   /** Caller holds the document lock. Reads add no execution history and never load or wait. */
   synchronized Lease readIfPresent(String key, long version) {
     Entry entry = entries.get(key);
-    if (entry == null || entry.pinned || entry.version != version) return null;
+    if (entry == null || entry.pinned || entry.version != version) {
+      return null;
+    }
     entry.pinned = true;
     return new Lease(entry, true);
   }
@@ -152,8 +162,9 @@ final class SessionCache implements AutoCloseable {
     synchronized (this) {
       Entry entry = entries.get(key);
       if (entry != null) {
-        if (entry.pinned)
+        if (entry.pinned) {
           throw new IllegalStateException("Document lease requires the document lock");
+        }
         if (entry.version == version) {
           hits++;
           entry.pinned = true;
@@ -191,9 +202,12 @@ final class SessionCache implements AutoCloseable {
   /** Caller holds the document lock. An explicit edition change cannot reuse the old engine. */
   synchronized void invalidate(String key) {
     Entry entry = entries.get(key);
-    if (entry == null) return;
-    if (entry.pinned)
+    if (entry == null) {
+      return;
+    }
+    if (entry.pinned) {
       throw new IllegalStateException("Cannot invalidate a pinned document session");
+    }
     discard(entry);
   }
 
@@ -202,7 +216,9 @@ final class SessionCache implements AutoCloseable {
     while ((entries.size() > policy.maximumEntries() || bytes > policy.maximumBytes())
         && iterator.hasNext()) {
       Entry entry = iterator.next().getValue();
-      if (entry.pinned) continue;
+      if (entry.pinned) {
+        continue;
+      }
       iterator.remove();
       capacityEvictions++;
       bytes -= entry.weight;
@@ -211,7 +227,9 @@ final class SessionCache implements AutoCloseable {
   }
 
   private void discard(Entry entry) {
-    if (entries.remove(entry.key, entry)) bytes -= entry.weight;
+    if (entries.remove(entry.key, entry)) {
+      bytes -= entry.weight;
+    }
     entry.session.close();
   }
 
@@ -235,7 +253,9 @@ final class SessionCache implements AutoCloseable {
   @Override
   public synchronized void close() {
     for (Entry entry : entries.values()) {
-      if (entry.pinned) throw new IllegalStateException("Cannot close pinned document sessions");
+      if (entry.pinned) {
+        throw new IllegalStateException("Cannot close pinned document sessions");
+      }
       entry.session.close();
     }
     entries.clear();

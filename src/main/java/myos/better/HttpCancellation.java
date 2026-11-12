@@ -35,7 +35,9 @@ final class HttpCancellation implements AutoCloseable {
 
   void submit(Job job) {
     synchronized (job) {
-      if (job.claimed) return;
+      if (job.claimed) {
+        return;
+      }
       try {
         executor.execute(job);
       } catch (RejectedExecutionException fullOrStopping) {
@@ -46,8 +48,9 @@ final class HttpCancellation implements AutoCloseable {
 
   void checkHealth() {
     var cause = failure.get();
-    if (cause != null)
+    if (cause != null) {
       throw new IllegalStateException("HTTP cleanup failed; worker replacement required", cause);
+    }
   }
 
   final class Job implements Runnable {
@@ -62,7 +65,9 @@ final class HttpCancellation implements AutoCloseable {
     @Override
     public void run() {
       synchronized (this) {
-        if (claimed) return;
+        if (claimed) {
+          return;
+        }
         claimed = true;
       }
       executor.remove(this);
@@ -77,7 +82,9 @@ final class HttpCancellation implements AutoCloseable {
         failure.compareAndSet(null, error);
         finished.completeExceptionally(error);
       } finally {
-        if (!interrupted) Thread.interrupted();
+        if (!interrupted) {
+          Thread.interrupted();
+        }
       }
     }
 

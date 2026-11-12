@@ -51,8 +51,9 @@ final class PublicPackages implements LanguageProvider {
     publications.forEach(publication -> roots.put(publication.blueId(), publication));
     this.publications = Map.copyOf(roots);
     Map<BlueId, LanguageRecord> content = new HashMap<>();
-    for (BluePackage publication : publications)
+    for (BluePackage publication : publications) {
       publication.records().forEach(content::putIfAbsent);
+    }
     records = Map.copyOf(content);
     identities =
         records.keySet().stream()

@@ -30,9 +30,12 @@ class StorageRequestEventTest {
                 (proxy, method, args) -> {
                   if (method.isDefault()
                       && method.getParameterCount() == 1
-                      && method.getParameterTypes()[0] == java.util.function.Consumer.class)
+                      && method.getParameterTypes()[0] == java.util.function.Consumer.class) {
                     return InvocationHandler.invokeDefault(proxy, method, args);
-                  if (fail.get()) throw failure;
+                  }
+                  if (fail.get()) {
+                    throw failure;
+                  }
                   return switch (method.getName()) {
                     case "getItem" -> GetItemResponse.builder().build();
                     case "batchGetItem" -> BatchGetItemResponse.builder().build();

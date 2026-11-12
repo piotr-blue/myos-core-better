@@ -23,8 +23,9 @@ final class CoreIdentityObservation {
     try {
       return observation.get();
     } catch (ConsoleProblem unavailable) {
-      if (unavailable.status != 503 || !unavailable.code.equals("admin_directory_busy"))
+      if (unavailable.status != 503 || !unavailable.code.equals("admin_directory_busy")) {
         throw unavailable;
+      }
     } catch (SdkException | UncheckedIOException unavailable) {
       // Storage/network availability only. Corrupt metadata and programming errors still fail.
     }

@@ -25,7 +25,9 @@ final class PublicTimelineTransport implements TimelineTransport {
   public Reply exchange(URI target, String request, int maximumBytes, Duration timeout)
       throws IOException {
     CoreTimelineDiscovery.endpoint(target.toString());
-    if (maximumBytes < 1) throw new IllegalArgumentException("Positive response bound required");
+    if (maximumBytes < 1) {
+      throw new IllegalArgumentException("Positive response bound required");
+    }
     var response =
         client.exchange(
             target,

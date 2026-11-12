@@ -20,9 +20,11 @@ final class OwnerInitializations {
     Intent {
       Repository.identifier(graph);
       Repository.identifier(command);
-      for (String value : List.of(document, content, gasSchedule))
-        if (value.isEmpty() || value.indexOf('\0') >= 0)
+      for (String value : List.of(document, content, gasSchedule)) {
+        if (value.isEmpty() || value.indexOf('\0') >= 0) {
           throw new IllegalArgumentException("Invalid initialization content identity");
+        }
+      }
     }
 
     String basis() {
@@ -45,7 +47,9 @@ final class OwnerInitializations {
   }
 
   static String graph(String instance) {
-    if (!owns(instance)) throw new IllegalArgumentException("Not an initialization instance");
+    if (!owns(instance)) {
+      throw new IllegalArgumentException("Not an initialization instance");
+    }
     return Repository.identifier(instance.substring(INSTANCE.length()));
   }
 
@@ -63,29 +67,36 @@ final class OwnerInitializations {
 
   /** The immutable content must already be durable before this intent is published. */
   State register(OwnerMetadata.Transaction tx, Intent intent) {
-    if (!ledger.enabled(tx)) throw new IllegalStateException("Initialization gas is not enabled");
+    if (!ledger.enabled(tx)) {
+      throw new IllegalStateException("Initialization gas is not enabled");
+    }
     State before = find(tx, intent.graph());
     if (before != null) {
-      if (!before.intent().equals(intent)) throw conflict("initialization_conflict");
+      if (!before.intent().equals(intent)) {
+        throw conflict("initialization_conflict");
+      }
       return before;
     }
-    if (tx.get(OwnerRecords.key("publication", intent.graph())) != null)
+    if (tx.get(OwnerRecords.key("publication", intent.graph())) != null) {
       throw conflict("document_exists");
+    }
     State state = new State(intent, "PENDING", 0, null, null);
     put(tx, state);
     return state;
   }
 
   Optional<Claim> claim(OwnerMetadata.Transaction tx, String graph, long now, long lease) {
-    if (now < 0 || lease < 1 || lease > 120_000)
+    if (now < 0 || lease < 1 || lease > 120_000) {
       throw new IllegalArgumentException("Invalid initialization lease");
+    }
     State before = Objects.requireNonNull(find(tx, graph), "Missing initialization intent");
     if (before.claim() != null && before.claim().permit().request().expires() <= now) {
       release(tx, before.claim(), now);
       before = find(tx, graph);
     }
-    if (!Set.of("PENDING", "WAITING").contains(before.status()) || before.due() > now)
+    if (!Set.of("PENDING", "WAITING").contains(before.status()) || before.due() > now) {
       return Optional.empty();
+    }
     var intent = before.intent();
     String basis = intent.basis();
     var request =
@@ -118,7 +129,9 @@ final class OwnerInitializations {
       String receipt,
       Map<String, Object> terminal) {
     State before = requireCurrent(tx, claim);
-    if (now >= claim.permit().request().expires()) throw conflict("initialization_lease_expired");
+    if (now >= claim.permit().request().expires()) {
+      throw conflict("initialization_lease_expired");
+    }
     ledger.settle(
         tx,
         claim.permit(),
@@ -140,46 +153,62 @@ final class OwnerInitializations {
 
   /** Host interruption releases the liability, never charges it, and retains its exact intent. */
   void release(OwnerMetadata.Transaction tx, Claim claim, long due) {
-    if (due < 0) throw new IllegalArgumentException("Negative initialization retry time");
+    if (due < 0) {
+      throw new IllegalArgumentException("Negative initialization retry time");
+    }
     State before = requireCurrent(tx, claim);
     ledger.release(tx, claim.permit());
     put(tx, new State(before.intent(), "PENDING", due, null, null));
   }
 
   void expire(OwnerMetadata.Transaction tx, OwnerGas.Permit permit, long now) {
-    if (!"INIT".equals(permit.request().phase()) || permit.request().expires() > now)
+    if (!"INIT".equals(permit.request().phase()) || permit.request().expires() > now) {
       throw new IllegalArgumentException("Not an expired initialization permit");
+    }
     var state = find(tx, graph(permit.request().instance()));
-    if (state == null || state.claim() == null || !state.claim().permit().equals(permit))
+    if (state == null || state.claim() == null || !state.claim().permit().equals(permit)) {
       throw conflict("initialization_claim_superseded");
+    }
     release(tx, state.claim(), now);
   }
 
   /** Funding wakes this exact intent; it does not create or execute another initialization. */
   void funded(OwnerMetadata.Transaction tx, String instance) {
     State before = find(tx, graph(instance));
-    if (before == null) throw new IllegalStateException("Gas waiter has no initialization intent");
-    if ("WAITING".equals(before.status()))
+    if (before == null) {
+      throw new IllegalStateException("Gas waiter has no initialization intent");
+    }
+    if ("WAITING".equals(before.status())) {
       put(tx, new State(before.intent(), "PENDING", 0, null, null));
+    }
   }
 
   void retry(OwnerMetadata.Transaction tx, String graph, String command, String evaluation) {
     State before = Objects.requireNonNull(find(tx, graph));
     String obligation = "init-" + before.intent().basis();
     boolean changed = ledger.retry(tx, obligation, command, evaluation);
-    if (!changed) return;
-    if (!"FAILED".equals(before.status())) throw conflict("initialization_retry_conflict");
+    if (!changed) {
+      return;
+    }
+    if (!"FAILED".equals(before.status())) {
+      throw conflict("initialization_retry_conflict");
+    }
     put(tx, new State(before.intent(), "PENDING", 0, null, null));
   }
 
   List<State> ready(OwnerMetadata.Transaction tx, long now, int limit) {
-    if (limit < 1 || limit > 64) throw new IllegalArgumentException("Initialization page bound");
+    if (limit < 1 || limit > 64) {
+      throw new IllegalArgumentException("Initialization page bound");
+    }
     var result = new ArrayList<State>();
     for (var row : tx.page(READY, null, limit)) {
       var state = Objects.requireNonNull(find(tx, row.value()));
-      if (!"PENDING".equals(state.status()))
+      if (!"PENDING".equals(state.status())) {
         throw new IllegalStateException("Invalid ready initialization");
-      if (state.due() > now) break;
+      }
+      if (state.due() > now) {
+        break;
+      }
       result.add(state);
     }
     return List.copyOf(result);
@@ -187,16 +216,21 @@ final class OwnerInitializations {
 
   private State requireCurrent(OwnerMetadata.Transaction tx, Claim claim) {
     State before = find(tx, claim.intent().graph());
-    if (before == null || !"RUNNING".equals(before.status()) || !claim.equals(before.claim()))
+    if (before == null || !"RUNNING".equals(before.status()) || !claim.equals(before.claim())) {
       throw conflict("initialization_claim_superseded");
+    }
     return before;
   }
 
   private void put(OwnerMetadata.Transaction tx, State state) {
     State before = find(tx, state.intent().graph());
-    if (before != null && "PENDING".equals(before.status())) tx.remove(readyKey(before));
+    if (before != null && "PENDING".equals(before.status())) {
+      tx.remove(readyKey(before));
+    }
     OwnerRecords.put(tx, PREFIX + state.intent().graph(), state);
-    if ("PENDING".equals(state.status())) tx.put(readyKey(state), state.intent().graph());
+    if ("PENDING".equals(state.status())) {
+      tx.put(readyKey(state), state.intent().graph());
+    }
   }
 
   private static String readyKey(State state) {

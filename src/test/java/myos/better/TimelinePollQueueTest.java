@@ -37,7 +37,9 @@ class TimelinePollQueueTest {
   @Test
   void arrivalsPassIdlePollingAndCoalesceWithoutCrossingTenants() throws Exception {
     try (TimelinePollQueue queue = new TimelinePollQueue(64)) {
-      for (int i = 0; i < 64; i++) queue.discovered(row("alice", "idle-" + i));
+      for (int i = 0; i < 64; i++) {
+        queue.discovered(row("alice", "idle-" + i));
+      }
       queue.signal("alice", "active");
       queue.signal("alice", "active");
       assertEquals(64, queue.size());
@@ -56,7 +58,9 @@ class TimelinePollQueueTest {
       queue.discovered(row("alice", "active"));
       TimelinePollQueue.Job active = queue.take();
       queue.discovered(row("alice", "idle"));
-      for (int i = 0; i < 100; i++) queue.signal("alice", "active");
+      for (int i = 0; i < 100; i++) {
+        queue.signal("alice", "active");
+      }
       queue.completed(active, false);
       assertEquals(2, queue.size());
       assertEquals(active.key(), queue.take().key());

@@ -28,13 +28,16 @@ class CorePermissionsTest {
                 "types/test",
                 "references/test",
                 "config",
-                "session")) assertDoesNotThrow(() -> CorePermissions.request(role, "GET", route));
+                "session")) {
+          assertDoesNotThrow(() -> CorePermissions.request(role, "GET", route));
+        }
         assertDoesNotThrow(() -> CorePermissions.request(role, "PATCH", "me/profile"));
         boolean wide = !role.equals("READ_SELECTED"),
             write = Set.of("OWNER", "ADMIN", "WRITE").contains(role),
             admin = Set.of("OWNER", "ADMIN").contains(role);
-        for (String method : List.of("GET", "POST", "DELETE"))
+        for (String method : List.of("GET", "POST", "DELETE")) {
           assertDoesNotThrow(() -> CorePermissions.request(role, method, "api-keys"));
+        }
         assertEquals(wide, CorePermissions.accountWide(role));
         assertEquals(write, CorePermissions.write(role));
         for (String route :
@@ -44,7 +47,9 @@ class CorePermissionsTest {
                 "contents/id",
                 "timelines/id",
                 "events",
-                "live")) allowed(wide, () -> CorePermissions.request(role, "GET", route));
+                "live")) {
+          allowed(wide, () -> CorePermissions.request(role, "GET", route));
+        }
         for (String route :
             List.of(
                 "documents",
@@ -52,13 +57,17 @@ class CorePermissionsTest {
                 "documents/id/operations/prepare",
                 "bootstrap",
                 "timelines/id/entries",
-                "contents")) allowed(write, () -> CorePermissions.request(role, "POST", route));
+                "contents")) {
+          allowed(write, () -> CorePermissions.request(role, "POST", route));
+        }
         for (String route :
-            List.of("webhooks", "webhooks/id/events", "account/users", "account/invitations"))
+            List.of("webhooks", "webhooks/id/events", "account/users", "account/invitations")) {
           allowed(admin, () -> CorePermissions.request(role, "GET", route));
+        }
         for (String route :
-            List.of("account/profile", "account/agents/id", "account/access-automation"))
+            List.of("account/profile", "account/agents/id", "account/access-automation")) {
           allowed(admin, () -> CorePermissions.request(role, "PATCH", route));
+        }
       }
       assertEquals(
           403,
@@ -89,11 +98,12 @@ class CorePermissionsTest {
       member(store, "team", "reader", "WRITE", "ACTIVE", 2);
       var rejoined = accounts.scope(caller, "team", null, true);
       assertNotEquals(first.guard(true), rejoined.guard(true));
-      for (String stale : List.of(first.guard(true), caller.guard(false)))
+      for (String stale : List.of(first.guard(true), caller.guard(false))) {
         assertEquals(
             409,
             assertThrows(ConsoleProblem.class, () -> accounts.scope(caller, "team", stale, true))
                 .status);
+      }
       assertEquals(rejoined, accounts.scope(caller, "team", rejoined.guard(true), true));
       assertEquals("WRITE", accounts.role(rejoined));
     }
@@ -126,8 +136,11 @@ class CorePermissionsTest {
   }
 
   private static void allowed(boolean expected, org.junit.jupiter.api.function.Executable action) {
-    if (expected) assertDoesNotThrow(action);
-    else assertEquals(403, assertThrows(ConsoleProblem.class, action).status);
+    if (expected) {
+      assertDoesNotThrow(action);
+    } else {
+      assertEquals(403, assertThrows(ConsoleProblem.class, action).status);
+    }
   }
 
   static CoreAccounts.Session session(String user) {

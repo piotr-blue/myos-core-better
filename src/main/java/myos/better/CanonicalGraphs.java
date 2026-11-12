@@ -79,11 +79,13 @@ final class CanonicalGraphs implements AutoCloseable {
   private long sessionLoads, sessionHits, historyRenewals, compactions, compactionFailures;
 
   void sessionHistoryLimit(int maximumUses) {
-    if (maximumUses < 1 || maximumUses > 1024)
+    if (maximumUses < 1 || maximumUses > 1024) {
       throw new IllegalArgumentException("Invalid canonical session history limit");
+    }
     synchronized (sessions) {
-      if (!sessions.isEmpty())
+      if (!sessions.isEmpty()) {
         throw new IllegalStateException("Configure session history before use");
+      }
       maximumSessionUses = maximumUses;
     }
   }
@@ -138,8 +140,9 @@ final class CanonicalGraphs implements AutoCloseable {
     }
     synchronized (measurements) {
       measurements.put(partition + ":" + result.version(), Map.copyOf(value));
-      while (measurements.size() > 256)
+      while (measurements.size() > 256) {
         measurements.remove(measurements.keySet().iterator().next());
+      }
     }
   }
 
@@ -171,7 +174,9 @@ final class CanonicalGraphs implements AutoCloseable {
 
     /** A committed result is durable before optional working-history maintenance starts. */
     void compactHistory() {
-      if (cached.uses < maximumSessionUses) return;
+      if (cached.uses < maximumSessionUses) {
+        return;
+      }
       renewed = true;
       long started = System.nanoTime();
       try {
@@ -233,8 +238,9 @@ final class CanonicalGraphs implements AutoCloseable {
   CanonicalGraphs(AtomicStore store, Contracts contracts, OwnerStorage ownerStorage) {
     this.store = Objects.requireNonNull(store);
     this.contracts = Objects.requireNonNull(contracts);
-    if (ownerStorage.repository.store != store)
+    if (ownerStorage.repository.store != store) {
       throw new IllegalArgumentException("Different owner store");
+    }
     this.ownerStorage = ownerStorage;
     snapshots = ownerStorage.snapshots;
     lineage = ownerStorage.lineage;
@@ -265,9 +271,13 @@ final class CanonicalGraphs implements AutoCloseable {
     String partition = partition(account, graph);
     try (DocumentLocks.Lease ignored = locks.acquire(partition)) {
       Result existing = previous(partition, command, hash);
-      if (existing != null) return existing;
+      if (existing != null) {
+        return existing;
+      }
       AtomicStore.Key head = new AtomicStore.Key(partition, "HEAD");
-      if (store.get(head) != null) throw new IllegalStateException("Graph already exists");
+      if (store.get(head) != null) {
+        throw new IllegalStateException("Graph already exists");
+      }
       Contracts.Session session = open.get();
       boolean retained = false;
       try {
@@ -308,12 +318,16 @@ final class CanonicalGraphs implements AutoCloseable {
           committed = CoreEventSource.commit(store, writes, List.of());
         } catch (RuntimeException uncertain) {
           Result accepted = previous(partition, command, hash);
-          if (accepted != null) return accepted;
+          if (accepted != null) {
+            return accepted;
+          }
           throw uncertain;
         }
         if (!committed) {
           Result concurrent = previous(partition, command, hash);
-          if (concurrent != null) return concurrent;
+          if (concurrent != null) {
+            return concurrent;
+          }
           throw new IllegalStateException("Concurrent graph creation");
         }
         synchronized (sessions) {
@@ -325,11 +339,15 @@ final class CanonicalGraphs implements AutoCloseable {
               sessions.put(partition, cached);
               retained = true;
             }
-          } else historyRenewals++;
+          } else {
+            historyRenewals++;
+          }
         }
         return result;
       } finally {
-        if (!retained) session.close();
+        if (!retained) {
+          session.close();
+        }
       }
     }
   }
@@ -373,10 +391,14 @@ final class CanonicalGraphs implements AutoCloseable {
               timed(
                   TimelineMetrics.Phase.GRAPH_ADMISSION,
                   () -> select.apply(new Context(account, graph, before, lease.cached.session)));
-          if (request == null) return null;
+          if (request == null) {
+            return null;
+          }
           String hash = Json.hash(Json.bytes(request.input()));
           Result existing = previous(partition, request.command(), hash);
-          if (existing != null) return existing;
+          if (existing != null) {
+            return existing;
+          }
           Contracts.Session session = lease.cached.session;
           Contracts.Reception previousReception = session.reception();
           long executionStarted = System.nanoTime();
@@ -385,8 +407,9 @@ final class CanonicalGraphs implements AutoCloseable {
                   ? session.begin(content, request.timestamp(), request.evidence())
                   : session.begin(request.event(), request.timestamp(), request.evidence())) {
             Contracts.Transition transition = transaction.finish();
-            if (transition.status().equals("NEEDS_RESOURCES"))
+            if (transition.status().equals("NEEDS_RESOURCES")) {
               throw new IllegalStateException("Canonical invocation needs unavailable resources");
+            }
             boolean publish = transition.applied() || request.publication() != null;
             long version = before.version() + (publish ? 1 : 0);
             Result result =
@@ -470,9 +493,13 @@ final class CanonicalGraphs implements AutoCloseable {
                     publisher.append(account, graph, version, reception, writes);
                     return null;
                   });
-            } else checks.add(new AtomicStore.Check(before.key(), before.version()));
+            } else {
+              checks.add(new AtomicStore.Check(before.key(), before.version()));
+            }
             writes.add(receipt(partition, request.command(), hash, request.input(), result));
-            if (request.publication() != null) request.publication().append(writes, checks);
+            if (request.publication() != null) {
+              request.publication().append(writes, checks);
+            }
             if (timed(
                 TimelineMetrics.Phase.GRAPH_COMMIT,
                 () -> CoreEventSource.commit(store, writes, checks))) {
@@ -480,16 +507,23 @@ final class CanonicalGraphs implements AutoCloseable {
               var committedAt = java.time.Instant.now();
               transaction.commit();
               lease.cached.version = version;
-              if (transition.applied()) lease.cached.uses++;
-              if (transition.applied()) lease.compactHistory();
-              if (publish)
+              if (transition.applied()) {
+                lease.cached.uses++;
+              }
+              if (transition.applied()) {
+                lease.compactHistory();
+              }
+              if (publish) {
                 measured(partition, request, result, started, committed, committedAt, lease);
+              }
               return result;
             }
           } catch (RuntimeException uncertain) {
             lease.invalidate();
             Result committed = previous(partition, request.command(), hash);
-            if (committed != null) return committed;
+            if (committed != null) {
+              return committed;
+            }
             throw uncertain;
           }
           lease.invalidate();
@@ -511,13 +545,18 @@ final class CanonicalGraphs implements AutoCloseable {
   }
 
   Map<String, Object> snapshot(String account, String graph, long version) {
-    if (version < 1) throw new IllegalArgumentException("Positive graph version required");
-    if (OwnerGraphs.handles(graph))
+    if (version < 1) {
+      throw new IllegalArgumentException("Positive graph version required");
+    }
+    if (OwnerGraphs.handles(graph)) {
       return portable(account, (String) history(account, graph, version).get("page"));
+    }
     AtomicStore.Row row =
         store.get(
             new AtomicStore.Key(partition(account, graph), "V#" + Repository.version(version)));
-    if (row == null) throw new IllegalArgumentException("Unknown graph version");
+    if (row == null) {
+      throw new IllegalArgumentException("Unknown graph version");
+    }
     return portable(account, row.value().get("page").toString());
   }
 
@@ -545,12 +584,16 @@ final class CanonicalGraphs implements AutoCloseable {
   }
 
   Map<String, Object> history(String account, String graph, long version) {
-    if (OwnerGraphs.handles(graph)) return ownerStorage.records(account).history(graph, version);
+    if (OwnerGraphs.handles(graph)) {
+      return ownerStorage.records(account).history(graph, version);
+    }
     requireHead(partition(account, graph));
     AtomicStore.Row row =
         store.get(
             new AtomicStore.Key(partition(account, graph), "V#" + Repository.version(version)));
-    if (row == null) throw new IllegalArgumentException("Unknown graph version");
+    if (row == null) {
+      throw new IllegalArgumentException("Unknown graph version");
+    }
     return row.value();
   }
 
@@ -562,7 +605,9 @@ final class CanonicalGraphs implements AutoCloseable {
       String account, String graph, Map<String, Object> head, blue.BlueId identity) {
     GraphLineage.Target found =
         lineage.find(account, (String) head.getOrDefault("lineage", ""), identity.value());
-    if (found != null) return found;
+    if (found != null) {
+      return found;
+    }
     // The authored root is also a legitimate lineage address, before initialization changes it.
     Map<String, Object> input =
         RuntimeConfiguration.object(history(account, graph, 1).get("input"), "input");
@@ -594,7 +639,9 @@ final class CanonicalGraphs implements AutoCloseable {
   LanguageDocument retainedMember(String account, String graph, long version, String member) {
     synchronized (sessions) {
       Cached cached = sessions.get(partition(account, graph));
-      if (cached == null || cached.leased || cached.version != version) return null;
+      if (cached == null || cached.leased || cached.version != version) {
+        return null;
+      }
       // Acquisition, eviction and close use this monitor. With no active lease the short
       // immutable view capture cannot race with a transaction or retain a mutable session.
       LanguageDocument content = cached.session.member(member);
@@ -625,7 +672,9 @@ final class CanonicalGraphs implements AutoCloseable {
   }
 
   Map<String, Object> operations(String account, Map<String, Object> publication, String member) {
-    if (!publication.containsKey("operations")) return null;
+    if (!publication.containsKey("operations")) {
+      return null;
+    }
     String expected =
         snapshots.memberIdentity(account, (String) publication.get("page"), member).value();
     return operationCatalogue.read(
@@ -682,7 +731,9 @@ final class CanonicalGraphs implements AutoCloseable {
     synchronized (sessions) {
       Cached found = sessions.get(partition);
       if (found != null && found.version == head.version()) {
-        if (found.leased) throw new IllegalStateException("Graph session is already leased");
+        if (found.leased) {
+          throw new IllegalStateException("Graph session is already leased");
+        }
         found.leased = true;
         sessionHits++;
         return new Lease(partition, found, 0);
@@ -707,14 +758,18 @@ final class CanonicalGraphs implements AutoCloseable {
     synchronized (sessions) {
       sessionLoads++;
       evictOne();
-      if (sessions.size() < CACHE_ENTRIES) sessions.put(partition, candidate);
+      if (sessions.size() < CACHE_ENTRIES) {
+        sessions.put(partition, candidate);
+      }
     }
     return new Lease(partition, candidate, restoreNanos);
   }
 
   /** Called only with the cache monitor held; leased mutable sessions are never evicted. */
   private void evictOne() {
-    if (sessions.size() < CACHE_ENTRIES) return;
+    if (sessions.size() < CACHE_ENTRIES) {
+      return;
+    }
     var iterator = sessions.entrySet().iterator();
     while (iterator.hasNext()) {
       Cached entry = iterator.next().getValue();
@@ -778,10 +833,13 @@ final class CanonicalGraphs implements AutoCloseable {
   private AtomicStore.Row requireHead(String partition) {
     int split = partition.indexOf("#G#");
     String graph = partition.substring(split + 3);
-    if (OwnerGraphs.handles(graph))
+    if (OwnerGraphs.handles(graph)) {
       return ownerStorage.records(partition.substring(2, split)).head(graph);
+    }
     AtomicStore.Row row = store.get(new AtomicStore.Key(partition, "HEAD"));
-    if (row == null) throw new MissingDocument();
+    if (row == null) {
+      throw new MissingDocument();
+    }
     return row;
   }
 
@@ -797,9 +855,12 @@ final class CanonicalGraphs implements AutoCloseable {
   private Result previous(String partition, String command, String hash) {
     AtomicStore.Row row =
         store.get(new AtomicStore.Key(partition, "C#" + Repository.identifier(command)));
-    if (row == null) return null;
-    if (!hash.equals(row.value().get("hash")))
+    if (row == null) {
+      return null;
+    }
+    if (!hash.equals(row.value().get("hash"))) {
       throw new IllegalArgumentException("Command input changed");
+    }
     return Json.MAPPER.convertValue(row.value().get("result"), Result.class);
   }
 
@@ -811,7 +872,9 @@ final class CanonicalGraphs implements AutoCloseable {
   public void close() {
     synchronized (sessions) {
       for (Cached value : sessions.values()) {
-        if (value.leased) throw new IllegalStateException("Graph transactions are still running");
+        if (value.leased) {
+          throw new IllegalStateException("Graph transactions are still running");
+        }
       }
       sessions.values().forEach(value -> value.session.close());
       sessions.clear();

@@ -20,7 +20,9 @@ public final class GraphEmbeddingReadProbe {
     long expectedLoads = Long.getLong("myos.probe.expectedLoads", 0L);
     for (int count : List.of(16, 256, 1024)) {
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       String source =
           JsonText.of(
               Map.of(
@@ -76,10 +78,13 @@ public final class GraphEmbeddingReadProbe {
           long start = System.nanoTime();
           var actual = reader.embedding("initial", selected.parent(), selected.path());
           double millis = (System.nanoTime() - start) / 1e6;
-          if (!selected.expected().equals(actual))
+          if (!selected.expected().equals(actual)) {
             throw new AssertionError("Wrong embedding address or generation");
+          }
           long loads = reader.statistics().get("graphSessions.loads");
-          if (loads != expectedLoads) throw new AssertionError("Unexpected execution session load");
+          if (loads != expectedLoads) {
+            throw new AssertionError("Unexpected execution session load");
+          }
           samples.add(Map.of("millis", millis, "sessionLoads", loads, "warmup", i < 2));
         }
       }

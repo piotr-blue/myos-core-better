@@ -21,11 +21,13 @@ final class RuntimeCatalog {
     this.creation = Objects.requireNonNull(creation);
     Map<String, CanonicalRuntime> selected = new LinkedHashMap<>();
     for (CanonicalRuntime runtime : supported) {
-      if (selected.putIfAbsent(runtime.edition(), runtime) != null)
+      if (selected.putIfAbsent(runtime.edition(), runtime) != null) {
         throw new IllegalArgumentException("Duplicate local edition: " + runtime.edition());
+      }
     }
-    if (selected.get(creation.edition()) != creation)
+    if (selected.get(creation.edition()) != creation) {
       throw new IllegalArgumentException("Creation runtime must be explicitly supported");
+    }
     editions = java.util.Collections.unmodifiableMap(selected);
   }
 
@@ -47,15 +49,17 @@ final class RuntimeCatalog {
 
   CanonicalRuntime select(Map<String, Object> checkpoint) {
     Object edition = checkpoint.get("edition");
-    if (!(edition instanceof String name))
+    if (!(edition instanceof String name)) {
       throw new IllegalArgumentException("Checkpoint requires a local edition");
+    }
     return select(name);
   }
 
   CanonicalRuntime select(String edition) {
     CanonicalRuntime runtime = editions.get(edition);
-    if (runtime == null)
+    if (runtime == null) {
       throw new IllegalArgumentException("Unsupported stored local edition: " + edition);
+    }
     return runtime;
   }
 

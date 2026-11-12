@@ -155,7 +155,7 @@ class CoreImagesHttpTest {
   void malformedPartsInvalidRevisionsAndUnsupportedImagesAreBounded() throws Exception {
     try (var f = new ConsoleHttpTest.Fixture(web)) {
       String guard = (String) f.json(f.get("blue/v1/me", "alice")).get("sessionContext");
-      for (String revision : List.of("-1", "1.5", "01", "9223372036854775808"))
+      for (String revision : List.of("-1", "1.5", "01", "9223372036854775808")) {
         assertEquals(
             422,
             uploadBearer(
@@ -167,6 +167,7 @@ class CoreImagesHttpTest {
                     UUID.randomUUID().toString(),
                     multipart(CoreImagesTest.png(4, 4), revision))
                 .statusCode());
+      }
       assertEquals(
           422,
           uploadBearer(
@@ -199,8 +200,12 @@ class CoreImagesHttpTest {
       ConsoleHttpTest.Fixture f, String path, String cookie, String etag, boolean head)
       throws Exception {
     var request = HttpRequest.newBuilder(URI.create(f.url + path));
-    if (cookie != null) request.header("Cookie", cookie);
-    if (etag != null) request.header("If-None-Match", etag);
+    if (cookie != null) {
+      request.header("Cookie", cookie);
+    }
+    if (etag != null) {
+      request.header("If-None-Match", etag);
+    }
     request.method(head ? "HEAD" : "GET", HttpRequest.BodyPublishers.noBody());
     return f.http.send(request.build(), HttpResponse.BodyHandlers.ofByteArray());
   }
@@ -245,8 +250,12 @@ class CoreImagesHttpTest {
             .header("Origin", "https://console.example")
             .header("Content-Type", "multipart/form-data; boundary=avatar-test")
             .header("Idempotency-Key", command);
-    if (account != null) request.header("X-MyOS-Account", account);
-    if (guard != null) request.header("X-MyOS-Session-Context", guard);
+    if (account != null) {
+      request.header("X-MyOS-Account", account);
+    }
+    if (guard != null) {
+      request.header("X-MyOS-Session-Context", guard);
+    }
     return f.http.send(
         request.PUT(HttpRequest.BodyPublishers.ofByteArray(body)).build(),
         HttpResponse.BodyHandlers.ofString());

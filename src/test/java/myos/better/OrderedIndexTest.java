@@ -44,8 +44,11 @@ class OrderedIndexTest {
                 + String.format(Locale.ROOT, "%05d", random.nextInt(3000));
         String value = random.nextInt(3) == 0 ? null : "value-" + batch + "-" + i;
         edits.put(key, value);
-        if (value == null) expected.remove(key);
-        else expected.put(key, value);
+        if (value == null) {
+          expected.remove(key);
+        } else {
+          expected.put(key, value);
+        }
       }
       root = new OrderedIndex(content).update(root, edits);
       OrderedIndex cold = new OrderedIndex(content);
@@ -54,14 +57,18 @@ class OrderedIndexTest {
         String after = null;
         while (true) {
           var page = cold.page(root, prefix, after, 23);
-          if (page.isEmpty()) break;
+          if (page.isEmpty()) {
+            break;
+          }
           page.forEach(entry -> actual.put(entry.key(), entry.value()));
           after = page.getLast().key();
         }
         TreeMap<String, String> matching = new TreeMap<>();
         expected.forEach(
             (key, value) -> {
-              if (key.startsWith(prefix)) matching.put(key, value);
+              if (key.startsWith(prefix)) {
+                matching.put(key, value);
+              }
             });
         assertEquals(matching, actual);
       }
@@ -82,7 +89,9 @@ class OrderedIndexTest {
   void coldDistributedWritesFetchIndependentPathsInBatches() {
     Content content = new Content();
     TreeMap<String, String> original = new TreeMap<>();
-    for (int i = 0; i < 100_000; i++) original.put(String.format(Locale.ROOT, "%08d", i), "before");
+    for (int i = 0; i < 100_000; i++) {
+      original.put(String.format(Locale.ROOT, "%08d", i), "before");
+    }
     String root = new OrderedIndex(content).update(OrderedIndex.EMPTY, original);
     class Reader implements BlobStore {
       final Map<String, byte[]> fetched = new HashMap<>();
@@ -95,22 +104,27 @@ class OrderedIndexTest {
 
       public byte[] get(String identity) {
         byte[] known = fetched.get(identity);
-        if (known != null) return known;
+        if (known != null) {
+          return known;
+        }
         individualReads++;
         return content.get(identity);
       }
 
       public void prefetch(List<String> identities) {
         List<String> missing = identities.stream().filter(id -> !fetched.containsKey(id)).toList();
-        if (missing.isEmpty()) return;
+        if (missing.isEmpty()) {
+          return;
+        }
         batches++;
         missing.forEach(id -> fetched.put(id, content.get(id)));
       }
     }
     Reader reader = new Reader();
     TreeMap<String, String> edits = new TreeMap<>();
-    for (int i = 0; i < 64; i++)
+    for (int i = 0; i < 64; i++) {
       edits.put(String.format(Locale.ROOT, "%08d", i * 1501), i % 2 == 0 ? "after" : null);
+    }
     String updated = new OrderedIndex(reader).update(root, edits);
     assertEquals(0, reader.individualReads, "Known write paths must not cause sequential reads");
     assertTrue(reader.batches <= 4, () -> "Cold read rounds: " + reader.batches);
@@ -126,7 +140,9 @@ class OrderedIndexTest {
   void coldMinimumAndOneUpdateTouchOnlyAPathInOneHundredThousandEntries() {
     Content content = new Content();
     TreeMap<String, String> values = new TreeMap<>();
-    for (int i = 0; i < 100_000; i++) values.put(String.format(Locale.ROOT, "%08d", i), "head");
+    for (int i = 0; i < 100_000; i++) {
+      values.put(String.format(Locale.ROOT, "%08d", i), "head");
+    }
     String root = new OrderedIndex(content).update(OrderedIndex.EMPTY, values);
     content.reads = content.writes = 0;
     var cold = new OrderedIndex(content);

@@ -131,9 +131,10 @@ class DocumentLineageTest {
       core.create("alice", "one", "create", "fixed: true");
       BlueId id = new BlueId(repository.load("alice", "one").localBlueId());
       DocumentLineage.Membership first = lineage.find("alice", "one", 1, id).orElseThrow();
-      for (int i = 1; i <= 3; i++)
+      for (int i = 1; i <= 3; i++) {
         assertEquals(
             "APPLIED", core.process("alice", "one", "step" + i, Map.of("event", i), i).status());
+      }
       assertEquals(id.value(), repository.load("alice", "one").localBlueId());
       assertEquals(first, lineage.find("alice", "one", 4, id).orElseThrow());
     }
@@ -273,11 +274,12 @@ class DocumentLineageTest {
     try (Core core = core(store)) {
       core.create("alice", "one", "create", SOURCE);
       BlueId first = new BlueId(repository.load("alice", "one").localBlueId());
-      for (int i = 1; i <= calls; i++)
+      for (int i = 1; i <= calls; i++) {
         assertEquals(
             "APPLIED",
             core.call("alice", "one", "step" + i, "input", "increment", Map.of("requestId", i), i)
                 .status());
+      }
       store.reads = 0;
       assertTrue(
           new DocumentLineage(repository).find("alice", "one", calls + 1, first).isPresent());

@@ -18,18 +18,22 @@ final class CoreDocumentTypes {
   private CoreDocumentTypes() {}
 
   static Map<String, String> normalize(Map<String, String> query) {
-    if (query.containsKey("typeBlueId") && query.containsKey("typeBlueIds"))
+    if (query.containsKey("typeBlueId") && query.containsKey("typeBlueIds")) {
       throw new ConsoleProblem(
           400, "conflicting_type_filters", "Use typeBlueId or typeBlueIds, not both");
+    }
     if (query.containsKey("typeBlueId")) {
       validate(query.get("typeBlueId"), "invalid_type_blue_id");
       return query;
     }
-    if (!query.containsKey("typeBlueIds")) return query;
+    if (!query.containsKey("typeBlueIds")) {
+      return query;
+    }
     String[] supplied = query.get("typeBlueIds").split(",", -1);
-    if (supplied.length > 16)
+    if (supplied.length > 16) {
       throw new ConsoleProblem(
           400, "invalid_type_blue_ids", "Provide between 1 and 16 exact type BlueIds");
+    }
     var selected = new TreeSet<String>();
     for (String id : supplied) {
       validate(id, "invalid_type_blue_ids");
@@ -46,15 +50,18 @@ final class CoreDocumentTypes {
   }
 
   static boolean matches(Language scoped, LanguageContent publication, List<BlueId> selected) {
-    if (selected.isEmpty()) return true;
+    if (selected.isEmpty()) {
+      return true;
+    }
     try {
       Language language = scoped.toBuilder().content(publication).build();
       var current = publication.resolve().type();
       var ancestry = new HashSet<BlueId>();
       while (current.isPresent()) {
         BlueId id = current.get();
-        if (!ancestry.add(id))
+        if (!ancestry.add(id)) {
           throw new ConsoleProblem(503, "invalid_type_hierarchy", "Cyclic type ancestry");
+        }
         current =
             language
                 .prepare(Language.Input.exactJson(JsonText.of(Map.of("blueId", id.value()))))

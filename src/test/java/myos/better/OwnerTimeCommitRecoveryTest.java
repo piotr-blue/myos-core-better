@@ -96,10 +96,13 @@ class OwnerTimeCommitRecoveryTest {
         armed = false;
         faulted = true;
       }
-      if (fail && !after)
+      if (fail && !after) {
         throw new IllegalStateException("Injected failure before publication commit");
+      }
       boolean committed = delegate.commit(writes, checks);
-      if (fail && committed) throw new IllegalStateException("Injected lost publication response");
+      if (fail && committed) {
+        throw new IllegalStateException("Injected lost publication response");
+      }
       return committed;
     }
   }

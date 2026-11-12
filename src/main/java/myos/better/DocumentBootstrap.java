@@ -71,17 +71,20 @@ final class DocumentBootstrap {
           List.of());
       intent = Objects.requireNonNull(repository.store.get(key));
     }
-    if (!digest.equals(intent.value().get("digest")))
+    if (!digest.equals(intent.value().get("digest"))) {
       throw new ConsoleProblem(
           409, "BOOTSTRAP_CONFLICT", "This bootstrap command already has different input");
-    if (intent.value().containsKey("result"))
+    }
+    if (intent.value().containsKey("result")) {
       return RuntimeConfiguration.object(intent.value().get("result"), "result");
+    }
     if (!plan.sourceBlueId().equals(intent.value().get("sourceBlueId"))
-        || !edition().equals(intent.value().get("edition")))
+        || !edition().equals(intent.value().get("edition"))) {
       throw new ConsoleProblem(
           409,
           "BOOTSTRAP_RUNTIME_CHANGED",
           "Resume bootstrap with its original package and execution selection");
+    }
     Map<String, Object> bound;
     if (intent.value().containsKey("bound")) {
       bound =
@@ -95,12 +98,13 @@ final class DocumentBootstrap {
         String roleCommand =
             "bootstrap-" + Json.hash(Json.bytes(List.of(command, participant.channelName())));
         String timeline = participant.timeline();
-        if (timeline.isEmpty())
+        if (timeline.isEmpty()) {
           timeline =
               (String)
                   timelines
                       .create(account, roleCommand, Map.of("name", participant.channelName()))
                       .get("timeline");
+        }
         Map<String, Object> connection = connected.get(timeline);
         if (connection == null) {
           connection = timelines.connect(account, new BlueId(timeline), roleCommand, Map.of());
@@ -131,20 +135,22 @@ final class DocumentBootstrap {
         Map.of("input", intent.value().get("input"), "sourceBlueId", plan.sourceBlueId());
     repository.store.commit(List.of(AtomicStore.Write.put(sourceKey, 0, sourceRecord)), List.of());
     AtomicStore.Row storedSource = repository.store.get(sourceKey);
-    if (storedSource == null || !storedSource.value().equals(sourceRecord))
+    if (storedSource == null || !storedSource.value().equals(sourceRecord)) {
       throw new IllegalStateException("Bootstrap source identity conflict");
+    }
     var boundDocument =
         language.toBuilder().content(plan.definition()).build().readJson(JsonText.of(bound));
     Map<String, Object> result;
-    if (timelines.graphs() != null)
+    if (timelines.graphs() != null) {
       result = timelines.graphs().create(account, document, command, boundDocument);
-    else {
+    } else {
       Core.Result created = core.create(account, document, command, boundDocument);
-      if (!created.status().equals("APPLIED"))
+      if (!created.status().equals("APPLIED")) {
         throw new ConsoleProblem(
             422,
             "DOCUMENT_REJECTED",
             "Document initialization rejected: " + JsonText.of(created.diagnostic()));
+      }
       result = created.value();
     }
     Map<String, Object> next = new LinkedHashMap<>(intent.value());
@@ -154,9 +160,10 @@ final class DocumentBootstrap {
   }
 
   private BootstrapPreparation.Plan prepare(String account, Map<String, Object> input) {
-    if (!timelines.inputsAvailable())
+    if (!timelines.inputsAvailable()) {
       throw new ConsoleProblem(
           503, "INPUTS_NOT_CONFIGURED", "Participant bootstrap is not configured");
+    }
     RuntimeConfiguration.fields(input, Set.of("source", "participantMappings"));
     BootstrapPreparation.Plan plan =
         preparation.prepare(
@@ -168,54 +175,64 @@ final class DocumentBootstrap {
         && !plan.definition()
             .at(plan.activation() + "/parameters/readers")
             .declaredFields()
-            .isEmpty())
+            .isEmpty()) {
       throw new ConsoleProblem(
           422, "BOOTSTRAP_OWNER", "Reader groups require account-resolved bootstrap.");
+    }
     for (BootstrapPreparation.Participant participant : plan.participants()) {
-      if (!participant.representativeName().isEmpty())
+      if (!participant.representativeName().isEmpty()) {
         throw new ConsoleProblem(
             422,
             "CORE_BOOTSTRAP_REQUIRED",
             "Use the Core bootstrap API to resolve representatives.");
+      }
       if (!participant.partyPath().isEmpty()) {
         var party = BootstrapPartyPaths.at(plan.definition(), participant.partyPath());
         var lead = party.at("/lead");
         if (party.at("/representativeId").exists()
             || party.at("/agentId").exists()
             || lead.at("/representativeId").exists()
-            || lead.at("/agentId").exists())
+            || lead.at("/agentId").exists()) {
           throw new ConsoleProblem(
               422, "BOOTSTRAP_OWNER", "Representatives require authenticated writer resolution.");
-        for (String locator : List.of("myosAccountId", "accountId"))
-          if (lead.at("/" + locator).exists() && !account.equals(lead.at("/" + locator).text()))
+        }
+        for (String locator : List.of("myosAccountId", "accountId")) {
+          if (lead.at("/" + locator).exists() && !account.equals(lead.at("/" + locator).text())) {
             throw new ConsoleProblem(
                 422, "BOOTSTRAP_OWNER", "Party lead must select the authenticated account.");
-        if (lead.at("/email").exists())
+          }
+        }
+        if (lead.at("/email").exists()) {
           throw new ConsoleProblem(
               422, "BOOTSTRAP_OWNER", "Email leads require account-resolved bootstrap.");
-        if (party.at("/readerKeys").exists() || party.at("/lead/readerKeys").exists())
+        }
+        if (party.at("/readerKeys").exists() || party.at("/lead/readerKeys").exists()) {
           throw new ConsoleProblem(
               422, "BOOTSTRAP_OWNER", "Selected reader keys require account-resolved bootstrap.");
+        }
         for (String locator : List.of("myosAccountId", "accountId")) {
           blue.LanguageView declared =
               BootstrapPartyPaths.at(plan.definition(), participant.partyPath()).at("/" + locator);
-          if (declared.exists() && !declared.text().equals(account))
+          if (declared.exists() && !declared.text().equals(account)) {
             throw new ConsoleProblem(
                 422,
                 "BOOTSTRAP_OWNER",
                 "This bootstrap binds only the authenticated account's roles");
+          }
         }
         if (BootstrapPartyPaths.at(plan.definition(), participant.partyPath())
             .at("/email")
-            .exists())
+            .exists()) {
           throw new ConsoleProblem(
               422,
               "BOOTSTRAP_OWNER",
               "Email participant resolution is not supported by this owner bootstrap");
+        }
       }
-      if (!participant.timeline().isEmpty() && !timelines.owned(account, participant.timeline()))
+      if (!participant.timeline().isEmpty() && !timelines.owned(account, participant.timeline())) {
         throw new ConsoleProblem(
             404, "TIMELINE_NOT_FOUND", "Participant Timeline does not belong to this account");
+      }
     }
     return plan;
   }

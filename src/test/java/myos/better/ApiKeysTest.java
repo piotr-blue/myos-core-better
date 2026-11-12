@@ -128,8 +128,9 @@ class ApiKeysTest {
               ApiKeys.PREFIX,
               secret + "x",
               secret.substring(0, secret.length() - 1),
-              secret.substring(0, secret.indexOf('.') + 1) + "a".repeat(43)))
+              secret.substring(0, secret.indexOf('.') + 1) + "a".repeat(43))) {
         assertEquals(401, assertThrows(ConsoleProblem.class, () -> keys.verify(token)).status);
+      }
       assertEquals(401, assertThrows(ConsoleProblem.class, () -> keys.verify(null)).status);
     }
 
@@ -140,8 +141,9 @@ class ApiKeysTest {
               Map.<String, Object>of("name", " "),
               Map.<String, Object>of("name", "a".repeat(121)),
               Map.<String, Object>of("name", "x", "account", "bob"),
-              Map.<String, Object>of("name", "x", "secret", "chosen")))
+              Map.<String, Object>of("name", "x", "secret", "chosen"))) {
         assertThrows(IllegalArgumentException.class, () -> keys.create("alice", "one", input));
+      }
       assertTrue(((List<?>) keys.list("alice", Map.of()).get("items")).isEmpty());
       assertThrows(
           IllegalArgumentException.class, () -> keys.list("alice", Map.of("cursor", "CREATE#one")));
@@ -150,7 +152,9 @@ class ApiKeysTest {
     @Test
     void listingPagesExposeOnlyMetadataAndStayWithinAccount() {
       // 51 crosses exactly one API page; no timing threshold or unnecessary long history.
-      for (int i = 0; i < 51; i++) keys.create("alice", "key-" + i, Map.of("name", "Key " + i));
+      for (int i = 0; i < 51; i++) {
+        keys.create("alice", "key-" + i, Map.of("name", "Key " + i));
+      }
       keys.create("bob", "one", Map.of("name", "Other"));
       var first = keys.list("alice", Map.of());
       var second = keys.list("alice", Map.of("cursor", (String) first.get("nextCursor")));

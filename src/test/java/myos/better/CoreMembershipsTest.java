@@ -274,7 +274,7 @@ class CoreMembershipsTest {
     var members = new CoreMemberships(racing, accounts);
     try (var threads = Executors.newVirtualThreadPerTaskExecutor()) {
       var tasks = new ArrayList<Future<String>>();
-      for (String user : List.of("alice", "bob"))
+      for (String user : List.of("alice", "bob")) {
         tasks.add(
             threads.submit(
                 () -> {
@@ -292,8 +292,11 @@ class CoreMembershipsTest {
                     return failure.code;
                   }
                 }));
+      }
       var outcomes = new ArrayList<String>();
-      for (var task : tasks) outcomes.add(task.get(5, TimeUnit.SECONDS));
+      for (var task : tasks) {
+        outcomes.add(task.get(5, TimeUnit.SECONDS));
+      }
       assertEquals(1, Collections.frequency(outcomes, "changed"));
       assertEquals(1, Collections.frequency(outcomes, "last_admin_required"));
       assertEquals(

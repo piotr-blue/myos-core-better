@@ -19,7 +19,7 @@ class OwnerMetadataContentionTest {
     var start = new CountDownLatch(1);
     try (var workers = Executors.newFixedThreadPool(concurrency)) {
       List<Future<?>> futures = new ArrayList<>();
-      for (int worker = 0; worker < concurrency; worker++)
+      for (int worker = 0; worker < concurrency; worker++) {
         futures.add(
             workers.submit(
                 () -> {
@@ -38,8 +38,11 @@ class OwnerMetadataContentionTest {
                   }
                   return null;
                 }));
+      }
       start.countDown();
-      for (var future : futures) future.get(30, TimeUnit.SECONDS);
+      for (var future : futures) {
+        future.get(30, TimeUnit.SECONDS);
+      }
     }
     assertEquals(
         Long.toString(concurrency * 50L),

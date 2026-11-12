@@ -30,8 +30,11 @@ class RadixIndexTest {
       Set<String> removals = new HashSet<>();
       for (int n = 0; n < 80; n++) {
         String key = "key-" + random.nextInt(600);
-        if (random.nextBoolean()) removals.add(key);
-        else replacements.put(key, "value-" + random.nextInt());
+        if (random.nextBoolean()) {
+          removals.add(key);
+        } else {
+          replacements.put(key, "value-" + random.nextInt());
+        }
       }
       removals.forEach(expected::remove);
       expected.putAll(replacements);
@@ -42,8 +45,9 @@ class RadixIndexTest {
       Map<String, String> previous = new TreeMap<>();
       index.forEach(before, previous::put);
       assertEquals(old, previous);
-      for (var entry : expected.entrySet())
+      for (var entry : expected.entrySet()) {
         assertEquals(entry.getValue(), index.get(root, entry.getKey()));
+      }
     }
   }
 
@@ -52,7 +56,9 @@ class RadixIndexTest {
     Pages pages = new Pages();
     RadixIndex<String> index = new RadixIndex<>(pages, String.class);
     Map<String, String> values = new TreeMap<>();
-    for (int n = 0; n < 1024; n++) values.put("key-" + n, "value-" + n);
+    for (int n = 0; n < 1024; n++) {
+      values.put("key-" + n, "value-" + n);
+    }
     String root = index.update(RadixIndex.EMPTY, values, Set.of());
     assertTrue(pages.writes < 300, "Must not publish a new intermediate root per entry");
     int count = pages.writes;
@@ -66,7 +72,9 @@ class RadixIndexTest {
     Pages pages = new Pages();
     RadixIndex<String> writer = new RadixIndex<>(pages, String.class);
     Map<String, String> values = new TreeMap<>();
-    for (int n = 0; n < 64; n++) values.put("key-" + n, "value-" + n);
+    for (int n = 0; n < 64; n++) {
+      values.put("key-" + n, "value-" + n);
+    }
     String original = writer.update(RadixIndex.EMPTY, values, Set.of());
     RadixIndex<String> reader = new RadixIndex<>(pages, String.class);
     values.forEach((key, value) -> assertEquals(value, reader.get(original, key)));
@@ -111,7 +119,9 @@ class RadixIndexTest {
     Pages pages = new Pages();
     var writer = new RadixIndex<String>(pages, String.class);
     Map<String, String> values = new LinkedHashMap<>();
-    for (int i = 0; i < 1024; i++) values.put("key-" + i, "value-" + i);
+    for (int i = 0; i < 1024; i++) {
+      values.put("key-" + i, "value-" + i);
+    }
     values.put("é/𐀀", "unicode");
     String root = writer.update("", values, Set.of());
     var reader = new RadixIndex<String>(pages, String.class, 0);
@@ -136,7 +146,9 @@ class RadixIndexTest {
     Pages pages = new Pages();
     var dense = new RadixIndex<String>(pages, String.class, 0, 128, 32 * 1024);
     Map<String, String> values = new LinkedHashMap<>();
-    for (int i = 0; i < 1024; i++) values.put("item-" + i, "v".repeat(i % 2 == 0 ? 800 : 20));
+    for (int i = 0; i < 1024; i++) {
+      values.put("item-" + i, "v".repeat(i % 2 == 0 ? 800 : 20));
+    }
     String root = dense.update("", values, Set.of());
     assertTrue(pages.content.values().stream().allMatch(bytes -> bytes.length <= 32 * 1024));
     var oldReader = new RadixIndex<String>(pages, String.class);

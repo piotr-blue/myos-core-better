@@ -10,12 +10,15 @@ import software.amazon.awssdk.core.exception.SdkException;
 /** Scheduling policy over verified provider outcomes; diagnostic prose is never persisted. */
 record TimelineFailure(String code, String category, boolean recoverable) {
   TimelineFailure {
-    if (code == null || !code.matches("[A-Za-z0-9_$]{1,120}"))
+    if (code == null || !code.matches("[A-Za-z0-9_$]{1,120}")) {
       throw new IllegalArgumentException("Invalid Timeline failure code");
-    if (!Set.of("AVAILABILITY", "INVALID_EVIDENCE").contains(category))
+    }
+    if (!Set.of("AVAILABILITY", "INVALID_EVIDENCE").contains(category)) {
       throw new IllegalArgumentException("Invalid Timeline failure category");
-    if (recoverable && !category.equals("AVAILABILITY"))
+    }
+    if (recoverable && !category.equals("AVAILABILITY")) {
       throw new IllegalArgumentException("Integrity failures require explicit recovery");
+    }
   }
 
   static TimelineFailure from(Throwable failure) {
@@ -38,16 +41,19 @@ record TimelineFailure(String code, String category, boolean recoverable) {
       return new TimelineFailure(
           safe(problem.code), availability ? "AVAILABILITY" : "INVALID_EVIDENCE", recoverable);
     }
-    if (failure instanceof LanguageException language)
+    if (failure instanceof LanguageException language) {
       return legacy("LanguageException_" + language.category());
+    }
     if (failure instanceof IOException
         || failure instanceof UncheckedIOException
         || failure instanceof SdkException
         || failure instanceof InterruptedException
-        || failure instanceof java.util.concurrent.TimeoutException)
+        || failure instanceof java.util.concurrent.TimeoutException) {
       return new TimelineFailure(safe(failure.getClass().getSimpleName()), "AVAILABILITY", false);
-    if (failure instanceof HostedTimelines.BoundUnavailable)
+    }
+    if (failure instanceof HostedTimelines.BoundUnavailable) {
       return new TimelineFailure("BOUND_UNAVAILABLE", "AVAILABILITY", true);
+    }
     return legacy(failure.getClass().getSimpleName());
   }
 

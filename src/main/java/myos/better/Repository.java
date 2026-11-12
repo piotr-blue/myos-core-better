@@ -24,7 +24,9 @@ final class Repository {
   }
 
   ContentBatch batch(String account, boolean reuseRecordEncodings) {
-    if (batch.get() != null) throw new IllegalStateException("Nested content batch");
+    if (batch.get() != null) {
+      throw new IllegalStateException("Nested content batch");
+    }
     var result = new ContentBatch(identifier(account), reuseRecordEncodings);
     batch.set(result);
     return result;
@@ -46,15 +48,23 @@ final class Repository {
     // Values were defensively copied at Blobs.put; internal writers transfer these private
     // arrays and readers get copies. Check the budget before, not after, an entire input map.
     private void add(String tenant, Map<String, byte[]> pages) {
-      if (!account.equals(tenant)) throw new IllegalStateException("Cross-account content batch");
+      if (!account.equals(tenant)) {
+        throw new IllegalStateException("Cross-account content batch");
+      }
       pages.forEach(
           (id, value) -> {
-            if (pending.containsKey(id)) return;
-            if (bytes != 0 && bytes + value.length > IMMUTABLE_BATCH_BYTES) flush();
+            if (pending.containsKey(id)) {
+              return;
+            }
+            if (bytes != 0 && bytes + value.length > IMMUTABLE_BATCH_BYTES) {
+              flush();
+            }
             pending.put(id, value);
             bytes += value.length;
           });
-      if (bytes >= IMMUTABLE_BATCH_BYTES) flush();
+      if (bytes >= IMMUTABLE_BATCH_BYTES) {
+        flush();
+      }
     }
 
     void flush() {
@@ -69,7 +79,9 @@ final class Repository {
     }
 
     public void close() {
-      if (batch.get() != this) throw new IllegalStateException("Wrong content batch");
+      if (batch.get() != this) {
+        throw new IllegalStateException("Wrong content batch");
+      }
       batch.remove();
       pending.clear();
       encodings.clear();
@@ -90,7 +102,9 @@ final class Repository {
       Map<?, ?> snapshot = (Map<?, ?>) checkpoint.get("snapshot");
       for (Object raw : (java.util.List<?>) snapshot.get("documents")) {
         Map<?, ?> row = (Map<?, ?>) raw;
-        if (snapshot.get("root").equals(row.get("key"))) return (String) row.get("blueId");
+        if (snapshot.get("root").equals(row.get("key"))) {
+          return (String) row.get("blueId");
+        }
       }
       throw new IllegalStateException("Checkpoint has no root document");
     }
@@ -112,9 +126,10 @@ final class Repository {
   }
 
   static String identifier(String value) {
-    if (value == null || !value.matches("[A-Za-z0-9._-]{1,128}"))
+    if (value == null || !value.matches("[A-Za-z0-9._-]{1,128}")) {
       throw new IllegalArgumentException(
           "Identifier must contain 1..128 letters, digits, dots, underscores or dashes");
+    }
     return value;
   }
 
@@ -141,16 +156,22 @@ final class Repository {
     if (value instanceof Long
         || value instanceof Integer
         || value instanceof Short
-        || value instanceof Byte) return ((Number) value).longValue();
+        || value instanceof Byte) {
+      return ((Number) value).longValue();
+    }
     throw new IllegalArgumentException("Exact integer required");
   }
 
   // A candidate is speculative. Every outcome, including business rejection, checks its version.
   Document candidate(String account, String id) {
     Map<String, Object> cached = heads.known(partition(account, id));
-    if (cached != null) return document(account, id, cached);
+    if (cached != null) {
+      return document(account, id, cached);
+    }
     Document current = load(account, id);
-    if (current != null) remember(current);
+    if (current != null) {
+      remember(current);
+    }
     return current;
   }
 
@@ -177,8 +198,9 @@ final class Repository {
 
   Document load(String account, String id, long version) {
     Document document = findVersion(account, id, version);
-    if (document == null)
+    if (document == null) {
       throw new IllegalStateException("Missing pinned document version: " + id + "@" + version);
+    }
     return document;
   }
 
@@ -224,8 +246,9 @@ final class Repository {
     @Override
     public void indexPage(String identity, RadixIndex.Page<String> page, int encodedBytes) {
       // Do not make uncommitted staged pages visible through another writer's cache.
-      if (cache.contains(account + ":" + identity))
+      if (cache.contains(account + ":" + identity)) {
         indexPages.put(account + ":" + identity, page, encodedBytes);
+      }
     }
 
     @Override
@@ -235,16 +258,20 @@ final class Repository {
 
     @Override
     public void orderedPage(String identity, OrderedIndex.Page page, int encodedBytes) {
-      if (cache.contains(account + ":" + identity))
+      if (cache.contains(account + ":" + identity)) {
         orderedPages.put(account + ":" + identity, page, encodedBytes);
+      }
     }
 
     /** Reuse only byte-identical JSON records whose pages belong to this account's batch. */
     String encodedRecord(String key, Map<String, Object> value, boolean inline) {
       ContentBatch active = batch.get();
-      if (active == null || !active.reuseEncodings) return null;
-      if (!active.account.equals(account))
+      if (active == null || !active.reuseEncodings) {
+        return null;
+      }
+      if (!active.account.equals(account)) {
         throw new IllegalStateException("Cross-account content batch");
+      }
       var known = active.encodings.known((inline ? "inline:" : "blocks:") + key);
       return known != null && value.equals(known.get("value"))
           ? (String) known.get("reference")
@@ -254,9 +281,12 @@ final class Repository {
     void rememberEncodedRecord(
         String key, Map<String, Object> value, boolean inline, String reference) {
       ContentBatch active = batch.get();
-      if (active == null || !active.reuseEncodings) return;
-      if (!active.account.equals(account))
+      if (active == null || !active.reuseEncodings) {
+        return;
+      }
+      if (!active.account.equals(account)) {
         throw new IllegalStateException("Cross-account content batch");
+      }
       // A cached address must survive this writer being discarded before its normal flush.
       // Publish immutable pages into the batch first; a failing batch publishes no encoding.
       active.add(account, staged);
@@ -274,7 +304,9 @@ final class Repository {
         // caller finishes a logical stage. Spill bounded chunks without publishing a mutable head.
         if (batch.get() != null
             && stagedBytes != 0
-            && stagedBytes + value.length > IMMUTABLE_BATCH_BYTES) flush();
+            && stagedBytes + value.length > IMMUTABLE_BATCH_BYTES) {
+          flush();
+        }
         staged.put(id, value.clone());
         stagedBytes += value.length;
       }
@@ -284,14 +316,19 @@ final class Repository {
     @Override
     public byte[] get(String identity) {
       byte[] value = staged.get(identity);
-      if (value == null && batch.get() != null) value = batch.get().get(account, identity);
-      if (value != null) return value.clone();
+      if (value == null && batch.get() != null) {
+        value = batch.get().get(account, identity);
+      }
+      if (value != null) {
+        return value.clone();
+      }
       String key = account + ":" + identity;
       value = cache.get(key);
       if (value == null) {
         value = store.content(account, identity);
-        if (!Json.hash(value).equals(identity))
+        if (!Json.hash(value).equals(identity)) {
           throw new IllegalStateException("Content identity mismatch");
+        }
         cache.put(key, value);
       }
       return value;
@@ -299,8 +336,12 @@ final class Repository {
 
     boolean commit(
         java.util.List<AtomicStore.Write> writes, java.util.List<AtomicStore.Check> checks) {
-      if (batch.get() != null) batch.get().flush();
-      if (!store.commitWithContent(writes, checks, account, staged)) return false;
+      if (batch.get() != null) {
+        batch.get().flush();
+      }
+      if (!store.commitWithContent(writes, checks, account, staged)) {
+        return false;
+      }
       remember();
       return true;
     }
@@ -319,7 +360,9 @@ final class Repository {
     /** Publish before a metadata transaction that is composed outside this blob writer. */
     void flushDurably() {
       flush();
-      if (batch.get() != null) batch.get().flush();
+      if (batch.get() != null) {
+        batch.get().flush();
+      }
     }
 
     private void remember() {
@@ -330,22 +373,30 @@ final class Repository {
 
     @Override
     public void prefetch(java.util.List<String> identities) {
-      if (identities.size() > BlobStore.READ_BATCH_SIZE)
+      if (identities.size() > BlobStore.READ_BATCH_SIZE) {
         throw new IllegalArgumentException("At most 100 content pages per batch");
+      }
       var missing = new java.util.ArrayList<String>();
       for (String id : new java.util.LinkedHashSet<>(identities)) {
         if (!staged.containsKey(id)
             && !cache.contains(account + ":" + id)
-            && (batch.get() == null || batch.get().get(account, id) == null)) missing.add(id);
+            && (batch.get() == null || batch.get().get(account, id) == null)) {
+          missing.add(id);
+        }
       }
-      if (missing.isEmpty()) return;
+      if (missing.isEmpty()) {
+        return;
+      }
       Map<String, byte[]> found = store.contentAll(account, missing);
       for (String id : missing) {
         byte[] value = found.get(id);
-        if (value == null || value.length > 128 * 1024 || !Json.hash(value).equals(id))
+        if (value == null || value.length > 128 * 1024 || !Json.hash(value).equals(id)) {
           throw new IllegalStateException("Missing or corrupt immutable content");
+        }
       }
-      for (String id : missing) cache.put(account + ":" + id, found.get(id));
+      for (String id : missing) {
+        cache.put(account + ":" + id, found.get(id));
+      }
     }
   }
 }

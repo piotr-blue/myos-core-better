@@ -93,7 +93,9 @@ class DynamoProjectedReadTest {
     result.put("sk", AttributeValue.fromS(KEY.sort()));
     result.put("revision", AttributeValue.fromN(Integer.toString(revision)));
     result.put("body", AttributeValue.fromB(SdkBytes.fromByteArray(body)));
-    if (digest) result.put("bodyHash", AttributeValue.fromS(Json.hash(body)));
+    if (digest) {
+      result.put("bodyHash", AttributeValue.fromS(Json.hash(body)));
+    }
     return Map.copyOf(result);
   }
 
@@ -106,13 +108,18 @@ class DynamoProjectedReadTest {
                 DynamoDbClient.class.getClassLoader(),
                 new Class<?>[] {DynamoDbClient.class},
                 (proxy, method, args) -> {
-                  if (method.getName().equals("close")) return null;
-                  if (!method.getName().equals("getItem"))
+                  if (method.getName().equals("close")) {
+                    return null;
+                  }
+                  if (!method.getName().equals("getItem")) {
                     throw new AssertionError(method.getName());
+                  }
                   GetItemRequest request = (GetItemRequest) args[0];
                   calls.add(request);
                   Map<String, AttributeValue> response = new HashMap<>(item);
-                  if (request.projectionExpression() != null) response.remove("body");
+                  if (request.projectionExpression() != null) {
+                    response.remove("body");
+                  }
                   return GetItemResponse.builder().item(response).build();
                 });
   }

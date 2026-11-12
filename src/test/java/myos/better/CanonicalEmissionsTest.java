@@ -62,7 +62,9 @@ class CanonicalEmissionsTest {
 
   private static List<Object> rows(int count) {
     List<Object> rows = new ArrayList<>();
-    for (int i = 0; i < count; i++) rows.add(Map.of("number", i, "label", "item-" + i));
+    for (int i = 0; i < count; i++) {
+      rows.add(Map.of("number", i, "label", "item-" + i));
+    }
     return rows;
   }
 }

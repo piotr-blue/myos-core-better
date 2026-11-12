@@ -78,11 +78,12 @@ class CoreAgentRevocationTest {
                   ConsoleProblem.class,
                   () -> agents.revoke(user, agent, "two", "same", Map.of("expectedRevision", 1L)))
               .code);
-      for (Object revision : List.of(0, -1, 1.5, "1"))
+      for (Object revision : List.of(0, -1, 1.5, "1")) {
         assertThrows(
             ConsoleProblem.class,
             () ->
                 agents.revoke(user, agent, "two", "invalid", Map.of("expectedRevision", revision)));
+      }
     }
   }
 

@@ -26,7 +26,9 @@ class DocumentLocksTest {
               .submit(
                   () -> {
                     DocumentLocks.Lease second = locks.tryAcquire("BB");
-                    if (second == null) return false;
+                    if (second == null) {
+                      return false;
+                    }
                     second.close();
                     return true;
                   })
@@ -83,7 +85,9 @@ class DocumentLocksTest {
                 }));
       }
       start.countDown();
-      for (var task : tasks) task.get(5, TimeUnit.SECONDS);
+      for (var task : tasks) {
+        task.get(5, TimeUnit.SECONDS);
+      }
     }
     assertEquals(256, completed.get());
     assertEquals(0, locks.size());

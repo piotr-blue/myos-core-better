@@ -69,7 +69,9 @@ final class Scenario {
 
   static Map<String, Object> order(String key, int payments) {
     Map<String, Object> paymentMap = new TreeMap<>();
-    for (int i = 0; i < payments; i++) paymentMap.put("p" + i, payment(key + "-p" + i));
+    for (int i = 0; i < payments; i++) {
+      paymentMap.put("p" + i, payment(key + "-p" + i));
+    }
     Map<String, Object> contracts = new TreeMap<>();
     contracts.put("input", Map.of("type", "Contracts/External Channel"));
     contracts.put(
@@ -211,8 +213,9 @@ final class Scenario {
 
   static Map<String, Object> benchmark(
       Core core, String account, int orders, int payments, int operations) {
-    if (orders < 1 || payments < 1 || payments > 8 || operations < 1)
+    if (orders < 1 || payments < 1 || payments > 8 || operations < 1) {
       throw new IllegalArgumentException("Invalid benchmark dimensions");
+    }
     Map<String, Object> prepared = populate(core, account, orders, payments);
     Map<String, Object> result = new TreeMap<>(probe(core, account, orders, payments, operations));
     result.put("setupMillis", prepared.get("setupMillis"));
@@ -221,11 +224,14 @@ final class Scenario {
 
   /** Resumable real-workflow preparation; no payment measurement is hidden in this operation. */
   static Map<String, Object> populate(Core core, String account, int orders, int payments) {
-    if (orders < 1 || payments < 1 || payments > 8)
+    if (orders < 1 || payments < 1 || payments > 8) {
       throw new IllegalArgumentException("Invalid preparation dimensions");
+    }
     long setup = System.nanoTime();
     Core.Result created = core.create(account, "agreement", "create", agreement());
-    if (!created.status().equals("APPLIED")) throw new IllegalStateException(created.toString());
+    if (!created.status().equals("APPLIED")) {
+      throw new IllegalStateException(created.toString());
+    }
     for (int i = 0; i < orders; i++) {
       Core.Result result =
           core.call(
@@ -236,10 +242,13 @@ final class Scenario {
               "addOrder",
               Map.of("key", "o" + i, "order", order("o" + i, payments)),
               i + 1L);
-      if (!result.status().equals("APPLIED")) throw new IllegalStateException(result.toString());
-      if (i % 32 == 31 || i == orders - 1)
+      if (!result.status().equals("APPLIED")) {
+        throw new IllegalStateException(result.toString());
+      }
+      if (i % 32 == 31 || i == orders - 1) {
         await(core, account, "initializedOrders", BigInteger.valueOf(i + 1L));
-      if (i % 256 == 255)
+      }
+      if (i % 256 == 255) {
         System.out.println(
             JsonText.of(
                 Map.of(
@@ -249,12 +258,14 @@ final class Scenario {
                     i + 1,
                     "elapsedSeconds",
                     (System.nanoTime() - setup) / 1e9)));
+      }
     }
     Object initialized =
         ((Map<?, ?>) core.inspect(account, "agreement", false).get("data"))
             .get("initializedOrders");
-    if (!BigInteger.valueOf(orders).equals(initialized))
+    if (!BigInteger.valueOf(orders).equals(initialized)) {
       throw new IllegalStateException("Wrong initialized order count: " + initialized);
+    }
     double setupMillis = (System.nanoTime() - setup) / 1e6;
     return Map.of(
         "phase",
@@ -288,8 +299,9 @@ final class Scenario {
       Core core, String account, int orders, int payments, int operations, int activeOrders) {
     long started = System.nanoTime();
     List<String> paths = storedOrderPaths(core, account);
-    if (paths.size() != orders)
+    if (paths.size() != orders) {
       throw new IllegalArgumentException("Requested order count differs from stored order links");
+    }
     double enumerationMillis = (System.nanoTime() - started) / 1e6;
     Map<String, Object> result =
         probe(core, account, orders, payments, operations, activeOrders, paths);
@@ -306,7 +318,9 @@ final class Scenario {
       for (Object item : (List<?>) page.get("items")) {
         String path = (String) ((Map<?, ?>) item).get("path");
         List<String> parts = blue.Pointer.parse(path).segments();
-        if (parts.size() == 2 && parts.getFirst().equals("orders")) paths.add(path);
+        if (parts.size() == 2 && parts.getFirst().equals("orders")) {
+          paths.add(path);
+        }
       }
       cursor = (String) page.get("nextCursor");
     } while (cursor != null);
@@ -321,8 +335,9 @@ final class Scenario {
       int operations,
       int activeOrders,
       List<String> orderPaths) {
-    if (activeOrders < 1 || activeOrders > orders)
+    if (activeOrders < 1 || activeOrders > orders) {
       throw new IllegalArgumentException("Active orders must be within the stored order count");
+    }
     List<Double> endToEnd = new ArrayList<>(),
         local = new ArrayList<>(),
         commit = new ArrayList<>();
@@ -335,8 +350,9 @@ final class Scenario {
         Repository.number(
             ((Map<?, ?>) core.inspect(account, "agreement", false).get("data"))
                 .get("initializedOrders"));
-    if (storedOrders < orders)
+    if (storedOrders < orders) {
       throw new IllegalArgumentException("Requested order population exceeds the stored graph");
+    }
     int warmup = 128;
     Map<String, Long> storage = new TreeMap<>();
     Map<String, Long> sessions = new TreeMap<>();
@@ -359,7 +375,9 @@ final class Scenario {
               Map.of("requestId", i),
               orders + i + 1L);
       double committed = (System.nanoTime() - started) / 1e6;
-      if (!result.status().equals("APPLIED")) throw new IllegalStateException(result.toString());
+      if (!result.status().equals("APPLIED")) {
+        throw new IllegalStateException(result.toString());
+      }
       await(core, account, "paidTotal", base.add(BigInteger.valueOf(42L * (i + 1))));
       if (i >= warmup) {
         local.add(result.executionNanos() / 1e6);
@@ -374,8 +392,9 @@ final class Scenario {
         core.sessionStatistics()
             .forEach(
                 (key, value) -> {
-                  if (SESSION_COUNTERS.contains(key))
+                  if (SESSION_COUNTERS.contains(key)) {
                     sessions.merge(key, value - beforeSessions.getOrDefault(key, 0L), Long::sum);
+                  }
                 });
       }
     }
@@ -429,9 +448,13 @@ final class Scenario {
       if (expected.equals(actual)
           || field.equals("initializedOrders")
               && actual instanceof BigInteger count
-              && count.compareTo(expected) >= 0) return;
+              && count.compareTo(expected) >= 0) {
+        return;
+      }
       try {
-        if (progress == 0) Thread.sleep(10);
+        if (progress == 0) {
+          Thread.sleep(10);
+        }
       } catch (InterruptedException error) {
         Thread.currentThread().interrupt();
         throw new IllegalStateException(error);

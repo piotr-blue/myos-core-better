@@ -28,7 +28,9 @@ class GraphMetadataTest {
     var contracts = Contracts.newBuilder().language(language).build();
     var store = new ContentGuard();
     Map<String, Object> children = new LinkedHashMap<>();
-    for (int i = 0; i < 118; i++) children.put("child-" + i, Map.of("count", i));
+    for (int i = 0; i < 118; i++) {
+      children.put("child-" + i, Map.of("count", i));
+    }
     children.put("a/b~c", Map.of("count", 118));
     children.put("\uE000", Map.of("count", 119));
     children.put("\uD800\uDC00", Map.of("count", 120));
@@ -584,8 +586,9 @@ class GraphMetadataTest {
     }
 
     public byte[] content(String account, String identity) {
-      if (denied.contains(identity))
+      if (denied.contains(identity)) {
         throw new AssertionError("Metadata read opened Language content");
+      }
       return delegate.content(account, identity);
     }
 

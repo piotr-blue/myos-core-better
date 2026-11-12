@@ -28,16 +28,20 @@ record RetainedTimeline(
     Repository.identifier(account);
     Objects.requireNonNull(store);
     Objects.requireNonNull(timeline);
-    if (position < 1) throw new IllegalArgumentException("Invalid acquired timeline position");
+    if (position < 1) {
+      throw new IllegalArgumentException("Invalid acquired timeline position");
+    }
     Objects.requireNonNull(content);
     definitions = Map.copyOf(definitions);
     Objects.requireNonNull(definitionContent);
-    if (!definitionContent.isEmpty() && !definitionContent.matches("[a-f0-9]{64}"))
+    if (!definitionContent.isEmpty() && !definitionContent.matches("[a-f0-9]{64}")) {
       throw new IllegalArgumentException("Invalid shared definition catalogue");
+    }
   }
 
   void requireDestination(String destinationAccount, AtomicStore destinationStore) {
-    if (!account.equals(destinationAccount) || store != destinationStore)
+    if (!account.equals(destinationAccount) || store != destinationStore) {
       throw new IllegalArgumentException("Timeline content storage scope mismatch");
+    }
   }
 }

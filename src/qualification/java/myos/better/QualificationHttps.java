@@ -36,12 +36,16 @@ final class QualificationHttps implements AutoCloseable {
         TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     defaults.init((KeyStore) null);
     int certificate = 0;
-    for (TrustManager manager : defaults.getTrustManagers())
-      if (manager instanceof X509TrustManager roots)
-        for (var issuer : roots.getAcceptedIssuers())
+    for (TrustManager manager : defaults.getTrustManagers()) {
+      if (manager instanceof X509TrustManager roots) {
+        for (var issuer : roots.getAcceptedIssuers()) {
           trusted.setCertificateEntry("public-root-" + certificate++, issuer);
-    for (String alias : Collections.list(keys.aliases()))
+        }
+      }
+    }
+    for (String alias : Collections.list(keys.aliases())) {
       trusted.setCertificateEntry("fixture-" + alias, keys.getCertificate(alias));
+    }
     try (var output = Files.newOutputStream(trustStore)) {
       trusted.store(output, "test-fixture".toCharArray());
     }

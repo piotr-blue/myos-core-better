@@ -25,7 +25,7 @@ class CoreGasProvisioningTest {
         var workers = Executors.newVirtualThreadPerTaskExecutor()) {
       var barrier = new CyclicBarrier(8);
       var results = new ArrayList<Future<Map<String, Object>>>();
-      for (int i = 0; i < 8; i++)
+      for (int i = 0; i < 8; i++) {
         results.add(
             workers.submit(
                 () -> {
@@ -34,10 +34,12 @@ class CoreGasProvisioningTest {
                       .create(
                           "alice", "same", INPUT, Map.of("hostExecution", OwnerRecords.EDITION));
                 }));
+      }
       var first = results.getFirst().get(10, TimeUnit.SECONDS);
-      for (var result : results)
+      for (var result : results) {
         assertEquals(
             Json.hash(Json.bytes(first)), Json.hash(Json.bytes(result.get(10, TimeUnit.SECONDS))));
+      }
       String account = (String) first.get("accountId");
       var gas = new OwnerGas(account);
       var metadata = new OwnerMetadata(store, account);

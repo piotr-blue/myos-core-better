@@ -12,7 +12,9 @@ interface AtomicStore extends AutoCloseable {
   record Row(Key key, long version, Map<String, Object> value) {
     public Row {
       value = Map.copyOf(value);
-      if (version < 1) throw new IllegalArgumentException("Invalid record version");
+      if (version < 1) {
+        throw new IllegalArgumentException("Invalid record version");
+      }
     }
   }
 
@@ -21,8 +23,9 @@ interface AtomicStore extends AutoCloseable {
   record Write(Key key, long expected, Row next) {
     public Write {
       if (expected < 0
-          || next != null && (!next.key().equals(key) || next.version() != expected + 1))
+          || next != null && (!next.key().equals(key) || next.version() != expected + 1)) {
         throw new IllegalArgumentException("Invalid conditional write");
+      }
     }
 
     static Write put(Key key, long expected, Map<String, Object> value) {
@@ -44,11 +47,15 @@ interface AtomicStore extends AutoCloseable {
 
   /** Strongly consistent per-key reads; this is not a multi-key transactional snapshot. */
   default Map<Key, Row> getAll(List<Key> keys) {
-    if (keys.size() > 100) throw new IllegalArgumentException("At most 100 keys per batch");
+    if (keys.size() > 100) {
+      throw new IllegalArgumentException("At most 100 keys per batch");
+    }
     Map<Key, Row> result = new java.util.LinkedHashMap<>();
     for (Key key : new java.util.LinkedHashSet<>(keys)) {
       Row row = get(key);
-      if (row != null) result.put(key, row);
+      if (row != null) {
+        result.put(key, row);
+      }
     }
     return Map.copyOf(result);
   }
@@ -71,7 +78,9 @@ interface AtomicStore extends AutoCloseable {
    */
   default boolean commitWithContent(
       List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
-    if (!pages.isEmpty()) publishContent(account, pages);
+    if (!pages.isEmpty()) {
+      publishContent(account, pages);
+    }
     return commit(writes, checks);
   }
 
@@ -81,11 +90,13 @@ interface AtomicStore extends AutoCloseable {
    * Reads at most 100 immutable pages; missing pages fail rather than returning a partial batch.
    */
   default Map<String, byte[]> contentAll(String account, List<String> identities) {
-    if (identities.size() > BlobStore.READ_BATCH_SIZE)
+    if (identities.size() > BlobStore.READ_BATCH_SIZE) {
       throw new IllegalArgumentException("At most 100 content pages per batch");
+    }
     Map<String, byte[]> result = new java.util.LinkedHashMap<>();
-    for (String id : new java.util.LinkedHashSet<>(identities))
+    for (String id : new java.util.LinkedHashSet<>(identities)) {
       result.put(id, content(account, id));
+    }
     return Map.copyOf(result);
   }
 

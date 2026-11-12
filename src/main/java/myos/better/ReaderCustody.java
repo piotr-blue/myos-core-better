@@ -23,10 +23,13 @@ final class ReaderCustody implements SigningSecret.Source, AutoCloseable {
   static ReaderCustody configured(Map<String, String> environment) {
     String prefix = environment.get("MYOS_READER_SECRET_PREFIX");
     String account = environment.get("MYOS_READER_AWS_ACCOUNT");
-    if (prefix == null && account == null) return null;
-    if (prefix == null || account == null)
+    if (prefix == null && account == null) {
+      return null;
+    }
+    if (prefix == null || account == null) {
       throw new IllegalArgumentException(
           "Reader custody requires an explicit prefix and AWS account");
+    }
     String region = environment.getOrDefault("AWS_REGION", "eu-west-1");
     SecretsManagerClient client =
         SecretsManagerClient.builder()
@@ -59,8 +62,9 @@ final class ReaderCustody implements SigningSecret.Source, AutoCloseable {
   ReaderCustody(SecretsManagerClient secrets, String region, String awsAccount, String prefix) {
     if (!region.matches("[a-z]{2}-[a-z]+-[0-9]")
         || !awsAccount.matches("[0-9]{12}")
-        || !prefix.matches("myos-better-reader-[a-z0-9-]{1,64}-"))
+        || !prefix.matches("myos-better-reader-[a-z0-9-]{1,64}-")) {
       throw new IllegalArgumentException("Explicit isolated reader-custody scope required");
+    }
     this.secrets = Objects.requireNonNull(secrets);
     this.prefix = prefix;
     arnPrefix = "arn:aws:secretsmanager:" + region + ":" + awsAccount + ":secret:";
@@ -107,7 +111,9 @@ final class ReaderCustody implements SigningSecret.Source, AutoCloseable {
         value = getPublished(name, version);
       }
       requireIdentity(value.arn(), value.name(), value.versionId(), version);
-      if (!name.equals(value.name())) throw new IllegalArgumentException();
+      if (!name.equals(value.name())) {
+        throw new IllegalArgumentException();
+      }
       String key =
           (String)
               Json.object(value.secretString().getBytes(StandardCharsets.UTF_8)).get("publicKey");
@@ -123,15 +129,17 @@ final class ReaderCustody implements SigningSecret.Source, AutoCloseable {
   @Override
   public String read(SigningSecret.Reference reference) {
     if (!allowedArn.matcher(reference.arn()).matches()
-        || !reference.version().matches("[a-f0-9]{64}"))
+        || !reference.version().matches("[a-f0-9]{64}")) {
       throw new IllegalArgumentException("Reader reference is outside configured custody");
+    }
     String name = prefix + reference.version();
     requireIdentity(reference.arn(), name, reference.version(), reference.version());
     try {
       GetSecretValueResponse value = getPublished(reference.arn(), reference.version());
       requireIdentity(value.arn(), value.name(), value.versionId(), reference.version());
-      if (!reference.arn().equals(value.arn()) || !name.equals(value.name()))
+      if (!reference.arn().equals(value.arn()) || !name.equals(value.name())) {
         throw new IllegalArgumentException();
+      }
       return value.secretString();
     } catch (RuntimeException failure) {
       throw new IllegalStateException("Pinned reader custody is unavailable");
@@ -153,8 +161,9 @@ final class ReaderCustody implements SigningSecret.Source, AutoCloseable {
         || !allowedArn.matcher(arn).matches()
         || !name.equals(prefix + expectedVersion)
         || !expectedVersion.equals(version)
-        || !arn.startsWith(arnPrefix + name + "-"))
+        || !arn.startsWith(arnPrefix + name + "-")) {
       throw new IllegalArgumentException("Reader identity mismatch");
+    }
   }
 
   private static String generate(
@@ -166,8 +175,12 @@ final class ReaderCustody implements SigningSecret.Source, AutoCloseable {
       KeyPair pair = KeyPairGenerator.getInstance("Ed25519").generateKeyPair();
       EdECPublicKey publicKey = (EdECPublicKey) pair.getPublic();
       byte[] y = publicKey.getPoint().getY().toByteArray(), encoded = new byte[32];
-      for (int i = 0; i < encoded.length && i < y.length; i++) encoded[i] = y[y.length - 1 - i];
-      if (publicKey.getPoint().isXOdd()) encoded[31] |= (byte) 0x80;
+      for (int i = 0; i < encoded.length && i < y.length; i++) {
+        encoded[i] = y[y.length - 1 - i];
+      }
+      if (publicKey.getPoint().isXOdd()) {
+        encoded[31] |= (byte) 0x80;
+      }
       byte[] privateKey = pair.getPrivate().getEncoded();
       try {
         return JsonText.of(

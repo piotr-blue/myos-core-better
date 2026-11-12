@@ -23,7 +23,9 @@ class TimelineSelectionTest {
     TimelineArchive.View view = archive.view();
     TimelineArchive.Pending a = view.next(TimelineArchive.Cursor.initial());
     long reads = store.statistics().get("get.calls");
-    for (int i = 0; i < 100; i++) assertSame(a, view.next(TimelineArchive.Cursor.initial()));
+    for (int i = 0; i < 100; i++) {
+      assertSame(a, view.next(TimelineArchive.Cursor.initial()));
+    }
     TimelineArchive.Pending b = view.next(a.after());
     assertEquals(second.blueId().value(), b.entry().blueId());
     assertEquals(

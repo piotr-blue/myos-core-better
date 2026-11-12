@@ -83,7 +83,9 @@ final class PrivateTimelineTransportFixture implements TimelineTransport {
       unsignedControlRequests++;
     }
     String route = target.toString().substring(base.length());
-    if (route.equals("/timelines/content")) contentRequests++;
+    if (route.equals("/timelines/content")) {
+      contentRequests++;
+    }
     try {
       return new Reply(
           200,

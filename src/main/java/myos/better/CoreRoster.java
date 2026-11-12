@@ -45,12 +45,14 @@ final class CoreRoster {
     for (var member : members) {
       String user = (String) member.get("userId");
       String email;
-      if (user.equals(session.userId())) email = session.principal().email();
-      else {
+      if (user.equals(session.userId())) {
+        email = session.principal().email();
+      } else {
         var identity = store.get(CoreWorkspaces.accountKey(user, "IDENTITY"));
-        if (identity == null)
+        if (identity == null) {
           throw new ConsoleProblem(
               503, "identity_unavailable", "Member identity is temporarily unavailable.");
+        }
         email = (String) identity.value().get("email");
       }
       var value = select(member, "userId", "generation", "revision", "role", "status");
@@ -96,9 +98,10 @@ final class CoreRoster {
   private void require(CoreAccounts.Session session, boolean administrator) {
     session.principal().requireUser();
     var membership = workspaces.membership(session.userId(), session.principal().account());
-    if (administrator && !Set.of("ADMIN", "OWNER").contains(membership.get("role")))
+    if (administrator && !Set.of("ADMIN", "OWNER").contains(membership.get("role"))) {
       throw new ConsoleProblem(
           403, "account_admin_required", "An account administrator is required.");
+    }
   }
 
   private List<Map<String, Object>> rows(String account, String prefix) {
@@ -108,10 +111,13 @@ final class CoreRoster {
       var page =
           store.query(
               CoreWorkspaces.accountKey(account, "ACCOUNT").partition(), prefix, after, 100);
-      for (var row : page.rows()) result.add(row.value());
-      if (result.size() > 4096)
+      for (var row : page.rows()) {
+        result.add(row.value());
+      }
+      if (result.size() > 4096) {
         throw new ConsoleProblem(
             422, "account_roster_limit", "Account roster exceeds the supported bound.");
+      }
       after = page.after();
     } while (after != null);
     return result;
@@ -119,7 +125,11 @@ final class CoreRoster {
 
   private static Map<String, Object> select(Map<String, Object> row, String... fields) {
     var result = new LinkedHashMap<String, Object>();
-    for (String field : fields) if (row.get(field) != null) result.put(field, row.get(field));
+    for (String field : fields) {
+      if (row.get(field) != null) {
+        result.put(field, row.get(field));
+      }
+    }
     return result;
   }
 }

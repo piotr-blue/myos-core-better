@@ -11,13 +11,15 @@ import java.util.UUID;
  */
 public final class AddOrderProbe {
   public static void main(String[] args) throws java.io.IOException {
-    if ((args.length != 1 && args.length != 3) || !args[0].startsWith("bench-"))
+    if ((args.length != 1 && args.length != 3) || !args[0].startsWith("bench-")) {
       throw new IllegalArgumentException(
           "Expected existing bench-* account, optional warmups and samples");
+    }
     int warmup = args.length == 3 ? Integer.parseInt(args[1]) : 16;
     int measured = args.length == 3 ? Integer.parseInt(args[2]) : 48;
-    if (warmup < 1 || warmup > 1000 || measured < 1 || measured > 1000)
+    if (warmup < 1 || warmup > 1000 || measured < 1 || measured > 1000) {
       throw new IllegalArgumentException("Warmups and samples must be 1..1000");
+    }
     String configuration = System.getenv("MYOS_RUNTIME");
     RuntimeCatalog runtime =
         configuration == null
@@ -43,12 +45,13 @@ public final class AddOrderProbe {
       core.create(small, "agreement", "create", Scenario.agreement());
       String largeEdition = (String) core.head(large, "agreement").get("edition");
       String smallEdition = (String) core.head(small, "agreement").get("edition");
-      if (!largeEdition.equals(smallEdition))
+      if (!largeEdition.equals(smallEdition)) {
         throw new IllegalArgumentException(
             "Growth comparison requires the same stored edition: "
                 + smallEdition
                 + " versus "
                 + largeEdition);
+      }
       long initialLarge = initialized(core, large);
       Map<String, List<Map<String, Object>>> samples = new LinkedHashMap<>();
       samples.put("small", new ArrayList<>());
@@ -64,13 +67,15 @@ public final class AddOrderProbe {
           Core.Result result =
               core.call(account, "agreement", "add-" + key, "input", "addOrder", request, i + 1L);
           double commit = (System.nanoTime() - started) / 1e6;
-          if (!result.status().equals("APPLIED"))
+          if (!result.status().equals("APPLIED")) {
             throw new IllegalStateException(result.toString());
+          }
           long expected = (label.equals("small") ? 0 : initialLarge) + i + 1;
           long deadline = System.nanoTime() + java.time.Duration.ofSeconds(30).toNanos();
           while (initialized(core, account) != expected) {
-            if (System.nanoTime() >= deadline)
+            if (System.nanoTime() >= deadline) {
               throw new IllegalStateException("Initialization stalled");
+            }
             core.drain(64);
           }
           double complete = (System.nanoTime() - started) / 1e6;

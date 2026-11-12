@@ -49,8 +49,9 @@ class CoreBootstrapJobsTest {
             public Map<String, Object> execute(
                 String account, String command, Map<String, Object> prepared) {
               CoreBootstrapParticipants.accept(store, account, command, prepared);
-              if (executions.incrementAndGet() == 1)
+              if (executions.incrementAndGet() == 1) {
                 throw new IllegalStateException("Lost action response");
+              }
               return Map.of("sessionId", command);
             }
           };
@@ -203,7 +204,9 @@ class CoreBootstrapJobsTest {
               assertEquals(Map.of("document", "original"), prepared);
               var result =
                   sideEffects.computeIfAbsent(command, ignored -> Map.of("sessionId", command));
-              if (executions.get() == 1) throw new IllegalStateException("Lost side-effect reply");
+              if (executions.get() == 1) {
+                throw new IllegalStateException("Lost side-effect reply");
+              }
               return result;
             }
           };
@@ -304,7 +307,9 @@ class CoreBootstrapJobsTest {
               long due = Repository.number(store.get(key("alice", "create")).value().get("due"));
               assertTrue(due > clock.millis() && due <= clock.millis() + 30_000);
             }
-          } else assertNull(store.get(key("alice", "create")));
+          } else {
+            assertNull(store.get(key("alice", "create")));
+          }
           assertEquals(0, action.executions.get());
         }
       }
@@ -354,7 +359,9 @@ class CoreBootstrapJobsTest {
           };
       try (var jobs = jobs(store, action, new MutableClock());
           var client = Executors.newSingleThreadExecutor()) {
-        for (int i = 0; i < 144; i++) jobs.enqueue(session("alice"), "create-" + i, Map.of());
+        for (int i = 0; i < 144; i++) {
+          jobs.enqueue(session("alice"), "create-" + i, Map.of());
+        }
         assertEquals(CoreBootstrapJobs.MAX_HINTS, jobs.hintCount());
         jobs.start();
         try {
@@ -371,8 +378,9 @@ class CoreBootstrapJobsTest {
         assertTrue(maximum.get() <= CoreBootstrapJobs.WORKERS);
         assertEquals(144, action.executions.get());
       }
-      for (int i = 0; i < 144; i++)
+      for (int i = 0; i < 144; i++) {
         assertEquals("SUCCEEDED", receipt(store, "alice", "create-" + i).get("status"));
+      }
     }
   }
 
@@ -518,7 +526,9 @@ class CoreBootstrapJobsTest {
     }
 
     public boolean commit(List<Write> writes, List<Check> checks) {
-      if (beforeCommit != null) beforeCommit.accept(writes);
+      if (beforeCommit != null) {
+        beforeCommit.accept(writes);
+      }
       boolean applied = delegate.commit(writes, checks);
       if (applied && loseReply != null && loseReply.test(writes)) {
         loseReply = null;
@@ -532,7 +542,9 @@ class CoreBootstrapJobsTest {
     }
 
     public void publishContent(String account, Map<String, byte[]> pages) {
-      if (failContent) throw new IllegalStateException("Deliberate content failure");
+      if (failContent) {
+        throw new IllegalStateException("Deliberate content failure");
+      }
       delegate.publishContent(account, pages);
     }
 

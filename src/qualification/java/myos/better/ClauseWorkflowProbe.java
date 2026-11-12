@@ -11,8 +11,9 @@ public final class ClauseWorkflowProbe {
   private ClauseWorkflowProbe() {}
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 2 || !args[1].startsWith("clause-qa-"))
+    if (args.length != 2 || !args[1].startsWith("clause-qa-")) {
       throw new IllegalArgumentException("Expected DynamoDB table and isolated clause-qa account");
+    }
     System.setProperty("myos.owners.fast", "true");
     String account = args[1];
     long loading = System.nanoTime();
@@ -82,7 +83,9 @@ public final class ClauseWorkflowProbe {
         runner.start();
         List<Map<String, Object>> measurements = new ArrayList<>();
         int count = Integer.getInteger("blue.probe.clauseOrders", 2);
-        if (count < 1 || count > 20) throw new IllegalArgumentException("Use 1..20 clause orders");
+        if (count < 1 || count > 20) {
+          throw new IllegalArgumentException("Use 1..20 clause orders");
+        }
         for (int n = 1; n <= count; n++) {
           String key = "order-" + n;
           measurements.add(
@@ -152,11 +155,13 @@ public final class ClauseWorkflowProbe {
                   transfer,
                   () -> number(value(service, account, agreement, "/paidTotal")) == expected));
           if (number(value(service, account, order, "/paidTotal")) != 200
-              || number(value(service, account, payment, "/payment/completed")) != 200)
+              || number(value(service, account, payment, "/payment/completed")) != 200) {
             throw new AssertionError("Payment did not propagate through Order to Agreement");
+          }
         }
-        if (((List<?>) timelines.list(account, Map.of()).get("items")).size() != 2)
+        if (((List<?>) timelines.list(account, Map.of()).get("items")).size() != 2) {
           throw new AssertionError("Embedded documents must reuse the two participant timelines");
+        }
         Map<String, Object> report = new LinkedHashMap<>();
         report.put("scenario", "published-clause-console-journey");
         report.put("account", account);
@@ -210,10 +215,13 @@ public final class ClauseWorkflowProbe {
     String timeline = null;
     for (Object raw : (List<?>) documents.operations(account, document).get("channels")) {
       Map<String, Object> row = object(raw);
-      if (((Collection<?>) row.get("selectors")).contains(channel))
+      if (((Collection<?>) row.get("selectors")).contains(channel)) {
         timeline = (String) row.get("timeline");
+      }
     }
-    if (timeline == null) throw new AssertionError("Channel unavailable: " + channel);
+    if (timeline == null) {
+      throw new AssertionError("Channel unavailable: " + channel);
+    }
     long nextVersion = number(service.graphs().head(account, root).get("version")) + 1;
     try (jdk.jfr.Recording recording = new jdk.jfr.Recording()) {
       recording.enable("myos.OwnerExecution");
@@ -238,33 +246,41 @@ public final class ClauseWorkflowProbe {
                   "request",
                   request));
       double submitMillis = elapsed(start);
-      if (!"SUBMITTED".equals(submitted.get("status")))
+      if (!"SUBMITTED".equals(submitted.get("status"))) {
         throw new AssertionError("Input was not submitted");
+      }
       long deadline = System.nanoTime() + Duration.ofSeconds(60).toNanos();
       Long rootVersion = null;
       Double stateObservedMillis = null;
       while (rootVersion == null || stateObservedMillis == null) {
-        if (stateObservedMillis == null && complete.getAsBoolean())
+        if (stateObservedMillis == null && complete.getAsBoolean()) {
           stateObservedMillis = elapsed(start);
+        }
         if (rootVersion == null) {
           long latest = number(service.graphs().head(account, root).get("version"));
           for (; nextVersion <= latest; nextVersion++) {
             var publication = service.graphs().history(account, root, nextVersion);
             if (!Objects.equals(
-                object(publication.get("input")).get("entry"), submitted.get("entry"))) continue;
-            if (!"APPLIED".equals(object(publication.get("outcome")).get("status")))
+                object(publication.get("input")).get("entry"), submitted.get("entry"))) {
+              continue;
+            }
+            if (!"APPLIED".equals(object(publication.get("outcome")).get("status"))) {
               throw new AssertionError("Submitted entry did not apply at the Agreement");
+            }
             rootVersion = nextVersion;
             break;
           }
         }
-        if (rootVersion != null && stateObservedMillis != null) break;
-        if (System.nanoTime() > deadline)
+        if (rootVersion != null && stateObservedMillis != null) {
+          break;
+        }
+        if (System.nanoTime() > deadline) {
           throw new AssertionError(
               "Timed out waiting for "
                   + operation
                   + ": "
                   + JsonText.of(service.graphs().processing(account, root)));
+        }
         Thread.sleep(75);
       }
       double completedMillis = elapsed(start);
@@ -312,7 +328,9 @@ public final class ClauseWorkflowProbe {
                     "encodedBytes",
                     event.getLong("encodedBytes")));
           }
-          if (!event.getEventType().getName().equals("myos.OwnerExecution")) continue;
+          if (!event.getEventType().getName().equals("myos.OwnerExecution")) {
+            continue;
+          }
           Map<String, Object> row = new LinkedHashMap<>();
           row.put("owner", event.getString("owner"));
           row.put("entry", event.getString("entry"));
@@ -320,8 +338,10 @@ public final class ClauseWorkflowProbe {
           row.put("mode", event.getString("mode"));
           row.put("fallback", event.getString("fallback"));
           row.put("totalMillis", event.getDuration().toNanos() / 1e6);
-          for (String name : List.of("restore", "admission", "execution", "preparation", "commit"))
+          for (String name :
+              List.of("restore", "admission", "execution", "preparation", "commit")) {
             row.put(name + "Millis", event.getLong(name + "Nanos") / 1e6);
+          }
           attempts.add(row);
         }
       } finally {
@@ -380,7 +400,9 @@ public final class ClauseWorkflowProbe {
   private static String child(TimelineService service, String account, String id, String path) {
     for (Object raw : (List<?>) service.graphs().children(account, id, null).get("items")) {
       Map<String, Object> row = object(raw);
-      if (path.equals(row.get("path"))) return (String) row.get("document");
+      if (path.equals(row.get("path"))) {
+        return (String) row.get("document");
+      }
     }
     return null;
   }

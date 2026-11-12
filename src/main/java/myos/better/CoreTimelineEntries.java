@@ -30,11 +30,13 @@ final class CoreTimelineEntries {
       String account, BlueId timeline, String command, Map<String, Object> input) {
     RuntimeConfiguration.fields(
         input, Set.of("inputMode", "actor", "message", "prevEntry", "documentId", "authority"));
-    if (!input.containsKey("documentId"))
+    if (!input.containsKey("documentId")) {
       return timelines.append(account, timeline, command, input);
-    if (input.containsKey("authority"))
+    }
+    if (input.containsKey("authority")) {
       throw new ConsoleProblem(
           501, "CORE_PARITY_PENDING", "Delegated entry authority is not yet ported.");
+    }
     String initial = RuntimeConfiguration.text(input.get("documentId"), "documentId");
     try {
       new BlueId(initial);
@@ -43,7 +45,9 @@ final class CoreTimelineEntries {
           422, "invalid_document_id", "Use the document's pre-initialization BlueId.");
     }
     String id = api.target(account, initial);
-    if (!input.containsKey("message")) throw new IllegalArgumentException("message is required");
+    if (!input.containsKey("message")) {
+      throw new IllegalArgumentException("message is required");
+    }
     String mode = RuntimeConfiguration.text(input.getOrDefault("inputMode", "source"), "inputMode");
     var evidence = documents.evidence(account, id);
     LanguageContent message =
@@ -64,9 +68,13 @@ final class CoreTimelineEntries {
     }
     var operation = parsed.orElseThrow();
     if (operation.document().isEmpty()) {
-      if (!mode.equals("source")) throw targetRequired();
+      if (!mode.equals("source")) {
+        throw targetRequired();
+      }
       Object authored = CoreSourceInputs.parsed(input.get("message"));
-      if (!(authored instanceof Map<?, ?> raw) || raw.containsKey("blueId")) throw targetRequired();
+      if (!(authored instanceof Map<?, ?> raw) || raw.containsKey("blueId")) {
+        throw targetRequired();
+      }
       var updated = new LinkedHashMap<>(RuntimeConfiguration.object(raw, "message"));
       updated.put("document", ProviderSigning.ref(new BlueId(initial)));
       message =
@@ -87,11 +95,12 @@ final class CoreTimelineEntries {
                     channel ->
                         timeline.value().equals(channel.get("timeline"))
                             && Boolean.TRUE.equals(channel.get("writable")));
-    if (!writer)
+    if (!writer) {
       throw new ConsoleProblem(
           422,
           "document_writer_mismatch",
           "The selected Timeline is not a writer channel of this document.");
+    }
     String intent = "timeline-entry-" + Json.hash(Json.bytes(List.of(timeline.value(), command)));
     return timelines.publishOperation(
         account,

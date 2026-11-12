@@ -386,10 +386,14 @@ class TimelineConfigurationTest {
     }
 
     public boolean commit(List<Write> writes, List<Check> checks) {
-      if (writes.stream().noneMatch(write -> write.key().partition().endsWith("#TIMELINE_CONFIG")))
+      if (writes.stream()
+          .noneMatch(write -> write.key().partition().endsWith("#TIMELINE_CONFIG"))) {
         return delegate.commit(writes, checks);
+      }
       calls++;
-      if (calls == 1 && mode.equals("retry")) return false;
+      if (calls == 1 && mode.equals("retry")) {
+        return false;
+      }
       if (calls == 1 && mode.equals("conflict")) {
         Write state =
             writes.stream()

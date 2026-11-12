@@ -58,11 +58,17 @@ public final class PublishedContentReadProbe {
         start = System.nanoTime();
         contents.retain("probe", value, false);
         double retentionMillis = (System.nanoTime() - start) / 1e6;
-        if (!source.blueId().equals(value.blueId())) throw new AssertionError("Identity changed");
+        if (!source.blueId().equals(value.blueId())) {
+          throw new AssertionError("Identity changed");
+        }
         String hash = Json.hash(Json.bytes(ProviderSigning.wire(value)));
-        if (!hash.equals(expectedWireHash)) throw new AssertionError("Presentation changed");
+        if (!hash.equals(expectedWireHash)) {
+          throw new AssertionError("Presentation changed");
+        }
         if (contents.language("probe").read(source.blueId()).at("/history/sequence").integer()
-            != length - 1) throw new AssertionError("Dependency lost");
+            != length - 1) {
+          throw new AssertionError("Dependency lost");
+        }
         samples.add(
             Map.of(
                 "displayMillis",

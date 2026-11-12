@@ -40,7 +40,9 @@ public final class GraphOperationPreflightProbe {
     long expectedLoads = Long.getLong("myos.probe.expectedLoads", 0L);
     for (int count : List.of(16, 256, 1024)) {
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       children.put(
           "child-0",
           Map.of(
@@ -120,10 +122,13 @@ public final class GraphOperationPreflightProbe {
           if (!parsed.document().equals(Optional.of(target.blueId()))
               || !parsed.operation().equals("increment")
               || !parsed.channel().equals("owner")
-              || !parsed.requireExactDocumentVersion()) throw new AssertionError("Request changed");
+              || !parsed.requireExactDocumentVersion()) {
+            throw new AssertionError("Request changed");
+          }
           long loads = reader.statistics().get("graphSessions.loads");
-          if (loads != expectedLoads)
+          if (loads != expectedLoads) {
             throw new AssertionError("Unexpected execution session load: " + loads);
+          }
           samples.add(Map.of("millis", millis, "sessionLoads", loads, "warmup", i < 2));
         }
       }

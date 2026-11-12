@@ -34,7 +34,9 @@ final class CoreInputDefinition {
   private record Selected(LanguageContent pattern, String requestPath) {}
 
   private Selected select(LanguageContent pattern, String path) {
-    if (path.isEmpty()) return new Selected(pattern, "");
+    if (path.isEmpty()) {
+      return new Selected(pattern, "");
+    }
     check(
         path.startsWith("/") && !path.matches("(?s).*~(?![01]).*"),
         "invalid_descriptor_path",
@@ -46,20 +48,24 @@ final class CoreInputDefinition {
       LanguageContent next = null;
       if (step.equals("fields") && i + 1 < parts.length) {
         String field = unescape(parts[++i]);
-        if (pattern.resolve().declaredFields().contains(field))
+        if (pattern.resolve().declaredFields().contains(field)) {
           next = values.child(pattern, "/" + escape(field));
+        }
         requestPath = append(requestPath, escape(field));
       } else if (step.equals("items") && i + 1 < parts.length) {
         String index = parts[++i];
         if (index.matches("0|[1-9][0-9]{0,8}")
             && pattern.resolve().kind().equals("list")
-            && Integer.parseInt(index) < values.size(pattern))
+            && Integer.parseInt(index) < values.size(pattern)) {
           next = values.child(pattern, "/items/" + index);
+        }
         requestPath =
             append(requestPath, (pattern.resolve().type().isPresent() ? "items/" : "") + index);
       } else if (Set.of("item", "key", "value").contains(step)) {
         String type = values.slot(pattern, step);
-        if (type != null) next = values.type(type);
+        if (type != null) {
+          next = values.type(type);
+        }
         requestPath = null;
       }
       check(
@@ -95,12 +101,15 @@ final class CoreInputDefinition {
     result.put("constraintsJson", CoreOperationValues.json(view.constraints()));
     result.put("definitionBlueId", pattern.blueId().value());
     result.put("definitionPath", path);
-    if (requestPath != null) result.put("requestPath", requestPath);
+    if (requestPath != null) {
+      result.put("requestPath", requestPath);
+    }
     view.description().ifPresent(v -> result.put("description", v));
     view.type().ifPresent(v -> result.put("typeBlueId", v.value()));
-    if ("Integer".equals(core) && wire.equals("typed_scalar"))
+    if ("Integer".equals(core) && wire.equals("typed_scalar")) {
       result.put("valueEncoding", "safe_number_or_decimal_string");
-    if (core != null && Set.of("Text", "Integer", "Double", "Boolean").contains(core))
+    }
+    if (core != null && Set.of("Text", "Integer", "Double", "Boolean").contains(core)) {
       result.put(
           "primitive",
           switch (core) {
@@ -109,11 +118,14 @@ final class CoreInputDefinition {
             case "Double" -> "number";
             default -> "boolean";
           });
-    if (!view.observation("value").isMissing()) result.put("fixedJson", values.fixedJson(pattern));
+    }
+    if (!view.observation("value").isMissing()) {
+      result.put("fixedJson", values.fixedJson(pattern));
+    }
     Node enums = view.constraints().get("enumAll");
     if (!enums.isMissing()) {
       var choices = new TreeSet<String>();
-      for (Node group : enums.items())
+      for (Node group : enums.items()) {
         for (Node candidate : group.items()) {
           var scalar =
               new LinkedHashMap<>(
@@ -123,11 +135,16 @@ final class CoreInputDefinition {
           view.type().ifPresent(type -> scalar.put("type", Map.of("blueId", type.value())));
           try {
             var admitted = values.source(JsonText.of(scalar), Language.Goal.VALUE);
-            if (values.matches(admitted, pattern)) choices.add(JsonText.of(scalar));
+            if (values.matches(admitted, pattern)) {
+              choices.add(JsonText.of(scalar));
+            }
           } catch (LanguageException invalid) {
-            if (!mismatch(invalid.category())) throw invalid;
+            if (!mismatch(invalid.category())) {
+              throw invalid;
+            }
           }
         }
+      }
       result.put("enumJson", List.copyOf(choices));
     }
     if (collapsed.stream()
@@ -145,7 +162,9 @@ final class CoreInputDefinition {
       List<Object> described = new ArrayList<>();
       int position = 0;
       for (String field : fields) {
-        if (position++ < offset) continue;
+        if (position++ < offset) {
+          continue;
+        }
         if (nodes >= 512) {
           result.put("partial", true);
           result.put("nextFieldsOffset", position - 1);
@@ -171,8 +190,12 @@ final class CoreInputDefinition {
     }
     for (String slot : List.of("item", "key", "value")) {
       String type = values.slot(pattern, slot);
-      if (type == null) continue;
-      if (nodes >= 512) result.put("partial", true);
+      if (type == null) {
+        continue;
+      }
+      if (nodes >= 512) {
+        result.put("partial", true);
+      }
       result.put(
           slot,
           node(values.type(type), new HashSet<>(active), depth + 1, path + "/" + slot, null, 0));
@@ -201,7 +224,9 @@ final class CoreInputDefinition {
   }
 
   static List<String> viewPaths(Map<String, Object> input) {
-    if (!input.containsKey("definitionView")) return List.of();
+    if (!input.containsKey("definitionView")) {
+      return List.of();
+    }
     check(
         input.get("definitionView") instanceof Map<?, ?>,
         "invalid_definition_view",
@@ -299,6 +324,8 @@ final class CoreInputDefinition {
   }
 
   static void check(boolean valid, String code, String message) {
-    if (!valid) throw new ConsoleProblem(400, code, message);
+    if (!valid) {
+      throw new ConsoleProblem(400, code, message);
+    }
   }
 }

@@ -12,7 +12,9 @@ final class PageCache {
   private long bytes;
 
   PageCache(long maximumBytes) {
-    if (maximumBytes < 0) throw new IllegalArgumentException("Negative cache capacity");
+    if (maximumBytes < 0) {
+      throw new IllegalArgumentException("Negative cache capacity");
+    }
     this.maximumBytes = maximumBytes;
   }
 
@@ -33,7 +35,9 @@ final class PageCache {
       return;
     }
     byte[] previous = pages.remove(key);
-    if (previous != null) bytes -= 128L + key.length() * 2L + previous.length;
+    if (previous != null) {
+      bytes -= 128L + key.length() * 2L + previous.length;
+    }
     while (bytes + weight > maximumBytes && !pages.isEmpty()) {
       Map.Entry<String, byte[]> first = pages.entrySet().iterator().next();
       bytes -= 128L + first.getKey().length() * 2L + first.getValue().length;
@@ -45,7 +49,9 @@ final class PageCache {
 
   synchronized void remove(String key) {
     byte[] previous = pages.remove(key);
-    if (previous != null) bytes -= 128L + key.length() * 2L + previous.length;
+    if (previous != null) {
+      bytes -= 128L + key.length() * 2L + previous.length;
+    }
   }
 
   synchronized long bytes() {

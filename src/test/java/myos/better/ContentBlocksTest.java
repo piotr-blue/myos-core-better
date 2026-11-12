@@ -120,8 +120,9 @@ class ContentBlocksTest {
     }
 
     public String put(byte[] value) {
-      if (value.length > 128 * 1024)
+      if (value.length > 128 * 1024) {
         throw new IllegalArgumentException("Store page bound exceeded");
+      }
       String id = Json.hash(value);
       values.put(id, value.clone());
       return id;
@@ -129,7 +130,9 @@ class ContentBlocksTest {
 
     public byte[] get(String id) {
       byte[] value = values.get(id);
-      if (value == null) throw new IllegalStateException("Missing page");
+      if (value == null) {
+        throw new IllegalStateException("Missing page");
+      }
       return value.clone();
     }
   }

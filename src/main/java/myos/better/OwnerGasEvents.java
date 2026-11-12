@@ -18,17 +18,23 @@ final class OwnerGasEvents {
   static void stage(String account, OwnerMetadata.Transaction tx, Instant timestamp) {
     String after = tx.get("gas\0state");
     String before = tx.original("gas\0state");
-    if (after == null || Objects.equals(before, after)) return;
+    if (after == null || Objects.equals(before, after)) {
+      return;
+    }
     var previous = before == null ? Map.<String, Object>of() : object(before);
     var current = object(after);
     if (before != null
         && List.of("credited", "spent", "reserved").stream()
-            .allMatch(field -> number(previous, field) == number(current, field))) return;
+            .allMatch(field -> number(previous, field) == number(current, field))) {
+      return;
+    }
     var payload = new LinkedHashMap<String, Object>(amounts(current));
     payload.put("before", amounts(previous));
     var causes = new ArrayList<Map<String, Object>>();
     for (var change : tx.changes("gas\0credit\0").entrySet()) {
-      if (change.getValue() == null) continue;
+      if (change.getValue() == null) {
+        continue;
+      }
       var credit = object(change.getValue());
       causes.add(
           Map.of(
@@ -44,7 +50,9 @@ final class OwnerGasEvents {
               credit.get("evidence")));
     }
     for (var change : tx.changes("gas\0hold\0").entrySet()) {
-      if (change.getValue() == null) continue;
+      if (change.getValue() == null) {
+        continue;
+      }
       var hold = object(change.getValue());
       var permit = RuntimeConfiguration.object(hold.get("permit"), "gas permit");
       var request = RuntimeConfiguration.object(permit.get("request"), "gas request");
@@ -76,7 +84,9 @@ final class OwnerGasEvents {
     // ISO_INSTANT's variable fractional width is not lexicographically chronological.
     String priorTime = tx.original("gas\0event-clock");
     Instant orderTime = priorTime == null ? timestamp : Instant.parse(priorTime);
-    if (timestamp.isAfter(orderTime)) orderTime = timestamp;
+    if (timestamp.isAfter(orderTime)) {
+      orderTime = timestamp;
+    }
     String order = ORDER_TIME.format(orderTime);
     tx.put("gas\0event-clock", order);
     String source = order + "#gas#" + Repository.version(sequence);

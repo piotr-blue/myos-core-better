@@ -25,8 +25,9 @@ public final class HostedTimelineProbe {
       }
       return;
     }
-    if (args.length != 1 || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}"))
+    if (args.length != 1 || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}")) {
       throw new IllegalArgumentException("Expected a fresh native-bench-* account");
+    }
     boolean durable = System.getenv("MYOS_TABLE") != null;
     Path directory =
         Files.createTempDirectory(
@@ -75,8 +76,9 @@ public final class HostedTimelineProbe {
                       + " only, not Contracts or parent latency.")));
     } finally {
       try (var paths = Files.walk(directory)) {
-        for (Path path : paths.sorted(Comparator.reverseOrder()).toList())
+        for (Path path : paths.sorted(Comparator.reverseOrder()).toList()) {
           Files.deleteIfExists(path);
+        }
       }
     }
   }
@@ -99,12 +101,14 @@ public final class HostedTimelineProbe {
             .redirectOutput(log.toFile())
             .start();
     try {
-      if (!process.waitFor(90, TimeUnit.SECONDS))
+      if (!process.waitFor(90, TimeUnit.SECONDS)) {
         throw new IllegalStateException("Publisher qualification exceeded its process bound");
+      }
       List<String> lines = Files.readAllLines(log);
-      if (process.exitValue() != 0)
+      if (process.exitValue() != 0) {
         throw new IllegalStateException(
             "Publisher " + mode + " failed: " + String.join("\n", lines));
+      }
       return Json.object(lines.getLast().getBytes(java.nio.charset.StandardCharsets.UTF_8));
     } finally {
       if (process.isAlive()) {
@@ -168,7 +172,9 @@ public final class HostedTimelineProbe {
       host.seal(account, warm.id(), null);
     }
     host.append(account, small.id(), "small0", message);
-    for (int i = 0; i < 128; i++) host.append(account, large.id(), "large" + i, message);
+    for (int i = 0; i < 128; i++) {
+      host.append(account, large.id(), "large" + i, message);
+    }
     double setupMillis = (System.nanoTime() - setup) / 1e6;
     List<Double> smallAppend = new ArrayList<>(),
         largeAppend = new ArrayList<>(),
@@ -261,8 +267,9 @@ public final class HostedTimelineProbe {
           "Restored checkpoint changed");
     }
     List<Object> entries = new ArrayList<>();
-    for (int i = 1; i <= 136; i++)
+    for (int i = 1; i <= 136; i++) {
       entries.add(ProviderSigning.wire(host.entry(account, large, i).entry()));
+    }
     HostedTimelines.Checkpoint checkpoint =
         host.seal(account, large, Repository.number(saved.get("longBefore")));
     HostedTimelines.Created created = host.head(account, large).created();
@@ -340,6 +347,8 @@ public final class HostedTimelineProbe {
   }
 
   private static void require(boolean value, String message) {
-    if (!value) throw new AssertionError(message);
+    if (!value) {
+      throw new AssertionError(message);
+    }
   }
 }

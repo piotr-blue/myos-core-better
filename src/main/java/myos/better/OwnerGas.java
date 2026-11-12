@@ -33,10 +33,12 @@ final class OwnerGas {
       long maximum,
       long expires) {
     Request {
-      for (String value : List.of(obligation, instance, phase, basis, owner, fence))
+      for (String value : List.of(obligation, instance, phase, basis, owner, fence)) {
         component(value);
-      if (maximum <= 0 || maximum > MAX_INVOCATION || expires < 0)
+      }
+      if (maximum <= 0 || maximum > MAX_INVOCATION || expires < 0) {
         throw new IllegalArgumentException("Invalid gas reservation bound");
+      }
     }
   }
 
@@ -44,8 +46,9 @@ final class OwnerGas {
 
   record Decision(Permit permit, Map<String, Object> waiting) {
     Decision {
-      if ((permit == null) == (waiting == null))
+      if ((permit == null) == (waiting == null)) {
         throw new IllegalArgumentException("Exactly one gas decision is required");
+      }
     }
   }
 
@@ -64,8 +67,9 @@ final class OwnerGas {
           || reserved < 0
           || generation < 0
           || waitSequence < 0
-          || Math.addExact(spent, reserved) > credited)
+          || Math.addExact(spent, reserved) > credited) {
         throw new IllegalStateException("Invalid account gas liabilities");
+      }
     }
 
     long available() {
@@ -130,7 +134,9 @@ final class OwnerGas {
   }
 
   void provision(OwnerMetadata.Transaction tx, Map<String, Object> allocation) {
-    if (allocation == null) allocation = initialAllocation();
+    if (allocation == null) {
+      allocation = initialAllocation();
+    }
     boolean historical =
         allocation.equals(
             Map.of(
@@ -140,9 +146,10 @@ final class OwnerGas {
                 "default-account-allocation/1",
                 "units",
                 "1000000000000000000"));
-    if (!historical && !allocation.equals(initialAllocation()))
+    if (!historical && !allocation.equals(initialAllocation())) {
       throw new ConsoleProblem(
           409, "unsupported_initial_gas", "Unsupported immutable gas entitlement.");
+    }
     initialize(
         tx, (String) allocation.get("policy"), Long.parseLong((String) allocation.get("units")));
   }
@@ -150,7 +157,9 @@ final class OwnerGas {
   /** Internal provisioning primitive; no user-facing route may choose an arbitrary allocation. */
   void initialize(OwnerMetadata.Transaction tx, String policy, long opening) {
     component(policy);
-    if (opening < 0) throw new IllegalArgumentException("Negative opening balance");
+    if (opening < 0) {
+      throw new IllegalArgumentException("Negative opening balance");
+    }
     tx.requireAtLeastFormat(OwnerMetadata.GAS_FORMAT);
     State prior = get(tx, STATE, State.class);
     if (prior != null) {
@@ -158,7 +167,7 @@ final class OwnerGas {
       return;
     }
     put(tx, STATE, new State(account, VERSION, policy, opening, 0, 0, 0, 0));
-    if (opening > 0)
+    if (opening > 0) {
       put(
           tx,
           key("credit", "initial-allocation"),
@@ -168,6 +177,7 @@ final class OwnerGas {
               opening,
               "account-provisioning",
               "Default account gas allowance"));
+    }
   }
 
   boolean enabled(OwnerMetadata.Transaction tx) {
@@ -194,11 +204,15 @@ final class OwnerGas {
     component(id);
     component(issuer);
     Objects.requireNonNull(evidence);
-    if (units <= 0) throw new IllegalArgumentException("Positive gas credit required");
+    if (units <= 0) {
+      throw new IllegalArgumentException("Positive gas credit required");
+    }
     var credit = new Credit(account, id, units, issuer, evidence);
     Credit prior = get(tx, key("credit", id), Credit.class);
     if (prior != null) {
-      if (!prior.equals(credit)) throw conflict("gas_credit_conflict");
+      if (!prior.equals(credit)) {
+        throw conflict("gas_credit_conflict");
+      }
       return;
     }
     State s = state(tx);
@@ -228,17 +242,26 @@ final class OwnerGas {
       put(tx, obligationKey, obligation);
     } else if (!obligation.instance().equals(request.instance())
         || !obligation.phase().equals(request.phase())
-        || !obligation.basis().equals(request.basis())) throw conflict("gas_obligation_conflict");
+        || !obligation.basis().equals(request.basis())) {
+      throw conflict("gas_obligation_conflict");
+    }
     String evaluationKey = key("evaluation", obligation.evaluation());
     Evaluation evaluation = get(tx, evaluationKey, Evaluation.class);
-    if (evaluation == null) evaluation = new Evaluation("PENDING", null, null);
-    if ("SETTLED".equals(evaluation.status())) throw conflict("gas_retry_target_required");
+    if (evaluation == null) {
+      evaluation = new Evaluation("PENDING", null, null);
+    }
+    if ("SETTLED".equals(evaluation.status())) {
+      throw conflict("gas_retry_target_required");
+    }
     if (evaluation.reservation() != null) {
       Hold prior = required(tx, key("hold", evaluation.reservation()), Hold.class);
-      if (!"ACTIVE".equals(prior.status()))
+      if (!"ACTIVE".equals(prior.status())) {
         throw new IllegalStateException("Inactive gas evaluation hold");
+      }
       if (prior.permit().request().fence().equals(request.fence())) {
-        if (!prior.permit().request().equals(request)) throw conflict("gas_reservation_conflict");
+        if (!prior.permit().request().equals(request)) {
+          throw conflict("gas_reservation_conflict");
+        }
         return new Decision(prior.permit(), null);
       }
       // A caller with a replacement native claim fences the prior publication and liability.
@@ -296,12 +319,20 @@ final class OwnerGas {
   private boolean fundedPrefix(
       OwnerMetadata.Transaction tx, String waiting, long maximum, long available) {
     var first = tx.page(prefix("waiter"), null, 64);
-    if (first.isEmpty()) return true;
-    if (waiting == null) return false;
+    if (first.isEmpty()) {
+      return true;
+    }
+    if (waiting == null) {
+      return false;
+    }
     for (var row : first) {
-      if (row.key().equals(waiting)) return maximum <= available;
+      if (row.key().equals(waiting)) {
+        return maximum <= available;
+      }
       Waiter prior = decode(row.value(), Waiter.class);
-      if (prior.maximum() > available) return false;
+      if (prior.maximum() > available) {
+        return false;
+      }
       available -= prior.maximum();
     }
     return false;
@@ -320,20 +351,24 @@ final class OwnerGas {
     state(tx);
     component(disposition);
     component(application);
-    if (usage < 0 || usage > permit.request().maximum())
+    if (usage < 0 || usage > permit.request().maximum()) {
       throw new IllegalArgumentException("Native usage exceeds reserved gas");
+    }
     long debit = "NO_MATCH".equals(disposition) ? 0 : usage;
     var settlement = new Settlement(permit, usage, debit, disposition, receipt, application);
     String settlementKey = key("settlement", permit.evaluation());
     Settlement prior = get(tx, settlementKey, Settlement.class);
     if (prior != null) {
-      if (!prior.equals(settlement)) throw conflict("gas_settlement_conflict");
+      if (!prior.equals(settlement)) {
+        throw conflict("gas_settlement_conflict");
+      }
       return;
     }
     requireActive(tx, permit);
     String mapped = tx.get(key("application", application));
-    if (mapped != null && !mapped.equals(permit.evaluation()))
+    if (mapped != null && !mapped.equals(permit.evaluation())) {
       throw conflict("gas_application_conflict");
+    }
     close(tx, permit, "SETTLED", debit);
     put(tx, settlementKey, settlement);
     tx.put(key("application", application), permit.evaluation());
@@ -344,15 +379,18 @@ final class OwnerGas {
   void release(OwnerMetadata.Transaction tx, Permit permit) {
     state(tx);
     Hold hold = get(tx, key("hold", permit.reservation()), Hold.class);
-    if (hold == null || !"ACTIVE".equals(hold.status())) return;
+    if (hold == null || !"ACTIVE".equals(hold.status())) {
+      return;
+    }
     requireActive(tx, permit);
     close(tx, permit, "RELEASED", 0);
     put(tx, key("evaluation", permit.evaluation()), new Evaluation("PENDING", null, null));
   }
 
   private void close(OwnerMetadata.Transaction tx, Permit permit, String status, long debit) {
-    if (!permit.reservation().equals(tx.get(active(permit))))
+    if (!permit.reservation().equals(tx.get(active(permit)))) {
       throw new IllegalStateException("Missing active gas liability index");
+    }
     put(tx, STATE, state(tx).close(permit.request().maximum(), debit));
     put(tx, key("hold", permit.reservation()), new Hold(permit, status));
     tx.remove(active(permit));
@@ -363,8 +401,9 @@ final class OwnerGas {
     Evaluation evaluation = required(tx, key("evaluation", permit.evaluation()), Evaluation.class);
     if (!"ACTIVE".equals(hold.status())
         || !hold.permit().equals(permit)
-        || !permit.reservation().equals(evaluation.reservation()))
+        || !permit.reservation().equals(evaluation.reservation())) {
       throw conflict("gas_claim_superseded");
+    }
   }
 
   void forgetWaiter(OwnerMetadata.Transaction tx, String instance) {
@@ -384,7 +423,9 @@ final class OwnerGas {
     var result = new ArrayList<String>();
     for (var row : tx.page(prefix("waiter"), null, limit)) {
       Waiter waiter = decode(row.value(), Waiter.class);
-      if (waiter.maximum() > remaining) break;
+      if (waiter.maximum() > remaining) {
+        break;
+      }
       remaining -= waiter.maximum();
       result.add(waiter.instance());
     }
@@ -395,13 +436,18 @@ final class OwnerGas {
   List<Permit> expired(OwnerMetadata.Transaction tx, long now, int limit) {
     state(tx);
     bound(limit);
-    if (now < 0) throw new IllegalArgumentException("Negative clock");
+    if (now < 0) {
+      throw new IllegalArgumentException("Negative clock");
+    }
     var result = new ArrayList<Permit>();
     for (var row : tx.page(prefix("active"), null, limit)) {
       Hold hold = required(tx, key("hold", row.value()), Hold.class);
-      if (!"ACTIVE".equals(hold.status()))
+      if (!"ACTIVE".equals(hold.status())) {
         throw new IllegalStateException("Inactive liability indexed");
-      if (hold.permit().request().expires() > now) break;
+      }
+      if (hold.permit().request().expires() > now) {
+        break;
+      }
       result.add(hold.permit());
     }
     return List.copyOf(result);
@@ -415,8 +461,9 @@ final class OwnerGas {
     String retryKey = key("retry", command);
     Retry prior = get(tx, retryKey, Retry.class);
     if (prior != null) {
-      if (!prior.obligation().equals(obligation) || !prior.expected().equals(expected))
+      if (!prior.obligation().equals(obligation) || !prior.expected().equals(expected)) {
         throw conflict("gas_retry_conflict");
+      }
       return false;
     }
     Obligation current = get(tx, key("obligation", obligation), Obligation.class);
@@ -425,12 +472,14 @@ final class OwnerGas {
         || failed == null
         || !current.evaluation().equals(expected)
         || !"SETTLED".equals(failed.status())
-        || Set.of("APPLIED", "NO_MATCH").contains(failed.terminal()))
+        || Set.of("APPLIED", "NO_MATCH").contains(failed.terminal())) {
       throw conflict("gas_retry_conflict");
+    }
     long generation = Math.addExact(current.generation(), 1);
     String successor = obligation + "/" + generation;
-    if (tx.get(key("evaluation", successor)) != null)
+    if (tx.get(key("evaluation", successor)) != null) {
       throw new IllegalStateException("Gas retry generation already exists");
+    }
     put(
         tx,
         key("obligation", obligation),
@@ -443,8 +492,9 @@ final class OwnerGas {
 
   private State state(OwnerMetadata.Transaction tx) {
     State s = required(tx, STATE, State.class);
-    if (!s.account().equals(account) || !VERSION.equals(s.version()))
+    if (!s.account().equals(account) || !VERSION.equals(s.version())) {
       throw new IllegalStateException("Incompatible account gas authority");
+    }
     return s;
   }
 
@@ -457,7 +507,9 @@ final class OwnerGas {
   }
 
   private static void bound(int limit) {
-    if (limit < 1 || limit > 64) throw new IllegalArgumentException("Gas page bound must be 1..64");
+    if (limit < 1 || limit > 64) {
+      throw new IllegalArgumentException("Gas page bound must be 1..64");
+    }
   }
 
   private static ConsoleProblem conflict(String code) {
@@ -465,7 +517,9 @@ final class OwnerGas {
   }
 
   private static String key(String... parts) {
-    for (String part : parts) component(part);
+    for (String part : parts) {
+      component(part);
+    }
     return "gas\0" + String.join("\0", parts);
   }
 
@@ -474,13 +528,16 @@ final class OwnerGas {
   }
 
   private static void component(String value) {
-    if (value == null || value.isEmpty() || value.indexOf('\0') >= 0)
+    if (value == null || value.isEmpty() || value.indexOf('\0') >= 0) {
       throw new IllegalArgumentException("Nonempty gas identifier without NUL required");
+    }
   }
 
   private static <T> T required(OwnerMetadata.Transaction tx, String key, Class<T> type) {
     T value = get(tx, key, type);
-    if (value == null) throw new IllegalStateException("Missing gas authority record");
+    if (value == null) {
+      throw new IllegalStateException("Missing gas authority record");
+    }
     return value;
   }
 

@@ -24,12 +24,15 @@ class GraphTimelineIngressTest {
       f.graphs.create("alice", "graph-test", "create", f.source());
       String child = f.member();
       var before = f.graphs.snapshot("alice", "graph-test");
-      for (int n = 1; n <= 33; n++) f.ordinary(n);
+      for (int n = 1; n <= 33; n++) {
+        f.ordinary(n);
+      }
       f.publish(child, 34);
       f.ordinary(35);
       f.ordinary(36);
-      for (int n = 0; n < 3; n++)
+      for (int n = 0; n < 3; n++) {
         assertEquals(TimelineIngress.Status.INAPPLICABLE, f.step().status());
+      }
       assertEquals(before, f.graphs.snapshot("alice", "graph-test"));
       List<Long> skipped = new ArrayList<>();
       var rows =
@@ -41,8 +44,12 @@ class GraphTimelineIngressTest {
         Map<?, ?> audit = (Map<?, ?>) row.value().get("assessments");
         if (audit.get("entries") instanceof List<?> entries) {
           assertTrue(entries.size() <= 16);
-          for (Object entry : entries) skipped.add(timestamp(((Map<?, ?>) entry).get("input")));
-        } else skipped.add(timestamp(row.value().get("input")));
+          for (Object entry : entries) {
+            skipped.add(timestamp(((Map<?, ?>) entry).get("input")));
+          }
+        } else {
+          skipped.add(timestamp(row.value().get("input")));
+        }
       }
       assertEquals(java.util.stream.LongStream.rangeClosed(1, 33).boxed().toList(), skipped);
       f.graphs.close();
@@ -77,7 +84,9 @@ class GraphTimelineIngressTest {
           """
               .formatted(f.timeline.provider.blueId());
       f.graphs.create("alice", "graph-test", "create", source);
-      for (int n = 1; n <= 3; n++) f.ordinary(n);
+      for (int n = 1; n <= 3; n++) {
+        f.ordinary(n);
+      }
       for (int n = 1; n <= 3; n++) {
         assertEquals(TimelineIngress.Status.APPLIED, f.step().status());
         assertEquals(
@@ -95,13 +104,16 @@ class GraphTimelineIngressTest {
       f.graphs.create("alice", "graph-test", "create", f.source());
       f.graphs.create("alice", "graph-other", "create", f.source().replace("paid: 0", "paid: 1"));
       var before = f.graphs.snapshot("alice", "graph-other");
-      for (int n = 1; n <= 17; n++) f.publish(f.member(), n);
-      for (int n = 0; n < 2; n++)
+      for (int n = 1; n <= 17; n++) {
+        f.publish(f.member(), n);
+      }
+      for (int n = 0; n < 2; n++) {
         assertEquals(
             TimelineIngress.Status.INAPPLICABLE,
             f.ingress
                 .step(f.graphs, "alice", "graph-other", (a, r) -> List.of(f.archive))
                 .status());
+      }
       assertEquals(
           TimelineIngress.Status.IDLE,
           f.ingress.step(f.graphs, "alice", "graph-other", (a, r) -> List.of(f.archive)).status());

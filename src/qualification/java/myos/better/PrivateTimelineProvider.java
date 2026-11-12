@@ -162,13 +162,17 @@ final class PrivateTimelineProvider implements AutoCloseable {
     TimelineTransport.Reply reply;
     try {
       if (exchange.getRequestHeaders().containsKey("Cookie")
-          || exchange.getRequestHeaders().containsKey("Authorization"))
+          || exchange.getRequestHeaders().containsKey("Authorization")) {
         throw new IllegalArgumentException("Qualification requests must use reader signatures");
+      }
       String method = exchange.getRequestMethod();
-      if (!method.equals("GET") && !method.equals("POST"))
+      if (!method.equals("GET") && !method.equals("POST")) {
         throw new IllegalArgumentException("Unexpected method");
+      }
       byte[] body = exchange.getRequestBody().readNBytes(1024 * 1024 + 1);
-      if (body.length > 1024 * 1024) throw new IllegalArgumentException("Request too large");
+      if (body.length > 1024 * 1024) {
+        throw new IllegalArgumentException("Request too large");
+      }
       reply =
           response(
               exchange.getRequestURI().getPath(),

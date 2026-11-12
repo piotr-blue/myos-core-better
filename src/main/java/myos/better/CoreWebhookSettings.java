@@ -22,7 +22,9 @@ final class CoreWebhookSettings {
       WebhookTarget.parse(url);
       result.put("url", url);
     }
-    if (input.containsKey("name")) result.put("name", text(input.get("name"), "name"));
+    if (input.containsKey("name")) {
+      result.put("name", text(input.get("name"), "name"));
+    }
     if (input.containsKey("status")) {
       require(
           Set.of("ACTIVE", "INACTIVE").contains(Objects.toString(input.get("status"), "")),
@@ -72,8 +74,11 @@ final class CoreWebhookSettings {
 
   static Map<String, Object> display(Map<String, Object> row) {
     var publicRow = new LinkedHashMap<String, Object>();
-    for (String field : List.of("id", "name", "url", "status", "createdAt", "updatedAt"))
-      if (row.containsKey(field)) publicRow.put(field, row.get(field));
+    for (String field : List.of("id", "name", "url", "status", "createdAt", "updatedAt")) {
+      if (row.containsKey(field)) {
+        publicRow.put(field, row.get(field));
+      }
+    }
     publicRow.put(
         "events",
         ((List<?>) row.get("events")).stream().map(type -> Map.of("type", type)).toList());
@@ -99,6 +104,8 @@ final class CoreWebhookSettings {
   }
 
   private static void require(boolean valid, String code, String detail) {
-    if (!valid) throw new ConsoleProblem(400, code, detail);
+    if (!valid) {
+      throw new ConsoleProblem(400, code, detail);
+    }
   }
 }

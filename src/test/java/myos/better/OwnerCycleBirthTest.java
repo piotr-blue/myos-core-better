@@ -74,7 +74,9 @@ class OwnerCycleBirthTest {
           assertEquals(2, whole.components().getFirst().size());
           var restarted = new OwnerGraphs(store, contracts, service, ingress);
           for (int attempt = 0; attempt < 16; attempt++) {
-            if (restarted.step("alice", root).status() == TimelineIngress.Status.IDLE) break;
+            if (restarted.step("alice", root).status() == TimelineIngress.Status.IDLE) {
+              break;
+            }
           }
           var records = new OwnerRecords(store, "alice");
           var head = records.head(root);
@@ -86,10 +88,11 @@ class OwnerCycleBirthTest {
               JsonText.of(OwnerReplay.semantic(actual.observations())));
           assertEquals(expected.transition().gas(), Repository.number(result.get("gas")));
           assertEquals(whole.blueId(), head.value().get("blueId"));
-          for (var member : whole.members())
+          for (var member : whole.members()) {
             assertTrue(
                 records.observedVersion(member.key(), member.blueId().value()) > 0,
                 "Root-relative member addresses must resolve to their durable owner's history");
+          }
           assertEquals(
               2,
               records.read.page("publication\0", null, 10).size(),

@@ -23,7 +23,7 @@ final class CoreProcessing {
     if (Set.of("WAITING", "ERROR").contains(nativeState)
         && work.get("reason") instanceof String message
         && !message.isBlank()
-        && !message.equals("[]"))
+        && !message.equals("[]")) {
       reason =
           Map.of(
               "code",
@@ -32,6 +32,7 @@ final class CoreProcessing {
                   : Objects.toString(work.get("status")),
               "message",
               message);
+    }
 
     // Availability waits remain distinct from invalid evidence. Never mask an execution failure.
     if (!"ERROR".equals(nativeState)
@@ -43,11 +44,13 @@ final class CoreProcessing {
       boolean manual = Boolean.FALSE.equals(failure.get("automatic"));
       nativeState = integrity ? "ERROR" : "WAITING";
       String recovery = "A required timeline is unavailable. Acquisition will retry automatically.";
-      if (manual)
+      if (manual) {
         recovery = "Timeline acquisition stopped after repeated failures. Retry the import.";
-      if (integrity)
+      }
+      if (integrity) {
         recovery =
             "Invalid source evidence requires import recovery and an explicit document retry.";
+      }
       reason =
           Map.of(
               "code",
@@ -65,7 +68,7 @@ final class CoreProcessing {
                   "category",
                   failure.get("error")));
     }
-    if (paused)
+    if (paused) {
       reason =
           Map.of(
               "code",
@@ -74,6 +77,7 @@ final class CoreProcessing {
               "Processing is paused. Resume when ready.",
               "details",
               Map.of("documents", List.of(document)));
+    }
     var result = new LinkedHashMap<String, Object>();
     result.put("state", paused ? "PAUSED" : nativeState);
     result.put("nativeState", nativeState);

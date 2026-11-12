@@ -103,7 +103,9 @@ class TimelineRunnerTest {
   @Test
   void automaticCatchupClosesSeveralChunksWithoutExplicitAcquisitionOrStepCalls() throws Exception {
     Fixture f = new Fixture(directory);
-    for (int i = 1; i <= 40; i++) f.append(1);
+    for (int i = 1; i <= 40; i++) {
+      f.append(1);
+    }
     f.closeQuiet(41);
     try (Running running = f.start()) {
       running.core.create("alice", "agreement", "create", f.config.parent());
@@ -175,8 +177,9 @@ class TimelineRunnerTest {
   private static void await(BooleanSupplier condition) throws InterruptedException {
     long until = System.nanoTime() + TimeUnit.SECONDS.toNanos(15);
     while (!condition.getAsBoolean()) {
-      if (System.nanoTime() - until >= 0)
+      if (System.nanoTime() - until >= 0) {
         fail("Automatic Timeline processing did not reach expected state");
+      }
       Thread.sleep(10);
     }
   }
@@ -224,8 +227,9 @@ class TimelineRunnerTest {
                 throws IOException {
               TimelineReadFixture selected =
                   uri.getHost().equals("active.example") ? active : quiet;
-              if (selected == active && failActive.get())
+              if (selected == active && failActive.get()) {
                 throw new IOException("Provider unavailable");
+              }
               synchronized (selected) {
                 return selected.exchange(uri, request, maximum, timeout);
               }

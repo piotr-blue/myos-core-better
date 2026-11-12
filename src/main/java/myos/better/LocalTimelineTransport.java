@@ -54,16 +54,22 @@ final class LocalTimelineTransport implements TimelineTransport {
   public Reply exchange(URI target, String request, int maximumBytes, Duration timeout)
       throws IOException, InterruptedException {
     String route = routes.get(target);
-    if (route == null) return remote.exchange(target, request, maximumBytes, timeout);
+    if (route == null) {
+      return remote.exchange(target, request, maximumBytes, timeout);
+    }
     if (maximumBytes < 1
         || maximumBytes > 4 * 1024 * 1024
         || timeout.isNegative()
         || timeout.isZero()
-        || timeout.compareTo(Duration.ofMinutes(1)) > 0)
+        || timeout.compareTo(Duration.ofMinutes(1)) > 0) {
       throw new IllegalArgumentException("Invalid provider transport bound");
-    if (Thread.currentThread().isInterrupted()) throw new InterruptedException();
-    if ((request == null) != route.equals("provider"))
+    }
+    if (Thread.currentThread().isInterrupted()) {
+      throw new InterruptedException();
+    }
+    if ((request == null) != route.equals("provider")) {
       throw new IllegalArgumentException("Invalid provider request method");
+    }
     long started = System.nanoTime();
     Reply reply;
     try {
@@ -80,10 +86,12 @@ final class LocalTimelineTransport implements TimelineTransport {
                   provider.failure(
                       "NOT_FOUND", false, "Resource unavailable or reader not authorized.")));
     }
-    if (reply.byteSize() > maximumBytes)
+    if (reply.byteSize() > maximumBytes) {
       throw new IOException("Timeline response exceeds requested bound");
-    if (System.nanoTime() - started > timeout.toNanos())
+    }
+    if (System.nanoTime() - started > timeout.toNanos()) {
       throw new java.net.http.HttpTimeoutException("Timeline response deadline exceeded");
+    }
     return reply;
   }
 

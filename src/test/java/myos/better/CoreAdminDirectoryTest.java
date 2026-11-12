@@ -132,8 +132,11 @@ class CoreAdminDirectoryTest {
       f.clock.now = 100_000 + n / 4 * 100;
       String subject = "subject-" + n,
           email = (n % 7 == 0 ? "literal%_" : "regular-") + n + "@example.test";
-      if (n % 5 == 0) f.directory.verified(subject, email);
-      else f.directory.registered(subject, email, n % 2 == 0);
+      if (n % 5 == 0) {
+        f.directory.verified(subject, email);
+      } else {
+        f.directory.registered(subject, email, n % 2 == 0);
+      }
       var row = new HashMap<String, Object>();
       row.put("id", f.directory.directoryId(subject));
       row.put("email", email);
@@ -148,9 +151,9 @@ class CoreAdminDirectoryTest {
             "system-admin-directory",
             new AtomicStore.Key("CORE_ADMIN_DIRECTORY", "MANIFEST"),
             List.of("admin-directory/1"));
-    for (String sort : List.of("createdAt", "verifiedAt"))
-      for (String direction : List.of("asc", "desc"))
-        for (String search : List.of("", "example.test", "%_", "lar-1", "absent", "@e"))
+    for (String sort : List.of("createdAt", "verifiedAt")) {
+      for (String direction : List.of("asc", "desc")) {
+        for (String search : List.of("", "example.test", "%_", "lar-1", "absent", "@e")) {
           for (Boolean verified : Arrays.asList(null, false, true)) {
             Comparator<Long> dates =
                 direction.equals("asc") ? Long::compareTo : Comparator.reverseOrder();
@@ -188,6 +191,9 @@ class CoreAdminDirectoryTest {
             assertEquals(all.size(), ((Number) deep.get("total")).intValue());
             assertTrue(((List<?>) deep.get("items")).isEmpty());
           }
+        }
+      }
+    }
   }
 
   @Test

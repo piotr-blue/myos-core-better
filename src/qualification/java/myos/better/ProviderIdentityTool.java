@@ -17,22 +17,27 @@ public final class ProviderIdentityTool {
   private ProviderIdentityTool() {}
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 2)
+    if (args.length != 2) {
       throw new IllegalArgumentException(
           "Expected HTTPS provider endpoint and new private output file");
+    }
     java.net.URI endpoint = java.net.URI.create(args[0]);
     if (!"https".equals(endpoint.getScheme())
         || endpoint.getHost() == null
         || endpoint.getRawUserInfo() != null
         || endpoint.getQuery() != null
-        || endpoint.getFragment() != null)
+        || endpoint.getFragment() != null) {
       throw new IllegalArgumentException("HTTPS provider endpoint required");
+    }
     KeyPair keys = KeyPairGenerator.getInstance("Ed25519").generateKeyPair();
     var point = ((EdECPublicKey) keys.getPublic()).getPoint();
     byte[] big = point.getY().toByteArray(), encoded = new byte[32];
-    for (int i = 0; i < Math.min(big.length, encoded.length); i++)
+    for (int i = 0; i < Math.min(big.length, encoded.length); i++) {
       encoded[i] = big[big.length - 1 - i];
-    if (point.isXOdd()) encoded[31] |= (byte) 0x80;
+    }
+    if (point.isXOdd()) {
+      encoded[31] |= (byte) 0x80;
+    }
     Language language =
         Language.newBuilder().mount("Coordination", ProviderIdentity.coordination()).build();
     LanguageDocument provider =

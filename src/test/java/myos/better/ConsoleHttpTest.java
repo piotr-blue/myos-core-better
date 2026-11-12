@@ -285,8 +285,9 @@ class ConsoleHttpTest {
     private static ConsoleLogin testLogin() {
       return new ConsoleLogin() {
         public User verify(String token) {
-          if (!Set.of("alice", "bob").contains(Objects.toString(token, "")))
+          if (!Set.of("alice", "bob").contains(Objects.toString(token, ""))) {
             throw new ConsoleProblem(401, "INVALID", "Sign in");
+          }
           return new User(token, token + "@example.invalid");
         }
 
@@ -341,13 +342,19 @@ class ConsoleHttpTest {
 
     HttpResponse<String> send(String path, String user, String key, Object data) throws Exception {
       HttpRequest.Builder b = HttpRequest.newBuilder(URI.create(url + "/api/" + path));
-      if (user != null) b.header("Authorization", "Bearer " + user);
-      if (key != null) b.header("Idempotency-Key", key);
-      if (data == null) b.GET();
-      else
+      if (user != null) {
+        b.header("Authorization", "Bearer " + user);
+      }
+      if (key != null) {
+        b.header("Idempotency-Key", key);
+      }
+      if (data == null) {
+        b.GET();
+      } else {
         b.header("Origin", ORIGIN)
             .header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(JsonText.of(data)));
+      }
       return http.send(b.build(), HttpResponse.BodyHandlers.ofString());
     }
 

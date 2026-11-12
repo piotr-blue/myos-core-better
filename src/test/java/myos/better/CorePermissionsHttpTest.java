@@ -113,13 +113,15 @@ class CorePermissionsHttpTest {
         HttpRequest.newBuilder(URI.create(fixture.url + CoreDashboardApi.BASE + route))
             .header("Authorization", "Bearer " + user)
             .header("X-MyOS-Account", account);
-    if (value == null) request.method(method, HttpRequest.BodyPublishers.noBody());
-    else
+    if (value == null) {
+      request.method(method, HttpRequest.BodyPublishers.noBody());
+    } else {
       request
           .header("Origin", "https://console.example")
           .header("Content-Type", "application/json")
           .header("Idempotency-Key", UUID.randomUUID().toString())
           .method(method, HttpRequest.BodyPublishers.ofString(JsonText.of(value)));
+    }
     return fixture.http.send(request.build(), HttpResponse.BodyHandlers.ofString());
   }
 }

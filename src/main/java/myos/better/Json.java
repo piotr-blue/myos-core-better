@@ -44,7 +44,9 @@ final class Json {
   @SuppressWarnings("unchecked")
   static Map<String, Object> object(byte[] bytes) {
     Map<String, Object> value = read(bytes, Map.class);
-    if (value == null) throw new IllegalArgumentException("JSON object required");
+    if (value == null) {
+      throw new IllegalArgumentException("JSON object required");
+    }
     return value;
   }
 
@@ -52,7 +54,9 @@ final class Json {
   static Map<String, Object> object(String text) {
     try {
       Map<String, Object> value = MAPPER.readValue(text, Map.class);
-      if (value == null) throw new IllegalArgumentException("JSON object required");
+      if (value == null) {
+        throw new IllegalArgumentException("JSON object required");
+      }
       return value;
     } catch (IOException e) {
       throw new UncheckedIOException(e);

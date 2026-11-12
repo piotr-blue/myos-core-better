@@ -132,9 +132,10 @@ class CoreInitializationVisibilityTest {
                   (proxy, method, args) -> {
                     if (method.getName().equals("get")
                         && args[0] instanceof AtomicStore.Key key
-                        && key.partition().endsWith("#OWNER-COORDINATION"))
+                        && key.partition().endsWith("#OWNER-COORDINATION")) {
                       throw new AssertionError(
                           "Published document read loaded account initialization queue");
+                    }
                     try {
                       return method.invoke(f.host.store, args);
                     } catch (java.lang.reflect.InvocationTargetException failure) {
@@ -216,8 +217,11 @@ class CoreInitializationVisibilityTest {
       try {
         host.close();
       } finally {
-        if (previous == null) System.clearProperty("myos.owners.fast");
-        else System.setProperty("myos.owners.fast", previous);
+        if (previous == null) {
+          System.clearProperty("myos.owners.fast");
+        } else {
+          System.setProperty("myos.owners.fast", previous);
+        }
       }
     }
   }

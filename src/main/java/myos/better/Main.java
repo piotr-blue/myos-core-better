@@ -20,8 +20,9 @@ public final class Main {
                 Long.parseLong(System.getenv().getOrDefault("MYOS_SESSION_MIB", "128")),
                 1024L * 1024),
             Integer.parseInt(System.getenv().getOrDefault("MYOS_SESSION_USES", "32")));
-    if (sessions.maximumBytes() > Runtime.getRuntime().maxMemory() / 2)
+    if (sessions.maximumBytes() > Runtime.getRuntime().maxMemory() / 2) {
       throw new IllegalArgumentException("Session cache budget must not exceed half the JVM heap");
+    }
     ReadBudget.Limits reads =
         new ReadBudget.Limits(
             Integer.parseInt(System.getenv().getOrDefault("MYOS_WORKFLOW_READ_DOCUMENTS", "256")),
@@ -75,11 +76,13 @@ public final class Main {
       String mode = args.length == 0 ? "serve" : args[0];
       switch (mode) {
         case "reader-key" -> {
-          if (args.length != 4)
+          if (args.length != 4) {
             throw new IllegalArgumentException("Expected reader-key ACCOUNT NAME COMMAND");
+          }
           WebhookSecrets custody = WebhookSecrets.configured(System.getenv());
-          if (custody == null)
+          if (custody == null) {
             throw new IllegalStateException("Pinned application custody is required");
+          }
           var readers = new CoreReaderKeys(store, custody.envelopes("myos.better.reader-key/1"));
           System.out.println(JsonText.of(readers.create(args[1], args[2], args[3])));
         }
@@ -128,7 +131,9 @@ public final class Main {
             Runtime.getRuntime().addShutdownHook(new Thread(() -> closeServers(server, console)));
             server.start();
             publicDirectory.start();
-            if (console != null) console.start();
+            if (console != null) {
+              console.start();
+            }
             System.out.println(
                 JsonText.of(
                     Map.of(
@@ -143,7 +148,9 @@ public final class Main {
             server.await(
                 () -> {
                   publicDirectory.check();
-                  if (console != null) console.check();
+                  if (console != null) {
+                    console.check();
+                  }
                 });
           }
         }
@@ -155,7 +162,9 @@ public final class Main {
 
   private static void closeServers(Server server, ConsoleServer console) {
     try {
-      if (console != null) console.close();
+      if (console != null) {
+        console.close();
+      }
     } finally {
       server.close();
     }

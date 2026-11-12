@@ -68,8 +68,9 @@ public final class PublishedCatalogueProbe {
             started = System.nanoTime();
             String next = pages.saveDelta("probe", page, delta);
             double saveMillis = (System.nanoTime() - started) / 1e6;
-            if (retainedPage != null && !retainedPage.equals(next))
+            if (retainedPage != null && !retainedPage.equals(next)) {
               throw new AssertionError("Cache state changed publication bytes");
+            }
             retainedPage = next;
             samples.add(
                 Map.of(
@@ -86,12 +87,14 @@ public final class PublishedCatalogueProbe {
           }
           var current = new CanonicalSnapshots(store).loadForExecution("probe", retainedPage);
           try (var restored = Contracts.create().restore(current, transaction.identity())) {
-            if (!Arrays.equals(Json.bytes(expected), Json.bytes(restored.snapshot())))
+            if (!Arrays.equals(Json.bytes(expected), Json.bytes(restored.snapshot()))) {
               throw new AssertionError("Independent restoration differs");
+            }
           }
           if (!Arrays.equals(
-              Json.bytes(initial), Json.bytes(new CanonicalSnapshots(store).load("probe", page))))
+              Json.bytes(initial), Json.bytes(new CanonicalSnapshots(store).load("probe", page)))) {
             throw new AssertionError("Old publication changed");
+          }
           results.add(
               Map.of(
                   "historicalValues",

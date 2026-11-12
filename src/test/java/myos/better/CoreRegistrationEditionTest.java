@@ -41,8 +41,11 @@ class CoreRegistrationEditionTest {
               .code);
       assertEquals(1, ((List<?>) documents.list("owner", null).get("items")).size());
     } finally {
-      if (previous == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", previous);
+      if (previous == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", previous);
+      }
     }
   }
 

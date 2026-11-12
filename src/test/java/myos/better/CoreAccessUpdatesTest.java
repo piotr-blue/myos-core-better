@@ -201,16 +201,19 @@ class CoreAccessUpdatesTest {
     try (var workers = Executors.newFixedThreadPool(4)) {
       var start = new CountDownLatch(1);
       var tasks = new ArrayList<Future<Map<String, Object>>>();
-      for (int i = 0; i < 8; i++)
+      for (int i = 0; i < 8; i++) {
         tasks.add(
             workers.submit(
                 () -> {
                   start.await();
                   return f.update("same", Map.of("allowedKeys", List.of(READER)));
                 }));
+      }
       start.countDown();
       var first = tasks.getFirst().get(30, TimeUnit.SECONDS);
-      for (var task : tasks) assertEquals(first, task.get(30, TimeUnit.SECONDS));
+      for (var task : tasks) {
+        assertEquals(first, task.get(30, TimeUnit.SECONDS));
+      }
       assertEquals(1, f.nativeFixture.host.access().grants("alice", f.timeline).size());
       assertEquals(1, f.follower.retained.size());
     }
@@ -223,15 +226,17 @@ class CoreAccessUpdatesTest {
     volatile Map<String, Object> lastSelection;
 
     public void check(String account, BlueId access, Map<String, Object> selection) {
-      if (conflict)
+      if (conflict) {
         throw new ConsoleProblem(
             409, "execution_selection_conflict", "Different follower selection");
+      }
     }
 
     public void retain(String account, BlueId access, Map<String, Object> selection) {
       calls.incrementAndGet();
-      if (failures.getAndUpdate(value -> Math.max(0, value - 1)) > 0)
+      if (failures.getAndUpdate(value -> Math.max(0, value - 1)) > 0) {
         throw new ConsoleProblem(503, "unavailable", "Simulated reply loss");
+      }
       lastSelection = selection;
       retained.add(access.value());
     }

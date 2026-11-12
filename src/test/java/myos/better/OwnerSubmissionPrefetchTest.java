@@ -45,9 +45,10 @@ class OwnerSubmissionPrefetchTest {
                   timeline("access:control", "control"),
                   new OwnerFrontiers.Source(
                       "embedding", OwnerFrontiers.Kind.OWNER, "nested", 1, 0)));
-          for (int i = 0; i < population; i++)
+          for (int i = 0; i < population; i++) {
             frontiers.register(
                 tx, "unrelated-" + i, "initial", List.of(timeline("input", "other-" + i)));
+          }
           OwnerRecords.put(
               tx, OwnerRecords.key("publication", owner), Map.of("representative", owner));
           return null;
@@ -64,8 +65,9 @@ class OwnerSubmissionPrefetchTest {
           });
       service.submitted("alice", owner, 100);
       assertEquals(Set.of("orders", "control"), arrivals);
-      for (String source : arrivals)
+      for (String source : arrivals) {
         assertEquals(101, TimelineCoverage.minimum(store, "alice", source));
+      }
       assertEquals(0, TimelineCoverage.minimum(store, "alice", "other-0"));
       assertEquals(0, TimelineCoverage.minimum(store, "alice", "nested"));
       assertEquals(0, TimelineCoverage.minimum(store, "bob", "orders"));

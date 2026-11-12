@@ -23,9 +23,13 @@ final class CorePublicationEvents {
     String source = graph + "/" + Repository.version(version);
     List<Map<String, Object>> events = new ArrayList<>();
     List<String> types = new ArrayList<>(List.of("DOCUMENT_PROCESSING_HISTORY_APPENDED"));
-    if (version == 1) types.add("DOCUMENT_CREATED");
-    if ("APPLIED".equals(result.get("status"))) types.add("DOCUMENT_EPOCH_ADVANCED");
-    for (String type : types)
+    if (version == 1) {
+      types.add("DOCUMENT_CREATED");
+    }
+    if ("APPLIED".equals(result.get("status"))) {
+      types.add("DOCUMENT_EPOCH_ADVANCED");
+    }
+    for (String type : types) {
       events.add(
           Map.of(
               "id",
@@ -40,6 +44,7 @@ final class CorePublicationEvents {
               created,
               "publication",
               Map.of("version", version, "member", member)));
+    }
     writes.add(
         AtomicStore.Write.put(
             new AtomicStore.Key(
@@ -52,7 +57,9 @@ final class CorePublicationEvents {
   static Map<String, Object> expand(AtomicStore store, Map<String, Object> event) {
     var visible = new LinkedHashMap<>(event);
     visible.remove(CoreEventSource.GENERATION);
-    if (!event.containsKey("publication")) return visible;
+    if (!event.containsKey("publication")) {
+      return visible;
+    }
     String account = Repository.identifier((String) event.get("accountId"));
     String graph =
         Repository.identifier(
@@ -68,13 +75,15 @@ final class CorePublicationEvents {
             : store.get(
                 new AtomicStore.Key(
                     "A#" + account + "#G#" + graph, "V#" + Repository.version(version)));
-    if (retained == null)
+    if (retained == null) {
       throw new IllegalStateException("Retained publication event has no history");
+    }
     var row = retained.value();
     var result = RuntimeConfiguration.object(row.get("result"), "result");
     if (Repository.number(result.get("version")) != version
-        || !Objects.equals(row.get("publishedAt"), event.get("created")))
+        || !Objects.equals(row.get("publishedAt"), event.get("created"))) {
       throw new IllegalStateException("Publication event differs from its immutable history");
+    }
     Map<String, Object> body = new LinkedHashMap<>();
     switch ((String) event.get("type")) {
       case "DOCUMENT_CREATED" -> body.put("blueId", result.get("blueId"));
@@ -99,13 +108,14 @@ final class CorePublicationEvents {
         List<Object> emitted = new ArrayList<>();
         for (Object raw : (List<?>) row.get("emissions")) {
           var emission = RuntimeConfiguration.object(raw, "emission");
-          if (reference.get("member").equals(emission.get("document")))
+          if (reference.get("member").equals(emission.get("document"))) {
             emitted.add(
                 Map.of(
                     "id",
                     emission.get("identity"),
                     "event",
                     Map.of("blueId", emission.get("event"))));
+          }
         }
         body.put("emitted", emitted);
       }

@@ -190,10 +190,11 @@ class TimelineHttpTransportTest {
             "https://user@localhost",
             "https://localhost/?query=1",
             "https://localhost/#fragment"
-          })
+          }) {
         assertThrows(
             IllegalArgumentException.class,
             () -> fixture.transport.exchange(URI.create(target), null, 64, Duration.ofSeconds(1)));
+      }
       assertThrows(
           IllegalArgumentException.class,
           () -> fixture.transport.exchange(fixture.uri("/"), null, 0, Duration.ofSeconds(1)));

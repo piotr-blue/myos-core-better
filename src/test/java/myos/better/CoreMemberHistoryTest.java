@@ -96,7 +96,9 @@ class CoreMemberHistoryTest {
       f.runner.start();
       long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(8);
       while (Repository.number(documents.head("owner", parent).get("version")) == 1
-          && System.nanoTime() < deadline) Thread.sleep(10);
+          && System.nanoTime() < deadline) {
+        Thread.sleep(10);
+      }
       assertEquals(2, Repository.number(documents.head("owner", parent).get("version")));
       String child =
           (String)
