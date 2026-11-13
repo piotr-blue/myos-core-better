@@ -141,16 +141,11 @@ final class CoreAdministrators implements AutoCloseable {
 
   @Override
   public synchronized void close() {
-    if (worker == null) {
-      return;
-    }
-    if (closed) {
+    if (worker == null || closed) {
       return;
     }
     closed = true;
-    if (worker != null) {
-      worker.shutdownNow();
-    }
+    worker.shutdownNow();
     release.run();
   }
 }

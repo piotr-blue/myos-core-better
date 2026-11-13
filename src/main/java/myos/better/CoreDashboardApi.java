@@ -4,7 +4,6 @@ import blue.BlueId;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -12,7 +11,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.TreeMap;
 
 /** Core's published HTTP boundary; adapters preserve Better execution and durable storage. */
 final class CoreDashboardApi {
@@ -875,43 +873,6 @@ final class CoreDashboardApi {
       return documentReads.read(session, id, route, parts, query);
     }
     throw unavailable(route);
-  }
-
-  private Object packages() {
-    Map<String, Map<String, Object>> packages = new TreeMap<>();
-    documents
-        .types()
-        .values()
-        .forEach(
-            raw -> {
-              Map<String, Object> type = RuntimeConfiguration.object(raw, "type");
-              String id = (String) type.get("packageId");
-              Map<String, Object> item =
-                  packages.computeIfAbsent(
-                      id,
-                      ignored ->
-                          new LinkedHashMap<>(
-                              Map.of(
-                                  "id",
-                                  id,
-                                  "name",
-                                  type.get("package"),
-                                  "types",
-                                  new ArrayList<>())));
-              @SuppressWarnings("unchecked")
-              List<Object> types = (List<Object>) item.get("types");
-              types.add(Map.of("blueId", type.get("blueId"), "name", type.get("name")));
-            });
-    return page(new ArrayList<>(packages.values()), null);
-  }
-
-  private static Map<String, Object> page(List<?> items, Object next) {
-    var result = new LinkedHashMap<String, Object>();
-    result.put("items", items);
-    result.put("nextPageToken", next);
-    result.put("hasMore", next != null);
-    result.put("total", items.size());
-    return result;
   }
 
   static ConsoleProblem unavailable(String route) {

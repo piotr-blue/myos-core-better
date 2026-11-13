@@ -25,7 +25,6 @@ final class GraphDocuments implements AutoCloseable {
   private final Contracts contracts;
   private final Language language;
   private final TimelineService timelines;
-  private final AtomicStore store;
   private final OwnerStorage ownerStorage;
   private final GasSchedule ownerGasSchedule;
   private final Map<String, Long> births = new LinkedHashMap<>(16, .75f, true);
@@ -43,7 +42,6 @@ final class GraphDocuments implements AutoCloseable {
       GasSchedule ownerGasSchedule) {
     this.ownerGasSchedule = ownerGasSchedule;
     this.contracts = contracts;
-    this.store = store;
     this.language = language;
     this.timelines = timelines;
     // A read-only adapter may deliberately use a guarded store distinct from its publisher.

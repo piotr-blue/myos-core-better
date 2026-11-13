@@ -5,11 +5,9 @@ import java.util.Map;
 
 /** Gas authorization tied to a native owner claim and its conditional publication. */
 final class OwnerGasClaims {
-  private final String account;
   private final OwnerGas ledger;
 
   OwnerGasClaims(String account) {
-    this.account = Repository.identifier(account);
     ledger = new OwnerGas(account);
   }
 
