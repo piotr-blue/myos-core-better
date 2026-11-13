@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 from pathlib import Path
+import shutil
 import signal
 import subprocess
 import tempfile
@@ -30,7 +31,24 @@ def loopback_endpoint(value):
     return f"http://127.0.0.1:{parsed.port}"
 
 
-def run(endpoint, trials, output):
+def snapshot_classpath(classpath, directory):
+    """Give restarted JVMs the same code even if a developer rebuilds the project."""
+    entries = []
+    for index, value in enumerate(classpath.strip().split(os.pathsep)):
+        source = Path(value)
+        if not source.exists():
+            continue  # Gradle includes optional, empty resource directories.
+        destination = directory / str(index) / source.name
+        destination.parent.mkdir()
+        if source.is_dir():
+            shutil.copytree(source, destination)
+        else:
+            shutil.copyfile(source, destination)
+        entries.append(str(destination))
+    return os.pathsep.join(entries)
+
+
+def run(endpoint, trials, output, scenario="command"):
     env = dict(
         os.environ,
         AWS_ACCESS_KEY_ID="test",
@@ -43,7 +61,6 @@ def run(endpoint, trials, output):
         env.pop(key, None)
     subprocess.run([ROOT / "gradlew", "processRecoveryClasspath"], cwd=ROOT, check=True)
     classpath = (ROOT / "build/process-recovery-classpath.txt").read_text()
-    worker = ["java", "-Xmx256m", "-cp", classpath, "myos.better.ProcessRecoveryProbe"]
     cli = ["aws", "--endpoint-url", endpoint, "--region", "eu-west-1", "dynamodb"]
     stack = json.loads((ROOT / "infra/stack.json").read_text())["Resources"]
     schema = next(
@@ -72,10 +89,17 @@ def run(endpoint, trials, output):
         )
         rows = []
         with tempfile.TemporaryDirectory() as temp:
+            worker = [
+                "java",
+                "-Xmx256m",
+                "-cp",
+                snapshot_classpath(classpath, Path(temp)),
+                "myos.better.ProcessRecoveryProbe",
+            ]
             for trial in range(trials):
                 boundary = "BEFORE" if trial % 2 == 0 else "AFTER"
                 marker = Path(temp) / f"boundary-{trial}"
-                options = [endpoint, table, f"recovery-{trial}", marker]
+                options = [endpoint, table, f"recovery-{trial}", marker, scenario]
                 with tempfile.TemporaryFile(mode="w+") as log:
                     process = subprocess.Popen(
                         worker + [boundary, *options], cwd=ROOT, stdout=log, stderr=log
@@ -99,7 +123,10 @@ def run(endpoint, trials, output):
                 if process.returncode != -signal.SIGKILL:
                     raise RuntimeError(f"Unexpected writer exit {process.returncode}")
                 recovered = subprocess.check_output(
-                    worker + ["RECOVER", *options], cwd=ROOT, text=True, timeout=120
+                    worker + ["RECOVER", *options],
+                    cwd=ROOT,
+                    text=True,
+                    timeout=210 if scenario == "owner-init" else 120,
                 )
                 row = json.loads(recovered.splitlines()[-1])
                 if row["boundary"] != boundary:
@@ -113,6 +140,7 @@ def run(endpoint, trials, output):
             json.dumps(
                 {
                     "fixture": "Loopback DynamoDB emulator with the real MyOS DynamoStore",
+                    "scenario": scenario,
                     "trials": rows,
                 },
                 indent=2,
@@ -140,5 +168,8 @@ if __name__ == "__main__":
         "--trials", type=int, choices=range(2, 33), default=8, metavar="2..32"
     )
     parser.add_argument("--output", type=Path)
+    parser.add_argument(
+        "--scenario", choices=("command", "owner-init"), default="command"
+    )
     args = parser.parse_args()
-    run(args.endpoint, args.trials, args.output)
+    run(args.endpoint, args.trials, args.output, args.scenario)

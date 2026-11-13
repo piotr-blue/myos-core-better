@@ -35,16 +35,35 @@ public final class ProcessRecoveryProbe {
   }
 
   public static void main(String[] args) {
-    if (args.length != 5) {
+    if (args.length != 5 && args.length != 6) {
       throw new IllegalArgumentException(
-          "Expected boundary, loopback endpoint, table, account and marker");
+          "Expected boundary, loopback endpoint, table, account, marker and optional scenario");
     }
     Boundary boundary = Boundary.valueOf(args[0]);
     String account = Repository.identifier(args[3]);
     Path marker = Path.of(args[4]);
     var store = QualificationDynamo.open(args[1], args[2], "blue-quality-process-");
+    String scenario = args.length > 5 ? args[5] : "command";
+    if ("owner-init".equals(scenario)) {
+      var boundaryStore =
+          new CommitBoundary(
+              store,
+              boundary,
+              marker,
+              write -> OwnerProcessRecovery.finalPublication(write, account));
+      try (boundaryStore) {
+        OwnerProcessRecovery.run(boundaryStore, account, boundary == Boundary.RECOVER, marker);
+      }
+      return;
+    }
+    if (!"command".equals(scenario)) {
+      throw new IllegalArgumentException("Unknown process recovery scenario: " + scenario);
+    }
     try (var core =
-        new Core(new CommitBoundary(store, boundary, marker), CanonicalRuntime.create())) {
+        new Core(
+            new CommitBoundary(
+                store, boundary, marker, write -> RECEIPT.equals(write.key().sort())),
+            CanonicalRuntime.create())) {
       if (boundary != Boundary.RECOVER) {
         if (!core.create(account, "offer", "create", OFFER).status().equals("APPLIED")) {
           throw new AssertionError("Offer creation failed");
@@ -93,7 +112,11 @@ public final class ProcessRecoveryProbe {
   }
 
   /** Preserve the real combined immutable-page and conditional-record commit. */
-  private record CommitBoundary(DynamoStore store, Boundary selected, Path marker)
+  private record CommitBoundary(
+      DynamoStore store,
+      Boundary selected,
+      Path marker,
+      java.util.function.Predicate<Write> matches)
       implements AtomicStore {
     @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
@@ -103,12 +126,14 @@ public final class ProcessRecoveryProbe {
     @Override
     public boolean commitWithContent(
         List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
-      boolean receipt =
-          selected != Boundary.RECOVER
-              && writes.stream().anyMatch(write -> RECEIPT.equals(write.key().sort()));
-      if (receipt && selected == Boundary.BEFORE) park();
+      boolean receipt = selected != Boundary.RECOVER && writes.stream().anyMatch(matches);
+      if (receipt && selected == Boundary.BEFORE) {
+        park();
+      }
       boolean committed = store.commitWithContent(writes, checks, account, pages);
-      if (receipt && committed && selected == Boundary.AFTER) park();
+      if (receipt && committed && selected == Boundary.AFTER) {
+        park();
+      }
       return committed;
     }
 
