@@ -34,6 +34,9 @@ jobs:
       - name: Check
         working-directory: myos-core-better
         run: ./gradlew check
+      - name: Check production code with Error Prone
+        working-directory: myos-core-better
+        run: ./gradlew errorProne
       - name: Verify line and branch coverage
         working-directory: myos-core-better
         run: ./gradlew jacocoTestCoverageVerification

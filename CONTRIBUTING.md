@@ -38,3 +38,7 @@ Run the three commands above. If you changed the SDK or the console, also run th
 `docs/TESTING.md`. State in the description what you ran and anything you could not run.
 
 Run `./gradlew commandReplayProbe -PfirstSeed=7 -PseedCount=3 -PcommandsPerSeed=12` to exercise concurrent command replay. Each seed races two to four independent hosts on the same first command, interleaves the remaining commands in different orders, and reopens every recorded result on a fresh host. The expected final count and committed version depend only on the number of distinct commands. A failing line or assertion gives the seed for reproduction.
+
+## Check production sources with Error Prone
+
+Run `./gradlew errorProne` with JDK 25. CI uses the pinned compiler plug-in’s default error-level checks. To review its lower-severity suggestions as well, run `./gradlew errorProne -PerrorProneWarnings=true`. Both modes compile into a separate analysis directory. Ordinary builds and shipped artifacts use the normal Java compiler inputs. Review the responsible API or invariant before adding a suppression. [Compiler checks and severities](https://errorprone.info/docs/flags)

@@ -226,3 +226,5 @@ tasks.register<Test>("idleGrowth") {
 }
 
 apply(from = "gradle/mutation.gradle.kts")
+
+apply(from = "gradle/error-prone.gradle.kts")
