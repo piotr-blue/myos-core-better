@@ -179,6 +179,10 @@ final class CanonicalRuntime {
       List<Attachment> attachments,
       List<String> replacedPaths,
       Object diagnostic) {
+    static Update unchanged() {
+      return new Update("APPLIED", 0, List.of(), List.of(), List.of(), null);
+    }
+
     boolean applied() {
       return status.equals("APPLIED");
     }

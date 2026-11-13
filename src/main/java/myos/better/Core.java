@@ -778,50 +778,8 @@ final class Core implements AutoCloseable {
             blue.Contracts.Reception previousReception =
                 lineage != null && before != null ? session.reception() : null;
             long start = System.nanoTime();
-            CanonicalRuntime.Update update;
-            boolean verified = true;
-            if (before == null) {
-              update = session.initialize();
-            } else if (action instanceof Migrate
-                || incoming != null && incoming.events().isEmpty()) {
-              update =
-                  new CanonicalRuntime.Update("APPLIED", 0, List.of(), List.of(), List.of(), null);
-            } else if (incoming != null) {
-              throw CanonicalRuntime.detachedDelivery();
-            } else if (action instanceof Admitted admitted) {
-              blue.LanguageProvider reader =
-                  identity -> {
-                    var local = readScope.find(identity);
-                    return local.isPresent() || sourceSelection == null
-                        ? local
-                        : sourceSelection.find(identity);
-                  };
-              blue.TimelineVerifier.Entry original =
-                  sourceSelection == null ? null : sourceSelection.verifiedEntry().orElse(null);
-              CanonicalRuntime.AdmissionResult admission =
-                  original == null
-                      ? session.admit(
-                          admitted.input().runtimeCommand(),
-                          admitted.input().event(),
-                          command.timestamp(),
-                          reader,
-                          admitted.input().evidence())
-                      : session.admit(
-                          admitted.input().runtimeCommand(),
-                          original,
-                          reader,
-                          admitted.input().evidence());
-              update = admission.update();
-              verified = admission.verified();
-            } else if (action instanceof Event event) {
-              update = session.process(event.value(), command.timestamp());
-            } else if (action instanceof Call call) {
-              update =
-                  session.call(
-                      call.channel(), call.operation(), call.request(), command.timestamp());
-            } else {
-              throw new AssertionError("Unrecognized document action");
-            }
+            var evaluated = evaluate(session, action, command.timestamp(), readScope);
+            var update = evaluated.update();
             long execution = System.nanoTime() - start;
             if (!update.applied()) {
               Result rejected =
@@ -840,7 +798,8 @@ final class Core implements AutoCloseable {
                   new AtomicStore.Check(
                       Repository.key(account, id, "STATE"), before == null ? 0 : before.version()));
               List<AtomicStore.Write> rejectionWrites = new ArrayList<>();
-              boolean completed = verified && !update.status().equals("NEEDS_RESOURCES");
+              boolean completed =
+                  evaluated.verified() && !update.status().equals("NEEDS_RESOURCES");
               if (completed) {
                 rejectionWrites.add(commandWrite(account, id, command, rejected));
               }
@@ -1090,6 +1049,47 @@ final class Core implements AutoCloseable {
     } finally {
       lock.close();
     }
+  }
+
+  /** Evaluate one action against the leased state. Durable publication belongs to execute. */
+  private static CanonicalRuntime.AdmissionResult evaluate(
+      CanonicalRuntime.Session session, Action action, long timestamp, EmbeddingReads readScope) {
+    return switch (action) {
+      case Create ignored -> trusted(session.initialize());
+      case Event event -> trusted(session.process(event.value(), timestamp));
+      case Call call ->
+          trusted(session.call(call.channel(), call.operation(), call.request(), timestamp));
+      case Migrate ignored -> trusted(CanonicalRuntime.Update.unchanged());
+      case Receive receive -> {
+        if (!receive.value().events().isEmpty()) {
+          throw CanonicalRuntime.detachedDelivery();
+        }
+        yield trusted(CanonicalRuntime.Update.unchanged());
+      }
+      case Admitted admitted -> admit(session, admitted, timestamp, readScope);
+    };
+  }
+
+  private static CanonicalRuntime.AdmissionResult trusted(CanonicalRuntime.Update update) {
+    return new CanonicalRuntime.AdmissionResult(update, true);
+  }
+
+  private static CanonicalRuntime.AdmissionResult admit(
+      CanonicalRuntime.Session session,
+      Admitted admitted,
+      long timestamp,
+      EmbeddingReads readScope) {
+    TimelineInputs.Plan selection = admitted.selection();
+    blue.LanguageProvider reader =
+        identity -> {
+          var local = readScope.find(identity);
+          return local.isPresent() || selection == null ? local : selection.find(identity);
+        };
+    var original = selection == null ? null : selection.verifiedEntry().orElse(null);
+    NativeInput input = admitted.input();
+    return original == null
+        ? session.admit(input.runtimeCommand(), input.event(), timestamp, reader, input.evidence())
+        : session.admit(input.runtimeCommand(), original, reader, input.evidence());
   }
 
   private Created createChild(
