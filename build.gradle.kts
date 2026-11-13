@@ -152,6 +152,18 @@ tasks.register<JavaExec>("canonicalGraphProbe") {
     maxHeapSize = "1g"
 }
 
+// The supervisor must target the worker JVM itself when simulating an abrupt process death.
+tasks.register("processRecoveryClasspath") {
+    group = "verification"
+    description = "Prepare the isolated process-recovery worker and write its runtime classpath."
+    dependsOn(qualification.classesTaskName)
+    val processRecoveryPath = qualification.runtimeClasspath
+    inputs.files(processRecoveryPath)
+    val output = layout.buildDirectory.file("process-recovery-classpath.txt")
+    outputs.file(output)
+    doLast { output.get().asFile.writeText(processRecoveryPath.asPath) }
+}
+
 tasks.register<JavaExec>("commandReplayProbe") {
     group = "verification"
     description = "Race repeated commands across host instances and reopen every durable result."

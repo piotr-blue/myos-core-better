@@ -106,3 +106,13 @@ Run `./gradlew jacocoTestCoverageVerification` to instrument the ordinary JUnit 
 Run `./gradlew mutationTest` to run the focused PIT suite. Open `build/reports/mutation/index.html` and inspect each surviving mutation in context. A surviving change can expose a missing assertion or behaviorally equivalent code. Investigate the affected invariant before changing a test.
 
 Select another production boundary with `-PmutationClasses=CLASS_GLOB` and its tests with `-PmutationTests=TEST_GLOB`. Quote wildcard arguments in the shell. PIT reports the selected classes only. It runs in forked JVMs and stays outside the release artifact. [PIT command-line options](https://pitest.org/quickstart/commandline/)
+
+## Recovery across process termination
+
+Start a disposable local DynamoDB-compatible endpoint on loopback. The runner uses the AWS CLI with test credentials, creates a unique table with the deployment key schema, and removes the table when the run exits. Put JDK 25, the AWS CLI and Python 3 on PATH.
+
+```bash
+python3 scripts/test_process_recovery_local.py --endpoint http://127.0.0.1:4566 --trials 8 --output build/process-recovery.json
+```
+
+The supervisor kills a JVM immediately before its conditional financial command commit or after DynamoDB returns success and before the caller receives the reply. A fresh JVM reads the stored total, resubmits the same acknowledgment twice, and checks its receipt, amount and version. The two cases distinguish an interrupted operation from a lost response. This is a recovery check against an emulator. The timings of the emulator do not characterize AWS.
