@@ -54,7 +54,12 @@ final class OwnerFrontiers {
 
     @Override
     public int compareTo(Order other) {
-      return key().compareTo(other.key());
+      int timeOrder = Long.compare(timestamp, other.timestamp);
+      if (timeOrder != 0) {
+        return timeOrder;
+      }
+      int timelineOrder = timeline.compareTo(other.timeline);
+      return timelineOrder != 0 ? timelineOrder : entry.compareTo(other.entry);
     }
   }
 

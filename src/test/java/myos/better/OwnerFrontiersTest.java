@@ -47,6 +47,25 @@ class OwnerFrontiersTest {
   }
 
   @Test
+  void inMemorySortMatchesThePersistedOrderAcrossTiesAndPrefixKeys() {
+    var orders = new java.util.ArrayList<OwnerFrontiers.Order>();
+    for (long timestamp : new long[] {0, 1, 10, 9_007_199_254_740_991L}) {
+      for (String timeline : List.of("a", "aa", "Ω", "😀")) {
+        for (String entry : List.of("e", "ea", "Ω", "😀")) {
+          orders.add(new OwnerFrontiers.Order(timestamp, timeline, entry));
+        }
+      }
+    }
+    var shuffled = new java.util.ArrayList<>(orders);
+    java.util.Collections.shuffle(shuffled, new java.util.Random(42));
+    assertEquals(
+        shuffled.stream()
+            .sorted(java.util.Comparator.comparing(OwnerFrontiers.Order::key))
+            .toList(),
+        shuffled.stream().sorted().toList());
+  }
+
+  @Test
   void reopenedSelectionDistinguishesAClaimedOwnerFromAnIdleAccount() {
     var store = new MemoryStore();
     var scheduler = new OwnerFrontiers(store, "account");
