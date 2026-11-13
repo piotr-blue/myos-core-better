@@ -33,8 +33,11 @@ final class RuntimeConfiguration {
 
   @SuppressWarnings("try")
   static Loaded load(Path manifest, AtomicStore store, String admissionNamespace) {
-    try (var trace =
-        HostPhaseEvent.start("startup.configuration", "", manifest.getFileName().toString())) {
+    Path name = manifest.getFileName();
+    if (name == null) {
+      throw new IllegalArgumentException("Runtime manifest must be a file");
+    }
+    try (var trace = HostPhaseEvent.start("startup.configuration", "", name.toString())) {
       return loadConfiguration(manifest, store, admissionNamespace);
     }
   }
@@ -43,6 +46,9 @@ final class RuntimeConfiguration {
       Path manifest, AtomicStore store, String admissionNamespace) {
     try {
       Path selected = manifest.toRealPath();
+      if (!Files.isRegularFile(selected)) {
+        throw new IllegalArgumentException("Runtime manifest must be a file");
+      }
       if (Files.size(selected) > 256 * 1024) {
         throw new IllegalArgumentException("Runtime manifest exceeds 256 KiB");
       }

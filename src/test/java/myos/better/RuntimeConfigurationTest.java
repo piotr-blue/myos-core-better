@@ -19,6 +19,14 @@ import org.junit.jupiter.api.io.TempDir;
 class RuntimeConfigurationTest {
   @TempDir Path directory;
 
+  @Test
+  void directoryAndFilesystemRootAreRejectedAsNonFileManifests() {
+    assertThrows(IllegalArgumentException.class, () -> RuntimeConfiguration.loadCatalog(directory));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> RuntimeConfiguration.loadCatalog(directory.toAbsolutePath().getRoot()));
+  }
+
   private BluePackage copyPackage(String name) throws Exception {
     Path archive = directory.resolve(name + ".bluepkg");
     try (var input =

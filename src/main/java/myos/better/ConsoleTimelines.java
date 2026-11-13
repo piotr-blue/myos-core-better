@@ -54,6 +54,10 @@ final class ConsoleTimelines {
       ReaderCustody custody,
       PublicPackages packages,
       String namespace) {
+    if ((service == null) != (custody == null)) {
+      throw new IllegalArgumentException(
+          "Owner inputs require both the Timeline service and reader custody");
+    }
     this.signing = Objects.requireNonNull(signing);
     processing = service;
     graphs = service == null ? null : service.graphs();
@@ -64,10 +68,7 @@ final class ConsoleTimelines {
             signing,
             () -> Math.multiplyExact(System.currentTimeMillis(), 1_000),
             packages);
-    inputs =
-        service == null && custody == null
-            ? null
-            : new OwnedTimelineInputs(timelines, signing, service, custody);
+    inputs = service == null ? null : new OwnedTimelineInputs(timelines, signing, service, custody);
     language =
         Language.newBuilder()
             .mount("Coordination", signing.coordination())

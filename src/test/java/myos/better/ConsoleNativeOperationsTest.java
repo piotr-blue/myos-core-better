@@ -17,6 +17,20 @@ import org.junit.jupiter.api.Test;
 
 class ConsoleNativeOperationsTest {
   @Test
+  void optionalOwnerInputRequiresBothCustodyAndAProcessingService() {
+    var nativeFixture = new HostedTimelineFixture();
+    try (var fixture = new ConsoleInputFixture(Language.create(), List.of())) {
+      var signing = nativeFixture.signing;
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> new ConsoleTimelines(fixture.store, signing, null, fixture.custody));
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> new ConsoleTimelines(fixture.store, signing, fixture.service, null));
+    }
+  }
+
+  @Test
   void submittedOperationUsesDeclaredSourceAndStableTargetAcrossUncertainRetries()
       throws Exception {
     JsonBoundaryStore store = new JsonBoundaryStore();
