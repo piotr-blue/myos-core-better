@@ -1,7 +1,12 @@
 import type { DocumentsApi, NativeInputObservation } from '../generated/index.js';
 import { waitFor, type WaitOptions } from './polling.js';
 
-const terminalOutcomes = new Set(['REJECTED', 'EXECUTION_REJECTED', 'NO_MATCH']);
+// Older providers publish a terminal assessment. The owner host records a disposition
+// after channel admission, including FAILED when a signed operation trips a business guard.
+const terminalOutcomes = new Set([
+  'REJECTED', 'EXECUTION_REJECTED', 'NO_MATCH', 'FAILED', 'INAPPLICABLE',
+  'IGNORED', 'GAS_LIMIT_EXCEEDED', 'TERMINATED',
+]);
 
 /**
  * Wait for evidence about this exact submitted timeline entry. A stable transition

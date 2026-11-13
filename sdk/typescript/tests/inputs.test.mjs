@@ -29,6 +29,16 @@ test('retained assessment is terminal even after a newer input replaces latest d
   }
 });
 
+test('terminal owner dispositions complete polling after a prior accepted assessment', async () => {
+  for (const outcome of ['FAILED', 'INAPPLICABLE', 'IGNORED', 'GAS_LIMIT_EXCEEDED', 'TERMINATED']) {
+    const before = { ...pending(), assessment: { outcome: 'ACCEPTED' } };
+    const done = { ...before, disposition: { outcome, reason: 'native-result', epoch: 3 } };
+    const states = [before, done];
+    assert.equal(await waitForNativeInput(api(states), 's', 'e', fast), done);
+    assert.equal(states.length, 0);
+  }
+});
+
 test('unrelated session/input and incomplete evidence cannot count as success', async () => {
   for (const change of [{ entryBlueId: 'other' }, { sessionId: 'other' }]) {
     await assert.rejects(waitForNativeInput(api([{ ...pending(), ...change, localHistory: [row] }]),

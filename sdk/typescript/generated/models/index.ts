@@ -4858,11 +4858,35 @@ export interface NativeInputObservation {
     /**
      *
      */
-    disposition: object | null;
+    disposition: NativeInputObservationDisposition | null;
     /**
      *
      */
     processing: NativeProcessing;
+}
+/**
+ * Terminal decision for the requested entry. Older publications can omit the code and epoch.
+ * @export
+ * @interface NativeInputObservationDisposition
+ */
+export interface NativeInputObservationDisposition {
+    [key: string]: any | any;
+    /**
+     *
+     */
+    outcome?: string;
+    /**
+     *
+     */
+    reason?: string;
+    /**
+     * Native diagnostic code when retained.
+     */
+    code?: string;
+    /**
+     * Zero-based epoch of the rejected transaction.
+     */
+    epoch?: number;
 }
 /**
  * Original Core processing observation, with the direct pause flag, native/effective state and current reason or issue. A missing blocker does not prove completion.

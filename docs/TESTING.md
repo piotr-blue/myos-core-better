@@ -96,3 +96,13 @@ storage-backed owner is not the same as restarting the JVM. Report initializatio
 leaf processing, propagation and HTTP completion separately. Retain raw samples, include failures
 and excluded samples with their reasons, and compare identical fixtures and boundaries. A fast
 small local result does not establish production AWS latency or throughput.
+
+## Inspect unexercised code
+
+Run `./gradlew jacocoTestCoverageVerification` to instrument the ordinary JUnit suite in its own JVM. Open `build/reports/jacoco/test/html/index.html` to inspect missed branches. The module-wide regression floors are 86% line and 73% branch coverage. A branch exercised by a test still needs an assertion that distinguishes correct behavior. Ordinary tests and JMH run without this instrumentation.
+
+## Check whether tests detect changes
+
+Run `./gradlew mutationTest` to run the focused PIT suite. Open `build/reports/mutation/index.html` and inspect each surviving mutation in context. A surviving change can expose a missing assertion or behaviorally equivalent code. Investigate the affected invariant before changing a test.
+
+Select another production boundary with `-PmutationClasses=CLASS_GLOB` and its tests with `-PmutationTests=TEST_GLOB`. Quote wildcard arguments in the shell. PIT reports the selected classes only. It runs in forked JVMs and stays outside the release artifact. [PIT command-line options](https://pitest.org/quickstart/commandline/)

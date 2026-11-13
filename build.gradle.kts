@@ -1,4 +1,7 @@
-plugins { application }
+plugins {
+    application
+    jacoco
+}
 group = "blue.myos"
 version = "0.1.0-experiment"
 repositories { mavenCentral() }
@@ -36,6 +39,45 @@ tasks.withType<Test>().configureEach {
     maxHeapSize = "1g"
     testLogging { events("failed", "skipped") }
 }
+// Instrument a separate test task so ordinary tests and timing probes use the plain runtime.
+jacoco { toolVersion = "0.8.16" }
+tasks.withType<Test>().configureEach {
+    extensions.configure<JacocoTaskExtension> { isEnabled = false }
+}
+val coverageTest = tasks.register<Test>("coverageTest") {
+    group = "verification"
+    description = "Run the ordinary JUnit suite with JaCoCo instrumentation."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform()
+    extensions.configure<JacocoTaskExtension> { isEnabled = true }
+}
+val suiteCoverage = coverageTest.map { it.extensions.getByType<JacocoTaskExtension>().destinationFile }
+tasks.jacocoTestReport {
+    dependsOn(coverageTest)
+    executionData.setFrom(suiteCoverage)
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+}
+tasks.jacocoTestCoverageVerification {
+    dependsOn(tasks.jacocoTestReport)
+    executionData.setFrom(suiteCoverage)
+    violationRules {
+        rule {
+            limit {
+                counter = "LINE"
+                minimum = "0.86".toBigDecimal()
+            }
+            limit {
+                counter = "BRANCH"
+                minimum = "0.73".toBigDecimal()
+            }
+        }
+    }
+}
+
 dependencyLocking { lockAllConfigurations() }
 
 // Equal inputs produce equal deployable archives, independent of checkout timestamps.
@@ -159,3 +201,5 @@ tasks.register<Test>("idleGrowth") {
         systemProperty("myos.test.blobDirectory", providers.gradleProperty("growthBlobDirectory").get())
     outputs.upToDateWhen { false }
 }
+
+apply(from = "gradle/mutation.gradle.kts")

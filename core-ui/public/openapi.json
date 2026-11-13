@@ -16222,7 +16222,15 @@
             "type": [
               "object",
               "null"
-            ]
+            ],
+            "description": "Terminal decision for the requested entry. Older publications can omit the code and epoch.",
+            "properties": {
+              "outcome": { "type": "string" },
+              "reason": { "type": "string" },
+              "code": { "type": "string", "description": "Native diagnostic code when retained." },
+              "epoch": { "type": "integer", "minimum": 0, "description": "Zero-based epoch of the rejected transaction." }
+            },
+            "additionalProperties": true
           },
           "processing": {
             "$ref": "#/components/schemas/NativeProcessing"
