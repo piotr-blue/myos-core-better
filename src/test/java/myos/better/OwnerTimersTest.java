@@ -61,6 +61,76 @@ class OwnerTimersTest {
   }
 
   @Test
+  void dueBatchAdvancesTheAlarmIndexAndClearsOnlyTheConsumedActiveTimer() {
+    var originalStore = new MemoryStore();
+    var f = scheduler(originalStore, "account", "doc");
+    var member = member("doc", 1, null);
+    var first = schedule("doc", "early", null, 10, 1);
+    var later = schedule("doc", "later", null, 20, 1);
+    assertEquals(
+        false,
+        f.change(
+            tx ->
+                OwnerTimers.apply(f, tx, new OwnerTimers.Turn(List.of(member), List.of(), null))));
+    assertEquals(
+        true,
+        f.change(
+            tx ->
+                OwnerTimers.apply(
+                    f, tx, new OwnerTimers.Turn(List.of(member), List.of(first, later), null))));
+    assertEquals(10, OwnerTimers.nextAlarm(f.metadata.begin()));
+    assertFalse(OwnerTimers.hasActive(f.metadata.begin()));
+    assertEquals(List.of(), f.change(tx -> OwnerTimers.activateDue(f, tx, 9, 1)));
+    assertEquals(List.of("doc"), f.change(tx -> OwnerTimers.activateDue(f, tx, 10, 1)));
+    var reopened = new OwnerFrontiers(originalStore, "account");
+    assertEquals(20, OwnerTimers.nextAlarm(reopened.metadata.begin()));
+    assertTrue(OwnerTimers.hasActive(reopened.metadata.begin()));
+    assertEquals(List.of(), reopened.change(tx -> OwnerTimers.activateDue(reopened, tx, 10, 128)));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> OwnerTimers.activateDue(reopened, reopened.metadata.begin(), 20, 0));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> OwnerTimers.activateDue(reopened, reopened.metadata.begin(), 20, 129));
+    assertEquals(
+        List.of("doc"), reopened.change(tx -> OwnerTimers.activateDue(reopened, tx, 20, 128)));
+    assertNull(OwnerTimers.nextAlarm(reopened.metadata.begin()));
+    for (var expected : List.of(first, later)) {
+      var claim = reopened.claim("doc", 0, 1000).orElseThrow();
+      var id = expected.registration().payload().entry();
+      assertEquals(id, claim.order().entry());
+      reopened.complete(
+          claim,
+          0,
+          "after-" + id,
+          "receipt-" + id,
+          false,
+          List.of(),
+          Set.of(),
+          tx ->
+              OwnerTimers.apply(
+                  reopened, tx, new OwnerTimers.Turn(List.of(member), List.of(), id)));
+      assertEquals(expected == first, OwnerTimers.hasActive(reopened.metadata.begin()));
+      assertEquals(
+          OwnerTimers.Status.FIRED,
+          OwnerTimers.registration(reopened.metadata.begin(), expected.registration().id())
+              .status());
+    }
+    assertTrue(reopened.ready(0, 8).isEmpty());
+  }
+
+  @Test
+  void registrationsAcceptBothInclusiveBoundsForTimeAndGeneration() {
+    long maximum = 9_007_199_254_740_991L;
+    assertEquals(0, schedule("doc", "first", null, 0, 0).registration().timestamp());
+    assertEquals(maximum, schedule("doc", "last", null, maximum, 0).registration().timestamp());
+    assertThrows(IllegalArgumentException.class, () -> schedule("doc", "negative", null, -1, 0));
+    assertThrows(
+        IllegalArgumentException.class, () -> schedule("doc", "late", null, maximum + 1, 0));
+    assertThrows(IllegalArgumentException.class, () -> schedule("doc", "generation", null, 0, -1));
+  }
+
+  @Test
   void namedReplacementAndCancellationFollowEmissionOrder() {
     var f = scheduler(new MemoryStore(), "account", "doc");
     var m = member("doc", 1, null);
