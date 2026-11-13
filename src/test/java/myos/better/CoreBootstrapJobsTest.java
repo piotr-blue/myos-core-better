@@ -22,6 +22,48 @@ import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 
 class CoreBootstrapJobsTest {
+  @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.ValueSource(
+      strings = {"200.00", "0.1000000000000000000000000001", "1.2300E-30", "1E+400"})
+  void acceptedDecimalKeepsTheOriginalFingerprintAndPrecisionAcrossBothRestarts(String literal) {
+    var input =
+        CoreRequestBody.read(
+            ("{\"document\":{\"amount\":" + literal + "}}")
+                .getBytes(java.nio.charset.StandardCharsets.UTF_8),
+            false);
+    var clock = new MutableClock();
+    var action =
+        new RecordingAction() {
+          @Override
+          public Map<String, Object> execute(
+              String account, String command, Map<String, Object> prepared) {
+            assertEquals(
+                input, prepared, "Prepared input has the same decimal as the signed request");
+            if (executions.incrementAndGet() == 1) {
+              throw new IllegalStateException("Injected loss after durable preparation");
+            }
+            return Map.of("sessionId", command);
+          }
+        };
+    try (var store = new ControlledStore()) {
+      try (var first = jobs(store, action, clock)) {
+        first.enqueue(session("alice"), "decimal", input);
+      }
+      try (var second = jobs(store, action, clock)) {
+        second.process(key("alice", "decimal"));
+        assertEquals("ACCEPTED", store.get(key("alice", "decimal")).value().get("phase"));
+      }
+      clock.advance(30_000);
+      try (var third = jobs(store, action, clock)) {
+        third.process(key("alice", "decimal"));
+        assertEquals("SUCCEEDED", receipt(store, "alice", "decimal").get("status"));
+        assertNull(store.get(key("alice", "decimal")));
+        assertEquals(1, action.prepares.get());
+        assertEquals(2, action.executions.get());
+      }
+    }
+  }
+
   @Test
   void recipientFenceAndAcceptanceAreOneCommitAndAcceptedReplayIgnoresLaterChanges() {
     try (var store = new ControlledStore()) {

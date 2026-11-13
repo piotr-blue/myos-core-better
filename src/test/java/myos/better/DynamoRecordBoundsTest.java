@@ -61,6 +61,34 @@ class DynamoRecordBoundsTest {
     }
   }
 
+  @org.junit.jupiter.params.ParameterizedTest
+  @org.junit.jupiter.params.provider.ValueSource(
+      strings = {"200.00", "0.1000000000000000000000000001", "1.2300E-30", "1E+400"})
+  void coldDecimalRowsRetainTheirCommittedFingerprint(String literal) {
+    var key = new AtomicStore.Key("agreement", "payment-terms");
+    var fields =
+        CoreRequestBody.read(
+            ("{\"conditions\":[{\"amount\":" + literal + "}]}")
+                .getBytes(java.nio.charset.StandardCharsets.UTF_8),
+            false);
+    var client = new OneRecord();
+    try (var creator = new DynamoStore("rows", client)) {
+      assertTrue(creator.commit(List.of(AtomicStore.Write.put(key, 0, fields)), List.of()));
+    }
+    try (var receiver = new DynamoStore("rows", client)) {
+      var recovered = receiver.get(key);
+      assertEquals(Json.hash(Json.bytes(fields)), Json.hash(Json.bytes(recovered.value())));
+      assertEquals(fields, recovered.value());
+    }
+  }
+
+  @Test
+  void ordinaryDoubleEncodingsAndTheSignOfZeroKeepTheirPreviousRepresentation() {
+    var values = List.of(-0.0, 0.0, 0.1, -1234.25, Math.PI, Double.MIN_NORMAL, Double.MAX_VALUE);
+    var decoded = DynamoRecordCodec.decode(DynamoRecordCodec.encode(Map.of("values", values)));
+    assertEquals(values, decoded.get("values"));
+  }
+
   private static final class OneRecord implements DynamoDbClient {
     private Map<String, AttributeValue> item = Map.of();
     private int writes;

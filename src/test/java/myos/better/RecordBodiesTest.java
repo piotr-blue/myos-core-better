@@ -77,6 +77,15 @@ class RecordBodiesTest {
   }
 
   @Test
+  void aLargeExactDecimalIsWeighedByItsSignificand() {
+    var cache = new RecordBodies(4096);
+    var large = new java.math.BigDecimal("1." + "2".repeat(20000));
+    cache.remember("payload", Map.of("price", large));
+    org.junit.jupiter.api.Assertions.assertNull(cache.known("payload"));
+    assertEquals(0, cache.bytes());
+  }
+
+  @Test
   void capacityEvictsByWeightAndOversizedBodiesAreNeverRetained() {
     RecordBodies cache = new RecordBodies(1100);
     byte[] a = Json.bytes(Map.of("a", 1)),

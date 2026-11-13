@@ -311,7 +311,8 @@ final class CoreBootstrapJobs implements AutoCloseable {
   }
 
   private Map<String, Object> read(String account, String content) {
-    return Json.object(new ContentBlocks(repository.blobs(account)).get(content));
+    // The admission fingerprint commits to the authored decimal, including its scale.
+    return CoreRequestBody.read(new ContentBlocks(repository.blobs(account)).get(content), false);
   }
 
   private void defer(AtomicStore.Key key, RuntimeException failure) {

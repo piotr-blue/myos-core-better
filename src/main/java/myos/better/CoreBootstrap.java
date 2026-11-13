@@ -93,7 +93,8 @@ final class CoreBootstrap {
           409, "BOOTSTRAP_CONFLICT", "This bootstrap command already has different input.");
     }
     var prepared =
-        Json.object(new ContentBlocks(blobs).get((String) before.value().get("prepared")));
+        CoreRequestBody.read(
+            new ContentBlocks(blobs).get((String) before.value().get("prepared")), false);
     return execute(account, command, prepared);
   }
 

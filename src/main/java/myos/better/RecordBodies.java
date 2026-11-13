@@ -119,6 +119,9 @@ final class RecordBodies {
     if (value instanceof java.math.BigInteger integer) {
       return new Frozen(value, 64L + (integer.bitLength() + 7L) / 8L);
     }
+    if (value instanceof java.math.BigDecimal decimal) {
+      return new Frozen(value, 112L + (decimal.unscaledValue().bitLength() + 7L) / 8L);
+    }
     if (value instanceof java.util.concurrent.atomic.AtomicInteger n) {
       return new Frozen(n.get(), 64);
     }
@@ -132,8 +135,7 @@ final class RecordBodies {
         || value instanceof Integer
         || value instanceof Long
         || value instanceof Double
-        || value instanceof Float
-        || value instanceof java.math.BigDecimal) {
+        || value instanceof Float) {
       return new Frozen(value, 64);
     }
     throw new IllegalArgumentException("Stored JSON value required: " + value.getClass().getName());

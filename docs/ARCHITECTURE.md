@@ -93,3 +93,9 @@ A subscription takes effect at a committed source generation. An event transacti
 ## In-process publication
 
 A successful conditional publication establishes an immutable version, including nested lists and map values. The in-memory store takes ownership of each body before updating any row or index in the transaction. Mutating an authored collection after commit cannot change the published version, and an invalid later item cannot partially commit an earlier one. Embedding layout uses the same two persisted fields in local and DynamoDB records. [Publication regressions](../src/test/java/myos/better/MemoryPublicationTest.java)
+
+## Decimal request recovery
+
+A queued Core bootstrap compares the fingerprint of its recovered request with the fingerprint stored at admission. Both sides use the exact authored decimal representation. For example, the JSON token `200.00` retains its scale across the queue and an accepted replay. The language then independently decides whether that number can be represented as a Blue Double. A high-precision amount that cannot be represented produces the normal terminal validation diagnostic. [Worker restart cases](../src/test/java/myos/better/CoreBootstrapJobsTest.java) · [HTTP success and refusal](../src/test/java/myos/better/CoreBootstrapHttpTest.java)
+
+DynamoDB rows preserve the spelling the writer emitted. A floating-point token keeps its native Double representation when that Double reproduces the token exactly, including signed zero. Other decimal encodings remain exact decimals. Re-encoding either case yields the original numeric token and fingerprint. The decoded-body cache includes the decimal significand in its retained weight. [Physical recovery tests](../src/test/java/myos/better/DynamoRecordBoundsTest.java)

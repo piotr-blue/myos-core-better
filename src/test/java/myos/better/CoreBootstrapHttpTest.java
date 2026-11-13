@@ -93,26 +93,7 @@ class CoreBootstrapHttpTest {
       assertEquals(202, retry.statusCode());
       assertEquals(
           id, Json.object(retry.body().getBytes(StandardCharsets.UTF_8)).get("admissionId"));
-      Map<String, Object> complete =
-          assertTimeoutPreemptively(
-              Duration.ofSeconds(10),
-              () -> {
-                for (; ; ) {
-                  var result =
-                      http.send(
-                          HttpRequest.newBuilder(URI.create(base + "admissions/" + id))
-                              .header("Authorization", "Bearer alice")
-                              .GET()
-                              .build(),
-                          HttpResponse.BodyHandlers.ofString());
-                  assertEquals(200, result.statusCode(), result.body());
-                  var receipt = Json.object(result.body().getBytes(StandardCharsets.UTF_8));
-                  if (!"PENDING".equals(receipt.get("status"))) {
-                    return receipt;
-                  }
-                  Thread.sleep(10);
-                }
-              });
+      Map<String, Object> complete = awaitReceipt(http, base, id);
       assertEquals("SUCCEEDED", complete.get("status"), JsonText.of(complete));
       String document = (String) ((Map<?, ?>) complete.get("details")).get("sessionId");
       var documents = new ConsoleDocuments(f.core, f.store, Path.of("examples"), f.timelines);
@@ -134,6 +115,62 @@ class CoreBootstrapHttpTest {
                   Json.object(recipients.body().getBytes(StandardCharsets.UTF_8)).get("recipients"))
               .size());
       assertEquals(1, f.store.query("A#" + user.account(), "BOOTSTRAP#", null, 10).rows().size());
+
+      // Structured JSON uses the same exact decimal representation throughout asynchronous replay.
+      var definition =
+          new LinkedHashMap<>(CoreRequestBody.read(source.getBytes(StandardCharsets.UTF_8), true));
+      for (String amount : List.of("200.00", "0.1000000000000000000000000001")) {
+        definition.put("count", new java.math.BigDecimal(amount));
+        var decimalRequest =
+            HttpRequest.newBuilder(
+                    request, (name, value) -> !name.equalsIgnoreCase("Idempotency-Key"))
+                .header("Idempotency-Key", "amount-" + amount.replace('.', '-'))
+                .POST(
+                    HttpRequest.BodyPublishers.ofByteArray(
+                        Json.bytes(
+                            Map.of(
+                                "document",
+                                definition,
+                                "participantMappings",
+                                input.get("participantMappings")))))
+                .build();
+        var initial = http.send(decimalRequest, HttpResponse.BodyHandlers.ofString());
+        assertEquals(202, initial.statusCode(), initial.body());
+        String decimalId = (String) Json.object(initial.body()).get("admissionId");
+        var observed = awaitReceipt(http, base, decimalId);
+        if (amount.equals("200.00")) {
+          assertEquals("SUCCEEDED", observed.get("status"), JsonText.of(observed));
+          var session = (String) ((Map<?, ?>) observed.get("details")).get("sessionId");
+          var actual = (Number) f.service.graphs().readValue(user.account(), session, "/count");
+          assertEquals(200.0, actual.doubleValue());
+        } else {
+          assertEquals("FAILED", observed.get("status"), JsonText.of(observed));
+          assertEquals(
+              "numeric_precision_unsupported", ((Map<?, ?>) observed.get("problem")).get("code"));
+        }
+      }
     }
+  }
+
+  private static Map<String, Object> awaitReceipt(HttpClient http, String base, String id) {
+    return assertTimeoutPreemptively(
+        Duration.ofSeconds(10),
+        () -> {
+          for (; ; ) {
+            var result =
+                http.send(
+                    HttpRequest.newBuilder(URI.create(base + "admissions/" + id))
+                        .header("Authorization", "Bearer alice")
+                        .GET()
+                        .build(),
+                    HttpResponse.BodyHandlers.ofString());
+            assertEquals(200, result.statusCode(), result.body());
+            var receipt = Json.object(result.body().getBytes(StandardCharsets.UTF_8));
+            if (!"PENDING".equals(receipt.get("status"))) {
+              return receipt;
+            }
+            Thread.sleep(10);
+          }
+        });
   }
 }

@@ -1,8 +1,13 @@
 package myos.better;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectReader;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -23,6 +28,9 @@ final class DynamoRecordCodec {
     // Durable rows can contain any Blue integer or member name that fit in the original write.
     // Request-envelope limits remain owned by their separate readers.
     ObjectMapper mapper = Json.MAPPER.copy();
+    var numbers = new SimpleModule();
+    numbers.addDeserializer(Number.class, new StoredNumber());
+    mapper.registerModule(numbers);
     var factory = mapper.getFactory();
     factory.setStreamReadConstraints(
         factory
@@ -32,6 +40,23 @@ final class DynamoRecordCodec {
             .maxNameLength(MAX_RECORD_BYTES)
             .build());
     return mapper.readerFor(new TypeReference<Map<String, Object>>() {});
+  }
+
+  /** Keep native doubles when they reproduce their exact stored token, including signed zero. */
+  private static final class StoredNumber extends JsonDeserializer<Number> {
+    @Override
+    public Number deserialize(JsonParser parser, DeserializationContext context)
+        throws IOException {
+      if (parser.hasToken(JsonToken.VALUE_NUMBER_INT)) {
+        return parser.getBigIntegerValue();
+      }
+      String token = parser.getText();
+      double floating = parser.getDoubleValue();
+      if (Double.isFinite(floating) && token.equals(Double.toString(floating))) {
+        return floating;
+      }
+      return parser.getDecimalValue();
+    }
   }
 
   static byte[] encode(Map<String, Object> value) {
