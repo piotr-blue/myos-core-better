@@ -57,9 +57,8 @@ final class SessionCache implements AutoCloseable {
   }
 
   final class Lease implements AutoCloseable {
-    private final Entry entry;
+    private Entry entry;
     private boolean keep;
-    private boolean closed;
     private final boolean readOnly;
 
     private Lease(Entry entry, boolean readOnly) {
@@ -68,25 +67,34 @@ final class SessionCache implements AutoCloseable {
     }
 
     CanonicalRuntime.Session session() {
-      return entry.session;
+      return active().session;
     }
 
     void published(long version) {
-      entry.version = version;
+      active().version = version;
       keep = true;
     }
 
     void unchanged() {
+      active();
       keep = true;
+    }
+
+    private Entry active() {
+      if (entry == null) {
+        throw new IllegalStateException("Document session lease is closed");
+      }
+      return entry;
     }
 
     @Override
     public void close() {
       synchronized (SessionCache.this) {
-        if (closed) {
+        Entry entry = this.entry;
+        if (entry == null) {
           return;
         }
-        closed = true;
+        this.entry = null;
         entry.pinned = false;
         if (!readOnly) {
           entry.uses++;

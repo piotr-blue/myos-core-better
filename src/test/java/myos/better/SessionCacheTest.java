@@ -239,6 +239,53 @@ class SessionCacheTest {
   }
 
   @Test
+  void aReleasedLeaseCannotObserveOrChangeTheNextOwnersVersion() {
+    try (var cache = new SessionCache()) {
+      var first = cache.acquire("order", 1, () -> 4, () -> runtime.openYaml("counter: 7"));
+      first.published(2);
+      first.close();
+      try (var next = cache.readIfPresent("order", 2)) {
+        assertNotNull(next);
+        assertThrows(IllegalStateException.class, first::session);
+        assertThrows(IllegalStateException.class, () -> first.published(99));
+        assertThrows(IllegalStateException.class, first::unchanged);
+        next.unchanged();
+      }
+      assertNull(cache.readIfPresent("order", 99));
+      try (var read = cache.readIfPresent("order", 2)) {
+        assertNotNull(read);
+        read.unchanged();
+      }
+    }
+  }
+
+  @Test
+  void exactByteBoundRetainsTheEntryAndEvictionClosesOnlyTheOldSession() {
+    long exact = 2L * 1024 * 1024 + 8L * 13;
+    var old = runtime.openYaml("counter: 1");
+    var next = runtime.openYaml("counter: 2");
+    var cache = new SessionCache(new SessionCache.Policy(2, exact, 10));
+    try (cache) {
+      try (var first = cache.acquire("one", 1, () -> 13, () -> old)) {
+        first.unchanged();
+      }
+      assertEquals(exact, cache.statistics().get("estimatedBytes"));
+      assertEquals(1L, cache.statistics().get("residentEntries"));
+      assertEquals(0L, cache.statistics().get("capacityEvictions"));
+      try (var second = cache.acquire("two", 1, () -> 13, () -> next)) {
+        assertThrows(IllegalStateException.class, () -> old.read("/counter"));
+        assertEquals(BigInteger.TWO, next.read("/counter"));
+        assertEquals(1L, cache.statistics().get("capacityEvictions"));
+        assertEquals(exact, cache.statistics().get("estimatedBytes"));
+        second.unchanged();
+      }
+    }
+    assertEquals(0L, cache.statistics().get("estimatedBytes"));
+    assertEquals(0L, cache.statistics().get("residentEntries"));
+    assertThrows(IllegalStateException.class, () -> next.read("/counter"));
+  }
+
+  @Test
   void invalidBoundsAreRejectedBeforeOpeningAnySession() {
     assertThrows(IllegalArgumentException.class, () -> new SessionCache.Policy(0, 1024, 32));
     assertThrows(IllegalArgumentException.class, () -> new SessionCache.Policy(1, 0, 32));
