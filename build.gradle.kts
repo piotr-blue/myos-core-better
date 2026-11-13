@@ -213,6 +213,18 @@ tasks.register<Test>("clauseGrowth") {
     outputs.upToDateWhen { false }
 }
 
+tasks.register<Test>("cycleReplay") {
+    group = "verification"
+    description = "Replay signed inputs through seeded cyclic owners and check every member after restart."
+    testClassesDirs = sourceSets.test.get().output.classesDirs
+    classpath = sourceSets.test.get().runtimeClasspath
+    useJUnitPlatform()
+    filter { includeTestsMatching("myos.better.OwnerCycleTest.reopenedCyclesApplyEachSignedAmountExactlyOncePerMember") }
+    systemProperty("myos.cycles.firstSeed", providers.gradleProperty("firstSeed").getOrElse("930000"))
+    systemProperty("myos.cycles.seedCount", providers.gradleProperty("seedCount").getOrElse("3"))
+    outputs.upToDateWhen { false }
+}
+
 // Explicit fixed-topology history-growth qualification, separate from ordinary regression sizes.
 tasks.register<Test>("idleGrowth") {
     group = "verification"
