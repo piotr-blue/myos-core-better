@@ -20,7 +20,7 @@ class RecordBodiesTest {
     var cache = new RecordBodies(4096);
     byte[] record = Json.bytes(Map.of("count", 1));
     String identity = Json.hash(record);
-    var decoded = cache.decode(record, identity, Function.identity());
+    var decoded = cache.decode(record, identity, Json::object);
     assertThrows(
         IllegalStateException.class,
         () ->
@@ -44,10 +44,10 @@ class RecordBodiesTest {
   void identicalBytesDecodeOnceAndChangedBytesCannotReuseTheOldValue() {
     RecordBodies cache = new RecordBodies(4096);
     AtomicInteger calls = new AtomicInteger();
-    Function<byte[], byte[]> decoder =
+    Function<byte[], Map<String, Object>> decoder =
         bytes -> {
           calls.incrementAndGet();
-          return bytes;
+          return Json.object(bytes);
         };
     byte[] first = Json.bytes(Map.of("count", 1));
     Map<String, Object> value = cache.decode(first, null, decoder);
@@ -66,7 +66,7 @@ class RecordBodiesTest {
     byte[] bytes =
         "{\"items\":[{\"count\":123456789012345678901234567890},null],\"empty\":null}"
             .getBytes(java.nio.charset.StandardCharsets.UTF_8);
-    Map<String, Object> value = cache.decode(bytes, null, Function.identity());
+    Map<String, Object> value = cache.decode(bytes, null, Json::object);
     assertEquals(Json.object(bytes), value);
     assertThrows(UnsupportedOperationException.class, () -> value.put("x", 1));
     List<Object> items = (List<Object>) value.get("items");
@@ -82,21 +82,17 @@ class RecordBodiesTest {
     byte[] a = Json.bytes(Map.of("a", 1)),
         b = Json.bytes(Map.of("b", 2)),
         c = Json.bytes(Map.of("c", 3));
-    Map<String, Object> first = cache.decode(a, null, Function.identity());
-    Map<String, Object> second = cache.decode(b, null, Function.identity());
-    assertSame(first, cache.decode(a, null, Function.identity()));
-    cache.decode(c, null, Function.identity());
-    assertSame(first, cache.decode(a, null, Function.identity()));
-    assertNotSame(second, cache.decode(b, null, Function.identity()));
+    Map<String, Object> first = cache.decode(a, null, Json::object);
+    Map<String, Object> second = cache.decode(b, null, Json::object);
+    assertSame(first, cache.decode(a, null, Json::object));
+    cache.decode(c, null, Json::object);
+    assertSame(first, cache.decode(a, null, Json::object));
+    assertNotSame(second, cache.decode(b, null, Json::object));
     byte[] huge = Json.bytes(Map.of("text", "a".repeat(2000)));
-    assertNotSame(
-        cache.decode(huge, null, Function.identity()),
-        cache.decode(huge, null, Function.identity()));
+    assertNotSame(cache.decode(huge, null, Json::object), cache.decode(huge, null, Json::object));
     assertTrue(cache.bytes() <= 1100);
     RecordBodies disabled = new RecordBodies(0);
-    assertNotSame(
-        disabled.decode(a, null, Function.identity()),
-        disabled.decode(a, null, Function.identity()));
+    assertNotSame(disabled.decode(a, null, Json::object), disabled.decode(a, null, Json::object));
     assertEquals(0, disabled.bytes());
   }
 }

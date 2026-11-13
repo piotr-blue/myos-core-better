@@ -33,7 +33,7 @@ final class RecordBodies {
 
   /** Check a retained commitment before serving any cached value under this identity. */
   Map<String, Object> decode(
-      byte[] encoded, String expectedHash, Function<byte[], byte[]> decoder) {
+      byte[] encoded, String expectedHash, Function<byte[], Map<String, Object>> decoder) {
     String identity = Json.hash(encoded);
     if (expectedHash != null && !identity.equals(expectedHash)) {
       throw new IllegalStateException("Stored body digest mismatch");
@@ -42,7 +42,7 @@ final class RecordBodies {
     if (cached != null) {
       return cached;
     }
-    Frozen frozen = freeze(Json.object(decoder.apply(encoded)));
+    Frozen frozen = freeze(decoder.apply(encoded));
     @SuppressWarnings("unchecked")
     Map<String, Object> value = (Map<String, Object>) frozen.value();
     Body body = new Body(value, frozen.weight() + 256);

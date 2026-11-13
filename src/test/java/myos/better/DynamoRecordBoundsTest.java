@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -40,6 +41,23 @@ class DynamoRecordBoundsTest {
       assertEquals(1, stored.version());
       assertTrue(
           value.equals(stored.value().get("payload")), "Cold reader recovered the exact text");
+    }
+  }
+
+  @Test
+  void coldReaderRecoversLargeNumbersAndFieldNamesInExistingPhysicalRows() {
+    var key = new AtomicStore.Key("account", "numeric-record");
+    String name = "field".repeat(12_000);
+    var number = BigInteger.TEN.pow(4096).negate().add(BigInteger.valueOf(7));
+    var values =
+        Map.<String, Object>of(name, number, "nested", List.of(number, Map.of("quantity", number)));
+    var client = new OneRecord();
+    try (var writer = new DynamoStore("table", client)) {
+      assertTrue(writer.commit(List.of(AtomicStore.Write.put(key, 0, values)), List.of()));
+    }
+    try (var cold = new DynamoStore("table", client)) {
+      assertEquals(values, cold.get(key).value());
+      assertEquals(values, cold.get(key).value());
     }
   }
 
