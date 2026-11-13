@@ -39,6 +39,12 @@ An embedded Order's body has its own BlueId. The Agreement also commits to the k
 
 The earlier document-local experiment has a separate [historical architecture record](HISTORICAL-DOCUMENT-LOCAL-ARCHITECTURE.md). Its outbox model and scale measurements belong to that protocol.
 
+## How owner preparation binds timelines
+
+A native receiver is identified by its member, channel and generation. Owner preparation groups these declarations by the owner selected for this graph revision. Members of a cycle share that owner. Each direct source retains its historical storage key and its native checkpoint, when present. Different lifetimes on the same timeline keep distinct keys. Access-control timelines cover private history and can be shared within the owner.
+
+Building the groups visits each declaration once. New sources can look up their indexed checkpoint and verify its timestamp against the retained original. An existing source keeps its established frontier and does not reopen that original. A full plan still has to enumerate the graph and its declarations. [Source grouping](../src/main/java/myos/better/OwnerTimelineSources.java) · [Owner and checkpoint regression](../src/test/java/myos/better/OwnerTimelineSourcesTest.java)
+
 ## Following a rejected signed operation
 
 The account's operation admission records whether its signed entry was published. The input resource identifies how a particular document processed that entry. A native rejection has its own history position and can advance the epoch while leaving business fields unchanged. Read the disposition’s epoch and code when present. Older retained history may supply only terminal status. The immutable processing receipt commits to the outcome digest. The signed-in document history retains the diagnostic behind that digest.

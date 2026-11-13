@@ -1129,10 +1129,12 @@ final class OwnerGraphs {
       publications.put(id, new Published(member, Map.copyOf(value), result));
     }
     var bindingTiming = OwnerPreparationEvent.start(after.root(), "source-bindings");
+    var timelineSources = declarations.sourcesByOwner(units);
     for (String representative : new TreeSet<>(owned.stream().map(units::get).toList())) {
       Set<String> members = new TreeSet<>(partition.members().get(representative));
       String owner = address(representative);
-      observers.put(owner, ingress.observed(declarations, members));
+      var group = timelineSources.group(representative);
+      observers.put(owner, group.observed());
       Set<String> identities = new HashSet<>();
       for (String member : members) {
         identities.add(after.rooted(member).blueId());
@@ -1148,9 +1150,9 @@ final class OwnerGraphs {
         records.frontiers.sources(records.read, owner).forEach(s -> existing.put(s.id(), s));
       }
       List<OwnerFrontiers.Source> required = new ArrayList<>();
-      for (var binding : ingress.direct(declarations, members).entrySet()) {
+      for (var binding : group.sources().entrySet()) {
         String timeline = binding.getValue().source().timeline().value();
-        String id = "timeline:" + binding.getKey();
+        String id = binding.getKey();
         var priorSource = existing.get(id);
         required.add(
             priorSource != null
@@ -1162,8 +1164,7 @@ final class OwnerGraphs {
                     0,
                     Math.max(
                         records.frontiers.positionAt(timeline, birth),
-                        ingress.checkpointPosition(
-                            declarations, binding.getKey(), records.frontiers))));
+                        group.checkpointPosition(id, records.frontiers))));
       }
       for (var edge : partition.outgoing().getOrDefault(representative, List.of())) {
         String child = address(units.get(edge.target()));

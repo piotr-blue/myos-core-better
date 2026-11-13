@@ -374,7 +374,14 @@ final class GraphTimelineIngress implements AutoCloseable {
       Contracts.Reception reception,
       List<TimelineArchive> archives,
       List<Binding> bindings,
-      Map<String, TimelinePermissions.Selection> access) {}
+      Map<String, TimelinePermissions.Selection> access) {
+    OwnerTimelineSources sourcesByOwner(Map<String, String> units) {
+      var index = new OwnerTimelineSources(units);
+      bindings.forEach(binding -> index.add(binding.channel(), binding.archive()));
+      access.forEach(index::addControls);
+      return index;
+    }
+  }
 
   OwnerDeclarations declarations(
       String account, Contracts.Execution.State state, TimelineIngress.Sources sources) {
@@ -428,73 +435,6 @@ final class GraphTimelineIngress implements AutoCloseable {
     }
     return new OwnerDeclarations(
         reception, List.copyOf(required.values()), List.copyOf(bindings), Map.copyOf(access));
-  }
-
-  Map<String, TimelineArchive> direct(OwnerDeclarations declarations, Set<String> unit) {
-    Map<String, TimelineArchive> result = new LinkedHashMap<>();
-    for (var binding : declarations.bindings()) {
-      if (unit.contains(binding.channel().receiver().member())) {
-        var receiver = binding.channel().receiver();
-        result.put(
-            receiver.member() + ":" + receiver.channel() + ":" + receiver.generation(),
-            binding.archive());
-      }
-    }
-    // Control histories are coverage dependencies. Nonparticipating originals are disposed
-    // without a native transition; historical access itself is still verified on each input.
-    for (var selected : declarations.access().entrySet()) {
-      if (unit.contains(selected.getKey())) {
-        for (var control : selected.getValue().controls()) {
-          result.put("access:" + control.source().timeline().value(), control);
-        }
-      }
-    }
-    return result;
-  }
-
-  Set<String> observed(OwnerDeclarations declarations, Set<String> unit) {
-    Set<String> result = new HashSet<>();
-    for (var binding : declarations.bindings()) {
-      if (unit.contains(binding.channel().receiver().member()) && binding.channel().observed()) {
-        var receiver = binding.channel().receiver();
-        result.add(
-            "timeline:"
-                + receiver.member()
-                + ":"
-                + receiver.channel()
-                + ":"
-                + receiver.generation());
-      }
-    }
-    return Set.copyOf(result);
-  }
-
-  long checkpointPosition(
-      OwnerDeclarations declarations, String bindingId, OwnerFrontiers frontiers) {
-    for (var binding : declarations.bindings()) {
-      var receiver = binding.channel().receiver();
-      String id = receiver.member() + ":" + receiver.channel() + ":" + receiver.generation();
-      if (!id.equals(bindingId) || receiver.checkpoint().isEmpty()) {
-        continue;
-      }
-      var checkpoint = receiver.checkpoint().orElseThrow();
-      var original =
-          binding
-              .archive()
-              .view()
-              .find(checkpoint.eventId())
-              .orElseThrow(
-                  () ->
-                      new TimelinePermissions.Unavailable(
-                          "Native channel checkpoint is not acquired"));
-      if (original.entry().timestamp() != checkpoint.timestamp()) {
-        throw new IllegalStateException(
-            "Native checkpoint timestamp differs from its verified original");
-      }
-      return frontiers.position(
-          binding.archive().source().timeline().value(), checkpoint.eventId().value());
-    }
-    return 0;
   }
 
   final class OwnerScope implements OwnerInput {
