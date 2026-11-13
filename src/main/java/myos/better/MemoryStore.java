@@ -131,7 +131,17 @@ final class MemoryStore implements AtomicStore, PublicDirectoryInventory {
         return false;
       }
     }
+    // Freeze every candidate before changing any index. Row only owns its top-level map.
+    // Readers and the original author must not be able to mutate a committed revision.
+    List<Write> publications = new ArrayList<>(writes.size());
     for (Write write : writes) {
+      Row next = write.next();
+      publications.add(
+          next == null
+              ? write
+              : Write.put(next.key(), write.expected(), RecordBodies.immutable(next.value())));
+    }
+    for (Write write : publications) {
       Row old = records.remove(write.key());
       if (old != null) {
         index(old, false);

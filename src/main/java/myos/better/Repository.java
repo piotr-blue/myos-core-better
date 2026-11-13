@@ -131,7 +131,9 @@ final class Repository {
       value.put("documentVersion", version);
       value.put("checkpoint", checkpoint);
       value.put("links", links);
-      value.put("embeddings", embeddings);
+      value.put(
+          "embeddings",
+          Map.of("paths", embeddings.paths(), "collections", embeddings.collections()));
       value.put("mayHaveParents", mayHaveParents);
       if (data != null) {
         ProjectedData projected = ProjectedData.encode(data);
@@ -193,15 +195,7 @@ final class Repository {
   }
 
   void remember(Document document) {
-    Map<String, Object> value = new LinkedHashMap<>(document.value());
-    value.put(
-        "embeddings",
-        Map.of(
-            "paths",
-            document.embeddings().paths(),
-            "collections",
-            document.embeddings().collections()));
-    heads.remember(partition(document.account(), document.id()), value);
+    heads.remember(partition(document.account(), document.id()), document.value());
   }
 
   void invalidate(String account, String id) {

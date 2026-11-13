@@ -58,7 +58,7 @@ class RootCompletionTest {
                   "links",
                   LinkIndex.EMPTY,
                   "embeddings",
-                  new EmbeddingLayout(List.of(), List.of())));
+                  Map.of("paths", List.of(), "collections", List.of())));
       assertTrue(
           store.commit(
               List.of(
