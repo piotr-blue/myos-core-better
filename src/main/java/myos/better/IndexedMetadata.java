@@ -188,52 +188,56 @@ class IndexedMetadata {
       if (limit < 1 || limit > 1024) {
         throw new IllegalArgumentException("Page size must be 1..1024");
       }
-      TreeMap<String, String> selected = new TreeMap<>();
-      String cursor = after;
-      while (selected.size() < limit) {
-        List<OrderedIndex.Entry> base = index.page(root, prefix, cursor, limit);
-        if (base.isEmpty()) {
+      // Select keys before opening values. Earlier pending inserts can displace whole
+      // committed block chains, and removals may require another page of index keys.
+      var selected = new TreeMap<String, String>();
+      boolean fromPrefix = after == null || after.compareTo(prefix) < 0;
+      String lower = fromPrefix ? prefix : after;
+      for (var entry : changes.tailMap(lower, fromPrefix).entrySet()) {
+        if (!entry.getKey().startsWith(prefix) || selected.size() == limit) {
           break;
         }
-        prefetchValues(
-            base.stream()
-                .filter(e -> !changes.containsKey(e.key()))
-                .map(OrderedIndex.Entry::value)
-                .toList());
+        if (entry.getValue() != null) {
+          selected.put(entry.getKey(), entry.getValue());
+        }
+      }
+
+      String cursor = after;
+      while (true) {
+        List<OrderedIndex.Entry> base = index.page(root, prefix, cursor, limit);
         for (var entry : base) {
-          String value =
-              changes.containsKey(entry.key()) ? changes.get(entry.key()) : decode(entry.value());
-          if (value != null) {
-            selected.put(entry.key(), value);
+          if (selected.size() == limit && entry.key().compareTo(selected.lastKey()) >= 0) {
+            break;
+          }
+          if (!changes.containsKey(entry.key())) {
+            selected.put(entry.key(), entry.value());
+            if (selected.size() > limit) {
+              selected.pollLastEntry();
+            }
           }
         }
-        cursor = base.getLast().key();
         if (base.size() < limit) {
           break;
         }
-      }
-      while (selected.size() > limit) {
-        selected.pollLastEntry();
-      }
-      String lower = after == null || after.compareTo(prefix) < 0 ? prefix : after;
-      for (var change :
-          changes.tailMap(lower, after == null || after.compareTo(prefix) < 0).entrySet()) {
-        if (!change.getKey().startsWith(prefix)) {
+        cursor = base.getLast().key();
+        if (selected.size() == limit && cursor.compareTo(selected.lastKey()) >= 0) {
           break;
         }
-        if (selected.size() >= limit && change.getKey().compareTo(selected.lastKey()) > 0) {
-          break;
-        }
-        if (change.getValue() != null) {
-          selected.put(change.getKey(), change.getValue());
-        }
-        if (selected.size() > limit) {
-          selected.pollLastEntry();
-        }
       }
+
+      prefetchValues(
+          selected.entrySet().stream()
+              .filter(entry -> !changes.containsKey(entry.getKey()))
+              .map(Map.Entry::getValue)
+              .toList());
       return selected.entrySet().stream()
-          .limit(limit)
-          .map(entry -> new OrderedIndex.Entry(entry.getKey(), entry.getValue()))
+          .map(
+              entry ->
+                  new OrderedIndex.Entry(
+                      entry.getKey(),
+                      changes.containsKey(entry.getKey())
+                          ? entry.getValue()
+                          : decode(entry.getValue())))
           .toList();
     }
 
