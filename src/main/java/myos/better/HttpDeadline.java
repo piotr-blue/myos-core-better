@@ -1,7 +1,10 @@
 package myos.better;
 
 import com.sun.net.httpserver.HttpExchange;
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.UncheckedIOException;
 import java.time.Duration;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -122,25 +125,7 @@ final class HttpDeadline implements AutoCloseable {
       }
       var pending = upstream;
       var body = input;
-      job =
-          cancellation.job(
-              () -> {
-                try {
-                  if (pending != null) {
-                    pending.cancel(true);
-                  }
-                } finally {
-                  try {
-                    if (body != null) {
-                      body.close();
-                    }
-                  } catch (java.io.IOException failure) {
-                    throw new java.io.UncheckedIOException(failure);
-                  } finally {
-                    closeExchange();
-                  }
-                }
-              });
+      job = cancellation.job(() -> cancelTransfer(pending, body));
       cleanup = job;
       // Interrupt while holding the state lock: close() must detach this thread
       // before it can be returned to a pool and reused by a different request.
@@ -149,6 +134,20 @@ final class HttpDeadline implements AutoCloseable {
       }
     }
     cancellation.submit(job);
+  }
+
+  /** Cancel upstream work first, then release its body and the shared transport in order. */
+  private void cancelTransfer(CompletableFuture<?> pending, InputStream body) {
+    // Closing resources in reverse declaration order preserves secondary failures as suppressed.
+    Closeable transport = this::closeExchange;
+    try (transport;
+        body) {
+      if (pending != null) {
+        pending.cancel(true);
+      }
+    } catch (IOException failure) {
+      throw new UncheckedIOException(failure);
+    }
   }
 
   /** Keep the alarm armed during normal close, but never close the raw exchange concurrently. */
@@ -169,12 +168,8 @@ final class HttpDeadline implements AutoCloseable {
       input = null;
       job = cleanup;
     }
-    try {
-      if (job != null) {
-        job.finishOnOwner();
-      }
-    } catch (RuntimeException | Error failure) {
-      throw failure;
+    if (job != null) {
+      job.finishOnOwner();
     }
   }
 

@@ -153,6 +153,50 @@ class HttpDeadlineTest {
   }
 
   @Test
+  void cancellationKeepsAllThreeFailuresInCleanupOrder() throws Exception {
+    var upstreamFailure = new IllegalStateException("upstream cancellation");
+    var bodyFailure = new IOException("body close");
+    var transportFailure = new IllegalStateException("transport close");
+    var exchange =
+        new DelayedClose(new CountDownLatch(0)) {
+          @Override
+          public void close() {
+            throw transportFailure;
+          }
+        };
+    try (var cancellation = new HttpCancellation(1, 1)) {
+      var deadline = new HttpDeadline(exchange, Duration.ofMinutes(1), cancellation);
+      deadline.upstream(
+          new java.util.concurrent.CompletableFuture<>() {
+            @Override
+            public boolean cancel(boolean interrupt) {
+              throw upstreamFailure;
+            }
+          });
+      deadline.input(
+          new InputStream() {
+            @Override
+            public int read() {
+              return -1;
+            }
+
+            @Override
+            public void close() throws IOException {
+              throw bodyFailure;
+            }
+          });
+      deadline.abort();
+      var failure = assertThrows(IllegalStateException.class, deadline::close).getCause();
+      assertSame(upstreamFailure, failure);
+      assertEquals(2, failure.getSuppressed().length);
+      assertSame(bodyFailure, failure.getSuppressed()[0]);
+      assertSame(transportFailure, failure.getSuppressed()[1]);
+      assertSame(
+          failure, assertThrows(IllegalStateException.class, cancellation::checkHealth).getCause());
+    }
+  }
+
+  @Test
   void expiryInterruptsButDoesNotDuplicateAnOwnersBlockingClose() throws Exception {
     var release = new CountDownLatch(1);
     var exchange = new DelayedClose(release);
