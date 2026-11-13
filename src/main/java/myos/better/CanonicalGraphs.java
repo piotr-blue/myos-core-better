@@ -9,6 +9,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.function.Function;
 
 /**
@@ -61,16 +62,32 @@ final class CanonicalGraphs implements AutoCloseable {
 
   <T> T inspect(String account, String graph, Function<Context, T> read) {
     String partition = partition(account, graph);
-    try (DocumentLocks.Lease ignored = locks.acquire(partition)) {
+    enter();
+    try (var ignored = locks.acquire(partition)) {
       AtomicStore.Row head = requireHead(partition);
       try (Lease lease = acquire(account, head)) {
         return read.apply(new Context(account, graph, head, lease.cached.session));
       }
+    } finally {
+      lifetime.readLock().unlock();
     }
   }
 
   AtomicStore.Row head(String account, String graph) {
     return requireHead(partition(account, graph));
+  }
+
+  // Every working session is covered, including a cold restore and an uncached overflow lease.
+  // Distinct graphs still execute concurrently under the shared side.
+  private final ReentrantReadWriteLock lifetime = new ReentrantReadWriteLock();
+  private boolean closed;
+
+  private void enter() {
+    lifetime.readLock().lock();
+    if (closed) {
+      lifetime.readLock().unlock();
+      throw new IllegalStateException("Graph host is closed");
+    }
   }
 
   private final DocumentLocks locks = new DocumentLocks();
@@ -269,7 +286,8 @@ final class CanonicalGraphs implements AutoCloseable {
       java.util.function.Supplier<Contracts.Session> open) {
     String hash = Json.hash(Json.bytes(input));
     String partition = partition(account, graph);
-    try (DocumentLocks.Lease ignored = locks.acquire(partition)) {
+    enter();
+    try (var ignored = locks.acquire(partition)) {
       Result existing = previous(partition, command, hash);
       if (existing != null) {
         return existing;
@@ -354,6 +372,8 @@ final class CanonicalGraphs implements AutoCloseable {
           session.close();
         }
       }
+    } finally {
+      lifetime.readLock().unlock();
     }
   }
 
@@ -387,7 +407,8 @@ final class CanonicalGraphs implements AutoCloseable {
   Result process(String account, String graph, Function<Context, Request> select) {
     long started = System.nanoTime();
     String partition = partition(account, graph);
-    try (DocumentLocks.Lease ignored = locks.acquire(partition)) {
+    enter();
+    try (var ignored = locks.acquire(partition)) {
       for (int retry = 0; retry < 8; retry++) {
         AtomicStore.Row before = requireHead(partition);
         var control = DocumentControls.permit(store, account, graph);
@@ -535,6 +556,8 @@ final class CanonicalGraphs implements AutoCloseable {
         }
       }
       throw new IllegalStateException("Graph publication remains contended");
+    } finally {
+      lifetime.readLock().unlock();
     }
   }
 
@@ -875,17 +898,20 @@ final class CanonicalGraphs implements AutoCloseable {
 
   @Override
   public void close() {
-    synchronized (sessions) {
-      for (Cached value : sessions.values()) {
-        if (value.leased) {
-          throw new IllegalStateException("Graph transactions are still running");
-        }
-      }
-      sessions.values().forEach(value -> value.session.close());
-      sessions.clear();
+    if (!lifetime.writeLock().tryLock()) {
+      throw new IllegalStateException("Graph transactions are still running");
     }
-    synchronized (measurements) {
-      measurements.clear();
+    try {
+      closed = true;
+      synchronized (sessions) {
+        sessions.values().forEach(value -> value.session.close());
+        sessions.clear();
+      }
+      synchronized (measurements) {
+        measurements.clear();
+      }
+    } finally {
+      lifetime.writeLock().unlock();
     }
   }
 }

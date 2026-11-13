@@ -21,6 +21,45 @@ class CanonicalSessionCacheTest {
   @Nested
   class Retention {
     @Test
+    void closeRefusesAnInitializingGraphBeforeItEntersTheCache() {
+      var store = new JsonBoundaryStore();
+      try (var graphs = new CanonicalGraphs(store, Contracts.create())) {
+        graphs.publisher(
+            (account, graph, version, reception, writes) ->
+                assertThrows(IllegalStateException.class, graphs::close));
+        var created = graphs.create("owner", "graph", "init", CanonicalGraphsTest.COUNTER);
+        assertEquals(1, created.version());
+        assertEquals(
+            BigInteger.ZERO, graphs.inspect("owner", "graph", c -> c.session().read("/count")));
+      }
+    }
+
+    @Test
+    void closedGraphHostCannotStartOrReopenWorkingSessions() {
+      var store = new JsonBoundaryStore();
+      var contracts = Contracts.create();
+      var graphs = new CanonicalGraphs(store, contracts);
+      graphs.create("owner", "original", "init", CanonicalGraphsTest.COUNTER);
+      graphs.close();
+      graphs.close();
+      assertThrows(
+          IllegalStateException.class,
+          () -> graphs.create("owner", "late", "init", CanonicalGraphsTest.COUNTER));
+      assertThrows(
+          IllegalStateException.class,
+          () -> graphs.inspect("owner", "original", c -> c.session().read("/count")));
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              graphs.process(
+                  "owner", "original", "next", Map.of("input", 1), 1, AdmissionEvidence.empty()));
+      try (var reopened = new CanonicalGraphs(store, contracts)) {
+        assertEquals(1, reopened.head("owner", "original").version());
+        assertThrows(MissingDocument.class, () -> reopened.head("owner", "late"));
+      }
+    }
+
+    @Test
     void immutableViewsDoNotAcquireActiveLeasesOrReturnAnotherPublication() {
       var store = new JsonBoundaryStore();
       LanguageDocument borrowed;
