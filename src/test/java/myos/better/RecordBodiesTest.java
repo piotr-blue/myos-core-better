@@ -16,6 +16,31 @@ import org.junit.jupiter.api.Test;
 /** Storage decoding is reusable only by exact bytes, with deeply immutable bounded results. */
 class RecordBodiesTest {
   @Test
+  void aWarmedValueCannotBypassTheSuppliedCommitment() {
+    var cache = new RecordBodies(4096);
+    byte[] record = Json.bytes(Map.of("count", 1));
+    String identity = Json.hash(record);
+    var decoded = cache.decode(record, identity, Function.identity());
+    assertThrows(
+        IllegalStateException.class,
+        () ->
+            cache.decode(
+                record,
+                "0".repeat(64),
+                ignored -> {
+                  throw new AssertionError();
+                }));
+    assertSame(
+        decoded,
+        cache.decode(
+            record,
+            identity,
+            ignored -> {
+              throw new AssertionError();
+            }));
+  }
+
+  @Test
   void identicalBytesDecodeOnceAndChangedBytesCannotReuseTheOldValue() {
     RecordBodies cache = new RecordBodies(4096);
     AtomicInteger calls = new AtomicInteger();
@@ -25,11 +50,11 @@ class RecordBodiesTest {
           return bytes;
         };
     byte[] first = Json.bytes(Map.of("count", 1));
-    Map<String, Object> value = cache.decode(first, decoder);
-    assertSame(value, cache.decode(first.clone(), decoder));
+    Map<String, Object> value = cache.decode(first, null, decoder);
+    assertSame(value, cache.decode(first.clone(), null, decoder));
     assertEquals(1, calls.get());
     assertEquals(
-        BigInteger.TWO, cache.decode(Json.bytes(Map.of("count", 2)), decoder).get("count"));
+        BigInteger.TWO, cache.decode(Json.bytes(Map.of("count", 2)), null, decoder).get("count"));
     assertEquals(BigInteger.ONE, value.get("count"));
     assertEquals(2, calls.get());
   }
@@ -41,7 +66,7 @@ class RecordBodiesTest {
     byte[] bytes =
         "{\"items\":[{\"count\":123456789012345678901234567890},null],\"empty\":null}"
             .getBytes(java.nio.charset.StandardCharsets.UTF_8);
-    Map<String, Object> value = cache.decode(bytes, Function.identity());
+    Map<String, Object> value = cache.decode(bytes, null, Function.identity());
     assertEquals(Json.object(bytes), value);
     assertThrows(UnsupportedOperationException.class, () -> value.put("x", 1));
     List<Object> items = (List<Object>) value.get("items");
@@ -57,17 +82,21 @@ class RecordBodiesTest {
     byte[] a = Json.bytes(Map.of("a", 1)),
         b = Json.bytes(Map.of("b", 2)),
         c = Json.bytes(Map.of("c", 3));
-    Map<String, Object> first = cache.decode(a, Function.identity());
-    Map<String, Object> second = cache.decode(b, Function.identity());
-    assertSame(first, cache.decode(a, Function.identity()));
-    cache.decode(c, Function.identity());
-    assertSame(first, cache.decode(a, Function.identity()));
-    assertNotSame(second, cache.decode(b, Function.identity()));
+    Map<String, Object> first = cache.decode(a, null, Function.identity());
+    Map<String, Object> second = cache.decode(b, null, Function.identity());
+    assertSame(first, cache.decode(a, null, Function.identity()));
+    cache.decode(c, null, Function.identity());
+    assertSame(first, cache.decode(a, null, Function.identity()));
+    assertNotSame(second, cache.decode(b, null, Function.identity()));
     byte[] huge = Json.bytes(Map.of("text", "a".repeat(2000)));
-    assertNotSame(cache.decode(huge, Function.identity()), cache.decode(huge, Function.identity()));
+    assertNotSame(
+        cache.decode(huge, null, Function.identity()),
+        cache.decode(huge, null, Function.identity()));
     assertTrue(cache.bytes() <= 1100);
     RecordBodies disabled = new RecordBodies(0);
-    assertNotSame(disabled.decode(a, Function.identity()), disabled.decode(a, Function.identity()));
+    assertNotSame(
+        disabled.decode(a, null, Function.identity()),
+        disabled.decode(a, null, Function.identity()));
     assertEquals(0, disabled.bytes());
   }
 }

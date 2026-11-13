@@ -407,10 +407,8 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
     Key key = new Key(item.get("pk").s(), item.get("sk").s());
     byte[] encoded = item.get("body").b().asByteArray();
     AttributeValue identity = item.get("bodyHash");
-    if (identity != null && !Json.hash(encoded).equals(identity.s())) {
-      throw new IllegalStateException("Stored body digest mismatch");
-    }
-    Map<String, Object> value = bodies.decode(encoded, DynamoStore::decompress);
+    Map<String, Object> value =
+        bodies.decode(encoded, identity == null ? null : identity.s(), DynamoStore::decompress);
     synchronized (largeRows) {
       if (identity != null && encoded.length >= 4096) {
         largeRows.put(key, Boolean.TRUE);
