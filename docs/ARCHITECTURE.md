@@ -38,3 +38,9 @@ The immutable row references support inline JSON, direct content addresses and b
 An embedded Order's body has its own BlueId. The Agreement also commits to the keys and values in its authored Orders map. Adding a key can change that whole canonical record even when MyOS selects two channels and updates only a few physical index paths. Interpret receiver counts, native execution time, storage time and client observation time separately. [Operations and runtime profiles](OPERATIONS.md)
 
 The earlier document-local experiment has a separate [historical architecture record](HISTORICAL-DOCUMENT-LOCAL-ARCHITECTURE.md). Its outbox model and scale measurements belong to that protocol.
+
+## Following a rejected signed operation
+
+The account's operation admission records whether its signed entry was published. The input resource identifies how a particular document processed that entry. A native rejection has its own history position and can advance the epoch while leaving business fields unchanged. Read the disposition’s epoch and code when present. Older retained history may supply only terminal status. The immutable processing receipt commits to the outcome digest. The signed-in document history retains the diagnostic behind that digest.
+
+Timeline routes bind their read and write views to the same authenticated session. The HTTP boundary delegates append admission to the existing timeline entry service, which owns publication and ordering.

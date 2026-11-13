@@ -365,13 +365,7 @@ final class CoreDocuments {
         if ("APPLIED".equals(status)) {
           result.put("localHistory", List.of(history.position(account, id, version)));
         } else {
-          result.put(
-              "disposition",
-              Map.of(
-                  "outcome",
-                  status,
-                  "reason",
-                  "The native transaction was rejected; inspect the epoch receipt."));
+          result.put("disposition", CoreInputStatus.rejection(status, outcome, version));
         }
       } else {
         result.put(

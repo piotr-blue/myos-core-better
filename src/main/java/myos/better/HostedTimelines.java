@@ -356,7 +356,8 @@ final class HostedTimelines {
         }
         // Capture the owner cut before selecting a timestamp. If another publisher seals
         // the account during signing, the same conditional commit retries the signed entry.
-        var frontiers = OwnerGraphs.enabled() ? new OwnerFrontiers(repository.store, account) : null;
+        var frontiers =
+            OwnerGraphs.enabled() ? new OwnerFrontiers(repository.store, account) : null;
         var tx = frontiers == null ? null : frontiers.metadata.begin();
         AtomicStore.Row before = state(account, timeline);
         if (!policy.equals(writer(before))) {

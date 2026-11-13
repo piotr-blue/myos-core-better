@@ -119,6 +119,7 @@ final class CoreDashboardApi {
   private final CoreContents contents;
   private final CorePageTokens pages;
   private final CoreTimelines timelines;
+  private final CoreTimelineApi timelineRoutes;
   private CoreAccessImports accessImports;
   private final CoreDocuments coreDocuments;
   private final CoreRegistrations registrations;
@@ -242,6 +243,8 @@ final class CoreDashboardApi {
     bootstrapJobs = new CoreBootstrapJobs(store, admissions, access, bootstrap);
     registrations = new CoreRegistrations(store, documents);
     this.documents = documents;
+    timelineRoutes =
+        new CoreTimelineApi(this.timelines, admissions, coreDocuments, documents, contents);
     credentials =
         new CoreApiKeys(
             store, pages, secrets == null ? null : secrets.envelopes("myos.better.api-key/1"));
@@ -632,7 +635,7 @@ final class CoreDashboardApi {
       return new Response(201, accessImports.add(principal.account(), input));
     }
     if (route.equals("timelines") || route.startsWith("timelines/")) {
-      return timeline(route, method, query, principal.account(), command, input, session);
+      return timelineRoutes.call(route, method, query, command, input, session);
     }
     if (method.equals("GET")) {
       if (route.startsWith("types/")) {
@@ -905,88 +908,6 @@ final class CoreDashboardApi {
     throw unavailable(route);
   }
 
-  private Object timeline(
-      String route,
-      String method,
-      Map<String, String> query,
-      String account,
-      String command,
-      Map<String, Object> input,
-      CoreAccounts.Session session) {
-    if (timelines == null) {
-      throw new ConsoleProblem(
-          503, "TIMELINES_NOT_CONFIGURED", "Timeline publication is not configured.");
-    }
-    CoreTimelines timelines = this.timelines.as(session);
-    String[] parts = route.split("/", -1);
-    if (parts.length == 1) {
-      if (method.equals("GET")) {
-        return timelines.list(account, query);
-      }
-      if (method.equals("POST")) {
-        return new Response(
-            202,
-            admissions.submit(
-                account,
-                route,
-                command,
-                input,
-                "TIMELINE",
-                "TIMELINE_STORED",
-                () -> timelines.create(account, command, input)));
-      }
-    }
-    if (parts.length == 2 && parts[1].equals("import") && method.equals("POST")) {
-      RuntimeConfiguration.fields(new HashMap<>(query), Set.of());
-      return new Response(201, timelines.importTimeline(account, input));
-    }
-    if (parts.length < 2 || parts[1].equals("import")) {
-      throw unavailable(route);
-    }
-    var id = new blue.BlueId(parts[1]);
-    if (parts.length == 3 && parts[2].equals("guarantees") && method.equals("POST")) {
-      return timelines.guarantees(account, id, command, CoreTimelineGuarantees.input(query, input));
-    }
-    if (parts.length == 3 && parts[2].equals("retry") && method.equals("POST")) {
-      RuntimeConfiguration.fields(new HashMap<>(query), Set.of());
-      return timelines.retry(account, id, input);
-    }
-    if (parts.length == 2 && method.equals("GET")) {
-      return timelines.read(account, id);
-    }
-    if (parts.length == 3 && parts[2].equals("entries")) {
-      if (method.equals("GET")) {
-        return timelines.entries(account, id, query);
-      }
-      if (method.equals("POST")) {
-        return new Response(
-            202,
-            admissions.submit(
-                account,
-                route,
-                command,
-                input,
-                "TIMELINE_ENTRY",
-                "TIMELINE_ENTRY_STORED",
-                () ->
-                    new CoreTimelineEntries(coreDocuments, documents, contents, timelines)
-                        .append(account, id, command, input)));
-      }
-    }
-    if (parts.length == 4 && parts[2].equals("entries") && method.equals("GET")) {
-      return timelines.entry(account, id, new blue.BlueId(parts[3]));
-    }
-    if (parts.length == 3 && parts[2].equals("access")) {
-      if (method.equals("GET")) {
-        return timelines.accesses(account, id);
-      }
-      if (method.equals("POST")) {
-        return timelines.updateAccess(account, id, command, input);
-      }
-    }
-    throw unavailable(route);
-  }
-
   private Object packages() {
     Map<String, Map<String, Object>> packages = new TreeMap<>();
     documents
@@ -1024,7 +945,7 @@ final class CoreDashboardApi {
     return result;
   }
 
-  private static ConsoleProblem unavailable(String route) {
+  static ConsoleProblem unavailable(String route) {
     return new ConsoleProblem(
         501, "CORE_PARITY_PENDING", "Core API compatibility is not implemented for " + route + ".");
   }

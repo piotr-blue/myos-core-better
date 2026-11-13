@@ -10,6 +10,23 @@ import java.util.Map;
 final class CoreInputStatus {
   private CoreInputStatus() {}
 
+  /** Identify the failed publication without projecting its potentially large execution trace. */
+  static Map<String, Object> rejection(String status, Map<String, Object> outcome, long version) {
+    long epoch = version - 1;
+    // The owner store nests the actual diagnostic inside the observations object.
+    Object diagnostic = outcome.get("diagnostic");
+    if (diagnostic instanceof Map<?, ?> observations && observations.containsKey("diagnostic")) {
+      diagnostic = observations.get("diagnostic");
+    }
+    String reason = "The transaction was rejected at epoch " + epoch + ".";
+    if (diagnostic instanceof Map<?, ?> fields
+        && fields.get("code") instanceof String code
+        && !code.isBlank()) {
+      return Map.of("outcome", status, "epoch", epoch, "code", code, "reason", reason + " " + code);
+    }
+    return Map.of("outcome", status, "epoch", epoch, "reason", reason);
+  }
+
   static Map<String, Object> find(
       AtomicStore store,
       ConsoleDocuments documents,

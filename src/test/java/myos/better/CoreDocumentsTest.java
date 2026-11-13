@@ -27,6 +27,25 @@ import org.junit.jupiter.api.Test;
 /** Stable document references, original SDK shapes and retained publication history. */
 class CoreDocumentsTest {
   @Test
+  void inputRejectionsPointToTheFailedEpochAndItsRecordedDiagnostic() {
+    var diagnostic = Map.of("code", "LANGUAGE_FixedValueConflict", "detail", "scalar");
+    var direct = CoreInputStatus.rejection("FAILED", Map.of("diagnostic", diagnostic), 2);
+    var owner =
+        CoreInputStatus.rejection(
+            "FAILED",
+            Map.of("diagnostic", Map.of("diagnostic", diagnostic, "work", List.of("trace"))),
+            2);
+    assertEquals(direct, owner);
+    assertEquals(1L, owner.get("epoch"));
+    assertEquals("LANGUAGE_FixedValueConflict", owner.get("code"));
+    assertTrue(owner.get("reason").toString().contains("LANGUAGE_FixedValueConflict"));
+    assertFalse(owner.containsKey("work"));
+    var old = CoreInputStatus.rejection("FAILED", Map.of(), 1);
+    assertEquals(0L, old.get("epoch"));
+    assertFalse(old.containsKey("code"));
+  }
+
+  @Test
   void partialSelectorsRequireTheOperationContextView() throws Exception {
     try (Fixture f = new Fixture()) {
       String id = f.create("selectors");
