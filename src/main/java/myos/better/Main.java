@@ -6,6 +6,12 @@ import java.util.Map;
 public final class Main {
   private Main() {}
 
+  /**
+   * Starts the service or runs an operator command against the selected store.
+   *
+   * @param args optional mode followed by its mode-specific arguments; the default mode is serve
+   * @throws Exception when startup, a command or the service health check fails
+   */
   public static void main(String[] args) throws Exception {
     String configuration = System.getenv("MYOS_RUNTIME");
     Core.ProjectionPolicy projections =
@@ -155,7 +161,8 @@ public final class Main {
           }
         }
         default ->
-            throw new IllegalArgumentException("Expected serve, benchmark, probe or populate");
+            throw new IllegalArgumentException(
+                "Expected serve, reader-key, benchmark, probe, probe-links or populate");
       }
     }
   }
