@@ -11,6 +11,7 @@ import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 /** Reproducible same-command races at the host's durable commit and response-replay boundary. */
 public final class CommandReplayProbe {
@@ -32,6 +33,11 @@ public final class CommandReplayProbe {
   private record Seen(String command, Core.Result result) {}
 
   public static void main(String[] args) throws Exception {
+    if (args.length != 3 && args.length != 5) {
+      throw new IllegalArgumentException(
+          "Expected first seed, count, commands and optional local endpoint and table");
+    }
+    String account = "race-" + java.util.UUID.randomUUID();
     long first = Long.parseLong(args[0]);
     int count = Integer.parseInt(args[1]);
     int commands = Integer.parseInt(args[2]);
@@ -41,7 +47,14 @@ public final class CommandReplayProbe {
     for (int n = 0; n < count; n++) {
       long seed = Math.addExact(first, n);
       int workers = 2 + Math.floorMod(seed, 3);
-      run(seed, workers, commands);
+      Supplier<AtomicStore> connections;
+      if (args.length == 5) {
+        connections = () -> QualificationDynamo.open(args[3], args[4], "blue-quality-race-");
+      } else {
+        MemoryStore shared = new MemoryStore();
+        connections = () -> shared;
+      }
+      run(seed, workers, commands, account + "-" + n, connections);
       System.out.println(
           JsonText.of(
               Map.of(
@@ -58,11 +71,13 @@ public final class CommandReplayProbe {
     }
   }
 
-  private static void run(long seed, int hosts, int count) throws Exception {
-    MemoryStore store = new MemoryStore();
-    try (var author = new Core(store, CanonicalRuntime.create())) {
+  /** Open a distinct backend connection per host when qualifying the durable implementation. */
+  private static void run(
+      long seed, int hosts, int count, String account, Supplier<AtomicStore> connections)
+      throws Exception {
+    try (var author = new Core(connections.get(), CanonicalRuntime.create())) {
       require(
-          author.create("race", "counter", "create", COUNTER).status().equals("APPLIED"),
+          author.create(account, "counter", "create", COUNTER).status().equals("APPLIED"),
           seed,
           "create");
     }
@@ -83,12 +98,12 @@ public final class CommandReplayProbe {
                   }
                   Collections.shuffle(schedule, new Random(orderSeed));
                   schedule.addFirst(0);
-                  try (var core = new Core(store, CanonicalRuntime.create())) {
+                  try (var core = new Core(connections.get(), CanonicalRuntime.create())) {
                     start.await(30, TimeUnit.SECONDS);
                     List<Seen> results = new ArrayList<>();
                     for (int id : schedule) {
                       String command = "increment-" + id;
-                      var result = submit(core, command, id);
+                      var result = submit(core, account, command, id);
                       require(result.status().equals("APPLIED"), seed, result.toString());
                       results.add(new Seen(command, result));
                     }
@@ -106,28 +121,28 @@ public final class CommandReplayProbe {
         }
       }
     }
-    try (var reopened = new Core(store, CanonicalRuntime.create())) {
+    try (var reopened = new Core(connections.get(), CanonicalRuntime.create())) {
       require(
-          BigInteger.valueOf(count).equals(reopened.readValue("race", "counter", "/count")),
+          BigInteger.valueOf(count).equals(reopened.readValue(account, "counter", "/count")),
           seed,
           "wrong count");
       require(
-          Repository.number(reopened.head("race", "counter").get("version")) == count + 1L,
+          Repository.number(reopened.head(account, "counter").get("version")) == count + 1L,
           seed,
           "wrong version");
       for (int i = 0; i < count; i++) {
         String command = "increment-" + i;
         require(
-            submit(reopened, command, i).equals(observed.get(command)),
+            submit(reopened, account, command, i).equals(observed.get(command)),
             seed,
             "different stored response");
       }
     }
   }
 
-  private static Core.Result submit(Core core, String command, int id) {
+  private static Core.Result submit(Core core, String account, String command, int id) {
     return core.call(
-        "race", "counter", command, "input", "increment", Map.of("requestId", command), id + 1L);
+        account, "counter", command, "input", "increment", Map.of("requestId", command), id + 1L);
   }
 
   private static void require(boolean predicate, long seed, String message) {

@@ -1,6 +1,5 @@
 package myos.better;
 
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,10 +7,6 @@ import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
-import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.regions.Region;
-import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
 
 /** Local qualification worker. An external supervisor kills the process at the selected commit. */
 public final class ProcessRecoveryProbe {
@@ -45,25 +40,9 @@ public final class ProcessRecoveryProbe {
           "Expected boundary, loopback endpoint, table, account and marker");
     }
     Boundary boundary = Boundary.valueOf(args[0]);
-    URI endpoint = URI.create(args[1]);
-    if (!"http".equals(endpoint.getScheme())
-        || !"127.0.0.1".equals(endpoint.getHost())
-        || endpoint.getPort() < 1
-        || !args[2].startsWith("blue-quality-process-")) {
-      throw new IllegalArgumentException("Expected a loopback DynamoDB qualification table");
-    }
     String account = Repository.identifier(args[3]);
     Path marker = Path.of(args[4]);
-    // Explicit disposable emulator credentials prevent ambient credentials from entering the
-    // fixture.
-    var client =
-        DynamoDbClient.builder()
-            .region(Region.EU_WEST_1)
-            .endpointOverride(endpoint)
-            .credentialsProvider(
-                StaticCredentialsProvider.create(AwsBasicCredentials.create("test", "test")))
-            .build();
-    var store = new DynamoStore(args[2], client);
+    var store = QualificationDynamo.open(args[1], args[2], "blue-quality-process-");
     try (var core =
         new Core(new CommitBoundary(store, boundary, marker), CanonicalRuntime.create())) {
       if (boundary != Boundary.RECOVER) {

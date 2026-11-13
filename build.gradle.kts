@@ -173,6 +173,10 @@ tasks.register<JavaExec>("commandReplayProbe") {
     args(providers.gradleProperty("firstSeed").getOrElse("1"),
         providers.gradleProperty("seedCount").getOrElse("3"),
         providers.gradleProperty("commandsPerSeed").getOrElse("12"))
+    val endpoint = providers.gradleProperty("dynamoEndpoint").orNull
+    val table = providers.gradleProperty("dynamoTable").orNull
+    require((endpoint == null) == (table == null)) { "Supply both dynamoEndpoint and dynamoTable" }
+    if (endpoint != null && table != null) args(endpoint, table)
 }
 
 tasks.register<JavaExec>("ownerScaleProbe") {

@@ -39,6 +39,8 @@ Run the three commands above. If you changed the SDK or the console, also run th
 
 Run `./gradlew commandReplayProbe -PfirstSeed=7 -PseedCount=3 -PcommandsPerSeed=12` to exercise concurrent command replay. Each seed races two to four independent hosts on the same first command, interleaves the remaining commands in different orders, and reopens every recorded result on a fresh host. The expected final count and committed version depend only on the number of distinct commands. A failing line or assertion gives the seed for reproduction.
 
+To exercise independent DynamoDB clients, add `-PdynamoEndpoint=http://127.0.0.1:8000 -PdynamoTable=blue-quality-race-local`. Create the local table first with the key and index definitions in `infra/stack.json`. Each invocation uses a fresh account namespace and each host opens its own DynamoStore. The default uses an in-memory store shared by those hosts.
+
 ## Check production sources with Error Prone
 
 Run `./gradlew errorProne` with JDK 25. CI uses the pinned compiler plug-in’s default error-level checks. To review its lower-severity suggestions as well, run `./gradlew errorProne -PerrorProneWarnings=true`. Both modes compile into a separate analysis directory. Ordinary builds and shipped artifacts use the normal Java compiler inputs. Review the responsible API or invariant before adding a suppression. [Compiler checks and severities](https://errorprone.info/docs/flags)
