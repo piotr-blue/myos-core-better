@@ -131,10 +131,6 @@ final class OwnerGraphs {
     String request = Json.hash(Json.bytes(List.of(graph, documentId)));
     var prior = records.get("command", command);
     if (prior != null) {
-      if (prior.containsKey("gasSchedule")
-          && !configuration.gasSchedule().id().equals(prior.get("gasSchedule"))) {
-        throw new IllegalArgumentException("Idempotency key reused with a different gas schedule");
-      }
       return repeated(prior, request);
     }
     if (records.get("publication", graph) != null) {
@@ -255,69 +251,65 @@ final class OwnerGraphs {
               System.nanoTime() - started,
               declarations);
       var result = prepared.publications().get(graph).result();
-      records.frontiers.change(
-          tx -> {
-            var duplicate = OwnerRecords.object(tx, OwnerRecords.key("command", command));
-            if (duplicate != null) {
-              if (duplicate.containsKey("gasSchedule")
-                  && !configuration.gasSchedule().id().equals(duplicate.get("gasSchedule"))) {
-                throw new IllegalArgumentException(
-                    "Idempotency key reused with a different gas schedule");
-              }
-              repeated(duplicate, request);
-              return null;
-            }
-            if (tx.get(OwnerRecords.key("publication", graph)) != null) {
-              throw new IllegalStateException("Document exists");
-            }
-            if (permit != null) {
-              initializations.settle(
-                  tx,
-                  permit,
-                  System.currentTimeMillis(),
-                  outcome.transition().gas(),
-                  outcome.transition().status(),
-                  outcome.transition().receipt(),
-                  initializationTerminal(outcome));
-            } else if (new OwnerGas(account).enabled(tx)) {
-              throw new IllegalStateException("Gas enforcement changed during initialization");
-            }
-            publish(records, tx, prepared);
-            OwnerRecords.put(
-                tx,
-                OwnerRecords.key("command", command),
-                Map.of(
-                    "hash",
-                    request,
-                    "result",
-                    result,
-                    "gasSchedule",
-                    configuration.gasSchedule().id()));
-            List<AtomicStore.Write> writes = new ArrayList<>();
-            var root = store.get(RootDocuments.root(account, graph));
-            var rootValue = new LinkedHashMap<String, Object>();
-            rootValue.put("document", graph);
-            rootValue.put("name", graph);
-            if (root != null) {
-              if (!Boolean.TRUE.equals(root.value().get("pendingInitialization"))
-                  || !documentId.equals(root.value().get("initialBlueId"))) {
-                throw new IllegalStateException("Initialization root changed");
-              }
-              rootValue.putAll(root.value());
-              rootValue.remove("pendingInitialization");
-            }
-            writes.add(
-                AtomicStore.Write.put(
-                    RootDocuments.root(account, graph),
-                    root == null ? 0 : root.version(),
-                    rootValue));
-            timelines.subscribe(writes, account, graph, declarations.reception());
-            event(writes, account, graph, prepared.publications().get(graph));
-            tx.publish(writes, List.of(controlPermit));
-            return null;
-          });
+      var published =
+          records.frontiers.change(
+              tx -> {
+                var duplicate = OwnerRecords.object(tx, OwnerRecords.key("command", command));
+                if (duplicate != null) {
+                  // Another host published first. Its result includes the winning execution time.
+                  return repeated(duplicate, request);
+                }
+                if (tx.get(OwnerRecords.key("publication", graph)) != null) {
+                  throw new IllegalStateException("Document exists");
+                }
+                if (permit != null) {
+                  initializations.settle(
+                      tx,
+                      permit,
+                      System.currentTimeMillis(),
+                      outcome.transition().gas(),
+                      outcome.transition().status(),
+                      outcome.transition().receipt(),
+                      initializationTerminal(outcome));
+                } else if (new OwnerGas(account).enabled(tx)) {
+                  throw new IllegalStateException("Gas enforcement changed during initialization");
+                }
+                publish(records, tx, prepared);
+                OwnerRecords.put(
+                    tx,
+                    OwnerRecords.key("command", command),
+                    Map.of(
+                        "hash",
+                        request,
+                        "result",
+                        result,
+                        "gasSchedule",
+                        configuration.gasSchedule().id()));
+                List<AtomicStore.Write> writes = new ArrayList<>();
+                var root = store.get(RootDocuments.root(account, graph));
+                var rootValue = new LinkedHashMap<String, Object>();
+                rootValue.put("document", graph);
+                rootValue.put("name", graph);
+                if (root != null) {
+                  if (!Boolean.TRUE.equals(root.value().get("pendingInitialization"))
+                      || !documentId.equals(root.value().get("initialBlueId"))) {
+                    throw new IllegalStateException("Initialization root changed");
+                  }
+                  rootValue.putAll(root.value());
+                  rootValue.remove("pendingInitialization");
+                }
+                writes.add(
+                    AtomicStore.Write.put(
+                        RootDocuments.root(account, graph),
+                        root == null ? 0 : root.version(),
+                        rootValue));
+                timelines.subscribe(writes, account, graph, declarations.reception());
+                event(writes, account, graph, prepared.publications().get(graph));
+                tx.publish(writes, List.of(controlPermit));
+                return result;
+              });
       timelines.published(account, graph);
-      return result;
+      return published;
     } catch (RuntimeException failure) {
       if (claimed != null) {
         var permit = claimed;
@@ -1355,7 +1347,11 @@ final class OwnerGraphs {
     CorePublicationEvents.append(writes, account, id, publication.member(), version);
   }
 
-  private static CanonicalGraphs.Result repeated(Map<String, Object> prior, String request) {
+  private CanonicalGraphs.Result repeated(Map<String, Object> prior, String request) {
+    if (prior.containsKey("gasSchedule")
+        && !configuration.gasSchedule().id().equals(prior.get("gasSchedule"))) {
+      throw new IllegalArgumentException("Idempotency key reused with a different gas schedule");
+    }
     if (!request.equals(prior.get("hash"))) {
       throw new IllegalArgumentException("Idempotency key reused");
     }

@@ -9,11 +9,35 @@ import blue.Language;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 /** Per-owner history grows with its own effects, not every sibling's initialization events. */
 class OwnerInitializationTest {
+  @Test
+  void concurrentInitializersReturnTheResultActuallyPublishedByTheWinner() {
+    var store = new CanonicalGraphsTest.FaultStore();
+    try (var service =
+        new TimelineService(
+            new Repository(store), TimelineFixture.COORDINATION, "initialization", List.of())) {
+      service.bind();
+      var contracts = Contracts.create();
+      var document = Language.create().readYaml("roomCount: 32");
+      String root = "graph-fast-raced-initialization";
+      var first = new OwnerGraphs(store, contracts, service, service.graphIngress());
+      var second = new OwnerGraphs(store, contracts, service, service.graphIngress());
+      var winner = new java.util.concurrent.atomic.AtomicReference<CanonicalGraphs.Result>();
+      // The first creator keeps a coherent, empty owner cut while the peer commits a result.
+      store.interceptRead = new AtomicStore.Key("A#alice#OWNER-COORDINATION", "MANIFEST");
+      store.afterRead = () -> winner.set(second.create("alice", root, "same", document));
+      var replay = first.create("alice", root, "same", document);
+      assertEquals(winner.get(), replay);
+      assertEquals(replay, first.create("alice", root, "same", document));
+      assertEquals(1, new OwnerRecords(store, "alice").head(root).version());
+    }
+  }
+
   @ParameterizedTest
   @ValueSource(ints = {1, 8, 64})
   void storesEachMembersEventsOnceAndRetainsTheCompleteCanonicalReceipt(int count) {

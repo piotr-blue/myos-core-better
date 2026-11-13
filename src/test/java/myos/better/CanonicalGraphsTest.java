@@ -36,6 +36,23 @@ class CanonicalGraphsTest {
   @Nested
   class Durability {
     @Test
+    void aPeerCanCommitInitializationBetweenTheCommandLookupAndHeadRead() {
+      var store = new FaultStore();
+      var contracts = Contracts.create();
+      try (var reader = new CanonicalGraphs(store, contracts);
+          var writer = new CanonicalGraphs(store.delegate, contracts)) {
+        var winner = new java.util.concurrent.atomic.AtomicReference<CanonicalGraphs.Result>();
+        store.interceptRead = new AtomicStore.Key(CanonicalGraphs.partition("a", "g"), "C#same");
+        store.afterRead = () -> winner.set(writer.create("a", "g", "same", COUNTER));
+        var replay = reader.create("a", "g", "same", COUNTER);
+        assertEquals(winner.get(), replay);
+        assertEquals(1, replay.version());
+        assertThrows(
+            IllegalStateException.class, () -> reader.create("a", "g", "unrelated", COUNTER));
+      }
+    }
+
+    @Test
     void commitsExactCanonicalSnapshotAndRetriesAcrossRestart() {
       AtomicStore store = new JsonBoundaryStore();
       Contracts contracts = Contracts.create();
@@ -255,10 +272,17 @@ class CanonicalGraphsTest {
   static final class FaultStore implements AtomicStore {
     final AtomicStore delegate = new JsonBoundaryStore();
     boolean beforeCommit, afterCommit;
+    Key interceptRead;
+    Runnable afterRead;
 
     @Override
     public Row get(Key key) {
-      return delegate.get(key);
+      var observed = delegate.get(key);
+      if (key.equals(interceptRead)) {
+        interceptRead = null;
+        afterRead.run();
+      }
+      return observed;
     }
 
     @Override

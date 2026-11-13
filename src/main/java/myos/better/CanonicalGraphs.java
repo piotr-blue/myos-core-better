@@ -276,6 +276,11 @@ final class CanonicalGraphs implements AutoCloseable {
       }
       AtomicStore.Key head = new AtomicStore.Key(partition, "HEAD");
       if (store.get(head) != null) {
+        // The peer can publish HEAD and the matching receipt after our first receipt read.
+        Result accepted = previous(partition, command, hash);
+        if (accepted != null) {
+          return accepted;
+        }
         throw new IllegalStateException("Graph already exists");
       }
       Contracts.Session session = open.get();
