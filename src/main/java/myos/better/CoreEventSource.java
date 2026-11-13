@@ -3,6 +3,7 @@ package myos.better;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -20,30 +21,52 @@ final class CoreEventSource {
    */
   static boolean commit(
       AtomicStore store, List<AtomicStore.Write> writes, List<AtomicStore.Check> checks) {
-    Map<AtomicStore.Key, AtomicStore.Row> gates = new HashMap<>();
-    List<AtomicStore.Write> stamped = new ArrayList<>(writes.size());
-    List<AtomicStore.Check> guarded = new ArrayList<>(checks);
-    // A public-directory projection can pass an already guarded outbox batch through here.
-    // Preserve the caller's snapshot if a subscription advanced between the two reads.
-    Map<AtomicStore.Key, Long> guardedVersions = new HashMap<>();
-    for (var check : checks) guardedVersions.put(check.key(), check.version());
+    Map<AtomicStore.Key, AtomicStore.Key> sourceGates = new LinkedHashMap<>();
     for (var write : writes) {
-      if (write.next() == null || !write.key().partition().startsWith(OUTBOX)) {
+      if (write.next() != null && write.key().partition().startsWith(OUTBOX)) {
+        if (write.expected() != 0) {
+          throw new IllegalArgumentException("Source facts are immutable");
+        }
+        String account = write.key().partition().substring(OUTBOX.length());
+        sourceGates.put(
+            write.key(), gate(account, Math.floorMod(write.key().sort().hashCode(), SHARDS)));
+      }
+    }
+    if (sourceGates.isEmpty()) {
+      return store.commit(writes, checks);
+    }
+    var keys = new LinkedHashSet<>(sourceGates.values());
+    Map<AtomicStore.Key, AtomicStore.Row> gates;
+    if (keys.size() == 1) {
+      var key = keys.iterator().next();
+      var row = store.get(key);
+      gates = row == null ? Map.of() : Map.of(key, row);
+    } else {
+      gates = store.getAll(List.copyOf(keys));
+    }
+    // BatchGet is strongly consistent per item. Checking every observed version makes a mixed
+    // pre-/post-subscription read lose its transaction and retry against one current boundary.
+    List<AtomicStore.Check> guarded = new ArrayList<>(checks);
+    Map<AtomicStore.Key, Long> guardedVersions = new HashMap<>();
+    for (var check : checks) {
+      guardedVersions.put(check.key(), check.version());
+    }
+    for (var key : keys) {
+      var row = gates.get(key);
+      long version = row == null ? 0 : row.version();
+      Long existing = guardedVersions.putIfAbsent(key, version);
+      if (existing == null) {
+        guarded.add(new AtomicStore.Check(key, version));
+      } else if (existing != version) {
+        return false;
+      }
+    }
+    List<AtomicStore.Write> stamped = new ArrayList<>(writes.size());
+    for (var write : writes) {
+      var key = sourceGates.get(write.key());
+      if (key == null || write.next() == null) {
         stamped.add(write);
         continue;
-      }
-      if (write.expected() != 0) {
-        throw new IllegalArgumentException("Source facts are immutable");
-      }
-      String account = write.key().partition().substring(OUTBOX.length());
-      var key = gate(account, Math.floorMod(write.key().sort().hashCode(), SHARDS));
-      if (!gates.containsKey(key)) {
-        var gate = store.get(key);
-        gates.put(key, gate);
-        long version = gate == null ? 0 : gate.version();
-        Long previous = guardedVersions.putIfAbsent(key, version);
-        if (previous == null) guarded.add(new AtomicStore.Check(key, version));
-        else if (previous != version) return false;
       }
       var gate = gates.get(key);
       var value = new LinkedHashMap<>(write.next().value());

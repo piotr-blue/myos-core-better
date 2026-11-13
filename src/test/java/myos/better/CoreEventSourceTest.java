@@ -117,6 +117,39 @@ class CoreEventSourceTest {
   }
 
   @Test
+  void aBatchReadsItsDistinctShardBoundariesOnceAndChecksTheirVersionsAtCommit() {
+    var store = new JsonBoundaryStore();
+    var sources =
+        List.of(
+            source("alice", "a"), source("alice", "b"), source("alice", "c"), source("alice", "A"));
+    assertEquals(1, boundary(store, "alice", "first"));
+    var groups = new AtomicInteger();
+    var calls = new AtomicInteger();
+    AtomicStore racing =
+        intercept(
+            store,
+            (method, arguments) -> {
+              if (method.equals("get")) {
+                calls.incrementAndGet();
+              } else if (method.equals("getAll")) {
+                groups.incrementAndGet();
+                assertEquals(3, ((List<?>) arguments[0]).size());
+                boundary(store, "alice", "next");
+              }
+            });
+    assertFalse(CoreEventSource.commit(racing, sources, List.of()));
+    assertEquals(1, groups.get());
+    assertEquals(0, calls.get());
+    for (var write : sources) {
+      assertNull(store.get(write.key()));
+    }
+    assertTrue(CoreEventSource.commit(store, sources, List.of()));
+    for (var write : sources) {
+      assertEquals(2, CoreEventSource.generation(store.get(write.key()).value()));
+    }
+  }
+
+  @Test
   void independentSourceCommitsOnlyCheckGatesAndNeverIncrementSharedCounters() {
     var store = new JsonBoundaryStore();
     var reads = new AtomicInteger();
