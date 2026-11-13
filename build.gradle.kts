@@ -169,6 +169,7 @@ tasks.register<JavaExec>("commandReplayProbe") {
     description = "Race repeated commands across host instances and reopen every durable result."
     classpath = qualification.runtimeClasspath
     mainClass.set("myos.better.CommandReplayProbe")
+    systemProperty("myos.probe.conflictingCommands", providers.gradleProperty("conflictingCommands").getOrElse("false"))
     maxHeapSize = "384m"
     args(providers.gradleProperty("firstSeed").getOrElse("1"),
         providers.gradleProperty("seedCount").getOrElse("3"),

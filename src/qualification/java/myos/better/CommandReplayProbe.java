@@ -54,7 +54,13 @@ public final class CommandReplayProbe {
         MemoryStore shared = new MemoryStore();
         connections = () -> shared;
       }
-      run(seed, workers, commands, account + "-" + n, connections);
+      boolean conflicting = Boolean.getBoolean("myos.probe.conflictingCommands");
+      int accounts = conflicting ? 2 : 1;
+      if (conflicting) {
+        ConflictingCommands.run(seed, workers, commands, account + "-" + n, connections);
+      } else {
+        run(seed, workers, commands, account + "-" + n, connections);
+      }
       System.out.println(
           JsonText.of(
               Map.of(
@@ -63,9 +69,13 @@ public final class CommandReplayProbe {
                   "workers",
                   workers,
                   "uniqueCommands",
-                  commands,
+                  commands * accounts,
+                  "accounts",
+                  accounts,
+                  "conflictingBodies",
+                  conflicting,
                   "submissions",
-                  commands * workers,
+                  commands * workers * accounts,
                   "reopened",
                   true)));
     }
