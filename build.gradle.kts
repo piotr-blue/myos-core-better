@@ -152,6 +152,17 @@ tasks.register<JavaExec>("canonicalGraphProbe") {
     maxHeapSize = "1g"
 }
 
+tasks.register<JavaExec>("commandReplayProbe") {
+    group = "verification"
+    description = "Race repeated commands across host instances and reopen every durable result."
+    classpath = qualification.runtimeClasspath
+    mainClass.set("myos.better.CommandReplayProbe")
+    maxHeapSize = "384m"
+    args(providers.gradleProperty("firstSeed").getOrElse("1"),
+        providers.gradleProperty("seedCount").getOrElse("3"),
+        providers.gradleProperty("commandsPerSeed").getOrElse("12"))
+}
+
 tasks.register<JavaExec>("ownerScaleProbe") {
     group = "verification"
     description = "Explicit independent-owner storage and native parity qualification."

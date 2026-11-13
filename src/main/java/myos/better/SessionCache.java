@@ -175,6 +175,9 @@ final class SessionCache implements AutoCloseable {
       }
       loads++;
     }
+    // Sizing may fail during checkpoint serialization. Finish it before taking ownership
+    // of a newly opened engine. Cache hits never pay for sizing.
+    long weight = weight(checkpointBytes.getAsLong());
     // Loading and validation never hold the cache's metadata lock.
     long started = System.nanoTime();
     CanonicalRuntime.Session session;
@@ -185,7 +188,7 @@ final class SessionCache implements AutoCloseable {
         loadNanos += System.nanoTime() - started;
       }
     }
-    Entry entry = new Entry(key, version, session, weight(checkpointBytes.getAsLong()));
+    Entry entry = new Entry(key, version, session, weight);
     entry.pinned = true;
     synchronized (this) {
       if (entries.containsKey(key)) {
@@ -256,6 +259,8 @@ final class SessionCache implements AutoCloseable {
       if (entry.pinned) {
         throw new IllegalStateException("Cannot close pinned document sessions");
       }
+    }
+    for (Entry entry : entries.values()) {
       entry.session.close();
     }
     entries.clear();

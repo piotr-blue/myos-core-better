@@ -136,6 +136,52 @@ class SessionCacheTest {
   }
 
   @Test
+  void refusingShutdownWithAnActiveLeasePreservesEveryPreviouslyRetainedSession() {
+    try (var cache = new SessionCache()) {
+      var prior = runtime.openYaml("counter: 13");
+      try (var first = cache.acquire("idle", 1, () -> 0, () -> prior)) {
+        first.unchanged();
+      }
+      try (var active =
+          cache.acquire("running", 1, () -> 0, () -> runtime.openYaml("counter: 5"))) {
+        assertThrows(IllegalStateException.class, cache::close);
+        try (var read = cache.readIfPresent("idle", 1)) {
+          assertEquals(BigInteger.valueOf(13), read.session().read("/counter"));
+          read.unchanged();
+        }
+        assertEquals(BigInteger.valueOf(5), active.session().read("/counter"));
+        active.unchanged();
+      }
+    }
+  }
+
+  @Test
+  void failingCheckpointCostDoesNotOpenAnExecutionSession() {
+    try (var cache = new SessionCache()) {
+      var opened = new AtomicInteger();
+      java.util.function.Supplier<CanonicalRuntime.Session> loader =
+          () -> {
+            opened.incrementAndGet();
+            return runtime.openYaml("counter: 1");
+          };
+      assertThrows(
+          ArithmeticException.class, () -> cache.acquire("a", 1, () -> Long.MAX_VALUE, loader));
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              cache.acquire(
+                  "b",
+                  1,
+                  () -> {
+                    throw new IllegalStateException("missing checkpoint");
+                  },
+                  loader));
+      assertEquals(0, opened.get());
+      assertEquals(0L, cache.statistics().get("residentEntries"));
+    }
+  }
+
+  @Test
   void invalidBoundsAreRejectedBeforeOpeningAnySession() {
     assertThrows(IllegalArgumentException.class, () -> new SessionCache.Policy(0, 1024, 32));
     assertThrows(IllegalArgumentException.class, () -> new SessionCache.Policy(1, 0, 32));
