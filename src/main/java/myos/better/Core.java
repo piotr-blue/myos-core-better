@@ -686,6 +686,12 @@ final class Core implements AutoCloseable {
               source == null ? repository.candidate(account, id) : repository.load(account, id);
           observedVersion = before == null ? 0 : before.version();
           if (source != null && before != null) {
+            // The head and command were committed together, but our two reads can straddle
+            // that commit. Reopen the receipt before reporting a pre-existing document.
+            Result raced = completed(account, id, command);
+            if (raced != null) {
+              return raced;
+            }
             throw new IllegalArgumentException("Document already exists");
           }
           if (source == null && before == null) {

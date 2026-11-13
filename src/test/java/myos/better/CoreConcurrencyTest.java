@@ -1,6 +1,7 @@
 package myos.better;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigInteger;
 import java.util.List;
@@ -136,9 +137,59 @@ class CoreConcurrencyTest {
     }
   }
 
+  @Test
+  void aPeerCanCreateTheDocumentBetweenTheReceiptAndHeadReads() {
+    var store = new Faults();
+    var runtime = CanonicalRuntime.create();
+    try (var reader = new Core(store, runtime);
+        var peer = new Core(store.delegate, runtime)) {
+      var committed = new java.util.concurrent.atomic.AtomicReference<Core.Result>();
+      store.afterCommandLookup =
+          () -> committed.set(peer.create("race", "counter", "same", COUNTER));
+      var retried = reader.create("race", "counter", "same", COUNTER);
+      assertEquals(committed.get(), retried);
+      assertEquals(1, retried.version());
+      assertEquals(
+          "Document already exists",
+          assertThrows(
+                  IllegalArgumentException.class,
+                  () -> reader.create("race", "counter", "unrelated", COUNTER))
+              .getMessage());
+    }
+  }
+
+  @Test
+  void conflictingCreatePreservesTheInputThatWonTheSameKey() {
+    var store = new Faults();
+    var runtime = CanonicalRuntime.create();
+    try (var reader = new Core(store, runtime);
+        var peer = new Core(store.delegate, runtime)) {
+      store.afterCommandLookup = () -> peer.create("race", "counter", "same", COUNTER);
+      var conflict =
+          assertThrows(
+              IllegalArgumentException.class,
+              () -> reader.create("race", "counter", "same", "count: 100"));
+      assertEquals("Idempotency key reused with a different request", conflict.getMessage());
+      assertEquals(BigInteger.ZERO, reader.readValue("race", "counter", "/count"));
+    }
+  }
+
   private static final class Faults implements AtomicStore {
     private final MemoryStore delegate = new MemoryStore();
     boolean throwAfterCommit, rejectNext;
+    Runnable afterCommandLookup;
+
+    @Override
+    public Map<Key, Row> getAll(List<Key> keys) {
+      var observed = delegate.getAll(keys);
+      if (afterCommandLookup != null
+          && keys.stream().anyMatch(key -> key.sort().startsWith("CMD#"))) {
+        var publish = afterCommandLookup;
+        afterCommandLookup = null;
+        publish.run();
+      }
+      return observed;
+    }
 
     @Override
     public Row get(Key key) {
