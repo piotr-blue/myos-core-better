@@ -104,6 +104,9 @@ class CoreOperationsTest {
           () -> JsonText.of(originals.processing(account, id)));
       var observation = documents.input(account, id, entry.value());
       assertEquals(entry.value(), observation.get("entryBlueId"));
+      var processing = object(observation.get("processing"));
+      assertEquals(false, processing.get("paused"));
+      assertTrue(processing.containsKey("issue"));
       var localHistory = (List<?>) observation.get("localHistory");
       assertEquals(1, localHistory.size());
       var position = object(localHistory.getFirst());

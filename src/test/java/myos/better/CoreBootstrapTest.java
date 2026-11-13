@@ -78,7 +78,7 @@ class CoreBootstrapTest {
               "increment");
       documents.control("owner", id, "pause", "pause");
       assertEquals("PAUSED", api.read("owner", id).get("control"));
-      assertEquals(true, api.nativeProcessing("owner", id).get("paused"));
+      assertEquals(true, api.processing("owner", id).get("paused"));
       api.invoke(
           "owner",
           id,

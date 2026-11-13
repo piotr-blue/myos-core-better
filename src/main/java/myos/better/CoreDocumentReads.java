@@ -36,7 +36,7 @@ final class CoreDocumentReads {
     if (parts.length == 3) {
       return switch (parts[2]) {
         case "content" -> coreDocuments.content(account, id, query);
-        case "processing" -> coreDocuments.nativeProcessing(account, id);
+        case "processing" -> coreDocuments.processing(account, id);
         case "operations" -> coreDocuments.operations(account, id, session);
         case "timelines" -> coreDocuments.timelines(account, id);
         case "timers" -> coreDocuments.timers(account, id, query);
@@ -52,7 +52,7 @@ final class CoreDocumentReads {
     }
     if (parts.length == 4 && parts[2].equals("processing") && parts[3].equals("requirements")) {
       RuntimeConfiguration.fields(new HashMap<>(query), Set.of());
-      return coreDocuments.nativeProcessing(account, id);
+      return coreDocuments.processing(account, id);
     }
     if (parts.length == 4 && parts[2].equals("inputs")) {
       return coreDocuments.input(account, id, parts[3]);

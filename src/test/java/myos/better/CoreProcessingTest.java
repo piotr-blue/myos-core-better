@@ -33,6 +33,8 @@ class CoreProcessingTest {
     var paused = CoreProcessing.describe("document", work, true, 19);
     assertEquals("PAUSED", paused.get("state"));
     assertEquals("WAITING", paused.get("nativeState"));
+    assertEquals(true, paused.get("paused"));
+    assertNull(paused.get("issue"));
     assertEquals("PAUSED_BY_USER", object(paused.get("reason")).get("code"));
     work.put("status", "FAILED");
     work.put("reason", "Execution stopped");
@@ -106,7 +108,7 @@ class CoreProcessingTest {
 
       documents.control("owner", id, "pause", "pause");
       assertEquals("PAUSED", api.processing("owner", id).get("state"));
-      assertNull(api.nativeProcessing("owner", id).get("issue"));
+      assertNull(api.processing("owner", id).get("issue"));
       documents.control("owner", id, "resume", "resume");
       polling.succeeded(polling.retry(registration));
       assertFalse(f.service.workStatus("owner", id).containsKey("sourceFailures"));

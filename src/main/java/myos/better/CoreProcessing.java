@@ -83,6 +83,8 @@ final class CoreProcessing {
     result.put("nativeState", nativeState);
     result.put("checkedBoundary", boundary);
     result.put("reason", reason);
+    result.put("paused", paused);
+    result.put("issue", !paused && "ERROR".equals(nativeState) ? reason : null);
     result.put("retryable", !paused && "ERROR".equals(nativeState));
     return result;
   }

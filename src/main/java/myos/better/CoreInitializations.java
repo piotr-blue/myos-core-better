@@ -60,6 +60,8 @@ final class CoreInitializations {
     value.put("nativeState", nativeState);
     value.put("checkedBoundary", 0L);
     value.put("reason", reason);
+    value.put("paused", paused);
+    value.put("issue", !paused && "ERROR".equals(nativeState) ? reason : null);
     value.put("retryable", !paused && "FAILED".equals(state.status()));
     value.put("phase", "INITIALIZATION");
     return value;

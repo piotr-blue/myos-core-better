@@ -381,14 +381,6 @@ final class CoreDocuments {
     return result;
   }
 
-  Map<String, Object> nativeProcessing(String account, String id) {
-    var result = new LinkedHashMap<>(processing(account, id));
-    result.put(
-        "paused", new DocumentControls(store).paused(account, documents.nativeId(account, id)));
-    result.put("issue", "ERROR".equals(result.get("state")) ? result.get("reason") : null);
-    return result;
-  }
-
   Map<String, Object> processing(String account, String id) {
     registrations.requireVisible(account, id);
     Map<String, Object> observed;
