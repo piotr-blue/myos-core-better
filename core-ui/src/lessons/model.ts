@@ -147,63 +147,57 @@ export function pointer(value: any, path: string): any {
     .split("/")
     .reduce((v, k) => v?.[k.replace(/~1/g, "/").replace(/~0/g, "~")], value);
 }
+interface InputDecision {
+  outcome?: string;
+  reason?: string;
+  code?: string;
+}
+
+interface ObservedInput {
+  assessment?: InputDecision | null;
+  disposition?: InputDecision | null;
+  localHistory?: ReadonlyArray<{ stable?: boolean }>;
+}
+
+const rejectedOutcomes = new Set([
+  "FAILED", "EXECUTION_REJECTED", "REJECTED", "NO_MATCH", "IGNORED",
+  "INAPPLICABLE", "GAS_LIMIT_EXCEEDED", "TERMINATED",
+]);
+
 export function observedOutcome(
-  input: any,
+  input: ObservedInput,
   expectedFailure: boolean,
   expectedRejectionReason?: LessonStep["expectedRejectionReason"],
 ): boolean {
-  const outcome = input.assessment?.outcome || input.disposition?.outcome;
-  const reason = input.assessment?.reason || input.disposition?.reason;
-  if (outcome === "REJECTED" && reason === "STALE_DOCUMENT_PRECONDITION")
-    throw Object.assign(new Error("The displayed document version changed."), {
-      outcome,
-      reason,
-    });
+  // Admission and execution are separate stages. A terminal document disposition takes
+  // precedence over a prior ACCEPTED assessment for the same signed entry.
+  const decision = input.disposition?.outcome ? input.disposition : input.assessment;
+  const outcome = decision?.outcome;
+  const reason = decision?.code || decision?.reason;
+  const stable = input.localHistory?.some(position => position.stable) === true;
+  const rejected = outcome !== undefined && rejectedOutcomes.has(outcome);
+  if (rejected && reason === "STALE_DOCUMENT_PRECONDITION")
+    throw Object.assign(new Error("The displayed document version changed."), { outcome, reason });
+
   if (expectedRejectionReason) {
-    if (input.localHistory?.some((x: any) => x.stable))
-      throw new Error(
-        "The forbidden representative action unexpectedly produced a committed transition.",
-      );
-    if (outcome === "REJECTED" && reason === expectedRejectionReason)
+    if (stable)
+      throw new Error("The forbidden representative action unexpectedly produced a committed transition.");
+    if ((outcome === "REJECTED" || outcome === "FAILED") && reason === expectedRejectionReason)
       return true;
-    if (
-      [
-        "APPLIED",
-        "NO_MATCH",
-        "REJECTED",
-        "EXECUTION_REJECTED",
-        "IGNORED",
-      ].includes(outcome)
-    )
-      throw new Error(
-        `Expected the representative channel restriction ${expectedRejectionReason}, received ${outcome}${reason ? ` (${reason})` : ""}.`,
-      );
+    if (rejected || outcome === "APPLIED")
+      throw new Error(`Expected the representative channel restriction ${expectedRejectionReason}, received ${outcome}${reason ? ` (${reason})` : ""}.`);
     return false;
   }
   if (expectedFailure) {
-    if (outcome === "EXECUTION_REJECTED") return true;
-    if (
-      ["APPLIED", "NO_MATCH", "REJECTED"].includes(outcome) ||
-      input.localHistory?.some((x: any) => x.stable)
-    )
-      throw new Error(
-        `Expected a business-rule rejection, received ${outcome || "a committed transition"}${reason ? ` (${reason})` : ""}.`,
-      );
+    if (!stable && (outcome === "EXECUTION_REJECTED" ||
+        (outcome === "FAILED" && reason === "BEX_EXECUTION_REJECTED"))) return true;
+    if (rejected || stable || outcome === "APPLIED")
+      throw new Error(`Expected a business-rule rejection, received ${outcome || "a committed transition"}${reason ? ` (${reason})` : ""}.`);
     return false;
   }
-  if (
-    ["EXECUTION_REJECTED", "REJECTED", "NO_MATCH", "IGNORED"].includes(outcome)
-  )
-    throw Object.assign(
-      new Error(
-        `The operation was not applied: ${outcome}. ${input.assessment?.reason || input.disposition?.reason || ""}`,
-      ),
-      {
-        outcome,
-        reason: input.assessment?.reason || input.disposition?.reason,
-      },
-    );
-  return !!input.localHistory?.some((x: any) => x.stable);
+  if (rejected)
+    throw Object.assign(new Error(`The operation was not applied: ${outcome}. ${reason || ""}`), { outcome, reason });
+  return stable;
 }
 export function stepCopy(step: LessonStep) {
   const operation = step.operation || "Wait for signed time";

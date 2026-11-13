@@ -158,3 +158,22 @@ test('retained and current payment runs restore their own exact source and steps
   saveRun(forged);
   assert.throws(()=>loadRun('user','tampered',current),/does not match its runtime/);
 });
+
+test("native dispositions resolve guided steps after signing-account admission", () => {
+  const retained = (outcome, code) => ({
+    assessment: { outcome: "ACCEPTED" },
+    disposition: { outcome, code, epoch: 4, reason: "The transaction was rejected at epoch 4." },
+    localHistory: [],
+  });
+  const failed = retained("FAILED", "BEX_EXECUTION_REJECTED");
+  assert.equal(observedOutcome(failed, true), true);
+  assert.throws(() => observedOutcome(failed, false), /BEX_EXECUTION_REJECTED/);
+  assert.throws(() => observedOutcome({...failed, localHistory: [{stable: true}]}, true));
+  assert.throws(() => observedOutcome(retained("FAILED", "STALE_DOCUMENT_PRECONDITION"), true),
+    e => e.reason === "STALE_DOCUMENT_PRECONDITION");
+  assert.equal(observedOutcome(retained("FAILED", "INVALID_TARGET_CHANNEL"), true, "INVALID_TARGET_CHANNEL"), true);
+  for (const outcome of ["INAPPLICABLE", "GAS_LIMIT_EXCEEDED", "TERMINATED", "FAILED"]) {
+    assert.throws(() => observedOutcome(retained(outcome), true));
+    assert.throws(() => observedOutcome(retained(outcome), false));
+  }
+});
