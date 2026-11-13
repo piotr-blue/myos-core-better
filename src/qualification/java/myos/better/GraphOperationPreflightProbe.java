@@ -1,7 +1,15 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.TimelineChannels;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.TreeMap;
 
 /** Measures cold request recognition separately from publication and execution. */
 public final class GraphOperationPreflightProbe {
@@ -32,7 +40,9 @@ public final class GraphOperationPreflightProbe {
     long expectedLoads = Long.getLong("myos.probe.expectedLoads", 0L);
     for (int count : List.of(16, 256, 1024)) {
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       children.put(
           "child-0",
           Map.of(
@@ -112,10 +122,13 @@ public final class GraphOperationPreflightProbe {
           if (!parsed.document().equals(Optional.of(target.blueId()))
               || !parsed.operation().equals("increment")
               || !parsed.channel().equals("owner")
-              || !parsed.requireExactDocumentVersion()) throw new AssertionError("Request changed");
+              || !parsed.requireExactDocumentVersion()) {
+            throw new AssertionError("Request changed");
+          }
           long loads = reader.statistics().get("graphSessions.loads");
-          if (loads != expectedLoads)
+          if (loads != expectedLoads) {
             throw new AssertionError("Unexpected execution session load: " + loads);
+          }
           samples.add(Map.of("millis", millis, "sessionLoads", loads, "warmup", i < 2));
         }
       }

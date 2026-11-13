@@ -1,9 +1,15 @@
 package myos.better;
 
-import blue.*;
+import blue.BluePackage;
+import blue.Contracts;
+import blue.Language;
 import java.net.InetSocketAddress;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * Real native pipeline with loopback-only test identity, excluded from the service distribution.
@@ -41,8 +47,9 @@ public final class DashboardSdkProbe {
         new ConsoleLogin() {
           @Override
           public User verify(String token) {
-            if (token == null || !Set.of("sdk-test-user", "sdk-test-admin").contains(token))
+            if (token == null || !Set.of("sdk-test-user", "sdk-test-admin").contains(token)) {
               throw new ConsoleProblem(401, "SIGN_IN_REQUIRED", "Invalid test identity");
+            }
             return new User(
                 token,
                 token.equals("sdk-test-admin") ? "admin@example.invalid" : "sdk@example.invalid",
@@ -54,8 +61,9 @@ public final class DashboardSdkProbe {
             if (!action.equals("login")
                 || !Set.of("sdk@example.invalid", "admin@example.invalid")
                     .contains(input.get("email"))
-                || !"loopback-test-only".equals(input.get("password")))
+                || !"loopback-test-only".equals(input.get("password"))) {
               throw new ConsoleProblem(401, "SIGN_IN_REQUIRED", "Use the isolated test identity.");
+            }
             return Map.of(
                 "token",
                 "admin@example.invalid".equals(input.get("email"))

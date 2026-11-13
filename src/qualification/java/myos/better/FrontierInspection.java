@@ -8,7 +8,9 @@ public final class FrontierInspection {
   private FrontierInspection() {}
 
   public static void main(String[] args) {
-    if (args.length != 3) throw new IllegalArgumentException("Expected table, account, timeline");
+    if (args.length != 3) {
+      throw new IllegalArgumentException("Expected table, account, timeline");
+    }
     try (var store = new DynamoStore(args[0], "eu-west-1")) {
       var transaction = new OwnerMetadata(store, args[1]).begin();
       String prefix = "timeline-consumer\0" + args[2] + "\0";
@@ -22,7 +24,9 @@ public final class FrontierInspection {
           owners.add((String) consumer.get("owner"));
           bindings++;
         }
-        if (page.size() < 128) break;
+        if (page.size() < 128) {
+          break;
+        }
         after = page.getLast().key();
       }
       System.out.println(

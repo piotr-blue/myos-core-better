@@ -1,7 +1,13 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /** Same pinned operation context before/after execution eviction; no AWS or HTTP. */
 public final class OperationContextReadProbe {
@@ -13,7 +19,9 @@ public final class OperationContextReadProbe {
     var results = new ArrayList<Object>();
     for (int count : List.of(16, 256, 1024)) {
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       String source =
           JsonText.of(
               Map.of(
@@ -50,18 +58,23 @@ public final class OperationContextReadProbe {
             var result =
                 CoreOperationContext.project(Contracts.inspect(content), "/stats", null, false);
             double millis = (System.nanoTime() - started) / 1e6;
-            if (!("{\"count\":" + count + "}").equals(result.get("valueJson")))
+            if (!("{\"count\":" + count + "}").equals(result.get("valueJson"))) {
               throw new AssertionError("Referenced scalar leaked into the context object");
+            }
             long loads = view.statistics().get("graphSessions.loads");
-            if (loads != (mode.equals("session") ? 1 : 0))
+            if (loads != (mode.equals("session") ? 1 : 0)) {
               throw new AssertionError("Unexpected graph restoration");
+            }
             if (!Integer.toString(count)
                 .equals(
                     CoreOperationContext.project(
                             Contracts.inspect(content), "/stats/count", null, false)
-                        .get("valueJson"))) throw new AssertionError("Incorrect stats count");
-            if (previous != null && !previous.equals(result))
+                        .get("valueJson"))) {
+              throw new AssertionError("Incorrect stats count");
+            }
+            if (previous != null && !previous.equals(result)) {
               throw new AssertionError("Context representation mismatch");
+            }
             previous = result;
             samples.put(mode, Map.of("millis", millis, "sessionLoads", loads));
           }

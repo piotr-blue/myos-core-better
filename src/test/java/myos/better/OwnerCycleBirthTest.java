@@ -1,10 +1,15 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import blue.BlueId;
+import blue.Contracts;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /** A new cyclic child shares the existing fenced unit without resetting its source cursors. */
 class OwnerCycleBirthTest {
@@ -69,7 +74,9 @@ class OwnerCycleBirthTest {
           assertEquals(2, whole.components().getFirst().size());
           var restarted = new OwnerGraphs(store, contracts, service, ingress);
           for (int attempt = 0; attempt < 16; attempt++) {
-            if (restarted.step("alice", root).status() == TimelineIngress.Status.IDLE) break;
+            if (restarted.step("alice", root).status() == TimelineIngress.Status.IDLE) {
+              break;
+            }
           }
           var records = new OwnerRecords(store, "alice");
           var head = records.head(root);
@@ -81,10 +88,11 @@ class OwnerCycleBirthTest {
               JsonText.of(OwnerReplay.semantic(actual.observations())));
           assertEquals(expected.transition().gas(), Repository.number(result.get("gas")));
           assertEquals(whole.blueId(), head.value().get("blueId"));
-          for (var member : whole.members())
+          for (var member : whole.members()) {
             assertTrue(
                 records.observedVersion(member.key(), member.blueId().value()) > 0,
                 "Root-relative member addresses must resolve to their durable owner's history");
+          }
           assertEquals(
               2,
               records.read.page("publication\0", null, 10).size(),

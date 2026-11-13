@@ -1,10 +1,16 @@
 package myos.better;
 
-import blue.*;
+import blue.BluePackage;
+import blue.LanguageDocument;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Map;
+import java.util.Set;
 
 /** Reader custody is pinned to the consuming account, protocol, provider and private source. */
 final class ReaderIdentity {
@@ -21,8 +27,9 @@ final class ReaderIdentity {
       SigningSecret.Source secrets) {
     RuntimeConfiguration.fields(config, Set.of("publicKey", "secretArn", "secretVersion"));
     String publicKey = RuntimeConfiguration.text(config.get("publicKey"), "reader publicKey");
-    if (!publicKey.matches("[0-9a-f]{64}"))
+    if (!publicKey.matches("[0-9a-f]{64}")) {
       throw new IllegalArgumentException("Canonical Ed25519 reader public key required");
+    }
     SigningSecret.Reference reference =
         new SigningSecret.Reference(
             RuntimeConfiguration.text(config.get("secretArn"), "reader secretArn"),
@@ -39,8 +46,9 @@ final class ReaderIdentity {
       String expectedKey) {
     // Secret parser failures must not carry raw key material or parser exception causes.
     try {
-      if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length > 16 * 1024)
+      if (secret == null || secret.getBytes(StandardCharsets.UTF_8).length > 16 * 1024) {
         throw new IllegalArgumentException();
+      }
       Map<String, Object> data = Json.object(secret.getBytes(StandardCharsets.UTF_8));
       if (!data.keySet()
               .equals(
@@ -57,7 +65,9 @@ final class ReaderIdentity {
           || !coordination.blueId().value().equals(data.get("coordination"))
           || !provider.blueId().value().equals(data.get("provider"))
           || !timeline.blueId().value().equals(data.get("timeline"))
-          || !expectedKey.equals(data.get("publicKey"))) throw new IllegalArgumentException();
+          || !expectedKey.equals(data.get("publicKey"))) {
+        throw new IllegalArgumentException();
+      }
       byte[] encoded = Base64.getDecoder().decode((String) data.get("privateKeyPkcs8"));
       try {
         PrivateKey key =

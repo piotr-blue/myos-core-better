@@ -1,7 +1,13 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Best-effort locations after the complete native matcher has already rejected a request. */
 final class CoreInputDiagnostics {
@@ -19,7 +25,9 @@ final class CoreInputDiagnostics {
     } catch (LanguageException | CoreOperationValues.Unresolved incomplete) {
       /* Full-match rejection remains authoritative. */
     }
-    if (issues.isEmpty()) issues.add(invalid(""));
+    if (issues.isEmpty()) {
+      issues.add(invalid(""));
+    }
     return issues;
   }
 
@@ -30,23 +38,28 @@ final class CoreInputDiagnostics {
       String path,
       List<Object> issues,
       Set<String> seen) {
-    if (--remaining < 0 || !seen.add(actual.blueId() + ":" + pattern.blueId())) return;
+    if (--remaining < 0 || !seen.add(actual.blueId() + ":" + pattern.blueId())) {
+      return;
+    }
     if (wire instanceof Map<?, ?> ref && ref.size() == 1 && ref.containsKey("blueId")) {
       issues.add(invalid(path));
       return;
     }
     int before = issues.size();
     for (String field : pattern.resolve().declaredFields()) {
-      if (--remaining <= 0) break;
+      if (--remaining <= 0) {
+        break;
+      }
       String pointer = "/" + CoreInputDefinition.escape(field);
       var wanted = values.child(pattern, pointer);
       var found = values.child(actual, pointer);
       if (found == null || !found.resolve().isConcrete()) {
-        if (values.required(pattern, field, wanted))
+        if (values.required(pattern, field, wanted)) {
           issues.add(
               CoreOperationPreparation.issue(
                   path + pointer, "OPERATION_FIELD_REQUIRED", "Provide this required field"));
-      } else if (!values.matches(found, wanted))
+        }
+      } else if (!values.matches(found, wanted)) {
         locate(
             found,
             wanted,
@@ -54,6 +67,7 @@ final class CoreInputDiagnostics {
             path + pointer,
             issues,
             new HashSet<>(seen));
+      }
     }
     List<?> wireItems =
         wire instanceof List<?> list
@@ -69,9 +83,11 @@ final class CoreInputDiagnostics {
             i < values.size(pattern)
                 ? values.child(pattern, "/items/" + i)
                 : itemType == null ? null : values.type(itemType);
-        if (wanted == null) continue;
+        if (wanted == null) {
+          continue;
+        }
         var child = values.child(actual, "/items/" + i);
-        if (!values.matches(child, wanted))
+        if (!values.matches(child, wanted)) {
           locate(
               child,
               wanted,
@@ -79,23 +95,28 @@ final class CoreInputDiagnostics {
               itemsPath + "/" + i,
               issues,
               new HashSet<>(seen));
+        }
       }
-      for (int i = wireItems.size(); i < values.size(pattern) && remaining-- > 0; i++)
+      for (int i = wireItems.size(); i < values.size(pattern) && remaining-- > 0; i++) {
         issues.add(
             CoreOperationPreparation.issue(
                 itemsPath + "/" + i, "OPERATION_FIELD_REQUIRED", "Provide this required element"));
+      }
     }
     String keyType = values.slot(pattern, "key"), valueType = values.slot(pattern, "value");
-    if (keyType != null || valueType != null)
+    if (keyType != null || valueType != null) {
       for (String field : actual.resolve().declaredFields()) {
-        if (--remaining <= 0) break;
+        if (--remaining <= 0) {
+          break;
+        }
         String pointer = "/" + CoreInputDefinition.escape(field);
         if (keyType != null
             && !values.matches(
-                values.source(JsonText.of(field), Language.Goal.VALUE), values.type(keyType)))
+                values.source(JsonText.of(field), Language.Goal.VALUE), values.type(keyType))) {
           issues.add(invalid(path + pointer));
+        }
         var child = values.child(actual, pointer);
-        if (valueType != null && !values.matches(child, values.type(valueType)))
+        if (valueType != null && !values.matches(child, values.type(valueType))) {
           locate(
               child,
               values.type(valueType),
@@ -103,8 +124,10 @@ final class CoreInputDiagnostics {
               path + pointer,
               issues,
               new HashSet<>(seen));
+        }
       }
-    if (issues.size() == before)
+    }
+    if (issues.size() == before) {
       issues.add(
           invalid(
               actual.resolve().kind().equals("scalar")
@@ -112,6 +135,7 @@ final class CoreInputDiagnostics {
                       && object.containsKey("value")
                   ? path + "/value"
                   : path));
+    }
   }
 
   private static Map<String, Object> invalid(String path) {

@@ -1,10 +1,18 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import blue.*;
+import blue.BlueException;
+import blue.Language;
+import blue.LanguageDocument;
 import java.io.IOException;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -191,7 +199,7 @@ class CoreTimelineDiscoveryTest {
               "https://provider.example?x=1",
               "https://provider.example#x",
               "https://provider.example:8443",
-              "https://provider.example/"))
+              "https://provider.example/")) {
         assertEquals(
             400,
             assertThrows(
@@ -200,17 +208,19 @@ class CoreTimelineDiscoveryTest {
                         f.discovery((u, r, b, t) -> fail("Invalid endpoint reached transport"))
                             .discover("reader", f.key, endpoint, f.source.id()))
                 .status);
+      }
     }
 
     @Test
     void oversizedOrInvalidUtf8BodiesCannotEnterNativeAdmission() {
       var f = new CoreTimelineFixture();
-      for (byte[] body : List.of(new byte[256 * 1024 + 1], new byte[] {(byte) 0xc3, (byte) 0x28}))
+      for (byte[] body : List.of(new byte[256 * 1024 + 1], new byte[] {(byte) 0xc3, (byte) 0x28})) {
         assertThrows(
             IOException.class,
             () ->
                 f.discovery((u, r, b, t) -> new TimelineTransport.Reply(200, body))
                     .discover("reader", f.key, f.endpoint, f.source.id()));
+      }
     }
   }
 

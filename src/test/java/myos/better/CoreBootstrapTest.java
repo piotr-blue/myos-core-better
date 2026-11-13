@@ -1,10 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.Bex;
+import blue.Contracts;
+import blue.Language;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class CoreBootstrapTest {
@@ -90,7 +96,9 @@ class CoreBootstrapTest {
       f.runner.start();
       long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(8);
       while (((Number) f.service.graphs().readValue("owner", id, "/count")).intValue() == 0
-          && System.nanoTime() < deadline) Thread.sleep(10);
+          && System.nanoTime() < deadline) {
+        Thread.sleep(10);
+      }
       assertEquals(1, ((Number) f.service.graphs().readValue("owner", id, "/count")).intValue());
       var recipients =
           bootstrap.recipients(
@@ -98,10 +106,11 @@ class CoreBootstrapTest {
       assertEquals(1, ((List<?>) recipients.get("recipients")).size());
       var channels = (List<?>) api.timelines("owner", id).get("items");
       assertEquals(2, channels.size());
-      for (Object channel : channels)
+      for (Object channel : channels) {
         assertTrue(
             Repository.number(RuntimeConfiguration.object(channel, "channel").get("generation"))
                 >= 1);
+      }
     }
   }
 

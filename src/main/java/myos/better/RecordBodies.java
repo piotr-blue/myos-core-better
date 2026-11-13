@@ -1,6 +1,10 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 /** Bounded immutable record values. Callers own key selection and current-version checks. */
@@ -14,7 +18,9 @@ final class RecordBodies {
   private long bytes;
 
   RecordBodies(long maximumBytes) {
-    if (maximumBytes < 0) throw new IllegalArgumentException("Negative record cache capacity");
+    if (maximumBytes < 0) {
+      throw new IllegalArgumentException("Negative record cache capacity");
+    }
     this.maximumBytes = maximumBytes;
   }
 
@@ -29,7 +35,9 @@ final class RecordBodies {
     String identity = Json.hash(encoded);
     synchronized (bodies) {
       Body known = bodies.get(identity);
-      if (known != null) return known.value();
+      if (known != null) {
+        return known.value();
+      }
     }
     Frozen frozen = freeze(Json.object(decoder.apply(encoded)));
     @SuppressWarnings("unchecked")
@@ -49,7 +57,9 @@ final class RecordBodies {
   void remove(String identity) {
     synchronized (bodies) {
       Body previous = bodies.remove(identity);
-      if (previous != null) bytes -= previous.weight();
+      if (previous != null) {
+        bytes -= previous.weight();
+      }
     }
   }
 
@@ -57,8 +67,12 @@ final class RecordBodies {
     // An oversized replacement must invalidate a previously cached smaller value.
     synchronized (bodies) {
       Body previous = bodies.remove(identity);
-      if (previous != null) bytes -= previous.weight();
-      if (body.weight() > maximumBytes) return;
+      if (previous != null) {
+        bytes -= previous.weight();
+      }
+      if (body.weight() > maximumBytes) {
+        return;
+      }
       while (bytes + body.weight() > maximumBytes && !bodies.isEmpty()) {
         String oldest = bodies.keySet().iterator().next();
         bytes -= bodies.remove(oldest).weight();
@@ -96,11 +110,15 @@ final class RecordBodies {
       }
       return new Frozen(Collections.unmodifiableList(copy), weight);
     }
-    if (value instanceof String text) return new Frozen(value, 48L + text.length() * 2L);
-    if (value instanceof java.math.BigInteger integer)
+    if (value instanceof String text) {
+      return new Frozen(value, 48L + text.length() * 2L);
+    }
+    if (value instanceof java.math.BigInteger integer) {
       return new Frozen(value, 64L + (integer.bitLength() + 7L) / 8L);
-    if (value == null || value instanceof Boolean || value instanceof Number)
+    }
+    if (value == null || value instanceof Boolean || value instanceof Number) {
       return new Frozen(value, 64);
+    }
     throw new IllegalArgumentException("Stored JSON value required");
   }
 

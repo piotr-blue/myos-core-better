@@ -1,9 +1,18 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.TimelineRequests;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.util.*;
+import java.security.GeneralSecurityException;
+import java.security.PrivateKey;
+import java.security.Signature;
+import java.util.HexFormat;
+import java.util.Map;
+import java.util.Objects;
 
 /** One protected reader key bound to one exact source; never owner or business authority. */
 final class TimelineReaderSigning {
@@ -46,8 +55,9 @@ final class TimelineReaderSigning {
                         0))));
     TimelineRequests.Reader verified =
         requests.reader(sign(TimelineRequests.Operation.READ, probe));
-    if (!verified.publicKey().orElseThrow().equals(publicKey))
+    if (!verified.publicKey().orElseThrow().equals(publicKey)) {
       throw new IllegalArgumentException("Reader key mismatch");
+    }
   }
 
   String publicKey() {
@@ -55,15 +65,17 @@ final class TimelineReaderSigning {
   }
 
   void requireSource(TimelineArchive.Source source) {
-    if (!provider.equals(source.provider()) || !timeline.equals(source.timeline()))
+    if (!provider.equals(source.provider()) || !timeline.equals(source.timeline())) {
       throw new IllegalArgumentException("Reader key belongs to another adopted source");
+    }
   }
 
   LanguageContent sign(TimelineRequests.Operation operation, LanguageContent request) {
     TimelineRequests.Reader selected = requests.reader(request);
-    if (selected.publicKey().isPresent() || selected.operation() != operation)
+    if (selected.publicKey().isPresent() || selected.operation() != operation) {
       throw new IllegalArgumentException(
           "Expected the unsigned request for the selected read route");
+    }
     try {
       Signature signature = Signature.getInstance("Ed25519");
       signature.initSign(key);

@@ -1,9 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /** Owner publication must reach the UI before the independently retried event projection. */
@@ -18,7 +25,7 @@ class CoreOwnerLiveTest {
       alice.take(0);
       bob.take(0);
       var writes = new ArrayList<AtomicStore.Write>();
-      for (String document : List.of("graph-fast-child", "graph-fast-root"))
+      for (String document : List.of("graph-fast-child", "graph-fast-root")) {
         CorePublicationEvents.append(
             writes,
             "alice",
@@ -32,6 +39,7 @@ class CoreOwnerLiveTest {
                     "2026-01-01T00:00:00Z",
                     "result",
                     Map.of("version", 2, "status", "APPLIED"))));
+      }
       assertTrue(store.commit(writes, List.of()));
       assertEquals(
           Map.of("documents", List.of("graph-fast-child", "graph-fast-root")),
@@ -80,8 +88,9 @@ class CoreOwnerLiveTest {
       assertEquals(List.of("graph-fast-live"), documents);
       // Initialization publishes a root event. Child publications are indexed under that root.
       // Individual child processing publishes its own event, covered by the first test.
-      for (Object document : documents)
+      for (Object document : documents) {
         assertNotNull(new OwnerRecords(store, "alice").head((String) document));
+      }
       assertNull(bob.take(0));
     }
   }

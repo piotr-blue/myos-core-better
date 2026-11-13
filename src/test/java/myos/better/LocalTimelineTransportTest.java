@@ -1,11 +1,20 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.Language;
+import blue.LanguageContent;
+import blue.TimelineRequests;
 import java.net.URI;
 import java.time.Duration;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
@@ -137,7 +146,7 @@ class LocalTimelineTransportTest {
                   "grant",
                   new HostedAccess.Permissions(
                       List.of(source.id()), List.of(f.protocol.provider.at("/publicKey").text())));
-      if (i == 0)
+      if (i == 0) {
         f.host
             .access()
             .update(
@@ -145,6 +154,7 @@ class LocalTimelineTransportTest {
                 "revoke",
                 grant.initial().blueId(),
                 new HostedAccess.Permissions(List.of(source.id()), List.of()));
+      }
     }
     var control = f.host.access().control().timeline();
     try (var local =
@@ -286,8 +296,9 @@ class LocalTimelineTransportTest {
           List.of(
               URI.create(endpoint + "/access/create"),
               URI.create(endpoint + "/provider?other=true"),
-              URI.create("https://another.test/provider")))
+              URI.create("https://another.test/provider"))) {
         assertEquals(418, transport.exchange(other, null, 1000, Duration.ofSeconds(10)).status());
+      }
       assertEquals(3, remoteCalls.get());
     }
   }

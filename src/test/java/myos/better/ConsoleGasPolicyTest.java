@@ -1,10 +1,13 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import blue.*;
+import blue.Contracts;
+import blue.GasSchedule;
+import blue.Language;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /** The single accounting identity is durable; creation offers no alternate policy. */

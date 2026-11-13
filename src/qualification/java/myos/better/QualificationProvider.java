@@ -1,11 +1,16 @@
 package myos.better;
 
-import blue.*;
-import com.sun.net.httpserver.*;
+import blue.Language;
+import blue.LanguageContent;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpsServer;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.LongAdder;
 
@@ -52,7 +57,9 @@ final class QualificationProvider implements AutoCloseable {
     }
 
     synchronized void completeBefore(long value) {
-      if (value < before) throw new IllegalArgumentException("Source cannot rewind");
+      if (value < before) {
+        throw new IllegalArgumentException("Source cannot rewind");
+      }
       before = value;
     }
 
@@ -90,8 +97,9 @@ final class QualificationProvider implements AutoCloseable {
       int status = 200;
       try {
         if (exchange.getRequestHeaders().containsKey("Authorization")
-            || exchange.getRequestHeaders().containsKey("Cookie"))
+            || exchange.getRequestHeaders().containsKey("Cookie")) {
           throw new IllegalStateException("Public request unexpectedly carried credentials");
+        }
         String request =
             new String(exchange.getRequestBody().readNBytes(1024 * 1024), StandardCharsets.UTF_8);
         long started = System.nanoTime();
@@ -114,7 +122,7 @@ final class QualificationProvider implements AutoCloseable {
 
     private synchronized LanguageContent respond(String path, String method, String body)
         throws Exception {
-      if (path.endsWith("/provider") && method.equals("GET"))
+      if (path.endsWith("/provider") && method.equals("GET")) {
         return timeline.attest(
             timeline.typed(
                 "Provider Descriptor",
@@ -126,20 +134,24 @@ final class QualificationProvider implements AutoCloseable {
                     + timeline.timeline.toJson()
                     + "\nmaxPageSize: 2\noperations: []"),
             false);
+      }
       if (!(path.endsWith("/timelines/read") || path.endsWith("/timelines/entry"))
-          || !method.equals("POST"))
+          || !method.equals("POST")) {
         throw new IllegalArgumentException("Unexpected provider request");
+      }
       LanguageContent request = timeline.language.prepare(Language.Input.exactJson(body));
       Map<String, Object> wire = Json.object(body.getBytes(StandardCharsets.UTF_8));
       if (!timeline
           .timeline
           .blueId()
           .value()
-          .equals(((Map<?, ?>) wire.get("timeline")).get("blueId")))
+          .equals(((Map<?, ?>) wire.get("timeline")).get("blueId"))) {
         throw new IllegalArgumentException("Wrong Timeline");
+      }
       if (path.endsWith("/timelines/entry")) {
-        if (!wire.keySet().equals(Set.of("type", "timeline", "entry")))
+        if (!wire.keySet().equals(Set.of("type", "timeline", "entry"))) {
           throw new IllegalArgumentException("Unexpected entry request field");
+        }
         entryReads++;
         String id = (String) ((Map<?, ?>) wire.get("entry")).get("blueId");
         LanguageContent entry =
@@ -155,10 +167,12 @@ final class QualificationProvider implements AutoCloseable {
                         + "\nentryAttestation: "
                         + timeline.attest(entry, false).toJson()),
                 corrupt);
-        if (pauseAfterAcceptance) paused = true;
+        if (pauseAfterAcceptance) {
+          paused = true;
+        }
         return response;
       }
-      if (paused)
+      if (paused) {
         return timeline.attest(
             timeline.typed(
                 "Provider Failure",
@@ -166,11 +180,15 @@ final class QualificationProvider implements AutoCloseable {
                     + request.blueId()
                     + "'}\ncode: UNAVAILABLE\nretryable: true"),
             false);
+      }
       reads++;
-      if (!Set.of("type", "timeline", "limit", "afterEntry", "cursor").containsAll(wire.keySet()))
+      if (!Set.of("type", "timeline", "limit", "afterEntry", "cursor").containsAll(wire.keySet())) {
         throw new IllegalArgumentException("Unexpected request field");
+      }
       int limit = Math.toIntExact(request.at("/limit").integer());
-      if (limit < 1 || limit > 2) throw new IllegalArgumentException("Wrong page limit");
+      if (limit < 1 || limit > 2) {
+        throw new IllegalArgumentException("Wrong page limit");
+      }
       Object after = wire.get("afterEntry");
       LanguageContent checkpoint;
       if (wire.containsKey("cursor")) {
@@ -197,7 +215,9 @@ final class QualificationProvider implements AutoCloseable {
       long bound = checkpoint.at("/guarantee/completeBefore").integer();
       int available = start;
       while (available < entries.size()
-          && entries.get(available).at("/timestamp").integer() < bound) available++;
+          && entries.get(available).at("/timestamp").integer() < bound) {
+        available++;
+      }
       int end = Math.min(available, start + limit);
       LanguageContent cursor =
           end < available
@@ -239,6 +259,7 @@ final class QualificationProvider implements AutoCloseable {
     }
   }
 
+  @Override
   public void close() {
     https.close();
   }

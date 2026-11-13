@@ -31,16 +31,25 @@ record ProjectedData(Object data, List<String> undefinedPaths) {
 
   /** An independently owned projection, including absence slots in schema lists. */
   static Object decode(Object source, List<String> undefinedPaths) {
-    if (undefinedPaths.isEmpty()) return source;
+    if (undefinedPaths.isEmpty()) {
+      return source;
+    }
     Object data = copy(source, new ArrayList<>());
     for (String pointer : undefinedPaths) {
-      if (pointer.isEmpty()) return Bex.undefined();
+      if (pointer.isEmpty()) {
+        return Bex.undefined();
+      }
       List<String> parts = Pointer.parse(pointer).segments();
       Object parent = data;
-      for (int i = 0; i < parts.size() - 1; i++) parent = member(parent, parts.get(i));
+      for (int i = 0; i < parts.size() - 1; i++) {
+        parent = member(parent, parts.get(i));
+      }
       String key = parts.getLast();
-      if (parent instanceof Map<?, ?> map) object(map).put(key, Bex.undefined());
-      else list(parent).set(Integer.parseInt(key), Bex.undefined());
+      if (parent instanceof Map<?, ?> map) {
+        object(map).put(key, Bex.undefined());
+      } else {
+        list(parent).set(Integer.parseInt(key), Bex.undefined());
+      }
     }
     return data;
   }
@@ -53,8 +62,9 @@ record ProjectedData(Object data, List<String> undefinedPaths) {
       Step step = work.pop();
       Object value = step.value();
       if (value == Bex.undefined()) {
-        if (undefined == null) step.output().accept(value);
-        else {
+        if (undefined == null) {
+          step.output().accept(value);
+        } else {
           undefined.add(step.pointer());
           step.output().accept(null);
         }
@@ -77,7 +87,9 @@ record ProjectedData(Object data, List<String> undefinedPaths) {
           work.push(
               new Step(items.get(i), step.pointer() + "/" + i, child -> target.set(index, child)));
         }
-      } else step.output().accept(value);
+      } else {
+        step.output().accept(value);
+      }
     }
     return result[0];
   }

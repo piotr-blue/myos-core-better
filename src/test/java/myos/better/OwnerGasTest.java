@@ -1,8 +1,15 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -45,6 +52,7 @@ class OwnerGasTest {
       return Long.parseLong((String) gas.summary(frontiers.metadata.begin()).get(field));
     }
 
+    @Override
     public void close() {
       store.close();
     }
@@ -245,8 +253,9 @@ class OwnerGasTest {
   @Test
   void waitersAreFairBoundedAndCannotSpendTheSameAvailableBudget() {
     try (var f = new Fixture(0)) {
-      for (int i = 0; i < 65; i++)
+      for (int i = 0; i < 65; i++) {
         assertNull(f.authorize(request("owner-" + i, "claim", 10, 1000)).permit());
+      }
       f.write(tx -> f.gas.credit(tx, "fund", 650, "operator", "test"));
       var read = f.frontiers.metadata.begin();
       assertEquals(64, f.gas.runnableWaiters(read, 64).size());
@@ -359,37 +368,48 @@ class OwnerGasTest {
     final AtomicStore delegate = new JsonBoundaryStore();
     boolean armed, afterCommit;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean interrupt = armed && writes.stream().anyMatch(w -> w.key().sort().equals("MANIFEST"));
       if (interrupt) {
         armed = false;
-        if (!afterCommit) throw new LostAcknowledgment();
+        if (!afterCommit) {
+          throw new LostAcknowledgment();
+        }
       }
       boolean committed = delegate.commit(writes, checks);
-      if (interrupt && committed) throw new LostAcknowledgment();
+      if (interrupt && committed) {
+        throw new LostAcknowledgment();
+      }
       return committed;
     }
 
+    @Override
     public void close() {
       delegate.close();
     }

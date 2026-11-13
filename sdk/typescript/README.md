@@ -302,7 +302,7 @@ positive/negative contract type examples, and exercises the generated client
 against a disposable local HTTP server. These transport tests cover credentials,
 idempotency, admissions, problem details, native messages, null/omission, URL
 encoding, pagination and exact content. The separate read-only backend check is
-opt-in. The [host test strategy](../../docs/testing.md) describes the separate
+opt-in. The [host test strategy](../../docs/TESTING.md) describes the separate
 canonical native, signed-input, console and API integration gates. Running local
 SDK checks neither contacts AWS nor proves a deployed document execution.
 

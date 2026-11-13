@@ -1,10 +1,13 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import blue.*;
+import blue.Contracts;
+import blue.Language;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /** Event content survives a cold reader; batched retention preserves the exact catalogue. */
@@ -59,7 +62,9 @@ class CanonicalEmissionsTest {
 
   private static List<Object> rows(int count) {
     List<Object> rows = new ArrayList<>();
-    for (int i = 0; i < count; i++) rows.add(Map.of("number", i, "label", "item-" + i));
+    for (int i = 0; i < count; i++) {
+      rows.add(Map.of("number", i, "label", "item-" + i));
+    }
     return rows;
   }
 }

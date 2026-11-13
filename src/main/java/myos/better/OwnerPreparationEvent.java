@@ -1,7 +1,11 @@
 package myos.better;
 
 import java.util.function.Supplier;
-import jdk.jfr.*;
+import jdk.jfr.Category;
+import jdk.jfr.Event;
+import jdk.jfr.Label;
+import jdk.jfr.Name;
+import jdk.jfr.StackTrace;
 
 /** Optional physical preparation measurements; never part of a Blue observation or receipt. */
 @Name("myos.OwnerPreparation")
@@ -22,7 +26,9 @@ final class OwnerPreparationEvent extends Event {
     var event = new OwnerPreparationEvent();
     event.owner = owner;
     event.stage = stage;
-    if (event.isEnabled()) event.begin();
+    if (event.isEnabled()) {
+      event.begin();
+    }
     return event;
   }
 
@@ -35,7 +41,9 @@ final class OwnerPreparationEvent extends Event {
 
   static <T> T measure(String owner, String stage, Supplier<T> work) {
     var event = new OwnerPreparationEvent();
-    if (!event.isEnabled()) return work.get();
+    if (!event.isEnabled()) {
+      return work.get();
+    }
     event.owner = owner;
     event.stage = stage;
     event.begin();

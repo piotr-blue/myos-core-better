@@ -1,6 +1,11 @@
 package myos.better;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Live pending-timer reads from one protected owner cut, without execution or clock access. */
 final class CoreDocumentTimers {
@@ -20,7 +25,9 @@ final class CoreDocumentTimers {
     selection.put("limit", Integer.toString(limit));
     var cursor = tokens.decode(account, resource, selection);
     String after = cursor.isEmpty() ? null : (String) cursor.get("after");
-    if (!OwnerGraphs.handles(nativeId)) return result(List.of(), null, 0);
+    if (!OwnerGraphs.handles(nativeId)) {
+      return result(List.of(), null, 0);
+    }
     var records = new OwnerRecords(store, account);
     var head = records.head(nativeId);
     String member =

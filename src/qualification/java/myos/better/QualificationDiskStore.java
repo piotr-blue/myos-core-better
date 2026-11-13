@@ -48,22 +48,27 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
     }
   }
 
+  @Override
   public Page publicDirectoryPage(String after) {
     return delegate.publicDirectoryPage(after);
   }
 
+  @Override
   public Row get(Key key) {
     return delegate.get(key);
   }
 
+  @Override
   public Page query(String partition, String prefix, String after, int limit) {
     return delegate.query(partition, prefix, after, limit);
   }
 
+  @Override
   public Page work(String shard, String after, int limit) {
     return delegate.work(shard, after, limit);
   }
 
+  @Override
   public boolean commit(List<Write> writes, List<Check> checks) {
     List<Write> encoded =
         writes.stream()
@@ -79,15 +84,21 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
     return delegate.commit(encoded, checks);
   }
 
+  @Override
   public synchronized byte[] content(String account, String identity) {
-    if (channel == null) return delegate.content(account, identity);
+    if (channel == null) {
+      return delegate.content(account, identity);
+    }
     Location location = locations.get(account + ":" + identity);
-    if (location == null) throw new IllegalStateException("Missing content: " + identity);
+    if (location == null) {
+      throw new IllegalStateException("Missing content: " + identity);
+    }
     ByteBuffer bytes = ByteBuffer.allocate(location.length());
     try {
       while (bytes.hasRemaining()) {
-        if (channel.read(bytes, location.offset() + bytes.position()) < 0)
+        if (channel.read(bytes, location.offset() + bytes.position()) < 0) {
           throw new IllegalStateException("Truncated qualification content");
+        }
       }
     } catch (IOException failure) {
       throw new UncheckedIOException(failure);
@@ -95,19 +106,25 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
     return bytes.array();
   }
 
+  @Override
   public synchronized void publishContent(String account, Map<String, byte[]> pages) {
     if (channel == null) {
       delegate.publishContent(account, pages);
       return;
     }
     for (var page : pages.entrySet()) {
-      if (!Json.hash(page.getValue()).equals(page.getKey()))
+      if (!Json.hash(page.getValue()).equals(page.getKey())) {
         throw new IllegalArgumentException("Invalid content identity");
+      }
       String key = account + ":" + page.getKey();
-      if (locations.containsKey(key)) continue;
+      if (locations.containsKey(key)) {
+        continue;
+      }
       ByteBuffer bytes = ByteBuffer.wrap(page.getValue());
       try {
-        while (bytes.hasRemaining()) channel.write(bytes, length + bytes.position());
+        while (bytes.hasRemaining()) {
+          channel.write(bytes, length + bytes.position());
+        }
       } catch (IOException failure) {
         throw new UncheckedIOException(failure);
       }
@@ -116,6 +133,7 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
     }
   }
 
+  @Override
   public synchronized Map<String, Long> statistics() {
     return Map.of(
         "qualification.diskContentBytes",
@@ -124,8 +142,11 @@ final class QualificationDiskStore implements AtomicStore, PublicDirectoryInvent
         (long) locations.size());
   }
 
+  @Override
   public synchronized void close() {
-    if (channel == null) return;
+    if (channel == null) {
+      return;
+    }
     try {
       channel.close();
       Files.deleteIfExists(spill);

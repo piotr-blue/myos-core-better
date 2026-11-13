@@ -1,11 +1,15 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.ProviderSigning.wire;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import blue.LanguageContent;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 
 /** Reserved control adoption survives restart only through the original signed descriptor. */
 class TimelineDiscoveryTest {

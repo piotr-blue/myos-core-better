@@ -17,8 +17,9 @@ final class SigningSecret {
       Objects.requireNonNull(arn);
       Objects.requireNonNull(version);
       if (!arn.matches("arn:aws:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[A-Za-z0-9/_+=.@-]+")
-          || !version.matches("[A-Za-z0-9-]{32,64}"))
+          || !version.matches("[A-Za-z0-9-]{32,64}")) {
         throw new IllegalArgumentException("Invalid signing secret reference");
+      }
     }
   }
 
@@ -42,8 +43,9 @@ final class SigningSecret {
 
   static String read(Reference reference, SecretsManagerClient secrets) {
     var value = published(secrets, reference.arn(), reference.version());
-    if (!reference.arn().equals(value.arn()) || !reference.version().equals(value.versionId()))
+    if (!reference.arn().equals(value.arn()) || !reference.version().equals(value.versionId())) {
       throw new IllegalStateException("Signing secret identity mismatch");
+    }
     return value.secretString();
   }
 
@@ -55,7 +57,9 @@ final class SigningSecret {
       try {
         return secrets.getSecretValue(request);
       } catch (ResourceNotFoundException pending) {
-        if (attempt == 6) throw pending;
+        if (attempt == 6) {
+          throw pending;
+        }
         try {
           Thread.sleep(25L << attempt);
         } catch (InterruptedException interrupted) {

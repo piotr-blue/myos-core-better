@@ -1,8 +1,14 @@
 package myos.better;
 
-import blue.*;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
 import java.lang.management.ManagementFactory;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Compares ordinary and scoped admission of the same current native member, without I/O. */
 public final class OperationAdmissionProbe {
@@ -14,7 +20,9 @@ public final class OperationAdmissionProbe {
     var results = new ArrayList<Object>();
     for (int count : List.of(1, 128, 1024)) {
       Map<String, Object> children = new LinkedHashMap<>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, counter("child-" + i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, counter("child-" + i));
+      }
       Map<String, Object> source = new LinkedHashMap<>(counter("root"));
       source.put("children", children);
       Map<String, Object> rules =
@@ -29,7 +37,9 @@ public final class OperationAdmissionProbe {
         session.process(Map.of("target", "root"), 1).requireApplied();
         session.process(Map.of("target", "child-0"), 2).requireApplied();
         var graph = session.graph();
-        if (graph.members().size() != count + 1) throw new AssertionError("Wrong graph size");
+        if (graph.members().size() != count + 1) {
+          throw new AssertionError("Wrong graph size");
+        }
         String child =
             graph.embeddings().stream()
                 .filter(
@@ -78,8 +88,9 @@ public final class OperationAdmissionProbe {
                               Language.Goal.DEFINITION));
             }
             if (!before.content.toJson().equals(after.content.toJson())
-                || !before.content.blueId().equals(after.content.blueId()))
+                || !before.content.blueId().equals(after.content.blueId())) {
               throw new AssertionError("Admission changed content");
+            }
             samples.add(
                 Map.of(
                     "sample",

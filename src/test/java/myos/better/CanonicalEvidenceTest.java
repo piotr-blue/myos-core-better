@@ -1,10 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import blue.Contracts;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import jdk.jfr.Recording;
 import jdk.jfr.consumer.RecordingFile;
 import org.junit.jupiter.api.Test;
@@ -177,7 +183,7 @@ class CanonicalEvidenceTest {
 
   private static String source(int count) {
     Map<String, Object> children = new LinkedHashMap<>();
-    for (int i = 0; i < count; i++)
+    for (int i = 0; i < count; i++) {
       children.put(
           "child-" + i,
           Map.of(
@@ -209,6 +215,7 @@ class CanonicalEvidenceTest {
                                           Map.of(
                                               "$add",
                                               List.of(Map.of("$document", "/count"), 1))))))))));
+    }
     return JsonText.of(
         Map.of(
             "children",
@@ -229,28 +236,35 @@ class CanonicalEvidenceTest {
     String corrupt;
     String denied;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
-      if (identity.equals(denied))
+      if (identity.equals(denied)) {
         throw new AssertionError("Unrelated predecessor proof was reopened");
+      }
       return identity.equals(corrupt) ? new byte[] {0} : delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       writtenBytes += pages.values().stream().mapToLong(bytes -> bytes.length).sum();
       delegate.publishContent(account, pages);

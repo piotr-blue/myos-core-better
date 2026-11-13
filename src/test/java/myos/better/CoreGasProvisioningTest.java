@@ -1,10 +1,17 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Clock;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
 /** Opening credit, account registration and its observable event form one conditional cut. */
@@ -18,7 +25,7 @@ class CoreGasProvisioningTest {
         var workers = Executors.newVirtualThreadPerTaskExecutor()) {
       var barrier = new CyclicBarrier(8);
       var results = new ArrayList<Future<Map<String, Object>>>();
-      for (int i = 0; i < 8; i++)
+      for (int i = 0; i < 8; i++) {
         results.add(
             workers.submit(
                 () -> {
@@ -27,10 +34,12 @@ class CoreGasProvisioningTest {
                       .create(
                           "alice", "same", INPUT, Map.of("hostExecution", OwnerRecords.EDITION));
                 }));
+      }
       var first = results.getFirst().get(10, TimeUnit.SECONDS);
-      for (var result : results)
+      for (var result : results) {
         assertEquals(
             Json.hash(Json.bytes(first)), Json.hash(Json.bytes(result.get(10, TimeUnit.SECONDS))));
+      }
       String account = (String) first.get("accountId");
       var gas = new OwnerGas(account);
       var metadata = new OwnerMetadata(store, account);

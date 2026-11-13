@@ -9,7 +9,9 @@ public final class CanonicalCycleProbe {
   private CanonicalCycleProbe() {}
 
   public static void main(String[] args) {
-    if (args.length != 2) throw new IllegalArgumentException("Expected table and isolated account");
+    if (args.length != 2) {
+      throw new IllegalArgumentException("Expected table and isolated account");
+    }
     Language language = Language.newBuilder().mount("Contracts", Contracts.publication()).build();
     Contracts contracts = Contracts.newBuilder().language(language).build();
     List<Object> report = new ArrayList<>();
@@ -56,18 +58,24 @@ public final class CanonicalCycleProbe {
                 host.process(args[1], graph, "event-" + i, event, i, AdmissionEvidence.empty());
             double ms = (System.nanoTime() - start) / 1e6;
             if (!reference.receipt().equals(result.receipt())
-                || !direct.identity().equals(result.identity()))
+                || !direct.identity().equals(result.identity())) {
               throw new AssertionError("Cyclic canonical result differs");
-            if (i > 1) times.add(ms);
+            }
+            if (i > 1) {
+              times.add(ms);
+            }
           }
-          for (Contracts.Member member : direct.graph().members())
-            if (!BigInteger.valueOf(6).equals(direct.readMember(member.key(), "/count")))
+          for (Contracts.Member member : direct.graph().members()) {
+            if (!BigInteger.valueOf(6).equals(direct.readMember(member.key(), "/count"))) {
               throw new AssertionError("Cyclic member did not process each occurrence once");
+            }
+          }
           expected = direct.snapshot();
         }
         try (CanonicalGraphs restored = new CanonicalGraphs(store, contracts)) {
-          if (!Arrays.equals(Json.bytes(expected), Json.bytes(restored.snapshot(args[1], graph))))
+          if (!Arrays.equals(Json.bytes(expected), Json.bytes(restored.snapshot(args[1], graph)))) {
             throw new AssertionError("Cold cyclic snapshot differs");
+          }
           try (Contracts.Session reference =
               contracts.restore(expected, (String) expected.get("identity"))) {
             Object event = Map.of("sequence", 7);
@@ -78,8 +86,9 @@ public final class CanonicalCycleProbe {
             if (!next.receipt().equals(actual.receipt())
                 || !Arrays.equals(
                     Json.bytes(reference.snapshot()),
-                    Json.bytes(restored.snapshot(args[1], graph))))
+                    Json.bytes(restored.snapshot(args[1], graph)))) {
               throw new AssertionError("Cyclic execution after restart differs");
+            }
           }
         }
         report.add(
@@ -99,8 +108,9 @@ public final class CanonicalCycleProbe {
       }
     }
     try (AtomicStore store = store(args[0])) {
-      for (int size : List.of(1, 2, 8))
+      for (int size : List.of(1, 2, 8)) {
         feedback.add(feedback(store, args[1], language, contracts, size, false));
+      }
       feedback.add(feedback(store, args[1], language, contracts, 2, true));
     }
     System.out.println(
@@ -191,30 +201,35 @@ public final class CanonicalCycleProbe {
       elapsed = (System.nanoTime() - start) / 1e6;
       if (expected.applied() == reject
           || !expected.receipt().equals(actual.receipt())
-          || !reference.identity().equals(actual.identity()))
+          || !reference.identity().equals(actual.identity())) {
         throw new AssertionError("Feedback cycle result differs");
+      }
       if (reject
           ? !before.equals(reference.identity())
-          : !BigInteger.valueOf(3).equals(reference.read("/count")))
+          : !BigInteger.valueOf(3).equals(reference.read("/count"))) {
         throw new AssertionError("Feedback did not converge or rollback atomically");
+      }
       snapshot = reference.snapshot();
       outcome = expected.status();
-      if (!Arrays.equals(Json.bytes(snapshot), Json.bytes(host.snapshot(account, graph))))
+      if (!Arrays.equals(Json.bytes(snapshot), Json.bytes(host.snapshot(account, graph)))) {
         throw new AssertionError("Feedback snapshot differs");
+      }
     }
     try (Contracts.Session reference =
             contracts.restore(snapshot, (String) snapshot.get("identity"));
         CanonicalGraphs restored = new CanonicalGraphs(store, contracts)) {
-      if (!Arrays.equals(Json.bytes(snapshot), Json.bytes(restored.snapshot(account, graph))))
+      if (!Arrays.equals(Json.bytes(snapshot), Json.bytes(restored.snapshot(account, graph)))) {
         throw new AssertionError("Cold feedback cycle differs");
+      }
       Object event = Map.of("target", "n0", "sequence", 2);
       var expected = reference.process(event, 2);
       var actual =
           restored.process(account, graph, "after-restart", event, 2, AdmissionEvidence.empty());
       if (!expected.receipt().equals(actual.receipt())
           || !Arrays.equals(
-              Json.bytes(reference.snapshot()), Json.bytes(restored.snapshot(account, graph))))
+              Json.bytes(reference.snapshot()), Json.bytes(restored.snapshot(account, graph)))) {
         throw new AssertionError("Feedback execution after restart differs");
+      }
     }
     return Map.of(
         "members",

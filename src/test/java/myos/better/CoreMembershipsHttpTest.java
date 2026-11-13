@@ -1,12 +1,13 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -66,15 +67,23 @@ class CoreMembershipsHttpTest {
     var request =
         HttpRequest.newBuilder(URI.create(fixture.url + CoreDashboardApi.BASE + route))
             .header("Authorization", "Bearer " + token);
-    if (account != null) request.header("X-MyOS-Account", account);
-    if (guard != null) request.header("X-MyOS-Session-Context", guard);
-    if (command != null) request.header("Idempotency-Key", command);
-    if (body == null) request.method(method, HttpRequest.BodyPublishers.noBody());
-    else
+    if (account != null) {
+      request.header("X-MyOS-Account", account);
+    }
+    if (guard != null) {
+      request.header("X-MyOS-Session-Context", guard);
+    }
+    if (command != null) {
+      request.header("Idempotency-Key", command);
+    }
+    if (body == null) {
+      request.method(method, HttpRequest.BodyPublishers.noBody());
+    } else {
       request
           .header("Origin", "https://console.example")
           .header("Content-Type", "application/json")
           .method(method, HttpRequest.BodyPublishers.ofString(JsonText.of(body)));
+    }
     return fixture.http.send(request.build(), HttpResponse.BodyHandlers.ofString());
   }
 }

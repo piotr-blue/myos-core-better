@@ -1,10 +1,25 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.LanguageRecord;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import org.junit.jupiter.api.Test;
 
 /** Document-owned requirements are bounded, unambiguous and independent of presentation order. */
 class TimelineReadAccessTest {
@@ -72,8 +87,9 @@ class TimelineReadAccessTest {
     Map<String, Object> extra = new LinkedHashMap<>(requirement);
     extra.put("allow", true);
     invalid.add(extra);
-    for (Map<String, Object> entry : invalid)
+    for (Map<String, Object> entry : invalid) {
       assertThrows(IllegalArgumentException.class, () -> read(List.of(entry)));
+    }
     assertThrows(IllegalArgumentException.class, () -> read(List.of(requirement, requirement)));
     assertThrows(IllegalArgumentException.class, () -> read(List.of()));
   }
@@ -141,8 +157,12 @@ class TimelineReadAccessTest {
       var checkpoint = authored.checkpoint();
       var cold = reader.restoreCheckpoint(checkpoint.record(), checkpoint.identity());
       assertEquals(first, cache.read(cold).getFirst().timeline());
-      if (i == 0) oldest = cold;
-      if (i == 1) hot = cold;
+      if (i == 0) {
+        oldest = cold;
+      }
+      if (i == 1) {
+        hot = cold;
+      }
       if (hot != null) {
         int loaded = reads.get();
         assertEquals(first, cache.read(hot).getFirst().timeline());

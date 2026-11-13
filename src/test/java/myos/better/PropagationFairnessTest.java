@@ -1,6 +1,8 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,12 +37,13 @@ class PropagationFairnessTest {
             Repository.key("fair", id, "OUT#" + Repository.version(version)),
             0,
             Map.of("version", version, "timestamp", 0, "events", List.of())));
-    if (waitingForParent)
+    if (waitingForParent) {
       writes.add(
           AtomicStore.Write.put(
               Repository.key("fair", id, "PARENT#p"),
               0,
               Map.of("parent", "parent", "path", "/child", "generation", "g")));
+    }
     assertTrue(store.commit(writes, List.of()));
   }
 

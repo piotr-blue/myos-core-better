@@ -45,12 +45,15 @@ final class CoreAdministrators implements AutoCloseable {
 
   static CoreAdministrators configured(Map<String, String> environment) {
     String arn = environment.getOrDefault("CORE_ADMIN_ALLOWLIST_SECRET_ARN", "");
-    if (arn.isBlank()) return NONE;
+    if (arn.isBlank()) {
+      return NONE;
+    }
     String region = environment.get("AWS_REGION");
     if (!arn.matches("arn:aws:secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:[A-Za-z0-9/_+=.@-]+")
-        || !arn.split(":", 6)[3].equals(region))
+        || !arn.split(":", 6)[3].equals(region)) {
       throw new IllegalArgumentException(
           "Administrator allowlist must be a Secrets Manager ARN in the service region");
+    }
     var client =
         SecretsManagerClient.builder()
             .region(Region.of(region))
@@ -64,7 +67,9 @@ final class CoreAdministrators implements AutoCloseable {
   }
 
   synchronized void start() {
-    if (closed) throw new IllegalStateException("Administrator allowlist is closed");
+    if (closed) {
+      throw new IllegalStateException("Administrator allowlist is closed");
+    }
     if (worker != null && !started) {
       started = true;
       worker.scheduleWithFixedDelay(health.guard(() -> refresh()), 0, 600, TimeUnit.SECONDS);
@@ -72,16 +77,22 @@ final class CoreAdministrators implements AutoCloseable {
   }
 
   synchronized boolean refresh() {
-    if (closed) return false;
-    if (fetch == null) return true;
+    if (closed) {
+      return false;
+    }
+    if (fetch == null) {
+      return true;
+    }
     try {
       String body = fetch.get();
-      if (body == null || body.getBytes(StandardCharsets.UTF_8).length > 65_536)
+      if (body == null || body.getBytes(StandardCharsets.UTF_8).length > 65_536) {
         throw new IllegalArgumentException();
+      }
       var parsed = Json.object(body.getBytes(StandardCharsets.UTF_8));
       if (!parsed.keySet().equals(Set.of("emails"))
-          || !(parsed.get("emails") instanceof List<?> values))
+          || !(parsed.get("emails") instanceof List<?> values)) {
         throw new IllegalArgumentException();
+      }
       emails = normalize(values);
       return true;
     } catch (RuntimeException unavailable) {
@@ -93,11 +104,13 @@ final class CoreAdministrators implements AutoCloseable {
   Map<String, Object> session(CoreAccounts.Session session) {
     if (session.principal().impersonation() != null
         || !session.principal().user()
-        || !emails.contains(session.principal().email().strip().toLowerCase(Locale.ROOT)))
+        || !emails.contains(session.principal().email().strip().toLowerCase(Locale.ROOT))) {
       throw new ConsoleProblem(
           403, "ADMIN_REQUIRED", "Sign in with an authorized administrator account.");
-    if (session.expiresAt() <= System.currentTimeMillis())
+    }
+    if (session.expiresAt() <= System.currentTimeMillis()) {
       throw new ConsoleProblem(401, "session_expired", "Sign in again.");
+    }
     return Map.of(
         "userId",
         session.userId(),
@@ -108,15 +121,19 @@ final class CoreAdministrators implements AutoCloseable {
   }
 
   private static Set<String> normalize(Collection<?> values) {
-    if (values.size() > 100)
+    if (values.size() > 100) {
       throw new IllegalArgumentException("Administrator allowlist exceeds its bound");
+    }
     var normalized = new HashSet<String>();
     for (Object value : values) {
-      if (!(value instanceof String email) || email.codePoints().anyMatch(Character::isISOControl))
+      if (!(value instanceof String email)
+          || email.codePoints().anyMatch(Character::isISOControl)) {
         throw new IllegalArgumentException("Invalid administrator allowlist");
+      }
       email = email.strip().toLowerCase(Locale.ROOT);
-      if (email.length() > 254 || !email.matches("[^\\s@]+@[^\\s@]+\\.[^\\s@]+"))
+      if (email.length() > 254 || !email.matches("[^\\s@]+@[^\\s@]+\\.[^\\s@]+")) {
         throw new IllegalArgumentException("Invalid administrator allowlist");
+      }
       normalized.add(email);
     }
     return Set.copyOf(normalized);
@@ -124,10 +141,16 @@ final class CoreAdministrators implements AutoCloseable {
 
   @Override
   public synchronized void close() {
-    if (worker == null) return;
-    if (closed) return;
+    if (worker == null) {
+      return;
+    }
+    if (closed) {
+      return;
+    }
     closed = true;
-    if (worker != null) worker.shutdownNow();
+    if (worker != null) {
+      worker.shutdownNow();
+    }
     release.run();
   }
 }

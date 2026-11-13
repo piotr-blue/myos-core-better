@@ -1,7 +1,14 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Cold request admission over a protected publication, with varying immutable history depth. */
 public final class PublishedAdmissionProbe {
@@ -72,8 +79,9 @@ public final class PublishedAdmissionProbe {
           var parsed = contracts.operationRequest(prepared, evidence).orElseThrow();
           double millis = (System.nanoTime() - started) / 1e6;
           if (messageId != null
-              && (!messageId.equals(prepared.blueId()) || !expected.equals(parsed)))
+              && (!messageId.equals(prepared.blueId()) || !expected.equals(parsed))) {
             throw new AssertionError("Admission identity or operation grammar changed");
+          }
           messageId = prepared.blueId();
           expected = parsed;
           pair.put(

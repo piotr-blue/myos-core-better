@@ -1,7 +1,27 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.AdmissionEvidence;
+import blue.BlueException;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Contracts;
+import blue.GasSchedule;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageProvider;
+import blue.LanguageRecord;
+import blue.NativeChannel;
+import blue.NativeStep;
+import blue.ProjectionLimits;
+import blue.TimelineChannels;
+import blue.TimelineVerifier;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Service adapter to the one canonical Contracts engine. No local execution edition, detached child
@@ -51,10 +71,11 @@ final class CanonicalRuntime {
     private Language language = Language.create();
 
     Builder edition(String edition) {
-      if (!EDITION.equals(edition))
+      if (!EDITION.equals(edition)) {
         throw new IllegalArgumentException(
             "Experimental execution edition is retired; replay under canonical Contracts: "
                 + edition);
+      }
       return this;
     }
 
@@ -116,7 +137,9 @@ final class CanonicalRuntime {
   }
 
   Session restore(Map<String, Object> checkpoint) {
-    if (!EDITION.equals(checkpoint.get("edition"))) throw retired();
+    if (!EDITION.equals(checkpoint.get("edition"))) {
+      throw retired();
+    }
     Map<String, Object> nativeSnapshot = new LinkedHashMap<>(checkpoint);
     nativeSnapshot.remove("edition");
     return new Session(contracts.restore(nativeSnapshot, (String) checkpoint.get("identity")));
@@ -196,7 +219,9 @@ final class CanonicalRuntime {
     }
 
     Update requireApplied() {
-      if (!applied()) throw new BlueException(status, String.valueOf(diagnostic));
+      if (!applied()) {
+        throw new BlueException(status, String.valueOf(diagnostic));
+      }
       return this;
     }
   }
@@ -275,7 +300,9 @@ final class CanonicalRuntime {
 
     AdmissionResult admit(
         String command, Object event, long timestamp, Reader reader, AdmissionEvidence evidence) {
-      if (!requiresNativeAdmission()) return missingVerifier();
+      if (!requiresNativeAdmission()) {
+        return missingVerifier();
+      }
       var result =
           withAdmission(command, reader, () -> delegate.process(event, timestamp, evidence));
       return new AdmissionResult(result(result), result.admissionVerified());
@@ -283,7 +310,9 @@ final class CanonicalRuntime {
 
     AdmissionResult admit(
         String command, TimelineVerifier.Entry entry, Reader reader, AdmissionEvidence evidence) {
-      if (!requiresNativeAdmission()) return missingVerifier();
+      if (!requiresNativeAdmission()) {
+        return missingVerifier();
+      }
       var result = withAdmission(command, reader, () -> delegate.process(entry, evidence));
       return new AdmissionResult(result(result), result.admissionVerified());
     }
@@ -296,8 +325,11 @@ final class CanonicalRuntime {
       try (var scope = NativeInput.admission(command)) {
         return action.get();
       } finally {
-        if (previous == null) content.remove();
-        else content.set(previous);
+        if (previous == null) {
+          content.remove();
+        } else {
+          content.set(previous);
+        }
       }
     }
 

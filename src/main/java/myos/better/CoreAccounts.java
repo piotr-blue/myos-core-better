@@ -1,7 +1,12 @@
 package myos.better;
 
 import java.time.Clock;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import java.util.function.Function;
 
 /** Core account representations over Better's verified users and explicit workspace memberships. */
@@ -24,8 +29,9 @@ final class CoreAccounts {
 
   record Membership(long generation, long revision, String role) {
     Membership {
-      if (generation < 1 || revision < 1)
+      if (generation < 1 || revision < 1) {
         throw new IllegalArgumentException("Invalid membership revision");
+      }
       Objects.requireNonNull(role);
     }
 
@@ -87,19 +93,23 @@ final class CoreAccounts {
 
   Session scope(Session session, String selected, String guard, boolean accountScoped) {
     String account = accountScoped && selected != null ? selected : session.principal().account();
-    if (!session.principal().user() && !account.equals(session.principal().account()))
+    if (!session.principal().user() && !account.equals(session.principal().account())) {
       throw problem(403, "membership_required", "The API key belongs to another workspace.");
+    }
     if (!session.principal().user() && accountScoped) {
       var workspace = store.get(CoreWorkspaces.accountKey(account, "ACCOUNT"));
-      if (workspace != null && !"ACTIVE".equals(workspace.value().getOrDefault("status", "ACTIVE")))
+      if (workspace != null
+          && !"ACTIVE".equals(workspace.value().getOrDefault("status", "ACTIVE"))) {
         throw problem(403, "account_unavailable", "Workspace is unavailable.");
+      }
     }
     Membership membership =
         session.principal().credential() == null
             ? null
             : session.principal().credential().membership();
-    if (session.principal().user() && accountScoped)
+    if (session.principal().user() && accountScoped) {
       membership = Membership.from(workspaces.membership(session.userId(), account));
+    }
     var scoped =
         new Session(
             new ConsolePrincipal(
@@ -118,8 +128,9 @@ final class CoreAccounts {
         && !(accountScoped
             && scoped.membershipGeneration() == 1
             && selected != null
-            && guard.equals(session.guard(false))))
+            && guard.equals(session.guard(false)))) {
       throw problem(409, "session_changed", "Your account session changed. Sign in again.");
+    }
     return scoped;
   }
 
@@ -132,7 +143,9 @@ final class CoreAccounts {
   }
 
   private Map<String, Object> membership(Session session) {
-    if (session.membership() != null) return session.membership().value();
+    if (session.membership() != null) {
+      return session.membership().value();
+    }
     return session.principal().user()
         ? workspaces.membership(session.userId(), session.principal().account())
         : OWNER;
@@ -143,22 +156,28 @@ final class CoreAccounts {
   }
 
   void authorizeRequest(Session session, String method, String route) {
-    if (!CoreDashboardApi.accountScoped(CoreDashboardApi.BASE + route)) return;
+    if (!CoreDashboardApi.accountScoped(CoreDashboardApi.BASE + route)) {
+      return;
+    }
     CorePermissions.request(role(session), method, route);
   }
 
   private void requireAdmin(Session session) {
     session.principal().requireUser();
-    if (!Set.of("OWNER", "ADMIN").contains(membership(session).get("role")))
+    if (!Set.of("OWNER", "ADMIN").contains(membership(session).get("role"))) {
       throw problem(403, "account_admin_required", "An account Admin is required.");
+    }
   }
 
   record ImageOwner(
       ConsolePrincipal principal, String resource, AtomicStore.Row row, long revision) {}
 
   ImageOwner imageOwner(Session session, boolean accountImage) {
-    if (accountImage) requireAdmin(session);
-    else session.principal().requireUser();
+    if (accountImage) {
+      requireAdmin(session);
+    } else {
+      session.principal().requireUser();
+    }
     String resource = accountImage ? "ACCOUNT" : "USER";
     var current = row(session.principal(), resource);
     return new ImageOwner(
@@ -169,7 +188,9 @@ final class CoreAccounts {
   }
 
   Map<String, Object> imageProfile(ImageOwner owner, Map<String, Object> value, long revision) {
-    if (owner.resource().equals("USER")) return profile(owner.principal(), value, revision);
+    if (owner.resource().equals("USER")) {
+      return profile(owner.principal(), value, revision);
+    }
     return Map.of(
         "accountId",
         owner.principal().account(),
@@ -189,7 +210,9 @@ final class CoreAccounts {
   }
 
   static String imageUrl(String id, String resource, Map<String, Object> value) {
-    if (!(value.get("avatarVersion") instanceof String version)) return null;
+    if (!(value.get("avatarVersion") instanceof String version)) {
+      return null;
+    }
     return CoreDashboardApi.BASE
         + (resource.equals("USER") ? "users/" + id + "/avatar/" : "accounts/" + id + "/image/")
         + version;
@@ -204,8 +227,9 @@ final class CoreAccounts {
     result.put("sessionContext", session.guard(false));
     result.put("sessionExpiresAt", session.expiresAt());
     result.put("accountModel", "MEMBERSHIPS_V1");
-    if (session.principal().impersonation() != null)
+    if (session.principal().impersonation() != null) {
       result.put("impersonation", session.principal().impersonation().metadata());
+    }
     result.put("preferences", preferences(principal));
     result.put(
         "accounts",
@@ -222,8 +246,9 @@ final class CoreAccounts {
     result.put("sessionContext", session.guard(true));
     result.put("sessionExpiresAt", session.expiresAt());
     result.put("accountModel", "MEMBERSHIPS_V1");
-    if (session.principal().impersonation() != null)
+    if (session.principal().impersonation() != null) {
       result.put("impersonation", session.principal().impersonation().metadata());
+    }
     result.put("revision", row(session.principal(), "ACCOUNT").version());
     result.put(
         "capabilities",
@@ -247,8 +272,9 @@ final class CoreAccounts {
   Map<String, Object> userProfile(Session session, String command, Map<String, Object> input) {
     session.principal().requireUser();
     RuntimeConfiguration.fields(input, Set.of("firstName", "lastName", "expectedRevision"));
-    if (!input.containsKey("firstName") && !input.containsKey("lastName"))
+    if (!input.containsKey("firstName") && !input.containsKey("lastName")) {
       throw new IllegalArgumentException("Provide firstName or lastName");
+    }
     return change(
         session.principal(),
         "USER",
@@ -256,10 +282,15 @@ final class CoreAccounts {
         input,
         value -> {
           for (String field : List.of("firstName", "lastName")) {
-            if (!input.containsKey(field)) continue;
+            if (!input.containsKey(field)) {
+              continue;
+            }
             Object raw = input.get(field);
-            if (raw == null) value.remove(field);
-            else value.put(field, text(raw, field, 0, 160));
+            if (raw == null) {
+              value.remove(field);
+            } else {
+              value.put(field, text(raw, field, 0, 160));
+            }
           }
           return profile(session.principal(), value, number(value, "revision"));
         });
@@ -277,8 +308,9 @@ final class CoreAccounts {
         value -> {
           String kind = (String) value.getOrDefault("kind", "PERSONAL");
           if (input.containsKey("kind")) {
-            if (!"BUSINESS".equals(input.get("kind")))
+            if (!"BUSINESS".equals(input.get("kind"))) {
               throw new IllegalArgumentException("Only conversion to BUSINESS is supported");
+            }
             kind = "BUSINESS";
           }
           value.put("kind", kind);
@@ -286,21 +318,24 @@ final class CoreAccounts {
               new LinkedHashMap<>(RuntimeConfiguration.object(value.get("profile"), "profile"));
           profile.put("displayName", text(input.get("displayName"), "displayName", 1, 160));
           if (input.containsKey("address")) {
-            if (!kind.equals("BUSINESS"))
+            if (!kind.equals("BUSINESS")) {
               throw new IllegalArgumentException("Address requires a business account");
+            }
             profile.put("address", text(input.get("address"), "address", 0, 1000));
           }
           if (input.containsKey("website")) {
             Object website = input.get("website");
-            if (website == null) profile.remove("website");
-            else {
+            if (website == null) {
+              profile.remove("website");
+            } else {
               String uri = text(website, "website", 1, 2048);
               java.net.URI parsed = java.net.URI.create(uri);
               if (!("http".equalsIgnoreCase(parsed.getScheme())
                       || "https".equalsIgnoreCase(parsed.getScheme()))
                   || parsed.getHost() == null
-                  || parsed.getUserInfo() != null)
+                  || parsed.getUserInfo() != null) {
                 throw new IllegalArgumentException("Website must be an HTTP(S) URL");
+              }
               profile.put("website", uri);
             }
           }
@@ -329,21 +364,26 @@ final class CoreAccounts {
     session.principal().requireUser();
     RuntimeConfiguration.fields(
         input, Set.of("defaultAccountId", "expectedMembershipGeneration", "expectedRevision"));
-    if (!input.containsKey("defaultAccountId"))
+    if (!input.containsKey("defaultAccountId")) {
       throw new IllegalArgumentException("defaultAccountId is required");
+    }
     Object selected = text(input.get("defaultAccountId"), "defaultAccountId", 1, 256);
     var membership = workspaces.membership(session.userId(), (String) selected);
-    if (number(input, "expectedMembershipGeneration") != number(membership, "generation"))
+    if (number(input, "expectedMembershipGeneration") != number(membership, "generation")) {
       throw problem(
           409, "membership_stale", "Your membership changed. Select the workspace again.");
+    }
     return change(
         session.principal(),
         "PREFERENCES",
         command,
         input,
         value -> {
-          if (selected == null) value.remove("defaultAccountId");
-          else value.put("defaultAccountId", selected);
+          if (selected == null) {
+            value.remove("defaultAccountId");
+          } else {
+            value.put("defaultAccountId", selected);
+          }
           var result = new LinkedHashMap<String, Object>();
           result.put("defaultAccountId", selected);
           result.put("revision", value.get("revision"));
@@ -362,15 +402,17 @@ final class CoreAccounts {
     for (int retry = 0; retry < 8; retry++) {
       var prior = store.get(receiptKey);
       if (prior != null) {
-        if (!fingerprint.equals(prior.value().get("fingerprint")))
+        if (!fingerprint.equals(prior.value().get("fingerprint"))) {
           throw problem(409, "idempotency_conflict", "The command has different parameters.");
+        }
         return RuntimeConfiguration.object(prior.value().get("result"), "result");
       }
       var current = row(principal, resource);
       long expected = number(input, "expectedRevision");
       long revision = resource.equals("USER") ? current.version() - 1 : current.version();
-      if (expected != revision)
+      if (expected != revision) {
         throw problem(409, "profile_stale", "The profile changed. Reload before saving.");
+      }
       var next = new LinkedHashMap<>(current.value());
       next.put("revision", revision + 1);
       Map<String, Object> result = new LinkedHashMap<>(mutation.apply(next));
@@ -379,9 +421,13 @@ final class CoreAccounts {
       var after = new LinkedHashMap<>(next);
       after.remove("revision");
       boolean changed = !before.equals(after);
-      if (!changed) result.put(resource.equals("USER") ? "profileRevision" : "revision", revision);
+      if (!changed) {
+        result.put(resource.equals("USER") ? "profileRevision" : "revision", revision);
+      }
       var writes = new ArrayList<AtomicStore.Write>();
-      if (changed) writes.add(AtomicStore.Write.put(current.key(), current.version(), next));
+      if (changed) {
+        writes.add(AtomicStore.Write.put(current.key(), current.version(), next));
+      }
       writes.add(
           AtomicStore.Write.put(
               receiptKey, 0, Map.of("fingerprint", fingerprint, "result", result)));
@@ -390,7 +436,9 @@ final class CoreAccounts {
           changed
               ? List.<AtomicStore.Check>of()
               : List.of(new AtomicStore.Check(current.key(), current.version()));
-      if (store.commit(writes, checks)) return result;
+      if (store.commit(writes, checks)) {
+        return result;
+      }
     }
     throw problem(503, "account_busy", "Retry the same account command.");
   }
@@ -429,9 +477,12 @@ final class CoreAccounts {
   private AtomicStore.Row row(ConsolePrincipal principal, String resource) {
     var key = key(principal, resource);
     var current = store.get(key);
-    if (current != null) return current;
-    if (resource.equals("ACCOUNT") && principal.account().startsWith("account-"))
+    if (current != null) {
+      return current;
+    }
+    if (resource.equals("ACCOUNT") && principal.account().startsWith("account-")) {
       throw problem(403, "account_unavailable", "Workspace registration is unavailable.");
+    }
     Map<String, Object> value =
         switch (resource) {
           case "ACCOUNT" ->
@@ -448,8 +499,9 @@ final class CoreAccounts {
         };
     store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of());
     current = store.get(key);
-    if (current == null)
+    if (current == null) {
       throw problem(503, "account_busy", "Account discovery is temporarily unavailable.");
+    }
     return current;
   }
 
@@ -460,8 +512,9 @@ final class CoreAccounts {
 
   private static long number(Map<String, Object> input, String field) {
     Object value = input.get(field);
-    if (!(value instanceof Number n))
+    if (!(value instanceof Number n)) {
       throw new IllegalArgumentException(field + " must be an integer");
+    }
     try {
       return new java.math.BigDecimal(n.toString()).longValueExact();
     } catch (ArithmeticException failure) {
@@ -472,7 +525,9 @@ final class CoreAccounts {
   private static String text(Object raw, String name, int minimum, int maximum) {
     if (!(raw instanceof String value)
         || value.strip().length() < minimum
-        || value.length() > maximum) throw new IllegalArgumentException("Invalid " + name);
+        || value.length() > maximum) {
+      throw new IllegalArgumentException("Invalid " + name);
+    }
     return value.strip();
   }
 

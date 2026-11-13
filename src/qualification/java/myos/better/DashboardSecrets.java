@@ -17,12 +17,15 @@ final class DashboardSecrets {
                 SecretsManagerClient.class.getClassLoader(),
                 new Class<?>[] {SecretsManagerClient.class},
                 (proxy, method, args) -> {
-                  if (method.getName().equals("close")) return null;
+                  if (method.getName().equals("close")) {
+                    return null;
+                  }
                   if (method.getName().equals("getSecretValue")) {
                     var request = (GetSecretValueRequest) args[0];
                     var value = values.get(request.secretId());
-                    if (value == null || !request.versionId().equals(value.versionId()))
+                    if (value == null || !request.versionId().equals(value.versionId())) {
                       throw ResourceNotFoundException.builder().build();
+                    }
                     return value;
                   }
                   if (method.getName().equals("createSecret")) {
@@ -38,8 +41,9 @@ final class DashboardSecrets {
                             .versionId(request.clientRequestToken())
                             .secretString(request.secretString())
                             .build();
-                    if (values.putIfAbsent(request.name(), value) != null)
+                    if (values.putIfAbsent(request.name(), value) != null) {
                       throw ResourceExistsException.builder().build();
+                    }
                     values.put(arn, value);
                     return CreateSecretResponse.builder()
                         .arn(arn)

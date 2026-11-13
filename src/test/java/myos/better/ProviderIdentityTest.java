@@ -1,11 +1,18 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import blue.*;
-import java.security.*;
-import java.security.spec.*;
-import java.util.*;
+import java.security.KeyFactory;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.spec.EdECPrivateKeySpec;
+import java.security.spec.NamedParameterSpec;
+import java.util.Base64;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class ProviderIdentityTest {

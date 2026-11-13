@@ -40,8 +40,9 @@ class CognitoConfirmationTest {
             f,
             request -> {
               requests.add(request.username());
-              if (request.username().equals("old-subject"))
+              if (request.username().equals("old-subject")) {
                 throw UserNotFoundException.builder().statusCode(400).build();
+              }
               return ConfirmSignUpResponse.builder().build();
             })) {
       assertEquals(
@@ -84,11 +85,12 @@ class CognitoConfirmationTest {
                 getClass().getClassLoader(),
                 new Class<?>[] {AtomicStore.class},
                 (proxy, method, arguments) -> {
-                  if (method.getName().equals("commit"))
+                  if (method.getName().equals("commit")) {
                     throw DynamoDbException.builder()
                         .message("Fixture storage unavailable")
                         .statusCode(503)
                         .build();
+                  }
                   try {
                     return method.invoke(backing, arguments);
                   } catch (InvocationTargetException failure) {
@@ -142,8 +144,9 @@ class CognitoConfirmationTest {
                 (proxy, method, arguments) -> {
                   if (method.isDefault()
                       && method.getParameterCount() == 1
-                      && method.getParameterTypes()[0] == java.util.function.Consumer.class)
+                      && method.getParameterTypes()[0] == java.util.function.Consumer.class) {
                     return InvocationHandler.invokeDefault(proxy, method, arguments);
+                  }
                   return switch (method.getName()) {
                     case "confirmSignUp" -> confirmation.apply((ConfirmSignUpRequest) arguments[0]);
                     case "signUp" ->

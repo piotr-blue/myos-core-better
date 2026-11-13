@@ -1,9 +1,17 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
-import org.junit.jupiter.api.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -37,9 +45,10 @@ class OwnerSubmissionPrefetchTest {
                   timeline("access:control", "control"),
                   new OwnerFrontiers.Source(
                       "embedding", OwnerFrontiers.Kind.OWNER, "nested", 1, 0)));
-          for (int i = 0; i < population; i++)
+          for (int i = 0; i < population; i++) {
             frontiers.register(
                 tx, "unrelated-" + i, "initial", List.of(timeline("input", "other-" + i)));
+          }
           OwnerRecords.put(
               tx, OwnerRecords.key("publication", owner), Map.of("representative", owner));
           return null;
@@ -56,8 +65,9 @@ class OwnerSubmissionPrefetchTest {
           });
       service.submitted("alice", owner, 100);
       assertEquals(Set.of("orders", "control"), arrivals);
-      for (String source : arrivals)
+      for (String source : arrivals) {
         assertEquals(101, TimelineCoverage.minimum(store, "alice", source));
+      }
       assertEquals(0, TimelineCoverage.minimum(store, "alice", "other-0"));
       assertEquals(0, TimelineCoverage.minimum(store, "alice", "nested"));
       assertEquals(0, TimelineCoverage.minimum(store, "bob", "orders"));

@@ -1,11 +1,20 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
+import blue.BlueId;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 class CoreAccessUpdatesTest {
@@ -192,16 +201,19 @@ class CoreAccessUpdatesTest {
     try (var workers = Executors.newFixedThreadPool(4)) {
       var start = new CountDownLatch(1);
       var tasks = new ArrayList<Future<Map<String, Object>>>();
-      for (int i = 0; i < 8; i++)
+      for (int i = 0; i < 8; i++) {
         tasks.add(
             workers.submit(
                 () -> {
                   start.await();
                   return f.update("same", Map.of("allowedKeys", List.of(READER)));
                 }));
+      }
       start.countDown();
       var first = tasks.getFirst().get(30, TimeUnit.SECONDS);
-      for (var task : tasks) assertEquals(first, task.get(30, TimeUnit.SECONDS));
+      for (var task : tasks) {
+        assertEquals(first, task.get(30, TimeUnit.SECONDS));
+      }
       assertEquals(1, f.nativeFixture.host.access().grants("alice", f.timeline).size());
       assertEquals(1, f.follower.retained.size());
     }
@@ -213,16 +225,20 @@ class CoreAccessUpdatesTest {
     volatile boolean conflict;
     volatile Map<String, Object> lastSelection;
 
+    @Override
     public void check(String account, BlueId access, Map<String, Object> selection) {
-      if (conflict)
+      if (conflict) {
         throw new ConsoleProblem(
             409, "execution_selection_conflict", "Different follower selection");
+      }
     }
 
+    @Override
     public void retain(String account, BlueId access, Map<String, Object> selection) {
       calls.incrementAndGet();
-      if (failures.getAndUpdate(value -> Math.max(0, value - 1)) > 0)
+      if (failures.getAndUpdate(value -> Math.max(0, value - 1)) > 0) {
         throw new ConsoleProblem(503, "unavailable", "Simulated reply loss");
+      }
       lastSelection = selection;
       retained.add(access.value());
     }

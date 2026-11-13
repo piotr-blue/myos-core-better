@@ -1,7 +1,18 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.AdmissionEvidence;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.NativeAdmission;
+import blue.TimeBindings;
+import blue.TimelineVerifier;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /** Binds native Time admission to one already claimed, complete durable owner cut. */
 final class OwnerTimeIngress {
@@ -46,10 +57,15 @@ final class OwnerTimeIngress {
       OwnerFrontiers.Claim claim,
       OwnerTimers.Registration registration,
       GraphTimelineIngress timelines) {
-    if (invocation.get() != null) throw new IllegalStateException("Nested Time invocation");
+    if (invocation.get() != null) {
+      throw new IllegalStateException("Nested Time invocation");
+    }
     var head = records.frontiers.find(records.read, claim.owner());
-    if (head == null || !claim.equals(head.claim()) || !registration.order().equals(claim.order()))
+    if (head == null
+        || !claim.equals(head.claim())
+        || !registration.order().equals(claim.order())) {
       throw new IllegalStateException("Time claim is not current");
+    }
     boolean direct =
         claim.sources().stream()
             .anyMatch(
@@ -60,8 +76,9 @@ final class OwnerTimeIngress {
     NativeAdmission.Receiver receiver = null;
     if (direct) {
       if (registration.status() != OwnerTimers.Status.PENDING
-          || !registration.owner().equals(claim.owner()))
+          || !registration.owner().equals(claim.owner())) {
         throw new IllegalStateException("Time registration is not pending for this owner");
+      }
     } else if (!Set.of(
                 OwnerTimers.Status.FIRED, OwnerTimers.Status.NO_MATCH, OwnerTimers.Status.FAILED)
             .contains(registration.status())
@@ -78,9 +95,12 @@ final class OwnerTimeIngress {
                         && r.channel().equals(registration.channel())
                         && r.generation() == registration.generation())
             .toList();
-    if (matching.size() > 1 || direct && matching.isEmpty())
+    if (matching.size() > 1 || direct && matching.isEmpty()) {
       throw new IllegalStateException("Time receiving lifetime changed");
-    if (!matching.isEmpty()) receiver = matching.getFirst();
+    }
+    if (!matching.isEmpty()) {
+      receiver = matching.getFirst();
+    }
     Language scoped =
         language.toBuilder()
             .provider(
@@ -103,7 +123,9 @@ final class OwnerTimeIngress {
       Frame frame = new Frame(reception, registration, receiver, proof);
       invocation.set(frame);
       AdmissionEvidence evidence = negative.request().evidence();
-      if (receiver != null) evidence = evidence.with(channelType, proof);
+      if (receiver != null) {
+        evidence = evidence.with(channelType, proof);
+      }
       var request =
           new CanonicalGraphs.Request(
               "time-" + registration.id(),
@@ -119,32 +141,40 @@ final class OwnerTimeIngress {
                   registration.id()),
               (writes, checks) -> {});
       return new OwnerInput() {
+        @Override
         public CanonicalGraphs.Request request() {
           return request;
         }
 
+        @Override
         public boolean participating() {
           return direct;
         }
 
+        @Override
         public Optional<TimelineVerifier.Entry> entry() {
           return Optional.empty();
         }
 
+        @Override
         public RetainedTimeline retainedTimeline() {
           return null;
         }
 
+        @Override
         public void verified() {
           negative.verified();
-          if (frame.receiver != null && !frame.verified)
+          if (frame.receiver != null && !frame.verified) {
             throw new IllegalStateException("Native Time admission was not verified");
+          }
         }
 
+        @Override
         public Map<String, Object> audit() {
           return Map.of("time", proof, "direct", direct, "timelines", negative.audit());
         }
 
+        @Override
         public void close() {
           invocation.remove();
           negative.close();
@@ -160,13 +190,15 @@ final class OwnerTimeIngress {
   private static boolean causalCompletion(
       OwnerRecords records, OwnerFrontiers.Claim claim, OwnerTimers.Registration registration) {
     for (var source : claim.sources()) {
-      if (source.binding().kind() != OwnerFrontiers.Kind.OWNER || source.receipt() == null)
+      if (source.binding().kind() != OwnerFrontiers.Kind.OWNER || source.receipt() == null) {
         continue;
+      }
       var completion = records.get("completion", source.receipt());
       if (completion != null
           && registration.payload().message().equals(completion.get("event"))
-          && registration.timestamp() == Repository.number(completion.get("timestamp")))
+          && registration.timestamp() == Repository.number(completion.get("timestamp"))) {
         return true;
+      }
     }
     return false;
   }
@@ -189,8 +221,9 @@ final class OwnerTimeIngress {
         || request.timestamp() != registration.timestamp()
         || !request.evidence().equals(frame.proof)
         || request.receivers().size() != expected.size()
-        || !new HashSet<>(request.receivers()).equals(new HashSet<>(expected)))
+        || !new HashSet<>(request.receivers()).equals(new HashSet<>(expected))) {
       request.reject("Different Time input, snapshot or receiving lifetime");
+    }
     frame.verified = true;
     return new TimeBindings.Firing(frame.receiver, new BlueId(registration.id()));
   }

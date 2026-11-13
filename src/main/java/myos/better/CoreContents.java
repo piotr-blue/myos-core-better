@@ -1,8 +1,15 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
 import java.time.Clock;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Account-local immutable Blue content, indexed without reopening unrelated documents. */
 final class CoreContents {
@@ -79,8 +86,9 @@ final class CoreContents {
       String goal,
       List<String> selection,
       LanguageDocument[] evidence) {
-    if (!(mode.equals("source") || mode.equals("exact")))
+    if (!(mode.equals("source") || mode.equals("exact"))) {
       throw new IllegalArgumentException("Unknown inputMode");
+    }
     Language.Goal selected =
         switch (goal) {
           case "value" -> Language.Goal.VALUE;
@@ -88,8 +96,9 @@ final class CoreContents {
           default -> throw new IllegalArgumentException("Unknown content goal");
         };
     if (mode.equals("source")) {
-      if (installed != null)
+      if (installed != null) {
         value = installed.source(account, CoreSourceInputs.parsed(value), selection);
+      }
       return CoreSourceInputs.read(current, value, selected, evidence);
     }
     Language.Input input =
@@ -101,7 +110,9 @@ final class CoreContents {
 
   Map<String, Object> create(String account, Map<String, Object> input) {
     RuntimeConfiguration.fields(input, Set.of("content", "inputMode", "goal"));
-    if (!input.containsKey("content")) throw new IllegalArgumentException("content is required");
+    if (!input.containsKey("content")) {
+      throw new IllegalArgumentException("content is required");
+    }
     LanguageContent value =
         prepare(
             account,
@@ -114,11 +125,14 @@ final class CoreContents {
 
   Map<String, Object> put(String account, BlueId expected, Map<String, Object> input) {
     RuntimeConfiguration.fields(input, Set.of("content"));
-    if (!input.containsKey("content")) throw new IllegalArgumentException("content is required");
+    if (!input.containsKey("content")) {
+      throw new IllegalArgumentException("content is required");
+    }
     LanguageContent value =
         language(account).prepare(Language.Input.exactJson(JsonText.of(input.get("content"))));
-    if (!expected.equals(value.blueId()))
+    if (!expected.equals(value.blueId())) {
       throw new IllegalArgumentException("Content does not match the BlueId in the path");
+    }
     retain(account, value, true);
     return Map.of("contentRef", Map.of("blueId", expected.value()));
   }
@@ -127,8 +141,9 @@ final class CoreContents {
     var key = new AtomicStore.Key(partition(account), "CONTENT#" + id.value());
     for (int retry = 0; retry < 8; retry++) {
       var row = store.get(key);
-      if (row == null || store.commit(List.of(AtomicStore.Write.delete(row)), List.of()))
+      if (row == null || store.commit(List.of(AtomicStore.Write.delete(row)), List.of())) {
         return Map.of("contentRef", Map.of("blueId", id.value()), "explicitRetention", false);
+      }
     }
     throw new ConsoleProblem(503, "CONTENT_BUSY", "Retry removing explicit retention.");
   }
@@ -136,9 +151,10 @@ final class CoreContents {
   Object read(String account, BlueId id) {
     TimelineRecords records = records(account, store.get(head(account)));
     // Possession of a BlueId does not grant access to another account's private content.
-    if (!records.contains(id) && !packages.contains(id))
+    if (!records.contains(id) && !packages.contains(id)) {
       throw new ConsoleProblem(
           404, "CONTENT_NOT_FOUND", "Content is not retained in this account.");
+    }
     Language current = language.toBuilder().provider(records).build();
     return ProviderSigning.wire(current.expand(current.reference(id), ""));
   }
@@ -162,10 +178,11 @@ final class CoreContents {
           stored);
       records.flush();
       List<AtomicStore.Write> writes = new ArrayList<>();
-      if (head == null || !records.root().equals(head.value().get("root")))
+      if (head == null || !records.root().equals(head.value().get("root"))) {
         writes.add(
             AtomicStore.Write.put(
                 head(account), head == null ? 0 : head.version(), Map.of("root", records.root())));
+      }
       if (listed) {
         AtomicStore.Key key = new AtomicStore.Key(partition(account), "CONTENT#" + id);
         if (store.get(key) == null) {
@@ -176,15 +193,20 @@ final class CoreContents {
           writes.add(AtomicStore.Write.put(key, 0, metadata));
         }
       }
-      if (writes.isEmpty() || store.commit(writes, List.of())) return;
+      if (writes.isEmpty() || store.commit(writes, List.of())) {
+        return;
+      }
     }
     throw new ConsoleProblem(503, "CONTENT_BUSY", "Retry retaining the same content.");
   }
 
   Map<String, Object> list(String account, String cursor, int limit) {
-    if (limit < 1 || limit > 100) throw new IllegalArgumentException("limit must be 1..100");
-    if (cursor != null && !cursor.startsWith("CONTENT#"))
+    if (limit < 1 || limit > 100) {
+      throw new IllegalArgumentException("limit must be 1..100");
+    }
+    if (cursor != null && !cursor.startsWith("CONTENT#")) {
       throw new IllegalArgumentException("Invalid content cursor");
+    }
     var page = store.query(partition(account), "CONTENT#", cursor, limit);
     var result = new LinkedHashMap<String, Object>();
     result.put("items", page.rows().stream().map(AtomicStore.Row::value).toList());
@@ -202,8 +224,12 @@ final class CoreContents {
     Object root = ProviderSigning.wire(value);
     if (root instanceof Map<?, ?> map) {
       Object name = map.get("name");
-      if (name instanceof String text) return text;
-      if (name instanceof Map<?, ?> field && field.get("value") instanceof String text) return text;
+      if (name instanceof String text) {
+        return text;
+      }
+      if (name instanceof Map<?, ?> field && field.get("value") instanceof String text) {
+        return text;
+      }
     }
     return value.blueId().value();
   }

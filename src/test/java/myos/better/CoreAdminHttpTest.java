@@ -1,10 +1,13 @@
 package myos.better;
 
-import static myos.better.CoreWorkspacesHttpTest.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.CoreWorkspacesHttpTest.json;
+import static myos.better.CoreWorkspacesHttpTest.request;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;

@@ -1,12 +1,21 @@
 package myos.better;
 
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsServer;
 import java.net.InetSocketAddress;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.KeyStore;
-import java.util.*;
-import java.util.concurrent.*;
-import javax.net.ssl.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.X509TrustManager;
 
 /** Loopback TLS fixture shared by qualification providers, never the production service. */
 final class QualificationHttps implements AutoCloseable {
@@ -27,12 +36,16 @@ final class QualificationHttps implements AutoCloseable {
         TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
     defaults.init((KeyStore) null);
     int certificate = 0;
-    for (TrustManager manager : defaults.getTrustManagers())
-      if (manager instanceof X509TrustManager roots)
-        for (var issuer : roots.getAcceptedIssuers())
+    for (TrustManager manager : defaults.getTrustManagers()) {
+      if (manager instanceof X509TrustManager roots) {
+        for (var issuer : roots.getAcceptedIssuers()) {
           trusted.setCertificateEntry("public-root-" + certificate++, issuer);
-    for (String alias : Collections.list(keys.aliases()))
+        }
+      }
+    }
+    for (String alias : Collections.list(keys.aliases())) {
       trusted.setCertificateEntry("fixture-" + alias, keys.getCertificate(alias));
+    }
     try (var output = Files.newOutputStream(trustStore)) {
       trusted.store(output, "test-fixture".toCharArray());
     }
@@ -53,6 +66,7 @@ final class QualificationHttps implements AutoCloseable {
         "-Djavax.net.ssl.trustStoreType=PKCS12");
   }
 
+  @Override
   public void close() {
     server.stop(0);
     workers.shutdownNow();

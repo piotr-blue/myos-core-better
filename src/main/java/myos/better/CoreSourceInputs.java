@@ -1,9 +1,15 @@
 package myos.better;
 
-import blue.*;
-import java.math.*;
+import blue.BlueException;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.Node;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Core source admission preserves exact integers and rejects lossy decimal conversion. */
 final class CoreSourceInputs {
@@ -38,8 +44,9 @@ final class CoreSourceInputs {
   private static Object parse(String source, boolean yaml) {
     try {
       byte[] bytes = source.getBytes(StandardCharsets.UTF_8);
-      if (bytes.length == 0 || bytes.length > 1024 * 1024)
+      if (bytes.length == 0 || bytes.length > 1024 * 1024) {
         throw new Invalid("invalid_source", "Source must contain at most 1 MiB of text");
+      }
       return CoreRequestBody.parse(bytes, yaml);
     } catch (IllegalArgumentException failure) {
       throw new Invalid("invalid_source", "Invalid source syntax: " + failure.getMessage());
@@ -47,25 +54,40 @@ final class CoreSourceInputs {
   }
 
   private static Node node(Object value, int depth, int[] count) {
-    if (++count[0] > 100_000 || depth > 128)
+    if (++count[0] > 100_000 || depth > 128) {
       throw new Invalid("source_limit", "Source exceeds structural limits");
-    if (value == null) return Node.nil();
-    if (value instanceof String text) return Node.text(text);
-    if (value instanceof Boolean flag) return Node.bool(flag);
-    if (value instanceof BigInteger integer) return Node.integer(integer);
+    }
+    if (value == null) {
+      return Node.nil();
+    }
+    if (value instanceof String text) {
+      return Node.text(text);
+    }
+    if (value instanceof Boolean flag) {
+      return Node.bool(flag);
+    }
+    if (value instanceof BigInteger integer) {
+      return Node.integer(integer);
+    }
     if (value instanceof Byte
         || value instanceof Short
         || value instanceof Integer
-        || value instanceof Long) return Node.integer(((Number) value).longValue());
-    if (value instanceof BigDecimal decimal) return Node.number(precise(decimal));
+        || value instanceof Long) {
+      return Node.integer(((Number) value).longValue());
+    }
+    if (value instanceof BigDecimal decimal) {
+      return Node.number(precise(decimal));
+    }
     if (value instanceof Double || value instanceof Float) {
       double number = ((Number) value).doubleValue();
-      if (!Double.isFinite(number))
+      if (!Double.isFinite(number)) {
         throw new Invalid("invalid_number", "A finite Double is required");
+      }
       return Node.number(number);
     }
-    if (value instanceof List<?> list)
+    if (value instanceof List<?> list) {
       return Node.list(list.stream().map(child -> node(child, depth + 1, count)).toList());
+    }
     if (value instanceof Map<?, ?> fields) {
       if (fields.get("value") instanceof String decimal
           && ("Double".equals(fields.get("type"))
@@ -79,8 +101,9 @@ final class CoreSourceInputs {
       }
       Map<String, Node> children = new LinkedHashMap<>();
       for (var entry : fields.entrySet()) {
-        if (!(entry.getKey() instanceof String key))
+        if (!(entry.getKey() instanceof String key)) {
           throw new Invalid("invalid_source", "Source keys must be text");
+        }
         children.put(key, node(entry.getValue(), depth + 1, count));
       }
       return Node.object(children);
@@ -90,10 +113,11 @@ final class CoreSourceInputs {
 
   private static double precise(BigDecimal value) {
     double rounded = value.doubleValue();
-    if (!Double.isFinite(rounded) || BigDecimal.valueOf(rounded).compareTo(value) != 0)
+    if (!Double.isFinite(rounded) || BigDecimal.valueOf(rounded).compareTo(value) != 0) {
       throw new Invalid(
           "numeric_precision_unsupported",
           "The native Double cannot preserve this decimal; use an exact numeric representation");
+    }
     return rounded;
   }
 

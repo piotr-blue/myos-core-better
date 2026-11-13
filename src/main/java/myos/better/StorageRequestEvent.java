@@ -1,7 +1,12 @@
 package myos.better;
 
 import java.util.function.Supplier;
-import jdk.jfr.*;
+import jdk.jfr.Category;
+import jdk.jfr.Event;
+import jdk.jfr.EventType;
+import jdk.jfr.Label;
+import jdk.jfr.Name;
+import jdk.jfr.StackTrace;
 
 /**
  * One SDK invocation, including its internal retries. Never records keys, payloads or credentials.
@@ -20,7 +25,9 @@ final class StorageRequestEvent extends Event {
   public String caller = "";
 
   static <T> T call(String operation, int requestedItems, Supplier<T> request) {
-    if (!TYPE.isEnabled()) return request.get();
+    if (!TYPE.isEnabled()) {
+      return request.get();
+    }
     var event = new StorageRequestEvent();
     event.operation = operation;
     event.requestedItems = requestedItems;

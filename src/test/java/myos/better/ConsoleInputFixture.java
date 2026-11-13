@@ -1,7 +1,8 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BluePackage;
+import blue.Language;
+import java.util.List;
 
 /** Isolated real provider/reader protocol with in-memory durable boundaries and test-only keys. */
 final class ConsoleInputFixture implements AutoCloseable {
@@ -70,7 +71,9 @@ final class ConsoleInputFixture implements AutoCloseable {
             custody,
             packages);
     service.bind();
-    if (canonical) service.enableCanonicalGraphs(language, List.of());
+    if (canonical) {
+      service.enableCanonicalGraphs(language, List.of());
+    }
     timelines = new ConsoleTimelines(store, signing, service, custody, packages);
     CanonicalRuntime.Builder builder =
         CanonicalRuntime.newBuilder()
@@ -90,7 +93,9 @@ final class ConsoleInputFixture implements AutoCloseable {
             service.namespace(),
             service);
     NativeTimelineApi api = timelines.nativeApi();
-    if (installLocalAccess) api.useLocalAccess(service);
+    if (installLocalAccess) {
+      api.useLocalAccess(service);
+    }
     transport =
         api.transport(
             (uri, request, maximum, timeout) -> {

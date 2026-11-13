@@ -97,27 +97,35 @@ final class PublicHttpClient implements AutoCloseable {
         || body != null && body.length > 4 * 1024 * 1024
         || timeout.isNegative()
         || timeout.isZero()
-        || timeout.compareTo(Duration.ofMinutes(1)) > 0)
+        || timeout.compareTo(Duration.ofMinutes(1)) > 0) {
       throw new IllegalArgumentException("Invalid public HTTP request bounds or destination");
+    }
     HttpUriRequestBase request = new HttpUriRequestBase(method, target);
-    if (body != null) request.setEntity(new ByteArrayEntity(body, ContentType.APPLICATION_JSON));
+    if (body != null) {
+      request.setEntity(new ByteArrayEntity(body, ContentType.APPLICATION_JSON));
+    }
     headers.forEach(request::setHeader);
     ScheduledFuture<?> alarm;
     synchronized (this) {
-      if (closed) throw new IOException("Public HTTP transport is closed");
+      if (closed) {
+        throw new IOException("Public HTTP transport is closed");
+      }
       active.add(request);
       alarm = clock.schedule(request::cancel, timeout.toNanos(), TimeUnit.NANOSECONDS);
     }
     try {
       var response = CloseableHttpResponse.adapt(client.executeOpen(null, request, null));
       try {
-        if (maximumBytes == 0 || response.getEntity() == null)
+        if (maximumBytes == 0 || response.getEntity() == null) {
           return new Response(response.getCode(), new byte[0]);
-        if (response.getEntity().getContentLength() > maximumBytes)
+        }
+        if (response.getEntity().getContentLength() > maximumBytes) {
           throw new IOException("Public HTTP response exceeds requested bound");
+        }
         byte[] bytes = response.getEntity().getContent().readNBytes(maximumBytes + 1);
-        if (bytes.length > maximumBytes)
+        if (bytes.length > maximumBytes) {
           throw new IOException("Public HTTP response exceeds requested bound");
+        }
         return new Response(response.getCode(), bytes);
       } finally {
         response.close(CloseMode.IMMEDIATE);
@@ -133,12 +141,18 @@ final class PublicHttpClient implements AutoCloseable {
   @Override
   public void close() {
     synchronized (this) {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
       closed = true;
-      for (var request : active) request.cancel();
+      for (var request : active) {
+        request.cancel();
+      }
       clock.shutdownNow();
     }
     client.close(CloseMode.IMMEDIATE);
-    if (dns != null) dns.close();
+    if (dns != null) {
+      dns.close();
+    }
   }
 }

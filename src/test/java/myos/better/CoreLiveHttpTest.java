@@ -1,13 +1,20 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.EOFException;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.http.*;
-import java.nio.file.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -110,8 +117,9 @@ class CoreLiveHttpTest {
   private static Map<String, Object> frame(BufferedReader input) throws IOException {
     String line;
     while ((line = input.readLine()) != null) {
-      if (line.startsWith("data: "))
+      if (line.startsWith("data: ")) {
         return Json.object(line.substring(6).getBytes(java.nio.charset.StandardCharsets.UTF_8));
+      }
     }
     throw new EOFException("Stream ended before a data frame");
   }

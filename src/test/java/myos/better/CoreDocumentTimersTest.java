@@ -1,9 +1,18 @@
 package myos.better;
 
-import static myos.better.OwnerTimeIntegrationTest.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.OwnerTimeIntegrationTest.ACCOUNT;
+import static myos.better.OwnerTimeIntegrationTest.CHILD;
+import static myos.better.OwnerTimeIntegrationTest.ROOT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import myos.better.OwnerTimeIntegrationTest.Fixture;
 import org.junit.jupiter.api.Test;
 
 class CoreDocumentTimersTest {

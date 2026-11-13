@@ -1,6 +1,11 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Immutable snapshot rows and their radix indexes. Replacement removes absent rows. Merging reads
@@ -21,11 +26,16 @@ final class SnapshotRows {
   }
 
   private static String encode(Repository.Blobs blobs, byte[] bytes, String old) {
-    if (bytes.length <= INLINE_METADATA_BYTES)
+    if (bytes.length <= INLINE_METADATA_BYTES) {
       return "inline:" + new String(bytes, java.nio.charset.StandardCharsets.UTF_8);
+    }
     String digest = Json.hash(bytes);
-    if (digest.equals(old) || old != null && old.startsWith("blocks:" + digest + ":")) return old;
-    if (bytes.length <= 64 * 1024) return blobs.put(bytes);
+    if (digest.equals(old) || old != null && old.startsWith("blocks:" + digest + ":")) {
+      return old;
+    }
+    if (bytes.length <= 64 * 1024) {
+      return blobs.put(bytes);
+    }
     return "blocks:" + digest + ":" + new ContentBlocks(blobs).put(bytes);
   }
 
@@ -35,29 +45,38 @@ final class SnapshotRows {
     var index = new RadixIndex<>(blobs, String.class, 512L * 1024, 128, 32 * 1024);
     var previous = index.getAll(root, rows.keySet());
     java.util.Set<String> added = new HashSet<>();
-    for (Object key : births)
+    for (Object key : births) {
       if (!(key instanceof String member)
           || !added.add(member)
           || previous.containsKey(member)
-          || !rows.containsKey(member))
+          || !rows.containsKey(member)) {
         throw new IllegalArgumentException("Invalid native preparation birth");
+      }
+    }
     Map<String, String> changed = new HashMap<>();
     for (var row : rows.entrySet()) {
       String old = previous.get(row.getKey());
-      if (old == null && !added.contains(row.getKey()))
+      if (old == null && !added.contains(row.getKey())) {
         throw new IllegalArgumentException(
             "Native preparation delta introduced an undeclared member");
-      if (old != null && row.getValue().equals(bodies.known(old))) continue;
+      }
+      if (old != null && row.getValue().equals(bodies.known(old))) {
+        continue;
+      }
       byte[] bytes = Json.bytes(row.getValue());
       String selected = encode(blobs, bytes, old);
-      if (!selected.equals(old)) changed.put(row.getKey(), selected);
+      if (!selected.equals(old)) {
+        changed.put(row.getKey(), selected);
+      }
       bodies.remember(selected, object(row.getValue()));
     }
     return index.update(root, changed, java.util.Set.of());
   }
 
   static Map<String, Object> record(Repository.Blobs blobs, String reference) {
-    if (reference.startsWith("inline:")) return Json.object(reference.substring(7));
+    if (reference.startsWith("inline:")) {
+      return Json.object(reference.substring(7));
+    }
     return reference.startsWith("blocks:")
         ? Json.object(
             new ContentBlocks(blobs).get(reference.substring(reference.lastIndexOf(':') + 1)))
@@ -85,16 +104,26 @@ final class SnapshotRows {
     for (var entry : records.entrySet()) {
       String old = previous.get(entry.getKey());
       if (old != null && entry.getValue().equals(bodies.known(old))) {
-        if (measuring) measurement.recordsReused++;
-        if (next != null) next.put(entry.getKey(), old);
+        if (measuring) {
+          measurement.recordsReused++;
+        }
+        if (next != null) {
+          next.put(entry.getKey(), old);
+        }
         continue;
       }
       var value = object(entry.getValue());
       String reusable = blobs.encodedRecord(entry.getKey(), value, true);
       if (reusable != null) {
-        if (!reusable.equals(old)) changed.put(entry.getKey(), reusable);
-        if (next != null) next.put(entry.getKey(), reusable);
-        if (measuring) measurement.recordsReused++;
+        if (!reusable.equals(old)) {
+          changed.put(entry.getKey(), reusable);
+        }
+        if (next != null) {
+          next.put(entry.getKey(), reusable);
+        }
+        if (measuring) {
+          measurement.recordsReused++;
+        }
         continue;
       }
       byte[] bytes = Json.bytes(value);
@@ -103,16 +132,22 @@ final class SnapshotRows {
         measurement.encodedBytes += bytes.length;
       }
       String encoded = encode(blobs, bytes, old);
-      if (!encoded.equals(old)) changed.put(entry.getKey(), encoded);
+      if (!encoded.equals(old)) {
+        changed.put(entry.getKey(), encoded);
+      }
       old = encoded;
-      if (next != null) next.put(entry.getKey(), old);
+      if (next != null) {
+        next.put(entry.getKey(), old);
+      }
       blobs.rememberEncodedRecord(entry.getKey(), value, true, old);
       bodies.remember(old, value);
     }
     var removed = merge ? new HashSet<String>() : new HashSet<>(previous.keySet());
     removed.removeAll(records.keySet());
     String result = index.update(root, changed, removed);
-    if (next != null) indices.remember(result, next);
+    if (next != null) {
+      indices.remember(result, next);
+    }
     if (measuring) {
       measurement.recordsChanged = changed.size();
       measurement.recordsRemoved = removed.size();
@@ -131,7 +166,9 @@ final class SnapshotRows {
   @SuppressWarnings("unchecked")
   Map<String, String> references(RadixIndex<String> index, String root) {
     Map<String, Object> cached = indices.known(root);
-    if (cached != null) return (Map<String, String>) (Map<?, ?>) cached;
+    if (cached != null) {
+      return (Map<String, String>) (Map<?, ?>) cached;
+    }
     Map<String, String> result = new HashMap<>();
     index.forEach(root, result::put);
     indices.remember(root, result);
@@ -153,13 +190,17 @@ final class SnapshotRows {
               .map(e -> firstBlock(e.getValue()))
               .filter(java.util.Objects::nonNull)
               .toList());
-      for (var entry : batch) result.put(entry.getKey(), record(blobs, entry.getValue()));
+      for (var entry : batch) {
+        result.put(entry.getKey(), record(blobs, entry.getValue()));
+      }
     }
     return result;
   }
 
   static String firstBlock(String reference) {
-    if (reference.startsWith("inline:")) return null;
+    if (reference.startsWith("inline:")) {
+      return null;
+    }
     return reference.startsWith("blocks:")
         ? reference.substring(reference.lastIndexOf(':') + 1)
         : reference;

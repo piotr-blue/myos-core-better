@@ -25,9 +25,12 @@ class DynamoReadReuseTest {
                 DynamoDbClient.class.getClassLoader(),
                 new Class<?>[] {DynamoDbClient.class},
                 (proxy, method, args) -> {
-                  if (method.getName().equals("close")) return null;
-                  if (!method.getName().equals("getItem"))
+                  if (method.getName().equals("close")) {
+                    return null;
+                  }
+                  if (!method.getName().equals("getItem")) {
                     throw new AssertionError(method.getName());
+                  }
                   calls.add((GetItemRequest) args[0]);
                   return GetItemResponse.builder().item(response.get()).build();
                 });

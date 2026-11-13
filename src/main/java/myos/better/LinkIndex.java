@@ -44,7 +44,9 @@ final class LinkIndex {
   }
 
   private static String path(String value) {
-    if (!value.startsWith("/")) throw new IllegalArgumentException("Embedding path required");
+    if (!value.startsWith("/")) {
+      throw new IllegalArgumentException("Embedding path required");
+    }
     return value;
   }
 }

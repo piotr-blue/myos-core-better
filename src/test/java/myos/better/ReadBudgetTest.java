@@ -1,6 +1,7 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import blue.Bex;
 import blue.BlueException;
@@ -55,16 +56,20 @@ class ReadBudgetTest {
     AtomicInteger visited = new AtomicInteger();
     var unbounded =
         new AbstractCollection<Object>() {
+          @Override
           public int size() {
             return Integer.MAX_VALUE;
           }
 
+          @Override
           public Iterator<Object> iterator() {
             return new Iterator<>() {
+              @Override
               public boolean hasNext() {
                 return true;
               }
 
+              @Override
               public Object next() {
                 visited.incrementAndGet();
                 return null;

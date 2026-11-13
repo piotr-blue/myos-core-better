@@ -1,7 +1,11 @@
 package myos.better;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Captures public-profile changes atomically and backfills older rows in one bounded background
@@ -26,25 +30,33 @@ final class PublicDirectoryStore implements AtomicStore {
   }
 
   static boolean backfillEnabled(String configured) {
-    if (configured == null || configured.equals("true")) return true;
-    if (configured.equals("false")) return false;
+    if (configured == null || configured.equals("true")) {
+      return true;
+    }
+    if (configured.equals("false")) {
+      return false;
+    }
     throw new IllegalArgumentException("MYOS_DIRECTORY_BACKFILL must be true or false");
   }
 
   PublicDirectoryStore(AtomicStore delegate, boolean backfillEnabled) {
     this.backfillEnabled = backfillEnabled;
     this.delegate = Objects.requireNonNull(delegate);
-    if (!(delegate instanceof PublicDirectoryInventory available))
+    if (!(delegate instanceof PublicDirectoryInventory available)) {
       throw new IllegalArgumentException("Public directory requires a resumable source inventory");
+    }
     inventory = available;
     directory = new CorePublicDirectory(delegate);
   }
 
   synchronized void start() {
-    if (closed || started)
+    if (closed || started) {
       throw new IllegalStateException("Directory worker already started or closed");
+    }
     started = true;
-    if (!backfillEnabled) return;
+    if (!backfillEnabled) {
+      return;
+    }
     worker =
         Executors.newSingleThreadScheduledExecutor(
             r -> {
@@ -56,7 +68,9 @@ final class PublicDirectoryStore implements AtomicStore {
         health.guard(
             () -> {
               try {
-                if (backfillPage()) worker.shutdown();
+                if (backfillPage()) {
+                  worker.shutdown();
+                }
               } catch (RuntimeException failure) {
                 System.getLogger(PublicDirectoryStore.class.getName())
                     .log(
@@ -72,58 +86,78 @@ final class PublicDirectoryStore implements AtomicStore {
 
   /** One page per invocation; returns true only after its completion marker is durable. */
   boolean backfillPage() {
-    if (!backfillEnabled) return false;
+    if (!backfillEnabled) {
+      return false;
+    }
     var previous = delegate.get(CorePublicDirectory.BACKFILL);
-    if (previous != null && Boolean.TRUE.equals(previous.value().get("complete"))) return true;
+    if (previous != null && Boolean.TRUE.equals(previous.value().get("complete"))) {
+      return true;
+    }
     String after = previous == null ? null : (String) previous.value().get("after");
     var page = inventory.publicDirectoryPage(after);
-    if (page.rows().size() > 64)
+    if (page.rows().size() > 64) {
       throw new IllegalStateException("Directory inventory exceeded page bound");
-    if (!directory.backfill(previous, page.rows(), page.after())) return false;
+    }
+    if (!directory.backfill(previous, page.rows(), page.after())) {
+      return false;
+    }
     return page.after() == null;
   }
 
+  @Override
   public Row get(Key key) {
     return delegate.get(key);
   }
 
+  @Override
   public Map<Key, Row> getAll(List<Key> keys) {
     return delegate.getAll(keys);
   }
 
+  @Override
   public Page query(String partition, String prefix, String after, int limit) {
     return delegate.query(partition, prefix, after, limit);
   }
 
+  @Override
   public Page work(String shard, String after, int limit) {
     return delegate.work(shard, after, limit);
   }
 
+  @Override
   public byte[] content(String account, String identity) {
     return delegate.content(account, identity);
   }
 
+  @Override
   public Map<String, byte[]> contentAll(String account, List<String> identities) {
     return delegate.contentAll(account, identities);
   }
 
+  @Override
   public void publishContent(String account, Map<String, byte[]> pages) {
     delegate.publishContent(account, pages);
   }
 
+  @Override
   public Map<String, Long> statistics() {
     return delegate.statistics();
   }
 
+  @Override
   public boolean commit(List<Write> writes, List<Check> checks) {
     return directory.commit(writes, checks);
   }
 
+  @Override
   public boolean commitWithContent(
       List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
-    if (writes.stream().noneMatch(w -> CorePublicDirectory.relevant(w.key())))
+    if (writes.stream().noneMatch(w -> CorePublicDirectory.relevant(w.key()))) {
       return delegate.commitWithContent(writes, checks, account, pages);
-    if (!pages.isEmpty()) delegate.publishContent(account, pages);
+    }
+    if (!pages.isEmpty()) {
+      delegate.publishContent(account, pages);
+    }
     return directory.commit(writes, checks);
   }
 
@@ -131,15 +165,20 @@ final class PublicDirectoryStore implements AtomicStore {
   public void close() {
     ScheduledExecutorService pending;
     synchronized (this) {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
       closed = true;
       pending = worker;
-      if (pending != null) pending.shutdownNow();
+      if (pending != null) {
+        pending.shutdownNow();
+      }
     }
     if (pending != null) {
       try {
-        if (!pending.awaitTermination(35, TimeUnit.SECONDS))
+        if (!pending.awaitTermination(35, TimeUnit.SECONDS)) {
           throw new IllegalStateException("Public directory worker did not stop");
+        }
       } catch (InterruptedException interrupted) {
         Thread.currentThread().interrupt();
         throw new IllegalStateException("Interrupted while stopping public directory", interrupted);

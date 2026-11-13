@@ -1,12 +1,27 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.*;
-import java.time.*;
-import java.util.*;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -197,8 +212,9 @@ class CoreInvitationsTest {
                 if (method.equals("commit")
                     && writesInvitation(args)
                     && Boolean.TRUE.equals(result)
-                    && once.compareAndSet(false, true))
+                    && once.compareAndSet(false, true)) {
                   throw new IllegalStateException("Simulated lost reply");
+                }
                 return result;
               });
       assertThrows(
@@ -226,8 +242,9 @@ class CoreInvitationsTest {
                 if (method.equals("commit")
                     && writesInvitation(args)
                     && Boolean.TRUE.equals(result)
-                    && once.compareAndSet(false, true))
+                    && once.compareAndSet(false, true)) {
                   throw new IllegalStateException("Simulated lost acceptance reply");
+                }
                 return result;
               });
       assertThrows(
@@ -246,8 +263,9 @@ class CoreInvitationsTest {
               (method, args, action) -> {
                 if (method.equals("commit")
                     && writesInvitation(args)
-                    && removed.compareAndSet(false, true))
+                    && removed.compareAndSet(false, true)) {
                   f.change("owner", 1, 1, "ADMIN", "REMOVED");
+                }
                 return action.call();
               });
       problem(
@@ -331,7 +349,9 @@ class CoreInvitationsTest {
       var input =
           new LinkedHashMap<String, Object>(
               Map.of("email", recipient + "@example.test", "role", role));
-      if (target != null) input.put("targetUserId", target);
+      if (target != null) {
+        input.put("targetUserId", target);
+      }
       return invitations(store).issue(owner, command, input);
     }
 
@@ -371,14 +391,17 @@ class CoreInvitationsTest {
   static final class MutableClock extends Clock {
     long millis = Instant.parse("2026-11-01T00:00:00Z").toEpochMilli();
 
+    @Override
     public ZoneId getZone() {
       return ZoneOffset.UTC;
     }
 
+    @Override
     public Clock withZone(ZoneId zone) {
       return this;
     }
 
+    @Override
     public Instant instant() {
       return Instant.ofEpochMilli(millis);
     }

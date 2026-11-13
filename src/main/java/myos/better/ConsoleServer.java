@@ -1,12 +1,27 @@
 package myos.better;
 
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
 import java.io.IOException;
-import java.net.*;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 /** HTTPS-edge console with verified account ownership; the operator API remains loopback-only. */
 final class ConsoleServer implements AutoCloseable {
@@ -40,15 +55,18 @@ final class ConsoleServer implements AutoCloseable {
   static ConsoleServer configured(Core core, AtomicStore store, TimelineService service)
       throws IOException {
     String origin = System.getenv("CONSOLE_ORIGIN");
-    if (origin == null) return null;
+    if (origin == null) {
+      return null;
+    }
     URI publicUri = URI.create(origin);
     if (!"https".equals(publicUri.getScheme())
         || publicUri.getHost() == null
         || publicUri.getRawUserInfo() != null
         || !publicUri.getPath().isEmpty()
         || publicUri.getQuery() != null
-        || publicUri.getFragment() != null)
+        || publicUri.getFragment() != null) {
       throw new IllegalArgumentException("CONSOLE_ORIGIN must be an HTTPS origin");
+    }
     Path web = Path.of(required("CONSOLE_WEB"));
     CognitoConsoleLogin login =
         new CognitoConsoleLogin(
@@ -63,9 +81,10 @@ final class ConsoleServer implements AutoCloseable {
       administrators = CoreAdministrators.configured(System.getenv());
       ProviderSigning signing = ProviderIdentity.configured(System.getenv(), origin);
       custody = ReaderCustody.configured(System.getenv());
-      if (custody != null && (signing == null || service == null))
+      if (custody != null && (signing == null || service == null)) {
         throw new IllegalArgumentException(
             "Reader custody requires a hosted provider and Timeline processing");
+      }
       WebhookSecrets invitationCustody = WebhookSecrets.configured(System.getenv());
       invitationDelivery =
           CoreInvitationDelivery.configured(store, invitationCustody, System.getenv());
@@ -94,9 +113,15 @@ final class ConsoleServer implements AutoCloseable {
       return server;
     } catch (IOException | RuntimeException failure) {
       administrators.close();
-      if (invitationDelivery != null) invitationDelivery.close();
-      if (notificationDelivery != null) notificationDelivery.close();
-      if (custody != null) custody.close();
+      if (invitationDelivery != null) {
+        invitationDelivery.close();
+      }
+      if (notificationDelivery != null) {
+        notificationDelivery.close();
+      }
+      if (custody != null) {
+        custody.close();
+      }
       login.close();
       throw failure;
     }
@@ -153,8 +178,9 @@ final class ConsoleServer implements AutoCloseable {
       Inputs inputs,
       WebhookSecrets webhookSecrets)
       throws IOException {
-    if (inputs != null && signing == null)
+    if (inputs != null && signing == null) {
       throw new IllegalArgumentException("Owner inputs require a hosted provider");
+    }
     custody = inputs == null ? null : inputs.custody();
     timelines =
         signing == null
@@ -166,13 +192,17 @@ final class ConsoleServer implements AutoCloseable {
                 custody,
                 core.publicPackages());
     provider = timelines == null ? null : timelines.nativeApi();
-    if (inputs != null) provider.useLocalAccess(inputs.service());
+    if (inputs != null) {
+      provider.useLocalAccess(inputs.service());
+    }
     this.login = login;
     keys = new ApiKeys(store);
     this.origin = origin;
     this.web = web.toRealPath();
     notifications = store instanceof NotifyingStore notifying ? notifying : null;
-    if (notifications != null) notifications.listen(liveListener);
+    if (notifications != null) {
+      notifications.listen(liveListener);
+    }
     documents = new ConsoleDocuments(core, store, examples, timelines);
     dashboard =
         new CoreDashboardApi(
@@ -235,7 +265,9 @@ final class ConsoleServer implements AutoCloseable {
     try {
       String path = exchange.getRequestURI().getPath(), method = exchange.getRequestMethod();
       if (!path.startsWith("/api/")) {
-        if (!method.equals("GET") && !method.equals("HEAD")) throw problem(405, "GET required.");
+        if (!method.equals("GET") && !method.equals("HEAD")) {
+          throw problem(405, "GET required.");
+        }
         staticFile(exchange, path, method.equals("HEAD"));
         return;
       }
@@ -244,10 +276,13 @@ final class ConsoleServer implements AutoCloseable {
         return;
       }
       if (path.startsWith("/api/auth/")) {
-        if (!method.equals("POST")) throw problem(405, "POST required.");
+        if (!method.equals("POST")) {
+          throw problem(405, "POST required.");
+        }
         checkOrigin(exchange);
-        if (!authentication.tryAcquire())
+        if (!authentication.tryAcquire()) {
           throw problem(429, "Sign-in is busy. Please retry shortly.");
+        }
         try {
           authenticate(exchange, path.substring("/api/auth/".length()));
         } finally {
@@ -261,8 +296,9 @@ final class ConsoleServer implements AutoCloseable {
       Map<String, String> query = query(exchange.getRequestURI().getRawQuery());
       Object response;
       if (path.equals(CoreDashboardApi.BASE + "live") && method.equals("GET")) {
-        if (notifications == null)
+        if (notifications == null) {
           throw problem(503, "Live commit notifications are not configured.");
+        }
         String selected = exchange.getRequestHeaders().getFirst("X-MyOS-Account");
         String guard = exchange.getRequestHeaders().getFirst("X-MyOS-Session-Context");
         String digest =
@@ -274,13 +310,17 @@ final class ConsoleServer implements AutoCloseable {
             () -> {
               try (var lease = access.enter(workspace, false)) {
                 ConsolePrincipal fresh = principal(exchange, false);
-                if (!fresh.account().equals(account)) throw problem(403, "User session changed.");
+                if (!fresh.account().equals(account)) {
+                  throw problem(403, "User session changed.");
+                }
                 String current =
                     dashboard.authorize(
                         new CoreAccounts.Session(fresh, digest, fresh.expiresAt()),
                         selected,
                         guard);
-                if (!current.equals(workspace)) throw problem(403, "Workspace changed.");
+                if (!current.equals(workspace)) {
+                  throw problem(403, "Workspace changed.");
+                }
               }
             };
         liveStreams.open(exchange, live, workspace, authorize);
@@ -303,8 +343,9 @@ final class ConsoleServer implements AutoCloseable {
           Thread.currentThread().interrupt();
           throw new IOException("Image upload deadline exceeded", interrupted);
         }
-        if (Thread.currentThread().isInterrupted())
+        if (Thread.currentThread().isInterrupted()) {
           throw new IOException("Image upload deadline exceeded");
+        }
       }
       String selectedAccount = exchange.getRequestHeaders().getFirst("X-MyOS-Account");
       String workspace =
@@ -316,8 +357,10 @@ final class ConsoleServer implements AutoCloseable {
       try (var credentialLease = dashboard.credentialLease(user, path, method);
           var lease = access.enter(workspace, CoreDashboardApi.changesAuthority(path, method))) {
         user = principal(exchange, mutation);
-        if (!user.account().equals(account)) throw problem(403, "User session changed.");
-        if (!path.startsWith(CoreDashboardApi.BASE))
+        if (!user.account().equals(account)) {
+          throw problem(403, "User session changed.");
+        }
+        if (!path.startsWith(CoreDashboardApi.BASE)) {
           dashboard.authorizeLegacy(
               new CoreAccounts.Session(
                   user,
@@ -326,6 +369,7 @@ final class ConsoleServer implements AutoCloseable {
                   user.expiresAt()),
               method,
               path.substring("/api/".length()));
+        }
         if (path.startsWith(CoreDashboardApi.BASE)) {
           CoreAccounts.Session session =
               new CoreAccounts.Session(
@@ -343,7 +387,7 @@ final class ConsoleServer implements AutoCloseable {
                     exchange.getRequestHeaders().getFirst("X-MyOS-Session-Context"),
                     uploadCommand,
                     upload);
-          } else
+          } else {
             response =
                 dashboard.call(
                     path,
@@ -360,9 +404,10 @@ final class ConsoleServer implements AutoCloseable {
                         ? command(exchange)
                         : null,
                     input);
-        } else if (method.equals("GET") && path.equals("/api/config"))
+          }
+        } else if (method.equals("GET") && path.equals("/api/config")) {
           response = Map.of("sharedPortalOrigin", origin, "businessOrigin", "");
-        else if (method.equals("GET") && path.equals("/api/session"))
+        } else if (method.equals("GET") && path.equals("/api/session")) {
           response =
               Map.of(
                   "email",
@@ -377,7 +422,7 @@ final class ConsoleServer implements AutoCloseable {
                   timelines != null,
                   "timelineInputs",
                   timelines != null && timelines.inputsAvailable());
-        else if (path.equals("/api/api-keys") || path.startsWith("/api/api-keys/")) {
+        } else if (path.equals("/api/api-keys") || path.startsWith("/api/api-keys/")) {
           response =
               dashboard.legacyCredentials(
                   new CoreAccounts.Session(
@@ -392,65 +437,75 @@ final class ConsoleServer implements AutoCloseable {
                   input);
         } else if (method.equals("GET") && path.equals("/api/types")) {
           Map<String, Object> types = new LinkedHashMap<>(documents.types());
-          if (timelines != null) types.putAll(timelines.types());
+          if (timelines != null) {
+            types.putAll(timelines.types());
+          }
           response = types;
         } else if (path.equals("/api/timelines")
             || path.startsWith("/api/timelines/")
             || path.equals("/api/provider")
             || path.startsWith("/api/provider/")) {
           response = timeline(exchange, path, method, account, query, input);
-        } else if (method.equals("GET") && path.equals("/api/examples"))
+        } else if (method.equals("GET") && path.equals("/api/examples")) {
           response = documents.examples();
-        else if (method.equals("GET") && path.equals("/api/documents"))
+        } else if (method.equals("GET") && path.equals("/api/documents")) {
           response = documents.list(account, query.get("cursor"));
-        else if (method.equals("POST") && path.equals("/api/documents"))
+        } else if (method.equals("POST") && path.equals("/api/documents")) {
           response = documents.create(account, command(exchange), input);
-        else if (method.equals("POST") && path.equals("/api/bootstrap/preview"))
+        } else if (method.equals("POST") && path.equals("/api/bootstrap/preview")) {
           response = documents.previewBootstrap(account, input);
-        else if (method.equals("POST") && path.equals("/api/bootstrap"))
+        } else if (method.equals("POST") && path.equals("/api/bootstrap")) {
           response = documents.bootstrap(account, command(exchange), input);
-        else if (path.startsWith("/api/documents/")) {
+        } else if (path.startsWith("/api/documents/")) {
           String[] route = path.substring("/api/documents/".length()).split("/", -1);
           String document = Repository.identifier(route[0]);
-          if (method.equals("GET") && route.length == 1)
+          if (method.equals("GET") && route.length == 1) {
             response = documents.read(account, document, query);
-          else if (method.equals("GET") && route.length == 2 && route[1].equals("head"))
+          } else if (method.equals("GET") && route.length == 2 && route[1].equals("head")) {
             response = documents.head(account, document);
-          else if (method.equals("GET") && route.length == 2 && route[1].equals("value"))
+          } else if (method.equals("GET") && route.length == 2 && route[1].equals("value")) {
             response = documents.value(account, document, query);
-          else if (method.equals("GET") && route.length == 2 && route[1].equals("source"))
+          } else if (method.equals("GET") && route.length == 2 && route[1].equals("source")) {
             response = documents.source(account, document);
-          else if (method.equals("GET") && route.length == 2 && route[1].equals("processing"))
+          } else if (method.equals("GET") && route.length == 2 && route[1].equals("processing")) {
             response = documents.processing(account, document);
-          else if (method.equals("GET") && route.length == 2 && route[1].equals("operations"))
+          } else if (method.equals("GET") && route.length == 2 && route[1].equals("operations")) {
             response = documents.operations(account, document);
-          else if (method.equals("GET") && route.length == 3 && route[1].equals("history"))
+          } else if (method.equals("GET") && route.length == 3 && route[1].equals("history")) {
             response = documents.history(account, document, Long.parseLong(route[2]));
-          else if (method.equals("GET") && route.length == 2 && route[1].equals("children"))
+          } else if (method.equals("GET") && route.length == 2 && route[1].equals("children")) {
             response = documents.children(account, document, query.get("cursor"));
-          else if (method.equals("GET") && route.length == 2 && route[1].equals("events"))
+          } else if (method.equals("GET") && route.length == 2 && route[1].equals("events")) {
             response = documents.events(account, document, query.get("after"));
-          else if (method.equals("GET") && route.length == 2 && route[1].equals("embedding"))
+          } else if (method.equals("GET") && route.length == 2 && route[1].equals("embedding")) {
             response = documents.embedding(account, document, query);
-          else if (method.equals("POST") && route.length == 2 && route[1].equals("operations"))
+          } else if (method.equals("POST") && route.length == 2 && route[1].equals("operations")) {
             response = documents.call(account, document, command(exchange), input);
-          else throw problem(404, "Unknown document route.");
-        } else throw problem(404, "Unknown API route.");
+          } else {
+            throw problem(404, "Unknown document route.");
+          }
+        } else {
+          throw problem(404, "Unknown API route.");
+        }
       }
       if (response instanceof CoreImages.Image image) {
         sendImage(exchange, image);
       } else if (response instanceof CoreDashboardApi.Response reply) {
         if (reply.status() == 202
             && reply.body() instanceof Map<?, ?> receipt
-            && receipt.get("admissionId") instanceof String id)
+            && receipt.get("admissionId") instanceof String id) {
           exchange.getResponseHeaders().set("Location", CoreDashboardApi.BASE + "admissions/" + id);
+        }
         if (reply.status() == 201
             && path.equals(CoreDashboardApi.BASE + "webhooks")
             && reply.body() instanceof Map<?, ?> hook
-            && hook.get("id") instanceof String id)
+            && hook.get("id") instanceof String id) {
           exchange.getResponseHeaders().set("Location", CoreDashboardApi.BASE + "webhooks/" + id);
+        }
         send(exchange, reply.status(), reply.body());
-      } else send(exchange, 200, response);
+      } else {
+        send(exchange, 200, response);
+      }
     } catch (ConsoleProblem failure) {
       send(
           exchange,
@@ -519,7 +574,9 @@ final class ConsoleServer implements AutoCloseable {
               "The request could not complete. Retry with the same command identifier."));
     } finally {
       capacity.release();
-      if (!handedOff) exchange.close();
+      if (!handedOff) {
+        exchange.close();
+      }
     }
   }
 
@@ -528,15 +585,20 @@ final class ConsoleServer implements AutoCloseable {
       throws IOException {
     try {
       if (path.equals(NativeTimelineApi.BASE + "provider")) {
-        if (!method.equals("GET")) throw problem(405, "GET required.");
+        if (!method.equals("GET")) {
+          throw problem(405, "GET required.");
+        }
         send(exchange, 200, provider.descriptor());
         return;
       }
-      if (!method.equals("POST")) throw problem(405, "POST required.");
+      if (!method.equals("POST")) {
+        throw problem(405, "POST required.");
+      }
       String contentType = exchange.getRequestHeaders().getFirst("Content-Type");
       if (contentType == null
-          || !contentType.split(";", 2)[0].trim().equalsIgnoreCase("application/json"))
+          || !contentType.split(";", 2)[0].trim().equalsIgnoreCase("application/json")) {
         throw problem(415, "JSON content is required.");
+      }
       ConsolePrincipal identity =
           NativeTimelineApi.ownerRequired(path) ? principal(exchange, true) : null;
       Map<String, Object> input = body(exchange);
@@ -545,12 +607,15 @@ final class ConsoleServer implements AutoCloseable {
         try (var credentialLease = dashboard.credentialLease(identity, path, method);
             var lease = access.enter(identity.account(), false)) {
           ConsolePrincipal current = principal(exchange, true);
-          if (!current.account().equals(identity.account()))
+          if (!current.account().equals(identity.account())) {
             throw problem(403, "User session changed.");
+          }
           dashboard.authorizeLegacy(session(exchange, current), method, "provider/owner-command");
           response = provider.call(path, current.account(), input);
         }
-      } else response = provider.call(path, null, input);
+      } else {
+        response = provider.call(path, null, input);
+      }
       send(exchange, 200, response);
     } catch (ConsoleProblem failure) {
       send(exchange, failure.status, provider.failure(failure.code, false, failure.getMessage()));
@@ -607,36 +672,59 @@ final class ConsoleServer implements AutoCloseable {
       Map<String, String> query,
       Map<String, Object> input)
       throws IOException {
-    if (timelines == null) throw problem(503, "Timeline publication is not configured.");
-    if (path.equals("/api/provider") && method.equals("GET")) return timelines.provider();
+    if (timelines == null) {
+      throw problem(503, "Timeline publication is not configured.");
+    }
+    if (path.equals("/api/provider") && method.equals("GET")) {
+      return timelines.provider();
+    }
     String resources = "/api/provider/timelines/";
-    if (path.startsWith(resources) && method.equals("GET"))
+    if (path.startsWith(resources) && method.equals("GET")) {
       return timelines.resource(account, path.substring(resources.length()));
+    }
     if (path.equals("/api/timelines")) {
-      if (method.equals("GET")) return timelines.list(account, query);
-      if (method.equals("POST")) return timelines.create(account, command(exchange), input);
+      if (method.equals("GET")) {
+        return timelines.list(account, query);
+      }
+      if (method.equals("POST")) {
+        return timelines.create(account, command(exchange), input);
+      }
     }
     if (path.startsWith("/api/timelines/")) {
       String[] route = path.substring("/api/timelines/".length()).split("/", -1);
       blue.BlueId id = new blue.BlueId(route[0]);
-      if (method.equals("GET") && route.length == 1) return timelines.head(account, id);
+      if (method.equals("GET") && route.length == 1) {
+        return timelines.head(account, id);
+      }
       if (route.length == 2 && route[1].equals("input")) {
-        if (method.equals("GET")) return timelines.inputStatus(account, id);
-        if (method.equals("POST")) return timelines.connect(account, id, command(exchange), input);
+        if (method.equals("GET")) {
+          return timelines.inputStatus(account, id);
+        }
+        if (method.equals("POST")) {
+          return timelines.connect(account, id, command(exchange), input);
+        }
       }
       if (route.length >= 2 && route[1].equals("access")) {
-        if (method.equals("GET") && route.length == 2) return timelines.grants(account, id);
-        if (method.equals("POST") && route.length == 2)
+        if (method.equals("GET") && route.length == 2) {
+          return timelines.grants(account, id);
+        }
+        if (method.equals("POST") && route.length == 2) {
           return timelines.grant(account, id, command(exchange), input);
-        if (method.equals("POST") && route.length == 4 && route[3].equals("revoke"))
+        }
+        if (method.equals("POST") && route.length == 4 && route[3].equals("revoke")) {
           return timelines.revoke(account, id, command(exchange), new blue.BlueId(route[2]), input);
+        }
       }
       if (route.length >= 2 && route[1].equals("entries")) {
-        if (method.equals("GET") && route.length == 2) return timelines.entries(account, id, query);
-        if (method.equals("GET") && route.length == 3)
+        if (method.equals("GET") && route.length == 2) {
+          return timelines.entries(account, id, query);
+        }
+        if (method.equals("GET") && route.length == 3) {
           return timelines.entry(account, id, Long.parseLong(route[2]));
-        if (method.equals("POST") && route.length == 2)
+        }
+        if (method.equals("POST") && route.length == 2) {
           return timelines.append(account, id, command(exchange), input);
+        }
       }
     }
     throw problem(404, "Unknown owner Timeline route.");
@@ -646,8 +734,9 @@ final class ConsoleServer implements AutoCloseable {
     Map<String, Object> input = body(exchange);
     if (action.equals("logout")) {
       String token = token(exchange);
-      if (token != null && token.startsWith(CoreImpersonations.PREFIX))
+      if (token != null && token.startsWith(CoreImpersonations.PREFIX)) {
         dashboard.endImpersonation(token);
+      }
       cookie(exchange, "", 0);
       send(exchange, 200, Map.of("signedOut", true));
       return;
@@ -659,12 +748,15 @@ final class ConsoleServer implements AutoCloseable {
       ConsoleLogin.User user = login.verify(token);
       cookie(exchange, token, Repository.number(result.get("expiresIn")));
       send(exchange, 200, Map.of("email", user.email(), "account", user.account()));
-    } else send(exchange, 200, result);
+    } else {
+      send(exchange, 200, result);
+    }
   }
 
   private void checkOrigin(HttpExchange exchange) {
-    if (!origin.equals(exchange.getRequestHeaders().getFirst("Origin")))
+    if (!origin.equals(exchange.getRequestHeaders().getFirst("Origin"))) {
       throw problem(403, "A same-origin request is required.");
+    }
     checkJson(exchange);
   }
 
@@ -677,16 +769,23 @@ final class ConsoleServer implements AutoCloseable {
             && Set.of("0", "")
                 .contains(
                     Objects.toString(exchange.getRequestHeaders().getFirst("Content-Length"), ""));
-    if (contentType == null && emptyCoreDelete) return;
-    if (contentType == null) throw problem(415, "JSON content is required.");
+    if (contentType == null && emptyCoreDelete) {
+      return;
+    }
+    if (contentType == null) {
+      throw problem(415, "JSON content is required.");
+    }
     String media = contentType.split(";", 2)[0].trim().toLowerCase(Locale.ROOT);
     if (media.equals("multipart/form-data")
         && CoreDashboardApi.imageUpload(
-            exchange.getRequestURI().getPath(), exchange.getRequestMethod())) return;
+            exchange.getRequestURI().getPath(), exchange.getRequestMethod())) {
+      return;
+    }
     if (!media.equals("application/json")
         && !(media.equals("application/yaml")
-            && exchange.getRequestURI().getPath().startsWith(CoreDashboardApi.BASE)))
+            && exchange.getRequestURI().getPath().startsWith(CoreDashboardApi.BASE))) {
       throw problem(415, "JSON or a supported Core YAML request is required.");
+    }
   }
 
   @SuppressWarnings("try")
@@ -701,18 +800,23 @@ final class ConsoleServer implements AutoCloseable {
     String token = token(exchange);
     if (token != null
         && token.startsWith(ApiKeys.PREFIX)
-        && !exchange.getRequestHeaders().containsKey("Authorization"))
+        && !exchange.getRequestHeaders().containsKey("Authorization")) {
       throw problem(401, "API keys require a Bearer authorization header.");
+    }
     boolean apiKey = token != null && token.startsWith(ApiKeys.PREFIX);
     if (mutation) {
-      if (!apiKey || exchange.getRequestHeaders().containsKey("Origin")) checkOrigin(exchange);
-      else checkJson(exchange);
+      if (!apiKey || exchange.getRequestHeaders().containsKey("Origin")) {
+        checkOrigin(exchange);
+      } else {
+        checkJson(exchange);
+      }
     }
-    if (token != null && token.startsWith(CoreImpersonations.PREFIX))
+    if (token != null && token.startsWith(CoreImpersonations.PREFIX)) {
       return dashboard.impersonation(
           token,
           CoreDashboardApi.endingImpersonation(
               exchange.getRequestURI().getPath(), exchange.getRequestMethod()));
+    }
     return apiKey
         ? ConsolePrincipal.key(keys.verify(token))
         : ConsolePrincipal.user(login.verify(token));
@@ -730,25 +834,31 @@ final class ConsoleServer implements AutoCloseable {
     if (authorization != null) {
       if (authorization.size() != 1
           || !authorization.getFirst().startsWith("Bearer ")
-          || authorization.getFirst().length() <= 7)
+          || authorization.getFirst().length() <= 7) {
         throw problem(401, "Invalid authorization header.");
+      }
       return authorization.getFirst().substring(7);
     }
     String found = null;
-    for (String line : exchange.getRequestHeaders().getOrDefault("Cookie", List.of()))
+    for (String line : exchange.getRequestHeaders().getOrDefault("Cookie", List.of())) {
       for (String pair : line.split(";")) {
         String[] entry = pair.trim().split("=", 2);
         if (entry.length == 2 && entry[0].equals(COOKIE)) {
-          if (found != null) throw problem(401, "Ambiguous session.");
+          if (found != null) {
+            throw problem(401, "Ambiguous session.");
+          }
           found = entry[1];
         }
       }
+    }
     return found;
   }
 
   private static String command(HttpExchange exchange) {
     String value = exchange.getRequestHeaders().getFirst("Idempotency-Key");
-    if (value == null) throw problem(400, "An Idempotency-Key is required.");
+    if (value == null) {
+      throw problem(400, "An Idempotency-Key is required.");
+    }
     return Repository.identifier(value);
   }
 
@@ -757,12 +867,16 @@ final class ConsoleServer implements AutoCloseable {
     try (var deadline = new HttpDeadline(exchange, java.time.Duration.ofSeconds(15))) {
       deadline.attachThread();
       bytes = exchange.getRequestBody().readNBytes(1024 * 1024 + 1);
-      if (deadline.expired()) throw new IOException("Request body deadline exceeded");
+      if (deadline.expired()) {
+        throw new IOException("Request body deadline exceeded");
+      }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
       throw new IOException("Request body deadline exceeded", interrupted);
     }
-    if (bytes.length > 1024 * 1024) throw problem(413, "Request exceeds 1 MiB.");
+    if (bytes.length > 1024 * 1024) {
+      throw problem(413, "Request exceeds 1 MiB.");
+    }
     try {
       if (exchange.getRequestURI().getPath().startsWith(CoreDashboardApi.BASE)) {
         String media = Objects.toString(exchange.getRequestHeaders().getFirst("Content-Type"), "");
@@ -771,29 +885,35 @@ final class ConsoleServer implements AutoCloseable {
       }
       return bytes.length == 0 ? Map.of() : Json.object(bytes);
     } catch (java.io.UncheckedIOException failure) {
-      if (failure.getCause() instanceof com.fasterxml.jackson.core.JsonProcessingException)
+      if (failure.getCause() instanceof com.fasterxml.jackson.core.JsonProcessingException) {
         throw problem(400, "A valid JSON object is required.");
+      }
       throw failure;
     }
   }
 
   private static Map<String, String> query(String raw) {
     Map<String, String> result = new HashMap<>();
-    if (raw == null) return result;
+    if (raw == null) {
+      return result;
+    }
     for (String pair : raw.split("&")) {
       String[] parts = pair.split("=", 2);
       String key = URLDecoder.decode(parts[0], StandardCharsets.UTF_8);
       if (result.putIfAbsent(
               key, parts.length == 1 ? "" : URLDecoder.decode(parts[1], StandardCharsets.UTF_8))
-          != null) throw problem(400, "Duplicate query field.");
+          != null) {
+        throw problem(400, "Duplicate query field.");
+      }
     }
     return result;
   }
 
   private void staticFile(HttpExchange exchange, String path, boolean head) throws IOException {
     Path file = web.resolve(path.equals("/") ? "index.html" : path.substring(1)).normalize();
-    if (!file.startsWith(web) || !Files.isRegularFile(file) || !file.toRealPath().startsWith(web))
+    if (!file.startsWith(web) || !Files.isRegularFile(file) || !file.toRealPath().startsWith(web)) {
       throw problem(404, "File not found.");
+    }
     String name = file.getFileName().toString();
     String suffix = name.substring(name.lastIndexOf('.') + 1);
     String type =
@@ -810,12 +930,15 @@ final class ConsoleServer implements AutoCloseable {
         };
     exchange.getResponseHeaders().set("Content-Type", type);
     long size = Files.size(file);
-    if (size > 8 * 1024 * 1024) throw problem(413, "Asset exceeds serving limit.");
+    if (size > 8 * 1024 * 1024) {
+      throw problem(413, "Asset exceeds serving limit.");
+    }
     exchange.sendResponseHeaders(200, head ? -1 : size);
-    if (!head)
+    if (!head) {
       try (var out = exchange.getResponseBody()) {
         Files.copy(file, out);
       }
+    }
   }
 
   private static void cookie(HttpExchange exchange, String token, long age) {
@@ -850,8 +973,9 @@ final class ConsoleServer implements AutoCloseable {
     }
     byte[] bytes = image.png();
     exchange.getResponseHeaders().set("Content-Length", Integer.toString(bytes.length));
-    if (exchange.getRequestMethod().equals("HEAD")) exchange.sendResponseHeaders(200, -1);
-    else {
+    if (exchange.getRequestMethod().equals("HEAD")) {
+      exchange.sendResponseHeaders(200, -1);
+    } else {
       exchange.sendResponseHeaders(200, bytes.length);
       try (var output = exchange.getResponseBody()) {
         output.write(bytes);
@@ -866,7 +990,7 @@ final class ConsoleServer implements AutoCloseable {
     }
     byte[] bytes = Json.bytes(data);
     Long started = REQUEST_STARTED.get();
-    if (started != null)
+    if (started != null) {
       exchange
           .getResponseHeaders()
           .set(
@@ -874,6 +998,7 @@ final class ConsoleServer implements AutoCloseable {
               "app;dur="
                   + String.format(
                       Locale.ROOT, "%.3f", (System.nanoTime() - started) / 1_000_000.0));
+    }
     exchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
     if (exchange.getRequestMethod().equals("HEAD")) {
       exchange.getResponseHeaders().set("Content-Length", Integer.toString(bytes.length));
@@ -896,15 +1021,21 @@ final class ConsoleServer implements AutoCloseable {
 
   @Override
   public synchronized void close() {
-    if (closed) return;
+    if (closed) {
+      return;
+    }
     closed = true;
-    if (notifications != null) notifications.unlisten(liveListener);
+    if (notifications != null) {
+      notifications.unlisten(liveListener);
+    }
     live.close();
     liveStreams.close();
     server.stop(1);
     requests.shutdown();
     try {
-      if (!requests.awaitTermination(25, TimeUnit.SECONDS)) requests.shutdownNow();
+      if (!requests.awaitTermination(25, TimeUnit.SECONDS)) {
+        requests.shutdownNow();
+      }
     } catch (InterruptedException failure) {
       requests.shutdownNow();
       Thread.currentThread().interrupt();
@@ -916,7 +1047,9 @@ final class ConsoleServer implements AutoCloseable {
         login.close();
       }
     } finally {
-      if (custody != null) custody.close();
+      if (custody != null) {
+        custody.close();
+      }
     }
   }
 }

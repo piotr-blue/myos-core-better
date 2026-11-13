@@ -1,8 +1,11 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class OwnerGasEventsTest {
@@ -125,8 +128,11 @@ class OwnerGasEventsTest {
                 java.time.Instant.parse(times.get(index)), java.time.ZoneOffset.UTC);
         var tx = new OwnerMetadata(new Repository(store), "alice", clock).begin();
         var gas = new OwnerGas("alice");
-        if (index == 0) gas.provision(tx, null);
-        else gas.credit(tx, "credit-" + index, index == 1 ? 17 : 23, "test", "evidence");
+        if (index == 0) {
+          gas.provision(tx, null);
+        } else {
+          gas.credit(tx, "credit-" + index, index == 1 ? 17 : 23, "test", "evidence");
+        }
         assertTrue(tx.commit());
       }
       var all = events(store, "alice");

@@ -1,6 +1,12 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 /**
  * One coherent ordered metadata index, published by a conditional manifest write. Immutable pages
@@ -19,8 +25,9 @@ class IndexedMetadata {
     this.account = Repository.identifier(account);
     this.manifest = Objects.requireNonNull(manifest);
     this.formats = List.copyOf(formats);
-    if (formats.isEmpty() || formats.stream().distinct().count() != formats.size())
+    if (formats.isEmpty() || formats.stream().distinct().count() != formats.size()) {
       throw new IllegalArgumentException("Metadata formats must be nonempty and unique");
+    }
   }
 
   Transaction begin() {
@@ -53,7 +60,9 @@ class IndexedMetadata {
       this.before = before;
       String stored = before == null ? formats.getFirst() : (String) before.value().get("format");
       originalFormat = formats.indexOf(stored);
-      if (originalFormat < 0) throw new IllegalStateException("Unsupported metadata format");
+      if (originalFormat < 0) {
+        throw new IllegalStateException("Unsupported metadata format");
+      }
       format = originalFormat;
       root = before == null ? OrderedIndex.EMPTY : (String) before.value().get("root");
     }
@@ -62,8 +71,9 @@ class IndexedMetadata {
     void requireFormat(String requested) {
       check();
       int index = formats.indexOf(requested);
-      if (index < format)
+      if (index < format) {
         throw new IllegalArgumentException("Unknown format or attempted downgrade");
+      }
       format = index;
     }
 
@@ -76,7 +86,9 @@ class IndexedMetadata {
     void requireAtLeastFormat(String requested) {
       check();
       int minimum = formats.indexOf(requested);
-      if (minimum < 0) throw new IllegalArgumentException("Unknown metadata format");
+      if (minimum < 0) {
+        throw new IllegalArgumentException("Unknown metadata format");
+      }
       format = Math.max(format, minimum);
     }
 
@@ -88,7 +100,9 @@ class IndexedMetadata {
     boolean supportsFormat(String requested) {
       check();
       int minimum = formats.indexOf(requested);
-      if (minimum < 0) throw new IllegalArgumentException("Unknown metadata format");
+      if (minimum < 0) {
+        throw new IllegalArgumentException("Unknown metadata format");
+      }
       return format >= minimum;
     }
 
@@ -114,7 +128,9 @@ class IndexedMetadata {
       check();
       var selected = new TreeMap<String, String>();
       for (var entry : changes.tailMap(prefix).entrySet()) {
-        if (!entry.getKey().startsWith(prefix)) break;
+        if (!entry.getKey().startsWith(prefix)) {
+          break;
+        }
         selected.put(entry.getKey(), entry.getValue());
       }
       return Collections.unmodifiableMap(selected);
@@ -140,12 +156,14 @@ class IndexedMetadata {
               .map(v -> v.substring(1))
               .distinct()
               .toList();
-      for (int offset = 0; offset < direct.size(); offset += BlobStore.READ_BATCH_SIZE)
+      for (int offset = 0; offset < direct.size(); offset += BlobStore.READ_BATCH_SIZE) {
         blobs.prefetch(
             direct.subList(offset, Math.min(direct.size(), offset + BlobStore.READ_BATCH_SIZE)));
-      for (int offset = 0; offset < chunked.size(); offset += BlobStore.READ_BATCH_SIZE)
+      }
+      for (int offset = 0; offset < chunked.size(); offset += BlobStore.READ_BATCH_SIZE) {
         blocks.prefetch(
             chunked.subList(offset, Math.min(chunked.size(), offset + BlobStore.READ_BATCH_SIZE)));
+      }
     }
 
     void put(String key, String value) {
@@ -167,13 +185,16 @@ class IndexedMetadata {
     /** Reads its own edits while retaining the original coherent committed base cut. */
     List<OrderedIndex.Entry> page(String prefix, String after, int limit) {
       check();
-      if (limit < 1 || limit > 1024)
+      if (limit < 1 || limit > 1024) {
         throw new IllegalArgumentException("Page size must be 1..1024");
+      }
       TreeMap<String, String> selected = new TreeMap<>();
       String cursor = after;
       while (selected.size() < limit) {
         List<OrderedIndex.Entry> base = index.page(root, prefix, cursor, limit);
-        if (base.isEmpty()) break;
+        if (base.isEmpty()) {
+          break;
+        }
         prefetchValues(
             base.stream()
                 .filter(e -> !changes.containsKey(e.key()))
@@ -182,19 +203,33 @@ class IndexedMetadata {
         for (var entry : base) {
           String value =
               changes.containsKey(entry.key()) ? changes.get(entry.key()) : decode(entry.value());
-          if (value != null) selected.put(entry.key(), value);
+          if (value != null) {
+            selected.put(entry.key(), value);
+          }
         }
         cursor = base.getLast().key();
-        if (base.size() < limit) break;
+        if (base.size() < limit) {
+          break;
+        }
       }
-      while (selected.size() > limit) selected.pollLastEntry();
+      while (selected.size() > limit) {
+        selected.pollLastEntry();
+      }
       String lower = after == null || after.compareTo(prefix) < 0 ? prefix : after;
       for (var change :
           changes.tailMap(lower, after == null || after.compareTo(prefix) < 0).entrySet()) {
-        if (!change.getKey().startsWith(prefix)) break;
-        if (selected.size() >= limit && change.getKey().compareTo(selected.lastKey()) > 0) break;
-        if (change.getValue() != null) selected.put(change.getKey(), change.getValue());
-        if (selected.size() > limit) selected.pollLastEntry();
+        if (!change.getKey().startsWith(prefix)) {
+          break;
+        }
+        if (selected.size() >= limit && change.getKey().compareTo(selected.lastKey()) > 0) {
+          break;
+        }
+        if (change.getValue() != null) {
+          selected.put(change.getKey(), change.getValue());
+        }
+        if (selected.size() > limit) {
+          selected.pollLastEntry();
+        }
       }
       return selected.entrySet().stream()
           .limit(limit)
@@ -207,18 +242,21 @@ class IndexedMetadata {
       check();
       beforeCommit(this);
       finished = true;
-      if (changes.isEmpty() && writes.isEmpty() && checks.isEmpty() && format == originalFormat)
+      if (changes.isEmpty() && writes.isEmpty() && checks.isEmpty() && format == originalFormat) {
         return true;
+      }
       TreeMap<String, String> encoded = new TreeMap<>();
       changes.forEach((key, value) -> encoded.put(key, encode(value)));
       String next = index.update(root, encoded);
-      if (!changes.isEmpty() || format != originalFormat)
+      if (!changes.isEmpty() || format != originalFormat) {
         writes.add(
             AtomicStore.Write.put(
                 manifest,
                 before == null ? 0 : before.version(),
                 Map.of("format", formats.get(format), "root", next)));
-      else checks.add(new AtomicStore.Check(manifest, before == null ? 0 : before.version()));
+      } else {
+        checks.add(new AtomicStore.Check(manifest, before == null ? 0 : before.version()));
+      }
       if (writes.stream().anyMatch(w -> w.key().partition().startsWith("CORE_EVENT_OUTBOX#"))) {
         blobs.flushDurably();
         return CoreEventSource.commit(repository.store, writes, checks);
@@ -227,24 +265,36 @@ class IndexedMetadata {
     }
 
     private void check() {
-      if (finished) throw new IllegalStateException("Metadata transaction is finished");
+      if (finished) {
+        throw new IllegalStateException("Metadata transaction is finished");
+      }
     }
 
     private String encode(String value) {
-      if (value == null) return null;
+      if (value == null) {
+        return null;
+      }
       byte[] bytes = value.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-      if (bytes.length <= 1024) return "0" + value;
+      if (bytes.length <= 1024) {
+        return "0" + value;
+      }
       // Small protected records fit one authenticated page; no extra chunk manifest read.
       return bytes.length <= 64 * 1024 ? "2" + blobs.put(bytes) : "1" + blocks.put(bytes);
     }
 
     private String decode(String stored) {
-      if (stored == null) return null;
-      if (stored.startsWith("0")) return stored.substring(1);
-      if (stored.startsWith("2"))
+      if (stored == null) {
+        return null;
+      }
+      if (stored.startsWith("0")) {
+        return stored.substring(1);
+      }
+      if (stored.startsWith("2")) {
         return new String(blobs.get(stored.substring(1)), java.nio.charset.StandardCharsets.UTF_8);
-      if (stored.startsWith("1"))
+      }
+      if (stored.startsWith("1")) {
         return new String(blocks.get(stored.substring(1)), java.nio.charset.StandardCharsets.UTF_8);
+      }
       throw new IllegalStateException("Invalid metadata value");
     }
   }

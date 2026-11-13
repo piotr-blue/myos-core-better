@@ -1,7 +1,11 @@
 package myos.better;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 
 /**
@@ -37,28 +41,40 @@ final class CoreEventProjection implements AutoCloseable {
   }
 
   synchronized void start() {
-    if (started || stopped) return;
+    if (started || stopped) {
+      return;
+    }
     started = true;
-    if (notifications != null) notifications.listen(listener);
+    if (notifications != null) {
+      notifications.listen(listener);
+    }
     schedule(0);
   }
 
   synchronized void wake(String account) {
-    if (stopped) return;
+    if (stopped) {
+      return;
+    }
     // Overflow is safe: each new source fact remains in the durable work index.
-    if (accounts.size() < 1024) accounts.add(account);
+    if (accounts.size() < 1024) {
+      accounts.add(account);
+    }
     if (started && !running) {
-      if (scheduled != null) scheduled.cancel(false);
+      if (scheduled != null) {
+        scheduled.cancel(false);
+      }
       schedule(0);
     }
   }
 
   private void committed(List<AtomicStore.Write> writes) {
-    for (var write : writes)
+    for (var write : writes) {
       if (write.next() != null
           && write.expected() == 0
-          && write.key().partition().startsWith("CORE_EVENT_OUTBOX#"))
+          && write.key().partition().startsWith("CORE_EVENT_OUTBOX#")) {
         wake(write.key().partition().substring("CORE_EVENT_OUTBOX#".length()));
+      }
+    }
   }
 
   /** One bounded turn, callable without scheduler sleeps in durability tests. */
@@ -68,11 +84,13 @@ final class CoreEventProjection implements AutoCloseable {
       after = page.after();
       for (var row : page.rows()) {
         String partition = row.key().partition();
-        if (!partition.startsWith("CORE_EVENT_OUTBOX#"))
+        if (!partition.startsWith("CORE_EVENT_OUTBOX#")) {
           throw new IllegalStateException("Invalid event work index");
+        }
         synchronized (this) {
-          if (accounts.size() < 1024)
+          if (accounts.size() < 1024) {
             accounts.add(partition.substring("CORE_EVENT_OUTBOX#".length()));
+          }
         }
       }
       nextDiscovery = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
@@ -81,13 +99,17 @@ final class CoreEventProjection implements AutoCloseable {
     for (; processed < 4; processed++) {
       String account;
       synchronized (this) {
-        if (accounts.isEmpty() || stopped) break;
+        if (accounts.isEmpty() || stopped) {
+          break;
+        }
         account = accounts.iterator().next();
         accounts.remove(account);
       }
       try {
         events.project(account);
-        if (events.pending(account)) wake(account);
+        if (events.pending(account)) {
+          wake(account);
+        }
       } catch (RuntimeException failure) {
         wake(account);
         throw failure;
@@ -97,13 +119,16 @@ final class CoreEventProjection implements AutoCloseable {
   }
 
   private synchronized void schedule(long delay) {
-    if (!stopped)
+    if (!stopped) {
       scheduled = worker.schedule(health.guard(this::run), delay, TimeUnit.MILLISECONDS);
+    }
   }
 
   private void run() {
     synchronized (this) {
-      if (stopped) return;
+      if (stopped) {
+        return;
+      }
       running = true;
     }
     boolean failed = false;
@@ -128,15 +153,20 @@ final class CoreEventProjection implements AutoCloseable {
   @Override
   public void close() {
     synchronized (this) {
-      if (stopped) return;
+      if (stopped) {
+        return;
+      }
       stopped = true;
       accounts.clear();
-      if (notifications != null) notifications.unlisten(listener);
+      if (notifications != null) {
+        notifications.unlisten(listener);
+      }
       worker.shutdownNow();
     }
     try {
-      if (!worker.awaitTermination(25, TimeUnit.SECONDS))
+      if (!worker.awaitTermination(25, TimeUnit.SECONDS)) {
         throw new IllegalStateException("Event projection did not stop");
+      }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Interrupted while stopping event projection");

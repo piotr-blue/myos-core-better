@@ -1,7 +1,11 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /** Isolated member relationship reads after execution eviction; no AWS or HTTP. */
 public final class GraphRelationshipsReadProbe {
@@ -16,7 +20,9 @@ public final class GraphRelationshipsReadProbe {
     long expectedLoads = Long.getLong("myos.probe.expectedLoads", 0L);
     for (int count : List.of(16, 256, 1024)) {
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       String source =
           JsonText.of(
               Map.of(
@@ -64,10 +70,13 @@ public final class GraphRelationshipsReadProbe {
           long start = System.nanoTime();
           var actual = reader.relationships("initial", selected.member());
           double millis = (System.nanoTime() - start) / 1e6;
-          if (!selected.expected().equals(actual))
+          if (!selected.expected().equals(actual)) {
             throw new AssertionError("Wrong relationship endpoints or occurrence");
+          }
           long loads = reader.statistics().get("graphSessions.loads");
-          if (loads != expectedLoads) throw new AssertionError("Unexpected execution session load");
+          if (loads != expectedLoads) {
+            throw new AssertionError("Unexpected execution session load");
+          }
           samples.add(Map.of("millis", millis, "sessionLoads", loads, "warmup", i < 2));
         }
       }

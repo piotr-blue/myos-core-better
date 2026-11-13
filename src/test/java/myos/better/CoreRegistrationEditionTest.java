@@ -1,10 +1,14 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import blue.*;
+import blue.Contracts;
+import blue.Language;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class CoreRegistrationEditionTest {
@@ -37,8 +41,11 @@ class CoreRegistrationEditionTest {
               .code);
       assertEquals(1, ((List<?>) documents.list("owner", null).get("items")).size());
     } finally {
-      if (previous == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", previous);
+      if (previous == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", previous);
+      }
     }
   }
 

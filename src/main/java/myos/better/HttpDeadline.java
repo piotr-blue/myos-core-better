@@ -3,7 +3,11 @@ package myos.better;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.InputStream;
 import java.time.Duration;
-import java.util.concurrent.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /** A wall-clock transfer budget, including blocking request reads and downstream writes. */
 final class HttpDeadline implements AutoCloseable {
@@ -45,8 +49,9 @@ final class HttpDeadline implements AutoCloseable {
       Duration duration,
       HttpCancellation cancellation,
       ExchangeClose exchangeClose) {
-    if (duration.isZero() || duration.isNegative())
+    if (duration.isZero() || duration.isNegative()) {
       throw new IllegalArgumentException("Positive HTTP budget required");
+    }
     this.exchange = exchange;
     this.cancellation = cancellation;
     this.exchangeClose = exchangeClose;
@@ -55,7 +60,9 @@ final class HttpDeadline implements AutoCloseable {
   }
 
   synchronized void attachThread() throws InterruptedException {
-    if (expired || finished) throw new InterruptedException("HTTP transfer ended");
+    if (expired || finished) {
+      throw new InterruptedException("HTTP transfer ended");
+    }
     thread = Thread.currentThread();
   }
 
@@ -65,7 +72,9 @@ final class HttpDeadline implements AutoCloseable {
       upstream = value;
       cancel = expired || finished;
     }
-    if (cancel) value.cancel(true);
+    if (cancel) {
+      value.cancel(true);
+    }
   }
 
   void input(InputStream value) throws java.io.IOException {
@@ -85,8 +94,12 @@ final class HttpDeadline implements AutoCloseable {
 
   /** Reset a phase/idle budget, without extending the whole request's deadline. */
   synchronized void phase(Duration duration) {
-    if (expired || finished) return;
-    if (alarm != null) alarm.cancel(false);
+    if (expired || finished) {
+      return;
+    }
+    if (alarm != null) {
+      alarm.cancel(false);
+    }
     long remaining = Math.min(duration.toNanos(), end - System.nanoTime());
     long expected = ++generation;
     alarm = CLOCK.schedule(() -> expire(expected), Math.max(0, remaining), TimeUnit.NANOSECONDS);
@@ -99,20 +112,28 @@ final class HttpDeadline implements AutoCloseable {
   private void expire(long expected) {
     HttpCancellation.Job job;
     synchronized (this) {
-      if (expired || finished || expected >= 0 && expected != generation) return;
+      if (expired || finished || expected >= 0 && expected != generation) {
+        return;
+      }
       expired = true;
       // Marks only: the shared deadline clock must never run a trace sink or perform I/O.
-      if (alarm != null) alarm.cancel(false);
+      if (alarm != null) {
+        alarm.cancel(false);
+      }
       var pending = upstream;
       var body = input;
       job =
           cancellation.job(
               () -> {
                 try {
-                  if (pending != null) pending.cancel(true);
+                  if (pending != null) {
+                    pending.cancel(true);
+                  }
                 } finally {
                   try {
-                    if (body != null) body.close();
+                    if (body != null) {
+                      body.close();
+                    }
                   } catch (java.io.IOException failure) {
                     throw new java.io.UncheckedIOException(failure);
                   } finally {
@@ -123,7 +144,9 @@ final class HttpDeadline implements AutoCloseable {
       cleanup = job;
       // Interrupt while holding the state lock: close() must detach this thread
       // before it can be returned to a pool and reused by a different request.
-      if (thread != null) thread.interrupt();
+      if (thread != null) {
+        thread.interrupt();
+      }
     }
     cancellation.submit(job);
   }
@@ -138,14 +161,18 @@ final class HttpDeadline implements AutoCloseable {
     HttpCancellation.Job job;
     synchronized (this) {
       finished = true;
-      if (alarm != null) alarm.cancel(false);
+      if (alarm != null) {
+        alarm.cancel(false);
+      }
       thread = null;
       upstream = null;
       input = null;
       job = cleanup;
     }
     try {
-      if (job != null) job.finishOnOwner();
+      if (job != null) {
+        job.finishOnOwner();
+      }
     } catch (RuntimeException | Error failure) {
       throw failure;
     }
@@ -174,7 +201,9 @@ final class HttpDeadline implements AutoCloseable {
         try {
           completed.join();
         } catch (CompletionException failure) {
-          if (failure.getCause() instanceof Error error) throw error;
+          if (failure.getCause() instanceof Error error) {
+            throw error;
+          }
           throw (RuntimeException) failure.getCause();
         }
       }

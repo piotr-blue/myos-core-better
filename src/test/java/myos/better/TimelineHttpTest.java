@@ -1,15 +1,25 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import blue.*;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageRecord;
 import java.math.BigInteger;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -276,7 +286,9 @@ class TimelineHttpTest {
     void awaitCount(String document, long expected) throws Exception {
       long deadline = System.nanoTime() + Duration.ofSeconds(5).toNanos();
       while (!BigInteger.valueOf(expected).equals(count(document))) {
-        if (System.nanoTime() >= deadline) fail("Parent propagation did not complete");
+        if (System.nanoTime() >= deadline) {
+          fail("Parent propagation did not complete");
+        }
         Thread.sleep(10);
       }
     }

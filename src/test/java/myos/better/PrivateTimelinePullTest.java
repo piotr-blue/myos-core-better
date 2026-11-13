@@ -1,12 +1,25 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import blue.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.TimelineRequests;
 import java.time.Duration;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 /** Transport authority is source-bound and independent of receiver/business admission. */
 class PrivateTimelinePullTest {
@@ -78,7 +91,9 @@ class PrivateTimelinePullTest {
     void signedPaginationRetainsOriginalEvidenceButNotReplayableReaderEnvelopes() throws Exception {
       PrivateTimelineTransportFixture f = new PrivateTimelineTransportFixture();
       f.grant();
-      for (int i = 0; i < 3; i++) f.append(i);
+      for (int i = 0; i < 3; i++) {
+        f.append(i);
+      }
       TimelineArchive archive = f.archive();
       TimelinePull pull =
           new TimelinePull(
@@ -151,8 +166,9 @@ class PrivateTimelinePullTest {
       assertEquals(1, new TimelinePull(archive, f, f.signing).acquire().entries().size());
       assertEquals(1, f.contentRequests);
       assertEquals(42, f.archive().content(1).read(leaf.blueId()).at("/amount").integer());
-      for (LanguageContent envelope : f.signed)
+      for (LanguageContent envelope : f.signed) {
         assertFalse(archive.readContext(Map.of()).available().test(envelope.blueId()));
+      }
       assertTrue(new TimelinePull(f.archive(), f, f.signing).acquire().duplicate());
       assertEquals(1, f.contentRequests, "Retained closure avoids repeated content requests");
     }
@@ -165,7 +181,9 @@ class PrivateTimelinePullTest {
       TimelineTransport corrupt =
           (target, request, maximum, timeout) -> {
             TimelineTransport.Reply reply = f.exchange(target, request, maximum, timeout);
-            if (!target.getPath().endsWith("/timelines/content")) return reply;
+            if (!target.getPath().endsWith("/timelines/content")) {
+              return reply;
+            }
             LanguageContent asked =
                 f.publisher.signing.language().prepare(Language.Input.exactJson(request));
             return new TimelineTransport.Reply(
@@ -197,8 +215,9 @@ class PrivateTimelinePullTest {
       TimelineTransport slow =
           (target, request, maximum, timeout) -> {
             TimelineTransport.Reply reply = f.exchange(target, request, maximum, timeout);
-            if (target.getPath().endsWith("/timelines/content"))
+            if (target.getPath().endsWith("/timelines/content")) {
               clock.set(Duration.ofSeconds(30).toNanos());
+            }
             return reply;
           };
       TimelinePull pull = new TimelinePull(control, slow, TimelinePull.Limits.STANDARD, clock::get);
@@ -294,7 +313,9 @@ class PrivateTimelinePullTest {
       throws InterruptedException {
     long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(10);
     while (!condition.getAsBoolean()) {
-      if (System.nanoTime() > deadline) fail("Private acquisition did not reach expected state");
+      if (System.nanoTime() > deadline) {
+        fail("Private acquisition did not reach expected state");
+      }
       Thread.sleep(10);
     }
   }

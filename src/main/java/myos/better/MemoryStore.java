@@ -33,11 +33,17 @@ final class MemoryStore implements AtomicStore, PublicDirectoryInventory {
   @Override
   public synchronized Page query(String partition, String prefix, String after, int limit) {
     NavigableMap<String, Row> rows = partitions.get(partition);
-    if (rows == null) return new Page(List.of(), null);
+    if (rows == null) {
+      return new Page(List.of(), null);
+    }
     List<Row> selected = new ArrayList<>();
     for (Row row : rows.tailMap(after == null ? prefix : after, after == null).values()) {
-      if (!row.key().sort().startsWith(prefix)) break;
-      if (selected.size() == limit) return new Page(selected, selected.getLast().key().sort());
+      if (!row.key().sort().startsWith(prefix)) {
+        break;
+      }
+      if (selected.size() == limit) {
+        return new Page(selected, selected.getLast().key().sort());
+      }
       selected.add(row);
     }
     return new Page(selected, null);
@@ -45,14 +51,20 @@ final class MemoryStore implements AtomicStore, PublicDirectoryInventory {
 
   @Override
   public synchronized Page work(String shard, String after, int limit) {
-    if (limit < 1) throw new IllegalArgumentException("Positive page size required");
+    if (limit < 1) {
+      throw new IllegalArgumentException("Positive page size required");
+    }
     NavigableMap<String, Row> rows = work.get(shard);
-    if (rows == null) return new Page(List.of(), null);
+    if (rows == null) {
+      return new Page(List.of(), null);
+    }
     var remaining = after == null ? rows : rows.tailMap(after, false);
     List<Row> selected = new ArrayList<>();
     String last = null;
     for (var entry : remaining.entrySet()) {
-      if (selected.size() == limit) return new Page(selected, last);
+      if (selected.size() == limit) {
+        return new Page(selected, last);
+      }
       selected.add(entry.getValue());
       last = entry.getKey();
     }
@@ -62,44 +74,68 @@ final class MemoryStore implements AtomicStore, PublicDirectoryInventory {
   private void index(Row row, boolean add) {
     if (CorePublicDirectory.relevant(row.key())) {
       String key = row.key().partition() + "\0" + row.key().sort();
-      if (add) publicProfiles.put(key, row);
-      else publicProfiles.remove(key);
+      if (add) {
+        publicProfiles.put(key, row);
+      } else {
+        publicProfiles.remove(key);
+      }
     }
     NavigableMap<String, Row> partition =
         partitions.computeIfAbsent(row.key().partition(), ignored -> new TreeMap<>());
-    if (add) partition.put(row.key().sort(), row);
-    else partition.remove(row.key().sort());
-    if (partition.isEmpty()) partitions.remove(row.key().partition());
+    if (add) {
+      partition.put(row.key().sort(), row);
+    } else {
+      partition.remove(row.key().sort());
+    }
+    if (partition.isEmpty()) {
+      partitions.remove(row.key().partition());
+    }
     Object shard = row.value().get("work");
     if (shard != null) {
       NavigableMap<String, Row> queue =
           work.computeIfAbsent(shard.toString(), ignored -> new TreeMap<>());
       String key =
           row.value().get("position") + "\0" + row.key().partition() + "\0" + row.key().sort();
-      if (add) queue.put(key, row);
-      else queue.remove(key);
-      if (queue.isEmpty()) work.remove(shard.toString());
+      if (add) {
+        queue.put(key, row);
+      } else {
+        queue.remove(key);
+      }
+      if (queue.isEmpty()) {
+        work.remove(shard.toString());
+      }
     }
   }
 
   @Override
   public synchronized boolean commit(List<Write> writes, List<Check> checks) {
-    if (writes.isEmpty() && checks.isEmpty() || writes.size() + checks.size() > 100)
+    if (writes.isEmpty() && checks.isEmpty() || writes.size() + checks.size() > 100) {
       throw new IllegalArgumentException("Transaction must contain 1..100 items");
+    }
     var unique = new java.util.HashSet<Key>();
     for (Write write : writes) {
-      if (!unique.add(write.key())) throw new IllegalArgumentException("Duplicate transaction key");
+      if (!unique.add(write.key())) {
+        throw new IllegalArgumentException("Duplicate transaction key");
+      }
       Row previous = records.get(write.key());
-      if ((previous == null ? 0 : previous.version()) != write.expected()) return false;
+      if ((previous == null ? 0 : previous.version()) != write.expected()) {
+        return false;
+      }
     }
     for (Check check : checks) {
-      if (!unique.add(check.key())) throw new IllegalArgumentException("Duplicate transaction key");
+      if (!unique.add(check.key())) {
+        throw new IllegalArgumentException("Duplicate transaction key");
+      }
       Row previous = records.get(check.key());
-      if ((previous == null ? 0 : previous.version()) != check.version()) return false;
+      if ((previous == null ? 0 : previous.version()) != check.version()) {
+        return false;
+      }
     }
     for (Write write : writes) {
       Row old = records.remove(write.key());
-      if (old != null) index(old, false);
+      if (old != null) {
+        index(old, false);
+      }
       if (write.next() != null) {
         records.put(write.key(), write.next());
         index(write.next(), true);
@@ -113,7 +149,9 @@ final class MemoryStore implements AtomicStore, PublicDirectoryInventory {
   @Override
   public synchronized byte[] content(String account, String identity) {
     byte[] bytes = content.get(account + ":" + identity);
-    if (bytes == null) throw new IllegalStateException("Missing content: " + identity);
+    if (bytes == null) {
+      throw new IllegalStateException("Missing content: " + identity);
+    }
     return bytes.clone();
   }
 
@@ -121,8 +159,9 @@ final class MemoryStore implements AtomicStore, PublicDirectoryInventory {
   public synchronized void publishContent(String account, Map<String, byte[]> pages) {
     pages.forEach(
         (identity, bytes) -> {
-          if (!Json.hash(bytes).equals(identity))
+          if (!Json.hash(bytes).equals(identity)) {
             throw new IllegalArgumentException("Invalid content identity");
+          }
           content.putIfAbsent(account + ":" + identity, bytes.clone());
         });
   }

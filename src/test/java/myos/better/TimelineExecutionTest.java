@@ -1,11 +1,21 @@
 package myos.better;
 
-import static myos.better.NativeAdmissionFixture.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.NativeAdmissionFixture.EVENT;
+import static myos.better.NativeAdmissionFixture.NAMESPACE;
+import static myos.better.NativeAdmissionFixture.SOURCE;
+import static myos.better.NativeAdmissionFixture.TYPE;
+import static myos.better.NativeAdmissionFixture.permitIdentity;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueId;
+import blue.LanguageContent;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -268,30 +278,38 @@ class TimelineExecutionTest {
     Runnable beforeCommit;
     boolean loseResponse;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String id) {
       return delegate.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       Runnable action = beforeCommit;
       beforeCommit = null;
-      if (action != null) action.run();
+      if (action != null) {
+        action.run();
+      }
       boolean result = delegate.commit(writes, checks);
       if (result && loseResponse) {
         loseResponse = false;

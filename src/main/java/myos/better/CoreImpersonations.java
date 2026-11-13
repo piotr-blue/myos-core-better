@@ -3,7 +3,11 @@ package myos.better;
 import java.nio.charset.StandardCharsets;
 import java.security.SecureRandom;
 import java.time.Clock;
-import java.util.*;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Independently revocable one-hour user sessions; bearer secrets are never stored in plain text.
@@ -45,9 +49,10 @@ final class CoreImpersonations {
     administrators.session(actor);
     Repository.identifier(user);
     Repository.identifier(command);
-    if (secrets == null)
+    if (secrets == null) {
       throw new ConsoleProblem(
           503, "impersonation_unavailable", "Session encryption is not configured.");
+    }
     var issuance =
         new AtomicStore.Key(
             "CORE_IMPERSONATION_ISSUER#" + actor.tokenDigest(), "REQUEST#" + command);
@@ -55,13 +60,15 @@ final class CoreImpersonations {
       administrators.session(actor);
       var previous = store.get(issuance);
       if (previous != null) {
-        if (!user.equals(previous.value().get("userId")))
+        if (!user.equals(previous.value().get("userId"))) {
           throw new ConsoleProblem(
               409, "idempotency_conflict", "The impersonation target changed.");
+        }
         var retained = store.get(key((String) previous.value().get("digest")));
-        if (!active(retained, clock.millis()))
+        if (!active(retained, clock.millis())) {
           throw new ConsoleProblem(
               409, "impersonation_expired", "Start a new impersonation session.");
+        }
         return Json.object(
             secrets
                 .open((String) previous.value().get("sealed"), context(issuance))
@@ -75,9 +82,10 @@ final class CoreImpersonations {
       if (profile == null
           || identity == null
           || !(identity.value().get("email") instanceof String email)
-          || email.isBlank())
+          || email.isBlank()) {
         throw new ConsoleProblem(
             404, "user_not_found", "A known user with a verified email is required.");
+      }
       byte[] random = new byte[32];
       RANDOM.nextBytes(random);
       String token = PREFIX + Base64.getUrlEncoder().withoutPadding().encodeToString(random);
@@ -143,17 +151,22 @@ final class CoreImpersonations {
               AtomicStore.Write.put(issuance, 0, receipt)),
           List.of(
               new AtomicStore.Check(profileKey, profile.version()),
-              new AtomicStore.Check(identityKey, identity.version()))))
+              new AtomicStore.Check(identityKey, identity.version())))) {
         return Json.object(Json.bytes(result));
+      }
     }
     throw new ConsoleProblem(503, "session_conflict", "Retry with the same idempotency key.");
   }
 
   ConsolePrincipal verify(String token, boolean allowEnded) {
-    if (token == null || !token.matches("core_i_[A-Za-z0-9_-]{43}")) throw expired();
+    if (token == null || !token.matches("core_i_[A-Za-z0-9_-]{43}")) {
+      throw expired();
+    }
     String digest = digest(token);
     var row = store.get(key(digest));
-    if (row == null || !allowEnded && !active(row, clock.millis())) throw expired();
+    if (row == null || !allowEnded && !active(row, clock.millis())) {
+      throw expired();
+    }
     var metadata = metadata(row);
     var identity = new Identity(digest, metadata);
     return new ConsolePrincipal(
@@ -185,13 +198,19 @@ final class CoreImpersonations {
     try (var ignored = enter(session.principal(), true)) {
       for (int attempt = 0; attempt < 8; attempt++) {
         var row = store.get(key(identity.digest()));
-        if (row == null || !identity.metadata().equals(metadata(row))) throw expired();
-        if ("ENDED".equals(row.value().get("status"))) return Map.of("ended", true);
+        if (row == null || !identity.metadata().equals(metadata(row))) {
+          throw expired();
+        }
+        if ("ENDED".equals(row.value().get("status"))) {
+          return Map.of("ended", true);
+        }
         var next = new LinkedHashMap<>(row.value());
         next.put("status", "ENDED");
         next.put("endedAt", clock.millis());
-        if (store.commit(List.of(AtomicStore.Write.put(row.key(), row.version(), next)), List.of()))
+        if (store.commit(
+            List.of(AtomicStore.Write.put(row.key(), row.version(), next)), List.of())) {
           return Map.of("ended", true);
+        }
       }
     }
     throw new ConsoleProblem(503, "session_conflict", "Retry ending this session.");
@@ -199,7 +218,9 @@ final class CoreImpersonations {
 
   static AtomicStore.Check guard(AtomicStore store, String digest, long now) {
     var row = store.get(key(digest));
-    if (!active(row, now)) throw expired();
+    if (!active(row, now)) {
+      throw expired();
+    }
     return new AtomicStore.Check(row.key(), row.version());
   }
 
@@ -207,9 +228,10 @@ final class CoreImpersonations {
     var identity = session.principal().impersonation();
     if (identity == null
         || !identity.digest().equals(session.tokenDigest())
-        || !identity.userId().equals(session.userId()))
+        || !identity.userId().equals(session.userId())) {
       throw new ConsoleProblem(
           404, "impersonation_not_found", "This is not an impersonation session.");
+    }
     return identity;
   }
 
@@ -220,8 +242,9 @@ final class CoreImpersonations {
   }
 
   private static Map<String, Object> metadata(AtomicStore.Row row) {
-    if (!"myos.impersonation/1".equals(row.value().get("format")))
+    if (!"myos.impersonation/1".equals(row.value().get("format"))) {
       throw new IllegalStateException("Unsupported impersonation record");
+    }
     return RuntimeConfiguration.object(row.value().get("metadata"), "impersonation metadata");
   }
 

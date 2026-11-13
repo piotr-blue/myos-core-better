@@ -1,10 +1,15 @@
 package myos.better;
 
-import static myos.better.OwnerTimeIntegrationTest.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.OwnerTimeIntegrationTest.ACCOUNT;
+import static myos.better.OwnerTimeIntegrationTest.ROOT;
+import static myos.better.OwnerTimeIntegrationTest.TWO_STAGES;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Duration;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import myos.better.OwnerTimeIntegrationTest.Fixture;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -62,26 +67,32 @@ class OwnerTimeCommitRecoveryTest {
       after = afterCommit;
     }
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String cursor, int limit) {
       return delegate.query(partition, prefix, cursor, limit);
     }
 
+    @Override
     public Page work(String shard, String cursor, int limit) {
       return delegate.work(shard, cursor, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean fail =
           armed
@@ -91,10 +102,13 @@ class OwnerTimeCommitRecoveryTest {
         armed = false;
         faulted = true;
       }
-      if (fail && !after)
+      if (fail && !after) {
         throw new IllegalStateException("Injected failure before publication commit");
+      }
       boolean committed = delegate.commit(writes, checks);
-      if (fail && committed) throw new IllegalStateException("Injected lost publication response");
+      if (fail && committed) {
+        throw new IllegalStateException("Injected lost publication response");
+      }
       return committed;
     }
   }

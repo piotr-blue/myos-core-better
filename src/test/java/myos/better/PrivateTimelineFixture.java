@@ -1,10 +1,14 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.ProviderSigning.ref;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /** Canonical access publisher, private importer, public control archive and durable receiver. */
 final class PrivateTimelineFixture implements AutoCloseable {
@@ -178,7 +182,9 @@ final class PrivateTimelineFixture implements AutoCloseable {
   TimelineTransport transport() {
     NativeTimelineApi api = new NativeTimelineApi(publisher.host, publisher.signing);
     return (target, request, maximum, timeout) -> {
-      if (request == null) return new TimelineTransport.Reply(200, Json.bytes(api.descriptor()));
+      if (request == null) {
+        return new TimelineTransport.Reply(200, Json.bytes(api.descriptor()));
+      }
       String route =
           target.toString().substring(publisher.protocol.provider.at("/endpoint").text().length());
       return new TimelineTransport.Reply(
@@ -191,7 +197,10 @@ final class PrivateTimelineFixture implements AutoCloseable {
     };
   }
 
+  @Override
   public void close() {
-    if (core != null) core.close();
+    if (core != null) {
+      core.close();
+    }
   }
 }

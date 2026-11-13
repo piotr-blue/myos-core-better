@@ -1,10 +1,18 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.Language;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class CoreDocumentTypeFilterTest {
@@ -15,7 +23,9 @@ class CoreDocumentTypeFilterTest {
       String base = f.type("Base", null), child = f.type("Child", base);
       String nested = f.type("Nested", child), sibling = f.type("Sibling", base);
       Set<String> all = new HashSet<>();
-      for (String type : List.of(base, child, nested, sibling)) all.add(f.document(type, type));
+      for (String type : List.of(base, child, nested, sibling)) {
+        all.add(f.document(type, type));
+      }
       f.document("untyped", null);
       assertEquals(all, f.ids(Map.of("typeBlueId", base)));
       assertEquals(2, f.ids(Map.of("typeBlueId", child)).size());
@@ -34,7 +44,9 @@ class CoreDocumentTypeFilterTest {
     try (var f = new Fixture()) {
       String a = f.type("A", null), b = f.type("B", null);
       Set<String> expected = new HashSet<>();
-      for (int i = 0; i < 5; i++) expected.add(f.document("doc-" + i, i % 2 == 0 ? a : b));
+      for (int i = 0; i < 5; i++) {
+        expected.add(f.document("doc-" + i, i % 2 == 0 ? a : b));
+      }
       Map<String, String> query = Map.of("typeBlueIds", b + "," + a + "," + b, "limit", "2");
       var first = f.api.list("alice", query);
       var found = new HashSet<>(ids(first));
@@ -75,7 +87,9 @@ class CoreDocumentTypeFilterTest {
             f.restart()
                 .list(
                     "alice", Map.of("typeBlueIds", a + "," + b, "limit", "2", "pageToken", token));
-        for (String id : ids(page)) assertTrue(found.add(id), "Duplicate pagination result");
+        for (String id : ids(page)) {
+          assertTrue(found.add(id), "Duplicate pagination result");
+        }
         token = (String) page.get("nextPageToken");
       }
       assertEquals(expected, found);
@@ -110,8 +124,9 @@ class CoreDocumentTypeFilterTest {
       String type = f.type("Private retained type", null);
       String id = f.document("private", type);
       var before = f.documents.head("alice", id);
-      for (int i = 0; i < 3; i++)
+      for (int i = 0; i < 3; i++) {
         assertEquals(Set.of(id), ids(f.restart().list("alice", Map.of("typeBlueId", type))));
+      }
       assertEquals(before, f.documents.head("alice", id));
       assertEquals(1L, before.get("version"));
     }
@@ -119,8 +134,9 @@ class CoreDocumentTypeFilterTest {
 
   private static Set<String> ids(Map<String, Object> page) {
     Set<String> result = new HashSet<>();
-    for (Object raw : (List<?>) page.get("items"))
+    for (Object raw : (List<?>) page.get("items")) {
       result.add((String) ((Map<?, ?>) raw).get("sessionId"));
+    }
     return result;
   }
 
@@ -141,7 +157,9 @@ class CoreDocumentTypeFilterTest {
     String type(String name, String parent) {
       Map<String, Object> definition = new LinkedHashMap<>();
       definition.put("name", name);
-      if (parent != null) definition.put("type", Map.of("blueId", parent));
+      if (parent != null) {
+        definition.put("type", Map.of("blueId", parent));
+      }
       var result = contents.create("alice", Map.of("content", definition, "goal", "definition"));
       return (String) ((Map<?, ?>) result.get("contentRef")).get("blueId");
     }
@@ -149,7 +167,9 @@ class CoreDocumentTypeFilterTest {
     String document(String name, String type) {
       var source = new LinkedHashMap<String, Object>();
       source.put("name", name);
-      if (type != null) source.put("type", Map.of("blueId", type));
+      if (type != null) {
+        source.put("type", Map.of("blueId", type));
+      }
       return (String) api.create("alice", name, Map.of("document", source)).get("sessionId");
     }
 
@@ -157,6 +177,7 @@ class CoreDocumentTypeFilterTest {
       return CoreDocumentTypeFilterTest.ids(api.list("alice", query));
     }
 
+    @Override
     public void close() {
       core.close();
       store.close();

@@ -1,7 +1,12 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.AdmissionEvidence;
+import blue.Contracts;
+import blue.Language;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Bounded native child additions; includes physical index publication, with setup separate. */
 public final class GraphTopologyWriteProbe {
@@ -13,7 +18,9 @@ public final class GraphTopologyWriteProbe {
     var results = new ArrayList<Object>();
     for (int count : List.of(16, 256, 1024)) {
       var children = new LinkedHashMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       var rules = new LinkedHashMap<String, Object>();
       rules.put(
           "embedded",
@@ -62,7 +69,9 @@ public final class GraphTopologyWriteProbe {
                   i,
                   AdmissionEvidence.empty());
           double millis = (System.nanoTime() - started) / 1e6;
-          if (!"APPLIED".equals(result.status())) throw new AssertionError(result.status());
+          if (!"APPLIED".equals(result.status())) {
+            throw new AssertionError(result.status());
+          }
           samples.add(
               Map.of(
                   "input",
@@ -82,7 +91,9 @@ public final class GraphTopologyWriteProbe {
         }
         int members =
             graphs.inspect("topology", "graph-topology", c -> c.session().graph().members().size());
-        if (members != count + 7) throw new AssertionError("Added children were not initialized");
+        if (members != count + 7) {
+          throw new AssertionError("Added children were not initialized");
+        }
         results.add(
             Map.of(
                 "members",

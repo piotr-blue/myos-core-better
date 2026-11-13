@@ -1,13 +1,27 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.LanguageContent;
+import blue.TimelineRequests;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import java.security.GeneralSecurityException;
+import java.security.Signature;
+import java.util.ArrayList;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 /** Portable reader authentication, current permission and source-scoped content boundaries. */
 class HostedTimelineReaderTest {
@@ -74,7 +88,9 @@ class HostedTimelineReaderTest {
 
     @Test
     void continuationRechecksCurrentGrantsAndRetainsItsOriginalHistoryBoundary() {
-      for (int i = 1; i <= 3; i++) f.host.append("alice", source.id(), "entry-" + i, f.message(i));
+      for (int i = 1; i <= 3; i++) {
+        f.host.append("alice", source.id(), "entry-" + i, f.message(i));
+      }
       LanguageContent first =
           reader.read(
               source.id(),
@@ -164,8 +180,9 @@ class HostedTimelineReaderTest {
     @Test
     void olderHistoryRequiresExplicitBoundedMigrationAndKeepsItsOriginalEntries() {
       List<HostedTimelines.Published> entries = new ArrayList<>();
-      for (int i = 0; i < 3; i++)
+      for (int i = 0; i < 3; i++) {
         entries.add(f.host.append("alice", source.id(), "entry-" + i, f.message(i)));
+      }
       AtomicStore.Key stateKey =
           new AtomicStore.Key(
               f.host.entries("alice", source.id(), null, 1).rows().getFirst().key().partition(),

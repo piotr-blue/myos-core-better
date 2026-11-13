@@ -1,7 +1,10 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Contracts;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 /** Protected native publications and host metadata share the scheduler's conditional manifest. */
 final class OwnerRecords {
@@ -72,10 +75,13 @@ final class OwnerRecords {
 
   AtomicStore.Row head(String document) {
     var publication = get("publication", document);
-    if (publication == null) throw new MissingDocument();
-    if (!EDITION.equals(publication.get("edition")))
+    if (publication == null) {
+      throw new MissingDocument();
+    }
+    if (!EDITION.equals(publication.get("edition"))) {
       throw new IllegalStateException(
           "Stored owner history requires replay under canonical invocation allocation");
+    }
     return new AtomicStore.Row(
         new AtomicStore.Key(CanonicalGraphs.partition(account, document), "HEAD"),
         Repository.number(publication.get("version")),
@@ -84,21 +90,26 @@ final class OwnerRecords {
 
   Map<String, Object> history(String document, long version) {
     var value = get("history", address(document) + "\0" + Repository.version(version));
-    if (value == null) throw new IllegalArgumentException("Unknown owner version");
+    if (value == null) {
+      throw new IllegalArgumentException("Unknown owner version");
+    }
     return value;
   }
 
   /** Resolve a unique live BlueId against the caller's immutable graph page and member history. */
   Map<String, Object> liveCheckpoint(String previousPage, blue.BlueId id) {
     var row = snapshots.liveMember(account, previousPage, id);
-    if (row == null) return null;
+    if (row == null) {
+      return null;
+    }
     String key = (String) row.get("key");
     var view = view(owner(key), id.value());
     if (view != null) {
       var history =
           history(OwnerGraphs.address(owner(key)), Repository.number(view.get("version")));
-      if (history.get("local") instanceof Map<?, ?> local && row.equals(local.get("member")))
+      if (history.get("local") instanceof Map<?, ?> local && row.equals(local.get("member"))) {
         return RuntimeConfiguration.object(local, "owner record");
+      }
     }
     throw new blue.BlueException(
         "LOCAL_EXECUTION_UNAVAILABLE", "Shared member lacks a matching checkpoint");
@@ -112,10 +123,11 @@ final class OwnerRecords {
   static void indexInput(
       OwnerMetadata.Transaction tx, String document, Map<String, Object> publication) {
     var input = RuntimeConfiguration.object(publication.get("input"), "input");
-    if (input.get("entry") instanceof String entry)
+    if (input.get("entry") instanceof String entry) {
       tx.put(
           key("input-version", document + "\0" + entry),
           Long.toString(Repository.number(publication.get("version"))));
+    }
   }
 
   Map<String, Object> checkpoint(String page) {
@@ -148,7 +160,9 @@ final class OwnerRecords {
             .map(record -> snapshots.preparation(account, record));
     if (retained.isPresent()
         || recoveringEnvelope == null
-        || !id.equals(recoveringEnvelope.get("identity"))) return retained;
+        || !id.equals(recoveringEnvelope.get("identity"))) {
+      return retained;
+    }
     return snapshots.recoveryPreparation(account, recoveringPage, recoveringEnvelope);
   }
 

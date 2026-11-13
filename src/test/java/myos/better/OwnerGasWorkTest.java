@@ -1,8 +1,11 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.Test;
 
@@ -96,8 +99,9 @@ class OwnerGasWorkTest {
         (account, owner) -> {
           assertEquals("alice", account);
           var ready = f.frontiers.ready(clock.get(), 1);
-          if (ready.isEmpty())
+          if (ready.isEmpty()) {
             return new TimelineIngress.Outcome(TimelineIngress.Status.IDLE, "No work");
+          }
           var claim = f.claim(ready.getFirst(), clock.get()).orElseThrow();
           f.complete(claim, 1);
           return new TimelineIngress.Outcome(TimelineIngress.Status.APPLIED, "Applied");

@@ -1,11 +1,15 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import java.net.*;
-import java.net.http.*;
-import java.nio.file.*;
-import java.util.*;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -78,7 +82,7 @@ class ConsoleApiKeysTest {
                   Map.of("source", "message: Hello"))
               .statusCode());
       assertEquals(404, f.get("timelines/" + timeline, "bob").statusCode());
-      for (String method : List.of("GET", "POST", "DELETE"))
+      for (String method : List.of("GET", "POST", "DELETE")) {
         assertEquals(
             403,
             request(
@@ -89,6 +93,7 @@ class ConsoleApiKeysTest {
                     "forbidden",
                     method.equals("POST") ? Map.of("name", "Escalated") : Map.of())
                 .statusCode());
+      }
       assertEquals(404, deletion(f, key, "bob").statusCode());
       assertEquals(200, deletion(f, key, "alice").statusCode());
       assertEquals(401, f.get("documents", token).statusCode());

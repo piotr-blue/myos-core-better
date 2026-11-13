@@ -1,9 +1,23 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.AdmissionEvidence;
+import blue.Bex;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /** Dashboard metadata must not restore the execution graph or admit historical content. */
@@ -14,7 +28,9 @@ class GraphMetadataTest {
     var contracts = Contracts.newBuilder().language(language).build();
     var store = new ContentGuard();
     Map<String, Object> children = new LinkedHashMap<>();
-    for (int i = 0; i < 118; i++) children.put("child-" + i, Map.of("count", i));
+    for (int i = 0; i < 118; i++) {
+      children.put("child-" + i, Map.of("count", i));
+    }
     children.put("a/b~c", Map.of("count", 118));
     children.put("\uE000", Map.of("count", 119));
     children.put("\uD800\uDC00", Map.of("count", 120));
@@ -553,28 +569,35 @@ class GraphMetadataTest {
     final AtomicStore delegate = new JsonBoundaryStore();
     final Set<String> denied = new HashSet<>();
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
-      if (denied.contains(identity))
+      if (denied.contains(identity)) {
         throw new AssertionError("Metadata read opened Language content");
+      }
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }

@@ -1,8 +1,13 @@
 package myos.better;
 
 import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
@@ -61,11 +66,13 @@ final class TimelineDirectoryRunner implements AutoCloseable {
   }
 
   void start() {
-    if (closed || !started.compareAndSet(false, true))
+    if (closed || !started.compareAndSet(false, true)) {
       throw new IllegalStateException("Directory runner already started or closed");
+    }
     service.listen(arrivals);
-    for (int i = 0; i < service.automatic().orElseThrow().workers(); i++)
+    for (int i = 0; i < service.automatic().orElseThrow().workers(); i++) {
       workers.execute(health.guard(this::work));
+    }
     discovery.submit(health.guard(this::discover));
   }
 
@@ -81,17 +88,20 @@ final class TimelineDirectoryRunner implements AutoCloseable {
           if (remaining <= 0) {
             try {
               AtomicStore.Page page = polling.page(shard, cursors[shard], 16);
-              for (AtomicStore.Row row : page.rows()) queue.enqueueDiscovered(row);
+              for (AtomicStore.Row row : page.rows()) {
+                queue.enqueueDiscovered(row);
+              }
               cursors[shard] = page.after();
               // One page per shard per pass. A growing shard cannot starve another source.
               due[shard] =
                   System.nanoTime()
                       + TimeUnit.MILLISECONDS.toNanos(page.after() == null ? interval : 1);
             } catch (RuntimeException failure) {
-              if (!closed)
+              if (!closed) {
                 LOG.log(
                     System.Logger.Level.WARNING,
                     "Timeline polling discovery failed: " + failure.getClass().getSimpleName());
+              }
               due[shard] =
                   System.nanoTime() + TimeUnit.MILLISECONDS.toNanos(Math.max(1000, interval));
             }
@@ -99,7 +109,9 @@ final class TimelineDirectoryRunner implements AutoCloseable {
           }
           wait = Math.min(wait, remaining);
         }
-        if (wait > 0) TimeUnit.NANOSECONDS.sleep(wait);
+        if (wait > 0) {
+          TimeUnit.NANOSECONDS.sleep(wait);
+        }
       } catch (InterruptedException interrupted) {
         Thread.currentThread().interrupt();
         return;
@@ -116,18 +128,24 @@ final class TimelineDirectoryRunner implements AutoCloseable {
         Thread.currentThread().interrupt();
         return;
       }
-      if (job == null) return;
+      if (job == null) {
+        return;
+      }
       boolean more = false;
       try {
         AtomicStore.Row row = job.registration();
-        if (row == null)
+        if (row == null) {
           row = service.pollingRegistration(job.key().account(), job.key().timeline());
-        if (row != null) more = acquire(row);
+        }
+        if (row != null) {
+          more = acquire(row);
+        }
       } catch (RuntimeException failure) {
-        if (!closed)
+        if (!closed) {
           LOG.log(
               System.Logger.Level.WARNING,
               "Timeline arrival lookup failed: " + failure.getClass().getSimpleName());
+        }
       } finally {
         queue.completed(job, more);
       }
@@ -146,24 +164,33 @@ final class TimelineDirectoryRunner implements AutoCloseable {
   }
 
   private boolean acquireSource(AtomicStore.Row hint) {
-    if (closed) return false;
+    if (closed) {
+      return false;
+    }
     Cached selected = null;
     AtomicStore.Row row = null;
     TimelinePolling.Retry retry = null;
     try {
       var attempt = polling.attempt(hint);
       row = attempt.registration();
-      if (row == null) return false;
+      if (row == null) {
+        return false;
+      }
       retry = attempt.retry();
-      if (!retry.ready()) return false;
+      if (!retry.ready()) {
+        return false;
+      }
       service.validateReader(row);
       if (!retry.failing() && transport instanceof LocalTimelineTransport local) {
         Quiet previous;
         synchronized (cache) {
           previous = quiet.get(row.key());
         }
-        if (previous != null && previous.registration().equals(row) && local.idle(previous.state()))
+        if (previous != null
+            && previous.registration().equals(row)
+            && local.idle(previous.state())) {
           return false;
+        }
       }
       service.validatePolling(row);
       synchronized (cache) {
@@ -173,7 +200,9 @@ final class TimelineDirectoryRunner implements AutoCloseable {
         selected = new Cached(row, service.pollingSource(row), transport);
         synchronized (cache) {
           cache.put(row.key(), selected);
-          while (cache.size() > CAPACITY) cache.remove(cache.keySet().iterator().next());
+          while (cache.size() > CAPACITY) {
+            cache.remove(cache.keySet().iterator().next());
+          }
         }
       }
       // A co-located publisher can cheaply reveal that nothing was appended. This is
@@ -182,7 +211,9 @@ final class TimelineDirectoryRunner implements AutoCloseable {
       if (!retry.failing()
           && selected.pull.caughtUp()
           && transport instanceof LocalTimelineTransport local
-          && local.idle(selected.source.archive())) return false;
+          && local.idle(selected.source.archive())) {
+        return false;
+      }
       selected.attempts++;
       selected.status =
           Map.of("automatic", true, "status", "ACQUIRING", "attempts", selected.attempts);
@@ -195,11 +226,14 @@ final class TimelineDirectoryRunner implements AutoCloseable {
       polling.succeeded(retry);
       if (localSource && selected.pull.caughtUp()) {
         TimelineArchive.Idle state = selected.source.archive().idleState();
-        if (state != null)
+        if (state != null) {
           synchronized (cache) {
             quiet.put(row.key(), new Quiet(row, state));
-            while (quiet.size() > 4096) quiet.remove(quiet.keySet().iterator().next());
+            while (quiet.size() > 4096) {
+              quiet.remove(quiet.keySet().iterator().next());
+            }
           }
+        }
       }
       selected.status =
           Map.of(
@@ -224,7 +258,9 @@ final class TimelineDirectoryRunner implements AutoCloseable {
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
     } catch (IOException | RuntimeException failure) {
-      if (closed) return false;
+      if (closed) {
+        return false;
+      }
       if (failure instanceof blue.LanguageException language
           && "ProviderUnavailable".equals(language.category())
           && language.getMessage().matches("[1-9A-HJ-NP-Za-km-z]{32,64}")) {
@@ -239,7 +275,9 @@ final class TimelineDirectoryRunner implements AutoCloseable {
         if (row != null && retry != null) {
           Map<String, Object> status =
               polling.failed(row, retry, interval, TimelineFailure.from(failure));
-          if (selected != null) selected.status = status;
+          if (selected != null) {
+            selected.status = status;
+          }
         }
       } catch (RuntimeException unavailable) {
         LOG.log(
@@ -252,10 +290,14 @@ final class TimelineDirectoryRunner implements AutoCloseable {
 
   Map<String, Object> status(String account, String name) {
     Map<String, Object> registered = service.pollingStatus(account, name);
-    if (!Boolean.TRUE.equals(registered.get("automatic"))) return registered;
+    if (!Boolean.TRUE.equals(registered.get("automatic"))) {
+      return registered;
+    }
     AtomicStore.Row row = polling.registered(account, name);
     TimelinePolling.Retry retry = polling.retry(row);
-    if (retry.failing()) return retry.status();
+    if (retry.failing()) {
+      return retry.status();
+    }
     synchronized (cache) {
       Cached found = cache.get(TimelinePolling.key(account, name));
       return found == null ? registered : found.status;
@@ -274,7 +316,9 @@ final class TimelineDirectoryRunner implements AutoCloseable {
 
   @Override
   public synchronized void close() {
-    if (closed) return;
+    if (closed) {
+      return;
+    }
     closed = true;
     service.unlisten(arrivals);
     queue.close();

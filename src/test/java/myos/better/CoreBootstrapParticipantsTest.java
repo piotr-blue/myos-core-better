@@ -1,8 +1,11 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.util.*;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class CoreBootstrapParticipantsTest {
@@ -124,7 +127,11 @@ class CoreBootstrapParticipantsTest {
   }
 
   private static void ready(PublicDirectoryStore store) {
-    for (int i = 0; i < 100; i++) if (store.backfillPage()) return;
+    for (int i = 0; i < 100; i++) {
+      if (store.backfillPage()) {
+        return;
+      }
+    }
     fail("Directory backfill did not finish");
   }
 }

@@ -1,7 +1,10 @@
 package myos.better;
 
 import blue.BlueId;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Pins the requested grant and runtime before publishing, then retains its verified follower. */
 final class CoreAccessUpdates {
@@ -30,8 +33,9 @@ final class CoreAccessUpdates {
     Repository.identifier(command);
     RuntimeConfiguration.fields(input, Set.of("accessId", "allowedKeys", "executionSelection"));
     runtime.validate(input);
-    if (!(input.get("allowedKeys") instanceof List<?> keys))
+    if (!(input.get("allowedKeys") instanceof List<?> keys)) {
       throw new IllegalArgumentException("allowedKeys is required");
+    }
     List<String> allowed =
         keys.stream().map(key -> RuntimeConfiguration.text(key, "allowedKey")).toList();
     BlueId selected =
@@ -61,7 +65,9 @@ final class CoreAccessUpdates {
             Json.hash(Json.bytes(List.of(timeline.value(), command))));
     var pinned = store.get(key);
     if (pinned == null) {
-      if (selected != null) follower.check(account, selected, runtime.selection());
+      if (selected != null) {
+        follower.check(account, selected, runtime.selection());
+      }
       var value =
           Map.<String, Object>of(
               "format", "myos.core-access-update/1",
@@ -71,16 +77,22 @@ final class CoreAccessUpdates {
               "keys", requested.keys());
       store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of());
       pinned = store.get(key);
-      if (pinned == null) throw pending();
+      if (pinned == null) {
+        throw pending();
+      }
     }
-    if (!"myos.core-access-update/1".equals(pinned.value().get("format")))
+    if (!"myos.core-access-update/1".equals(pinned.value().get("format"))) {
       throw new IllegalStateException("Unsupported access-update record");
-    if (!fingerprint.equals(pinned.value().get("fingerprint")))
+    }
+    if (!fingerprint.equals(pinned.value().get("fingerprint"))) {
       throw new ConsoleProblem(
           409, "IDEMPOTENCY_CONFLICT", "This access update has different parameters.");
+    }
     var selection = RuntimeConfiguration.object(pinned.value().get("selection"), "selection");
     runtime.validate(Map.of("executionSelection", selection));
-    if (selected != null) follower.check(account, selected, selection);
+    if (selected != null) {
+      follower.check(account, selected, selection);
+    }
     var change =
         new HostedAccess.Permissions(
             RuntimeConfiguration.list(pinned.value().get("timelines"), "timelines").stream()

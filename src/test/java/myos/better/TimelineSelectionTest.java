@@ -1,9 +1,13 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import blue.*;
-import java.util.*;
+import blue.LanguageContent;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /** One frozen source cut must not reread unchanged history as other source cursors advance. */
@@ -19,7 +23,9 @@ class TimelineSelectionTest {
     TimelineArchive.View view = archive.view();
     TimelineArchive.Pending a = view.next(TimelineArchive.Cursor.initial());
     long reads = store.statistics().get("get.calls");
-    for (int i = 0; i < 100; i++) assertSame(a, view.next(TimelineArchive.Cursor.initial()));
+    for (int i = 0; i < 100; i++) {
+      assertSame(a, view.next(TimelineArchive.Cursor.initial()));
+    }
     TimelineArchive.Pending b = view.next(a.after());
     assertEquals(second.blueId().value(), b.entry().blueId());
     assertEquals(

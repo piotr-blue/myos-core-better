@@ -1,12 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.net.URI;
 import java.time.Clock;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.LockSupport;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,6 +19,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 /** Escaping failures must reach supervision even when executors retain their exceptions. */
 class DashboardWorkerHealthTest {
   private record Worker(Runnable cleanup, Runnable start, Runnable check) implements AutoCloseable {
+    @Override
     public void close() {
       cleanup.run();
     }
@@ -63,10 +68,12 @@ class DashboardWorkerHealthTest {
     var fatal = new AssertionError("private execution fixture");
     var action =
         new CoreBootstrapJobs.Action() {
+          @Override
           public Map<String, Object> prepare(String account, Map<String, Object> input) {
             return Map.of("prepared", true);
           }
 
+          @Override
           public Map<String, Object> execute(
               String account, String command, Map<String, Object> prepared) {
             entered.countDown();
@@ -99,10 +106,12 @@ class DashboardWorkerHealthTest {
       case "bootstrap" -> {
         var action =
             new CoreBootstrapJobs.Action() {
+              @Override
               public Map<String, Object> prepare(String account, Map<String, Object> input) {
                 throw new AssertionError();
               }
 
+              @Override
               public Map<String, Object> execute(
                   String account, String command, Map<String, Object> prepared) {
                 throw new AssertionError();
@@ -166,7 +175,9 @@ class DashboardWorkerHealthTest {
             AtomicStore.class.getClassLoader(),
             new Class<?>[] {AtomicStore.class},
             (proxy, method, arguments) -> {
-              if (method.getName().equals("work")) beforeWork.run();
+              if (method.getName().equals("work")) {
+                beforeWork.run();
+              }
               try {
                 return method.invoke(delegate, arguments);
               } catch (InvocationTargetException failure) {

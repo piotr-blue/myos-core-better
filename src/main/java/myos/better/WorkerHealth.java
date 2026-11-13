@@ -19,8 +19,9 @@ final class WorkerHealth {
 
   void check() {
     Throwable stopped = failure.get();
-    if (stopped != null)
+    if (stopped != null) {
       throw new IllegalStateException(
           "Background worker failed; restart from durable state required", stopped);
+    }
   }
 }

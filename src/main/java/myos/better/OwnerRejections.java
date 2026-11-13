@@ -1,6 +1,9 @@
 package myos.better;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Terminal input decisions advance the causal cursor without fabricating a native publication. */
 final class OwnerRejections {
@@ -27,8 +30,9 @@ final class OwnerRejections {
 
     Failure(String reason, Map<String, Object> source) {
       super(reason);
-      if (!REASONS.contains(reason))
+      if (!REASONS.contains(reason)) {
         throw new IllegalArgumentException("Not a terminal input rejection: " + reason);
+      }
       this.reason = reason;
       this.source = Map.copyOf(source);
     }
@@ -44,14 +48,19 @@ final class OwnerRejections {
   /** Only a protected, matching predecessor decision can reject a dependent invocation. */
   static Failure inherited(OwnerRecords records, OwnerFrontiers.Claim claim) {
     for (var selected : claim.sources()) {
-      if (selected.binding().kind() != OwnerFrontiers.Kind.OWNER) continue;
+      if (selected.binding().kind() != OwnerFrontiers.Kind.OWNER) {
+        continue;
+      }
       var source =
           records.get(
               "input-rejection", identity(selected.binding().source(), selected.position()));
-      if (source == null) continue;
+      if (source == null) {
+        continue;
+      }
       if (!claim.order().entry().equals(source.get("entry"))
-          || !claim.order().key().equals(source.get("order")))
+          || !claim.order().key().equals(source.get("order"))) {
         throw new IllegalStateException("Causal rejection differs from selected input");
+      }
       return new Failure(
           (String) source.get("reason"),
           Map.of("owner", selected.binding().source(), "position", selected.position()));
@@ -77,7 +86,9 @@ final class OwnerRejections {
     value.put("before", claim.snapshot());
     value.put("outcome", "REJECTED");
     value.put("reason", failure.reason);
-    if (!failure.source.isEmpty()) value.put("source", failure.source);
+    if (!failure.source.isEmpty()) {
+      value.put("source", failure.source);
+    }
     records.frontiers.complete(
         claim,
         System.currentTimeMillis(),
@@ -99,9 +110,10 @@ final class OwnerRejections {
                   "input-rejection-entry", claim.owner() + "\0" + claim.order().entry()),
               value);
           OwnerTimers.reject(records.frontiers, tx, claim.owner(), claim.order());
-          if (time != null)
+          if (time != null) {
             OwnerTimeWork.stage(
                 store, records.frontiers, tx, account, claim.owner(), time.nowMicros(), true);
+          }
           tx.publish(List.of(), List.of(control));
         });
     return new TimelineIngress.Outcome(

@@ -1,7 +1,16 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.LanguageProvider;
+import blue.LanguageRecord;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Verified, explicitly deployed public definitions. These grant neither source access nor execution
@@ -47,8 +56,9 @@ final class PublicPackages implements LanguageProvider {
     publications.forEach(publication -> roots.put(publication.blueId(), publication));
     this.publications = Map.copyOf(roots);
     Map<BlueId, LanguageRecord> content = new HashMap<>();
-    for (BluePackage publication : publications)
+    for (BluePackage publication : publications) {
       publication.records().forEach(content::putIfAbsent);
+    }
     records = Map.copyOf(content);
     identities =
         records.keySet().stream()

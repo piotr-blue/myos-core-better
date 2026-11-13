@@ -2,7 +2,10 @@ package myos.better;
 
 import blue.Contracts;
 import blue.NativeChannel;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Original-source positions carried with an explicitly authenticated, immutable document fork. */
 final class TimelineCheckpoints {
@@ -33,20 +36,25 @@ final class TimelineCheckpoints {
     AtomicStore.Row indexed =
         repository.store.get(
             Repository.key(account, document, "TIMELINE_EVENT#" + checkpoint.eventId()));
-    if (indexed == null) return inherited(repository, account, document, checkpoint);
+    if (indexed == null) {
+      return inherited(repository, account, document, checkpoint);
+    }
     if (indexed.version() != 1
         || !INPUT.equals(indexed.value().get("format"))
-        || !checkpoint.eventId().value().equals(indexed.value().get("inputIdentity")))
+        || !checkpoint.eventId().value().equals(indexed.value().get("inputIdentity"))) {
       throw new IllegalStateException("Invalid original Timeline checkpoint history");
+    }
     long position = Repository.number(indexed.value().get("revision"));
     long published = Repository.number(indexed.value().get("documentVersion"));
-    if (position < 1 || position > revision || published < 1 || published > version)
+    if (position < 1 || position > revision || published < 1 || published > version) {
       throw new IllegalStateException("Timeline checkpoint belongs to a different receiving view");
+    }
     AtomicStore.Row history =
         repository.store.get(
             Repository.key(account, document, "TIMELINE_INPUT#" + Repository.version(position)));
-    if (history == null || history.version() != 1 || !history.value().equals(indexed.value()))
+    if (history == null || history.version() != 1 || !history.value().equals(indexed.value())) {
       throw new IllegalStateException("Timeline checkpoint disagrees with its publication");
+    }
     return order(indexed.value(), checkpoint);
   }
 
@@ -58,8 +66,9 @@ final class TimelineCheckpoints {
       Contracts.Reception reception) {
     if (!source.account().equals(target.account())
         || target.version() != 1
-        || !source.localBlueId().equals(target.localBlueId()))
+        || !source.localBlueId().equals(target.localBlueId())) {
       throw new IllegalArgumentException("Timeline history requires the exact same-account fork");
+    }
     Set<NativeChannel.Checkpoint> checkpoints = new HashSet<>();
     reception
         .channels()
@@ -102,11 +111,13 @@ final class TimelineCheckpoints {
     if (fork == null
         || fork.version() != 1
         || !FORK.equals(fork.value().get("format"))
-        || !checkpoint.eventId().value().equals(fork.value().get("inputIdentity")))
+        || !checkpoint.eventId().value().equals(fork.value().get("inputIdentity"))) {
       throw new MissingHistory(document);
+    }
     Repository.Document initial = repository.load(account, document, 1);
-    if (!initial.localBlueId().equals(fork.value().get("initialBlueId")))
+    if (!initial.localBlueId().equals(fork.value().get("initialBlueId"))) {
       throw new IllegalStateException("Timeline fork disagrees with its initial document");
+    }
     return order(fork.value(), checkpoint);
   }
 
@@ -114,8 +125,9 @@ final class TimelineCheckpoints {
       Map<String, Object> value, NativeChannel.Checkpoint checkpoint) {
     TimelineInputs.Order order =
         Json.MAPPER.convertValue(value.get("input"), TimelineInputs.Order.class);
-    if (order.timestamp() != checkpoint.timestamp())
+    if (order.timestamp() != checkpoint.timestamp()) {
       throw new IllegalStateException("Timeline checkpoint timestamp mismatch");
+    }
     return order;
   }
 }

@@ -1,13 +1,29 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import com.sun.net.httpserver.*;
-import java.io.*;
-import java.net.*;
+import com.sun.net.httpserver.Headers;
+import com.sun.net.httpserver.HttpContext;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpPrincipal;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.net.URI;
 import java.time.Duration;
-import java.util.concurrent.*;
-import java.util.concurrent.atomic.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 
 class HttpDeadlineTest {
@@ -74,7 +90,9 @@ class HttpDeadlineTest {
         assertTrue(overflow.closingThread.get().startsWith("admitted-owner-"));
         var timerDeadline = new HttpDeadline(timer, Duration.ofMillis(25), cancellation);
         long until = System.nanoTime() + TimeUnit.SECONDS.toNanos(1);
-        while (!timerDeadline.expired() && System.nanoTime() < until) Thread.sleep(5);
+        while (!timerDeadline.expired() && System.nanoTime() < until) {
+          Thread.sleep(5);
+        }
         assertTrue(
             timerDeadline.expired(),
             "The shared deadline clock must keep running when close capacity is full");
@@ -246,7 +264,9 @@ class HttpDeadlineTest {
     @Override
     public void close() {
       closeCalls.incrementAndGet();
-      if (!closed.compareAndSet(false, true)) return;
+      if (!closed.compareAndSet(false, true)) {
+        return;
+      }
       closingThread.set(Thread.currentThread().getName());
       entered.countDown();
       boolean interrupted = false;
@@ -259,7 +279,9 @@ class HttpDeadlineTest {
         }
       }
       completed.set(true);
-      if (interrupted) Thread.currentThread().interrupt();
+      if (interrupted) {
+        Thread.currentThread().interrupt();
+      }
     }
 
     @Override

@@ -22,8 +22,16 @@ final class MeasuredStore implements AtomicStore {
     this.delegate = delegate;
     for (String name :
         List.of(
-            "get", "getAll", "query", "work", "commit", "content", "contentAll", "publishContent"))
+            "get",
+            "getAll",
+            "query",
+            "work",
+            "commit",
+            "content",
+            "contentAll",
+            "publishContent")) {
       counters.put(name, new Counter());
+    }
   }
 
   private <T> T measure(String operation, Supplier<T> action) {
@@ -42,44 +50,57 @@ final class MeasuredStore implements AtomicStore {
     }
   }
 
+  @Override
   public Row get(Key key) {
     return measure("get", () -> delegate.get(key));
   }
 
+  @Override
   public Map<Key, Row> getAll(List<Key> keys) {
     return measure("getAll", () -> delegate.getAll(keys));
   }
 
+  @Override
   public Page query(String partition, String prefix, String after, int limit) {
     return measure("query", () -> delegate.query(partition, prefix, after, limit));
   }
 
+  @Override
   public Page work(String shard, String after, int limit) {
     return measure("work", () -> delegate.work(shard, after, limit));
   }
 
+  @Override
   public boolean commit(List<Write> writes, List<Check> checks) {
     boolean result = measure("commit", () -> delegate.commit(writes, checks));
-    if (!result) retries.increment();
+    if (!result) {
+      retries.increment();
+    }
     return result;
   }
 
+  @Override
   public boolean commitWithContent(
       List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
     boolean result =
         measure("commit", () -> delegate.commitWithContent(writes, checks, account, pages));
-    if (!result) retries.increment();
+    if (!result) {
+      retries.increment();
+    }
     return result;
   }
 
+  @Override
   public byte[] content(String account, String identity) {
     return measure("content", () -> delegate.content(account, identity));
   }
 
+  @Override
   public Map<String, byte[]> contentAll(String account, List<String> identities) {
     return measure("contentAll", () -> delegate.contentAll(account, identities));
   }
 
+  @Override
   public void publishContent(String account, Map<String, byte[]> pages) {
     measure(
         "publishContent",
@@ -89,6 +110,7 @@ final class MeasuredStore implements AtomicStore {
         });
   }
 
+  @Override
   public Map<String, Long> statistics() {
     Map<String, Long> result = new LinkedHashMap<>();
     counters.forEach(
@@ -101,6 +123,7 @@ final class MeasuredStore implements AtomicStore {
     return Map.copyOf(result);
   }
 
+  @Override
   public void close() {
     delegate.close();
   }

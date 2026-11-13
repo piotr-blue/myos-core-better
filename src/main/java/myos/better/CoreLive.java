@@ -1,6 +1,11 @@
 package myos.better;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArraySet;
 
 /** Core LiveUpdates' bounded, coalescing invalidation model, adapted to Better's record keys. */
@@ -9,16 +14,21 @@ final class CoreLive implements AutoCloseable {
   private boolean closed;
 
   synchronized Subscription subscribe(String account) {
-    if (closed) throw new ConsoleProblem(503, "LIVE_STOPPING", "Live updates are stopping.");
-    if (subscribers.stream().filter(s -> s.account.equals(account)).count() >= 16)
+    if (closed) {
+      throw new ConsoleProblem(503, "LIVE_STOPPING", "Live updates are stopping.");
+    }
+    if (subscribers.stream().filter(s -> s.account.equals(account)).count() >= 16) {
       throw new ConsoleProblem(429, "LIVE_LIMIT", "Too many live connections for this account.");
+    }
     var subscription = new Subscription(account);
     subscribers.add(subscription);
     return subscription;
   }
 
   void committed(List<AtomicStore.Write> writes) {
-    if (subscribers.isEmpty()) return;
+    if (subscribers.isEmpty()) {
+      return;
+    }
     Map<String, Map<String, Set<String>>> changed = new HashMap<>();
     for (var write : writes) {
       String[] parts = write.key().partition().split("#");
@@ -79,34 +89,44 @@ final class CoreLive implements AutoCloseable {
         resource = "contents";
         id = write.key().sort().substring(8);
       }
-      if (account != null)
+      if (account != null) {
         changed
             .computeIfAbsent(account, ignored -> new TreeMap<>())
             .computeIfAbsent(resource, ignored -> new TreeSet<>())
             .add(id);
+      }
     }
     for (Subscription subscriber : subscribers) {
       var changes = changed.get(subscriber.account);
-      if (changes != null) subscriber.offer(changes);
+      if (changes != null) {
+        subscriber.offer(changes);
+      }
     }
   }
 
   private static void publicationChanges(
       Map<String, Map<String, Set<String>>> changed, String account, Map<String, Object> value) {
-    if (!(value.get("events") instanceof List<?> events)) return;
+    if (!(value.get("events") instanceof List<?> events)) {
+      return;
+    }
     for (Object raw : events) {
-      if (!(raw instanceof Map<?, ?> event) || !account.equals(event.get("accountId"))) continue;
+      if (!(raw instanceof Map<?, ?> event) || !account.equals(event.get("accountId"))) {
+        continue;
+      }
       Object type = event.get("type");
       if (!("DOCUMENT_PROCESSING_HISTORY_APPENDED".equals(type)
           || "DOCUMENT_CREATED".equals(type)
-          || "DOCUMENT_EPOCH_ADVANCED".equals(type))) continue;
+          || "DOCUMENT_EPOCH_ADVANCED".equals(type))) {
+        continue;
+      }
       if (event.get("ref") instanceof Map<?, ?> reference
           && reference.get("sessionId") instanceof String document
-          && !document.isEmpty())
+          && !document.isEmpty()) {
         changed
             .computeIfAbsent(account, ignored -> new TreeMap<>())
             .computeIfAbsent("documents", ignored -> new TreeSet<>())
             .add(document);
+      }
     }
   }
 
@@ -120,7 +140,9 @@ final class CoreLive implements AutoCloseable {
     }
 
     private synchronized void offer(Map<String, Set<String>> changes) {
-      if (stopped) return;
+      if (stopped) {
+        return;
+      }
       if (!reset) {
         changes.forEach(
             (kind, ids) -> pending.computeIfAbsent(kind, ignored -> new TreeSet<>()).addAll(ids));
@@ -136,10 +158,14 @@ final class CoreLive implements AutoCloseable {
       long end = System.nanoTime() + timeoutMillis * 1_000_000;
       while (!reset && pending.isEmpty() && !stopped) {
         long left = (end - System.nanoTime()) / 1_000_000;
-        if (left <= 0) return null;
+        if (left <= 0) {
+          return null;
+        }
         wait(Math.max(1, left));
       }
-      if (stopped) return null;
+      if (stopped) {
+        return null;
+      }
       var changes = new TreeMap<String, Object>();
       pending.forEach((kind, ids) -> changes.put(kind, List.copyOf(ids)));
       var result =
@@ -173,6 +199,8 @@ final class CoreLive implements AutoCloseable {
   @Override
   public synchronized void close() {
     closed = true;
-    for (var subscriber : subscribers) subscriber.close();
+    for (var subscriber : subscribers) {
+      subscriber.close();
+    }
   }
 }

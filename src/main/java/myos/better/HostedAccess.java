@@ -1,9 +1,26 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageRecord;
+import blue.LanguageView;
+import blue.TimelineAccessProgram;
+import blue.TimelinePublisher;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Owner-authorized access changes executed by the published Contracts program. Control history,
@@ -32,13 +49,16 @@ final class HostedAccess {
     Permissions {
       timelines = List.copyOf(timelines);
       keys = List.copyOf(keys);
-      if (timelines.size() > 32 || keys.size() > 32)
+      if (timelines.size() > 32 || keys.size() > 32) {
         throw new IllegalArgumentException("At most 32 timelines and 32 keys per access document");
+      }
       if (new HashSet<>(timelines).size() != timelines.size()
-          || new HashSet<>(keys).size() != keys.size())
+          || new HashSet<>(keys).size() != keys.size()) {
         throw new IllegalArgumentException("Distinct access values required");
-      if (keys.stream().anyMatch(key -> !key.matches("[0-9a-f]{64}")))
+      }
+      if (keys.stream().anyMatch(key -> !key.matches("[0-9a-f]{64}"))) {
         throw new IllegalArgumentException("Canonical Ed25519 reader keys required");
+      }
     }
   }
 
@@ -132,30 +152,37 @@ final class HostedAccess {
                     target == null ? "" : target.value(),
                     requested.timelines().stream().map(BlueId::value).toList(),
                     requested.keys())));
-    if (membership != null)
+    if (membership != null) {
       fingerprint = Json.hash(Json.bytes(List.of(fingerprint, membership.value())));
+    }
     AtomicStore.Key receipt =
         key("OWNER#" + owner + "#" + operation + "#" + Json.hash(Json.bytes(command)));
     try (DocumentLocks.Lease ignored = locks.acquire(partition)) {
       for (int attempt = 0; attempt < 16; attempt++) {
         AtomicStore.Row prior = receipt(receipt, fingerprint);
-        if (prior != null) return result((String) prior.value().get("body"));
+        if (prior != null) {
+          return result((String) prior.value().get("body"));
+        }
         AtomicStore.Row recordsBefore = repository.store.get(key("CONTROL_CONTENT"));
         TimelineRecords records = records(recordsBefore);
         AtomicStore.Row validationBefore = repository.store.get(key("CONTROL_VALIDATION"));
         Language.Builder builder = language(records);
         // Establish ownership before resolving caller-selected resources. Check removed resources
         // too.
-        for (BlueId id : requested.timelines())
+        for (BlueId id : requested.timelines()) {
           builder.content(timelines.head(owner, id).created().timeline());
+        }
         AtomicStore.Row before = target == null ? null : owned(owner, target);
         Map<String, Object> old = before == null ? null : body(before);
         if (old != null) {
           LanguageContent current =
               builder.build().prepare(Language.Input.exactJson((String) old.get("document")));
-          if (membership != null && !permissions(current).timelines().contains(membership))
+          if (membership != null && !permissions(current).timelines().contains(membership)) {
             throw new HostedTimelines.Missing();
-          for (BlueId id : permissions(current).timelines()) timelines.head(owner, id);
+          }
+          for (BlueId id : permissions(current).timelines()) {
+            timelines.head(owner, id);
+          }
         }
         Language language = builder.build();
         LanguageDocument initial =
@@ -175,17 +202,20 @@ final class HostedAccess {
                       language.prepare(Language.Input.exactJson((String) old.get("document"))));
               if (!current.keys().isEmpty()
                   && !current.timelines().isEmpty()
-                  && !current.equals(requested))
+                  && !current.equals(requested)) {
                 throw new IllegalArgumentException(
                     "This grant has different active permissions. Inspect its current access"
                         + " document before changing it.");
+              }
             } else {
               // Identical content has one identity. Reuse its original publication, even after
               // updates.
               String original = (String) before.value().get("original");
               Map<String, Object> reused = Map.of("fingerprint", fingerprint, "body", original);
-              if (publish(List.of(AtomicStore.Write.put(receipt, 0, reused)), receipt, fingerprint))
+              if (publish(
+                  List.of(AtomicStore.Write.put(receipt, 0, reused)), receipt, fingerprint)) {
                 return result((String) receipt(receipt, fingerprint).value().get("body"));
+              }
               continue;
             }
           }
@@ -204,9 +234,10 @@ final class HostedAccess {
                 : Repository.number(validationBefore.value().get("position"));
         if (validatedPosition != prepared.value().position() - 1) {
           // A concurrent publication changed one of the selected heads; reselect both.
-          if (validationBefore == null && repository.store.get(key("CONTROL_VALIDATION")) == null)
+          if (validationBefore == null && repository.store.get(key("CONTROL_VALIDATION")) == null) {
             throw new IllegalStateException(
                 "Control history requires a protected validation checkpoint");
+          }
           continue;
         }
         TimelinePublisher.Prepared previousValidation =
@@ -230,12 +261,14 @@ final class HostedAccess {
                     localValidation)) {
           Contracts.Transition transition =
               old == null ? session.initialize() : session.process(entry, candidateValidation);
-          if (!transition.applied())
+          if (!transition.applied()) {
             throw new IllegalArgumentException("Access execution rejected: " + transition.status());
+          }
           LanguageDocument current = session.document();
           Permissions effective = permissions(current);
-          if (!effective.equals(requested))
+          if (!effective.equals(requested)) {
             throw new IllegalStateException("Executed access lists differ from the request");
+          }
           // Keep the exact accepted entry and actual executed state, not a parallel permission
           // model.
           records.retain(entry);
@@ -304,8 +337,9 @@ final class HostedAccess {
                       language.prepare(Language.Input.exactJson((String) old.get("document"))));
           memberships(writes, owner, id, previous, effective);
           records.flush();
-          if (publish(writes, receipt, fingerprint))
+          if (publish(writes, receipt, fingerprint)) {
             return result((String) receipt(receipt, fingerprint).value().get("body"));
+          }
         }
       }
     }
@@ -314,13 +348,16 @@ final class HostedAccess {
 
   Access get(BlueId id) {
     AtomicStore.Row row = repository.store.get(key("ACCESS#" + id));
-    if (row == null) throw new HostedTimelines.Missing();
+    if (row == null) {
+      throw new HostedTimelines.Missing();
+    }
     return result((String) row.value().get("body"));
   }
 
   void requireStore(AtomicStore store) {
-    if (store != repository.store)
+    if (store != repository.store) {
       throw new IllegalArgumentException("Local access history requires the same protected store");
+    }
   }
 
   /**
@@ -334,16 +371,20 @@ final class HostedAccess {
     if (!source.coordination().blueId().equals(signing.coordination().blueId())
         || !source.source().provider().equals(signing.provider().blueId())
         || !source.source().timeline().equals(control.id())
-        || !source.source().publicRead()) return Optional.empty();
+        || !source.source().publicRead()) {
+      return Optional.empty();
+    }
     AtomicStore.Row row = repository.store.get(key("ACCESS#" + grant));
     if (row == null
         || !source.source().account().equals(row.value().get("owner"))
         || row.version() != 1
-        || !Objects.equals(row.value().get("original"), row.value().get("body")))
+        || !Objects.equals(row.value().get("original"), row.value().get("body"))) {
       return Optional.empty();
+    }
     HistoricalGrant accepted = historicalGrant((String) row.value().get("body"));
-    if (!accepted.initial().equals(grant))
+    if (!accepted.initial().equals(grant)) {
       throw new IllegalStateException("Inconsistent unchanged access publication");
+    }
     return Optional.of(
         new TimelineAccessHistory.Result(
             true,
@@ -358,18 +399,22 @@ final class HostedAccess {
   private HistoricalGrant historicalGrant(String address) {
     synchronized (historicalGrants) {
       HistoricalGrant known = historicalGrants.get(address);
-      if (known != null) return known;
+      if (known != null) {
+        return known;
+      }
     }
     Access accepted = result(address);
-    if (accepted.publication() != accepted.lastEntry())
+    if (accepted.publication() != accepted.lastEntry()) {
       throw new IllegalStateException("Inconsistent unchanged access publication");
+    }
     LanguageContent entry = timelines.entry(account, control.id(), accepted.publication()).entry();
     if (!entry
         .at("/message")
         .observation("exactId")
         .text()
-        .equals(accepted.initial().blueId().value()))
+        .equals(accepted.initial().blueId().value())) {
       throw new IllegalStateException("Access state differs from its accepted control occurrence");
+    }
     TimelineInputs.Order published =
         new TimelineInputs.Order(
             entry.at("/timestamp").integer(), control.id().value(), entry.blueId().value());
@@ -384,8 +429,9 @@ final class HostedAccess {
                 Set.copyOf(effective.keys())));
     synchronized (historicalGrants) {
       historicalGrants.put(address, value);
-      while (historicalGrants.size() > 256)
+      while (historicalGrants.size() > 256) {
         historicalGrants.remove(historicalGrants.keySet().iterator().next());
+      }
     }
     return value;
   }
@@ -394,7 +440,9 @@ final class HostedAccess {
   List<Access> grants(String owner, BlueId timeline) {
     timelines.head(owner, timeline);
     AtomicStore.Row index = repository.store.get(key("GRANTS#" + timeline));
-    if (index == null) return List.of();
+    if (index == null) {
+      return List.of();
+    }
     requireOwner(index, owner);
     List<AtomicStore.Key> keys =
         strings(index.value().get("accesses")).stream().map(id -> key("ACCESS#" + id)).toList();
@@ -402,10 +450,14 @@ final class HostedAccess {
     List<Access> result = new ArrayList<>();
     for (AtomicStore.Key key : keys) {
       AtomicStore.Row row = current.get(key);
-      if (row == null) throw new IllegalStateException("Invalid access membership index");
+      if (row == null) {
+        throw new IllegalStateException("Invalid access membership index");
+      }
       requireOwner(row, owner);
       Access access = result((String) row.value().get("body"));
-      if (permissions(access.current()).timelines().contains(timeline)) result.add(access);
+      if (permissions(access.current()).timelines().contains(timeline)) {
+        result.add(access);
+      }
     }
     return List.copyOf(result);
   }
@@ -417,18 +469,26 @@ final class HostedAccess {
 
   /** Selects public source metadata only; it grants no entry or content access. */
   HostedTimelines.Head source(BlueId timeline) {
-    if (control.id().equals(timeline)) return timelines.head(account, timeline);
+    if (control.id().equals(timeline)) {
+      return timelines.head(account, timeline);
+    }
     var publicOwner = timelines.publicOwner(timeline);
-    if (publicOwner.isPresent()) return timelines.head(publicOwner.orElseThrow(), timeline);
+    if (publicOwner.isPresent()) {
+      return timelines.head(publicOwner.orElseThrow(), timeline);
+    }
     AtomicStore.Row row = repository.store.get(key("GRANTS#" + timeline));
-    if (row == null) throw new HostedTimelines.Missing();
+    if (row == null) {
+      throw new HostedTimelines.Missing();
+    }
     return timelines.head((String) row.value().get("owner"), timeline);
   }
 
   /** Public control closure, selected through the atomically committed content root. */
   LanguageContent controlContent(BlueId id) {
     TimelineRecords records = records(repository.store.get(key("CONTROL_CONTENT")));
-    if (!records.contains(id)) throw new HostedTimelines.Missing();
+    if (!records.contains(id)) {
+      throw new HostedTimelines.Missing();
+    }
     Language language = language(records).build();
     return language.expand(language.reference(id), "");
   }
@@ -438,22 +498,30 @@ final class HostedAccess {
    * cursors.
    */
   String authorize(BlueId timeline, Optional<String> authenticatedKey) {
-    if (control.id().equals(timeline)) return account;
+    if (control.id().equals(timeline)) {
+      return account;
+    }
     var publicOwner = timelines.publicOwner(timeline);
-    if (publicOwner.isPresent()) return publicOwner.orElseThrow();
+    if (publicOwner.isPresent()) {
+      return publicOwner.orElseThrow();
+    }
     AtomicStore.Row index = repository.store.get(key("GRANTS#" + timeline));
-    if (index == null || authenticatedKey.isEmpty()) throw new HostedTimelines.Missing();
+    if (index == null || authenticatedKey.isEmpty()) {
+      throw new HostedTimelines.Missing();
+    }
     List<String> grants = strings(index.value().get("accesses"));
     List<AtomicStore.Key> keys = grants.stream().map(id -> key("ACCESS#" + id)).toList();
     Map<AtomicStore.Key, AtomicStore.Row> current = repository.store.getAll(keys);
     for (AtomicStore.Key key : keys) {
       AtomicStore.Row row = current.get(key);
-      if (row == null || !row.value().get("owner").equals(index.value().get("owner")))
+      if (row == null || !row.value().get("owner").equals(index.value().get("owner"))) {
         throw new IllegalStateException("Invalid access membership index");
+      }
       Permissions effective = decodedPermissions((String) row.value().get("body"));
       if (effective.timelines().contains(timeline)
-          && effective.keys().contains(authenticatedKey.orElseThrow()))
+          && effective.keys().contains(authenticatedKey.orElseThrow())) {
         return (String) index.value().get("owner");
+      }
     }
     throw new HostedTimelines.Missing();
   }
@@ -461,22 +529,27 @@ final class HostedAccess {
   private Permissions decodedPermissions(String address) {
     synchronized (decodedPermissions) {
       Permissions known = decodedPermissions.get(address);
-      if (known != null) return known;
+      if (known != null) {
+        return known;
+      }
     }
     Map<String, Object> stored = records(null).get(address);
-    if (!FORMAT.equals(stored.get("format")))
+    if (!FORMAT.equals(stored.get("format"))) {
       throw new IllegalStateException("Unsupported stored access document");
+    }
     LanguageContent document =
         language(new TimelineRecords(repository, account, (String) stored.get("records")))
             .build()
             .prepare(Language.Input.exactJson((String) stored.get("document")));
-    if (!document.blueId().value().equals(stored.get("documentIdentity")))
+    if (!document.blueId().value().equals(stored.get("documentIdentity"))) {
       throw new IllegalStateException("Stored access document identity mismatch");
+    }
     Permissions value = permissions(document);
     synchronized (decodedPermissions) {
       decodedPermissions.put(address, value);
-      while (decodedPermissions.size() > 256)
+      while (decodedPermissions.size() > 256) {
         decodedPermissions.remove(decodedPermissions.keySet().iterator().next());
+      }
     }
     return value;
   }
@@ -490,17 +563,23 @@ final class HostedAccess {
     Set<BlueId> affected = new LinkedHashSet<>(previous.timelines());
     affected.addAll(next.timelines());
     for (BlueId timeline : affected) {
-      if (previous.timelines().contains(timeline) == next.timelines().contains(timeline)) continue;
+      if (previous.timelines().contains(timeline) == next.timelines().contains(timeline)) {
+        continue;
+      }
       AtomicStore.Key key = key("GRANTS#" + timeline);
       AtomicStore.Row row = repository.store.get(key);
-      if (row != null && !owner.equals(row.value().get("owner")))
+      if (row != null && !owner.equals(row.value().get("owner"))) {
         throw new HostedTimelines.Missing();
+      }
       List<String> grants =
           new ArrayList<>(row == null ? List.of() : strings(row.value().get("accesses")));
       grants.remove(access.value());
-      if (next.timelines().contains(timeline)) grants.add(access.value());
-      if (grants.size() > MAXIMUM_GRANTS)
+      if (next.timelines().contains(timeline)) {
+        grants.add(access.value());
+      }
+      if (grants.size() > MAXIMUM_GRANTS) {
         throw new IllegalArgumentException("At most 64 access documents per timeline");
+      }
       // Keep empty rows and their version: a revoke/regrant cannot recycle a CAS identity.
       writes.add(
           AtomicStore.Write.put(
@@ -557,11 +636,15 @@ final class HostedAccess {
     List<BlueId> timelines = new ArrayList<>();
     List<String> keys = new ArrayList<>();
     LanguageView sources = document.at("/allowedTimelines"), readers = document.at("/allowedKeys");
-    if (sources.size() > 32 || readers.size() > 32)
+    if (sources.size() > 32 || readers.size() > 32) {
       throw new IllegalStateException("Oversized stored access document");
-    for (int i = 0; i < sources.size(); i++)
+    }
+    for (int i = 0; i < sources.size(); i++) {
       timelines.add(new BlueId(sources.at("/items/" + i).observation("exactId").text()));
-    for (int i = 0; i < readers.size(); i++) keys.add(readers.at("/items/" + i).text());
+    }
+    for (int i = 0; i < readers.size(); i++) {
+      keys.add(readers.at("/items/" + i).text());
+    }
     return new Permissions(timelines, keys);
   }
 
@@ -575,8 +658,9 @@ final class HostedAccess {
 
   private Access result(String address) {
     Map<String, Object> value = records(null).get(address);
-    if (!FORMAT.equals(value.get("format")))
+    if (!FORMAT.equals(value.get("format"))) {
       throw new IllegalStateException("Unsupported stored access document");
+    }
     TimelineRecords records =
         new TimelineRecords(repository, account, (String) value.get("records"));
     Language language = language(records).build();
@@ -584,8 +668,9 @@ final class HostedAccess {
         language.read(Language.Input.exactJson((String) value.get("initial")), Language.Goal.VALUE);
     LanguageContent current =
         language.prepare(Language.Input.exactJson((String) value.get("document")));
-    if (!current.blueId().value().equals(value.get("documentIdentity")))
+    if (!current.blueId().value().equals(value.get("documentIdentity"))) {
       throw new IllegalStateException("Stored access document identity mismatch");
+    }
     return new Access(
         initial,
         current,
@@ -619,13 +704,17 @@ final class HostedAccess {
 
   private AtomicStore.Row owned(String owner, BlueId access) {
     AtomicStore.Row row = repository.store.get(key("ACCESS#" + access));
-    if (row == null) throw new HostedTimelines.Missing();
+    if (row == null) {
+      throw new HostedTimelines.Missing();
+    }
     requireOwner(row, owner);
     return row;
   }
 
   private static void requireOwner(AtomicStore.Row row, String owner) {
-    if (!owner.equals(row.value().get("owner"))) throw new HostedTimelines.Missing();
+    if (!owner.equals(row.value().get("owner"))) {
+      throw new HostedTimelines.Missing();
+    }
   }
 
   private AtomicStore.Key key(String sort) {
@@ -634,8 +723,9 @@ final class HostedAccess {
 
   private AtomicStore.Row receipt(AtomicStore.Key key, String fingerprint) {
     AtomicStore.Row row = repository.store.get(key);
-    if (row != null && !fingerprint.equals(row.value().get("fingerprint")))
+    if (row != null && !fingerprint.equals(row.value().get("fingerprint"))) {
       throw new HostedTimelines.Conflict();
+    }
     return row;
   }
 
@@ -644,14 +734,17 @@ final class HostedAccess {
     try {
       return repository.store.commit(writes, List.of());
     } catch (RuntimeException uncertain) {
-      if (receipt(receipt, fingerprint) != null) return true;
+      if (receipt(receipt, fingerprint) != null) {
+        return true;
+      }
       throw uncertain;
     }
   }
 
   private static List<String> strings(Object raw) {
-    if (!(raw instanceof List<?> list) || list.size() > MAXIMUM_GRANTS)
+    if (!(raw instanceof List<?> list) || list.size() > MAXIMUM_GRANTS) {
       throw new IllegalStateException("Invalid stored access list");
+    }
     return list.stream().map(value -> (String) value).toList();
   }
 }

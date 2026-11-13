@@ -1,6 +1,16 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * A public-only projection of account profiles and current memberships. Immutable index pages and
@@ -36,8 +46,9 @@ final class CorePublicDirectory {
 
   private static Change change(AtomicStore.Key key, Map<String, Object> value) {
     String account = Repository.identifier(key.partition().substring("CORE_ACCOUNT#".length()));
-    if (key.sort().startsWith("MEMBER#"))
+    if (key.sort().startsWith("MEMBER#")) {
       Repository.identifier(key.sort().substring("MEMBER#".length()));
+    }
     return new Change(account, key.sort(), value);
   }
 
@@ -47,15 +58,20 @@ final class CorePublicDirectory {
             .filter(w -> relevant(w.key()))
             .map(w -> change(w.key(), w.next() == null ? null : w.next().value()))
             .toList();
-    if (changes.isEmpty()) return store.commit(writes, checks);
-    if (writes.size() + checks.size() >= 100)
+    if (changes.isEmpty()) {
+      return store.commit(writes, checks);
+    }
+    if (writes.size() + checks.size() >= 100) {
       throw new IllegalArgumentException("Public profile transactions require one index slot");
+    }
     for (int retry = 0; retry < 8; retry++) {
       var tx = metadata.begin();
       project(tx, changes);
       changes.forEach(change -> tx.put(seen(change), "1"));
       tx.publish(writes, checks);
-      if (tx.commit()) return true;
+      if (tx.commit()) {
+        return true;
+      }
       // Retry a directory-manifest conflict only. Preserve the caller's source CAS contract.
       var expected = new LinkedHashMap<AtomicStore.Key, Long>();
       writes.forEach(w -> expected.put(w.key(), w.expected()));
@@ -65,7 +81,9 @@ final class CorePublicDirectory {
           .anyMatch(
               e ->
                   (current.containsKey(e.getKey()) ? current.get(e.getKey()).version() : 0)
-                      != e.getValue())) return false;
+                      != e.getValue())) {
+        return false;
+      }
     }
     return false;
   }
@@ -84,7 +102,9 @@ final class CorePublicDirectory {
     Map<String, Object> cursor = new LinkedHashMap<>();
     cursor.put("format", "public-directory-backfill/1");
     cursor.put("complete", after == null);
-    if (after != null) cursor.put("after", after);
+    if (after != null) {
+      cursor.put("after", after);
+    }
     tx.publish(
         List.of(AtomicStore.Write.put(BACKFILL, previous == null ? 0 : previous.version(), cursor)),
         rows.stream()
@@ -107,8 +127,12 @@ final class CorePublicDirectory {
         String prefix = "r\0" + user + "\0", after = null;
         for (; ; ) {
           var page = tx.page(prefix, after, PAGE_SIZE);
-          for (var entry : page) pairs.add(new Pair(entry.value(), user));
-          if (page.size() < PAGE_SIZE) break;
+          for (var entry : page) {
+            pairs.add(new Pair(entry.value(), user));
+          }
+          if (page.size() < PAGE_SIZE) {
+            break;
+          }
           after = page.getLast().key();
         }
       } else if (change.kind().startsWith("MEMBER#")) {
@@ -116,7 +140,9 @@ final class CorePublicDirectory {
       }
     }
     Map<Pair, String> oldEmails = new LinkedHashMap<>();
-    for (Pair pair : pairs) oldEmails.put(pair, email(read(tx, "i\0" + pair.user())));
+    for (Pair pair : pairs) {
+      oldEmails.put(pair, email(read(tx, "i\0" + pair.user())));
+    }
     // Apply every source projection first so multi-row changes see the same final state.
     for (Change change : changes) {
       String id = change.account(), kind = change.kind();
@@ -124,13 +150,14 @@ final class CorePublicDirectory {
       if (kind.equals("ACCOUNT")) {
         Map<String, Object> projected =
             value == null ? null : select(value, "kind", "status", "avatarVersion");
-        if (projected != null)
+        if (projected != null) {
           projected.put(
               "profile",
               select(
                   RuntimeConfiguration.object(value.getOrDefault("profile", Map.of()), "profile"),
                   "displayName",
                   "website"));
+        }
         put(tx, "a\0" + id, projected);
       } else if (kind.equals("USER")) {
         put(
@@ -145,28 +172,36 @@ final class CorePublicDirectory {
         String user = kind.substring("MEMBER#".length());
         put(tx, "m\0" + id + "\0" + user, value == null ? null : select(value, "status"));
         String reverse = "r\0" + user + "\0" + id;
-        if (value == null) tx.remove(reverse);
-        else tx.put(reverse, id);
+        if (value == null) {
+          tx.remove(reverse);
+        } else {
+          tx.put(reverse, id);
+        }
       }
     }
     for (var entry : oldNames.entrySet()) {
-      for (String gram : grams(entry.getValue()))
+      for (String gram : grams(entry.getValue())) {
         tx.remove(queryPrefix(gram) + entry.getKey() + "\0a");
-      for (String gram : grams(name(read(tx, "a\0" + entry.getKey()))))
+      }
+      for (String gram : grams(name(read(tx, "a\0" + entry.getKey())))) {
         tx.put(queryPrefix(gram) + entry.getKey() + "\0a", entry.getKey());
+      }
     }
     for (Pair pair : pairs) {
       indexEmail(tx, pair, oldEmails.get(pair), false);
       // Inactive rows remain indexed and are filtered from the coherent read snapshot. This
       // avoids rebuilding all member keys when only account availability changes.
-      if (pair.account().equals(pair.user()) || read(tx, memberKey(pair)) != null)
+      if (pair.account().equals(pair.user()) || read(tx, memberKey(pair)) != null) {
         indexEmail(tx, pair, email(read(tx, "i\0" + pair.user())), true);
+      }
     }
   }
 
   private static void indexEmail(
       IndexedMetadata.Transaction tx, Pair pair, String email, boolean add) {
-    if (email == null) return;
+    if (email == null) {
+      return;
+    }
     String exact = emailPrefix(email) + pair.account() + "\0" + pair.user();
     String query =
         queryPrefix(email.substring(0, Math.min(3, email.length())))
@@ -185,15 +220,17 @@ final class CorePublicDirectory {
   Map<String, Object> lookup(
       CoreAccounts.Session caller, CoreAccountLookup.Request request, CorePageTokens pages) {
     var progress = store.get(BACKFILL);
-    if (progress == null || !Boolean.TRUE.equals(progress.value().get("complete")))
+    if (progress == null || !Boolean.TRUE.equals(progress.value().get("complete"))) {
       throw new ConsoleProblem(
           503, "public_directory_building", "Public directory indexing is in progress.");
+    }
     String scope = caller.userId() + ":" + caller.guard(false);
     var continuation = pages.decode(scope, "accounts/lookup", request.filters());
     String after = null;
     if (!continuation.isEmpty()) {
-      if (continuation.size() != 1 || !(continuation.get("after") instanceof String value))
+      if (continuation.size() != 1 || !(continuation.get("after") instanceof String value)) {
         throw invalidCursor();
+      }
       try {
         after = Repository.identifier(value);
       } catch (IllegalArgumentException invalid) {
@@ -208,9 +245,10 @@ final class CorePublicDirectory {
           request.emails().isEmpty()
               ? List.of(queryPrefix(request.query().substring(0, 3)))
               : request.emails().stream().map(CorePublicDirectory::emailPrefix).toList();
-      for (String prefix : prefixes)
+      for (String prefix : prefixes) {
         cursors.add(
             new Cursor(tx, prefix, after == null ? null : prefix + after + "\1", true, budget));
+      }
     }
     Iterator<String> explicit =
         request.ids().stream()
@@ -227,11 +265,15 @@ final class CorePublicDirectory {
         != null) {
       budget.check();
       var account = read(tx, "a\0" + next);
-      if (!active(account)) continue;
+      if (!active(account)) {
+        continue;
+      }
       boolean nameMatch = request.query() != null && name(account).contains(request.query());
       var users = users(tx, next, request, nameMatch, budget);
       if (!request.emails().isEmpty() && users.isEmpty()
-          || request.query() != null && !nameMatch && users.isEmpty()) continue;
+          || request.query() != null && !nameMatch && users.isEmpty()) {
+        continue;
+      }
       var item = new LinkedHashMap<String, Object>();
       var profile = RuntimeConfiguration.object(account.get("profile"), "profile");
       item.put("accountId", next);
@@ -242,10 +284,14 @@ final class CorePublicDirectory {
       item.put("matchedUsers", users.subList(0, Math.min(users.size(), 10)));
       item.put("matchedUsersHasMore", users.size() > 10);
       items.add(item);
-      if (items.size() > request.limit()) break;
+      if (items.size() > request.limit()) {
+        break;
+      }
     }
     boolean more = items.size() > request.limit();
-    if (more) items.removeLast();
+    if (more) {
+      items.removeLast();
+    }
     var result = new LinkedHashMap<String, Object>();
     result.put("items", List.copyOf(items));
     result.put("hasMore", more);
@@ -266,9 +312,10 @@ final class CorePublicDirectory {
    */
   List<String> identityCandidates(String email) {
     var progress = store.get(BACKFILL);
-    if (progress == null || !Boolean.TRUE.equals(progress.value().get("complete")))
+    if (progress == null || !Boolean.TRUE.equals(progress.value().get("complete"))) {
       throw new ConsoleProblem(
           503, "public_directory_building", "Public directory indexing is in progress.");
+    }
     var tx = metadata.begin();
     var budget = new ReadLimit();
     String prefix = emailPrefix(CoreUserIdentities.email(email)), after = null;
@@ -278,9 +325,13 @@ final class CorePublicDirectory {
       for (var entry : page) {
         budget.check();
         String user = entry.value();
-        if (email.equals(email(read(tx, "i\0" + user)))) identities.add(user);
+        if (email.equals(email(read(tx, "i\0" + user)))) {
+          identities.add(user);
+        }
       }
-      if (page.size() < PAGE_SIZE) return List.copyOf(identities);
+      if (page.size() < PAGE_SIZE) {
+        return List.copyOf(identities);
+      }
       after = page.getLast().key();
     }
   }
@@ -291,7 +342,9 @@ final class CorePublicDirectory {
       CoreAccountLookup.Request request,
       boolean nameMatch,
       ReadLimit budget) {
-    if (request.emails().isEmpty() && request.query() == null) return List.of();
+    if (request.emails().isEmpty() && request.query() == null) {
+      return List.of();
+    }
     List<String> prefixes =
         request.emails().isEmpty()
             ? List.of(queryPrefix(request.query().substring(0, 3)) + account + "\0u")
@@ -301,14 +354,19 @@ final class CorePublicDirectory {
     String user;
     while ((user = smallest(cursors)) != null) {
       String email = email(read(tx, "i\0" + user));
-      if (email == null || !request.emails().isEmpty() && !request.emails().contains(email))
+      if (email == null || !request.emails().isEmpty() && !request.emails().contains(email)) {
         continue;
+      }
       if (request.query() != null
           && (request.emails().isEmpty() || !nameMatch)
-          && !email.startsWith(request.query())) continue;
+          && !email.startsWith(request.query())) {
+        continue;
+      }
       var profile = read(tx, "p\0" + user);
       var member = read(tx, "m\0" + account + "\0" + user);
-      if (!active(profile) || !(member == null && user.equals(account) || active(member))) continue;
+      if (!active(profile) || !(member == null && user.equals(account) || active(member))) {
+        continue;
+      }
       var item = new LinkedHashMap<String, Object>();
       item.put("userId", user);
       item.put("email", email);
@@ -316,7 +374,9 @@ final class CorePublicDirectory {
       item.put("lastName", profile.get("lastName"));
       item.put("imageUrl", CoreAccounts.imageUrl(user, "USER", profile));
       result.add(item);
-      if (result.size() == 11) break;
+      if (result.size() == 11) {
+        break;
+      }
     }
     return result;
   }
@@ -358,11 +418,18 @@ final class CorePublicDirectory {
 
   private static String smallest(List<Cursor> cursors) {
     String selected = null;
-    for (Cursor cursor : cursors)
-      if (cursor.next != null && (selected == null || cursor.next.compareTo(selected) < 0))
+    for (Cursor cursor : cursors) {
+      if (cursor.next != null && (selected == null || cursor.next.compareTo(selected) < 0)) {
         selected = cursor.next;
-    if (selected != null)
-      for (Cursor cursor : cursors) if (selected.equals(cursor.next)) cursor.advance();
+      }
+    }
+    if (selected != null) {
+      for (Cursor cursor : cursors) {
+        if (selected.equals(cursor.next)) {
+          cursor.advance();
+        }
+      }
+    }
     return selected;
   }
 
@@ -371,9 +438,10 @@ final class CorePublicDirectory {
     private int reads;
 
     void check() {
-      if (++reads > 50_000 || System.nanoTime() > deadline)
+      if (++reads > 50_000 || System.nanoTime() > deadline) {
         throw new ConsoleProblem(
             422, "public_directory_query_too_broad", "Narrow the account lookup selectors.");
+      }
     }
   }
 
@@ -394,7 +462,9 @@ final class CorePublicDirectory {
   }
 
   private static String name(Map<String, Object> account) {
-    if (account == null) return "";
+    if (account == null) {
+      return "";
+    }
     var profile = RuntimeConfiguration.object(account.getOrDefault("profile", Map.of()), "profile");
     return Objects.toString(profile.get("displayName"), "").toLowerCase(Locale.ROOT);
   }
@@ -411,13 +481,19 @@ final class CorePublicDirectory {
 
   private static Set<String> grams(String value) {
     Set<String> result = new HashSet<>();
-    for (int i = 0; i + 3 <= value.length(); i++) result.add(value.substring(i, i + 3));
+    for (int i = 0; i + 3 <= value.length(); i++) {
+      result.add(value.substring(i, i + 3));
+    }
     return result;
   }
 
   private static Map<String, Object> select(Map<String, Object> value, String... fields) {
     Map<String, Object> result = new LinkedHashMap<>();
-    for (String field : fields) if (value.containsKey(field)) result.put(field, value.get(field));
+    for (String field : fields) {
+      if (value.containsKey(field)) {
+        result.put(field, value.get(field));
+      }
+    }
     return result;
   }
 
@@ -429,8 +505,11 @@ final class CorePublicDirectory {
   }
 
   private static void put(IndexedMetadata.Transaction tx, String key, Map<String, Object> value) {
-    if (value == null) tx.remove(key);
-    else tx.put(key, JsonText.of(value));
+    if (value == null) {
+      tx.remove(key);
+    } else {
+      tx.put(key, JsonText.of(value));
+    }
   }
 
   private static ConsoleProblem invalidCursor() {

@@ -1,11 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.net.URI;
-import java.net.http.*;
-import java.nio.file.*;
-import java.util.*;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -206,9 +211,15 @@ class CoreWorkspacesHttpTest {
             .header("Authorization", "Bearer " + user)
             .header("Origin", "https://console.example")
             .header("Content-Type", "application/json");
-    if (account != null) request.header("X-MyOS-Account", account);
-    if (guard != null) request.header("X-MyOS-Session-Context", guard);
-    if (key != null) request.header("Idempotency-Key", key);
+    if (account != null) {
+      request.header("X-MyOS-Account", account);
+    }
+    if (guard != null) {
+      request.header("X-MyOS-Session-Context", guard);
+    }
+    if (key != null) {
+      request.header("Idempotency-Key", key);
+    }
     request.method(
         method,
         body == null

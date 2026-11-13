@@ -1,10 +1,18 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class ConsoleNativeOperationsTest {
@@ -50,8 +58,9 @@ class ConsoleNativeOperationsTest {
       NativeTimelineApi api = timelines.nativeApi();
       TimelineTransport transport =
           (uri, request, maximum, timeout) -> {
-            if (request == null)
+            if (request == null) {
               return new TimelineTransport.Reply(200, Json.bytes(api.descriptor()));
+            }
             String endpoint = protocol.provider.at("/endpoint").text();
             return new TimelineTransport.Reply(
                 200,
@@ -140,7 +149,9 @@ class ConsoleNativeOperationsTest {
         assertEquals(0, count(core), "A coverage request cannot execute or admit the input");
         runner.start();
         long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(8);
-        while (count(core) != 7 && System.nanoTime() < deadline) Thread.sleep(20);
+        while (count(core) != 7 && System.nanoTime() < deadline) {
+          Thread.sleep(20);
+        }
         assertEquals(
             7,
             count(core),

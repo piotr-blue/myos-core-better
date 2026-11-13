@@ -1,10 +1,14 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
@@ -71,7 +75,9 @@ class CoreFunctionalRuntimeTest {
                             .readValue("alice", documents.nativeId("alice", id), "/count"))
                     .longValue()
                 < 2
-            && System.nanoTime() < deadline) Thread.sleep(10);
+            && System.nanoTime() < deadline) {
+          Thread.sleep(10);
+        }
         service.checkWorkers();
         assertEquals(
             2L,
@@ -85,8 +91,11 @@ class CoreFunctionalRuntimeTest {
         assertEquals(List.of(), api.timers("alice", id, Map.of()).get("items"));
       }
     } finally {
-      if (previous == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", previous);
+      if (previous == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", previous);
+      }
     }
   }
 }

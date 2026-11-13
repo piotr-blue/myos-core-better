@@ -1,6 +1,10 @@
 package myos.better;
 
-import jdk.jfr.*;
+import jdk.jfr.Category;
+import jdk.jfr.Event;
+import jdk.jfr.Label;
+import jdk.jfr.Name;
+import jdk.jfr.StackTrace;
 
 /** Optional bounded recording of host phases. Never records payloads, tokens or secret values. */
 @Name("myos.HostPhase")

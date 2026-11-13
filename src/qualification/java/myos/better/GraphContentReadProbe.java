@@ -1,7 +1,13 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /** Isolated current-member content reads after execution eviction; no AWS or HTTP. */
 public final class GraphContentReadProbe {
@@ -16,7 +22,9 @@ public final class GraphContentReadProbe {
     long expectedLoads = Long.getLong("myos.probe.expectedLoads", 0L);
     for (int count : List.of(16, 256, 1024)) {
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       String source =
           JsonText.of(
               Map.of(
@@ -61,13 +69,17 @@ public final class GraphContentReadProbe {
           long start = System.nanoTime();
           LanguageDocument content = reader.content("initial", selected.id(), 1);
           double millis = (System.nanoTime() - start) / 1e6;
-          if (!selected.current().equals(content.blueId()))
+          if (!selected.current().equals(content.blueId())) {
             throw new AssertionError("Wrong current member identity");
-          if (content.at("/count").integer() != selected.value())
+          }
+          if (content.at("/count").integer() != selected.value()) {
             throw new AssertionError("Wrong current scalar value");
+          }
           String wireHash = Json.hash(Json.bytes(ProviderSigning.wire(content.expand(""))));
           long loads = reader.statistics().get("graphSessions.loads");
-          if (loads != expectedLoads) throw new AssertionError("Unexpected execution session load");
+          if (loads != expectedLoads) {
+            throw new AssertionError("Unexpected execution session load");
+          }
           samples.add(
               Map.of(
                   "millis", millis, "sessionLoads", loads, "warmup", i < 2, "wireHash", wireHash));

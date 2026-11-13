@@ -1,6 +1,9 @@
 package myos.better;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.Map;
+import java.util.Set;
 
 /** Bounded scheduling hints; the durable work index recovers any discarded hint. */
 final class TimelineWorkQueue {
@@ -14,7 +17,9 @@ final class TimelineWorkQueue {
   private int consecutiveUrgent;
 
   TimelineWorkQueue(int capacity) {
-    if (capacity < 1) throw new IllegalArgumentException("Positive capacity required");
+    if (capacity < 1) {
+      throw new IllegalArgumentException("Positive capacity required");
+    }
     this.capacity = capacity;
   }
 
@@ -23,12 +28,18 @@ final class TimelineWorkQueue {
       again.merge(key, priority, Boolean::logicalOr);
       return;
     }
-    if (urgent.contains(key)) return;
+    if (urgent.contains(key)) {
+      return;
+    }
     if (ordinary.contains(key)) {
-      if (!priority) return;
+      if (!priority) {
+        return;
+      }
       ordinary.remove(key);
     } else if (running.size() + urgent.size() + ordinary.size() == capacity) {
-      if (!priority || ordinary.isEmpty()) return;
+      if (!priority || ordinary.isEmpty()) {
+        return;
+      }
       ordinary.remove(ordinary.iterator().next());
     }
     (priority ? urgent : ordinary).add(key);
@@ -47,7 +58,9 @@ final class TimelineWorkQueue {
   }
 
   synchronized Job poll() {
-    if (urgent.isEmpty() && ordinary.isEmpty()) return null;
+    if (urgent.isEmpty() && ordinary.isEmpty()) {
+      return null;
+    }
     boolean priority = !urgent.isEmpty() && (ordinary.isEmpty() || consecutiveUrgent < 8);
     Set<AtomicStore.Key> selected = priority ? urgent : ordinary;
     AtomicStore.Key key = selected.iterator().next();
@@ -61,14 +74,20 @@ final class TimelineWorkQueue {
   /** Continue receiver preparation at its current priority; ordinary fanout pages use offer. */
   synchronized void continueRunning(AtomicStore.Key key) {
     Job job = running.get(key);
-    if (job == null) throw new IllegalStateException("Work is not running");
+    if (job == null) {
+      throw new IllegalStateException("Work is not running");
+    }
     offer(key, job.priority());
   }
 
   /** A continuation has its own priority; a concurrent urgent arrival always wins. */
   synchronized void completed(Job job) {
-    if (!running.remove(job.key(), job)) throw new IllegalStateException("Work is not running");
+    if (!running.remove(job.key(), job)) {
+      throw new IllegalStateException("Work is not running");
+    }
     Boolean pending = again.remove(job.key());
-    if (pending != null) offer(job.key(), pending);
+    if (pending != null) {
+      offer(job.key(), pending);
+    }
   }
 }

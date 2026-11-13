@@ -1,10 +1,18 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import blue.Language;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.stream.IntStream;
 import jdk.jfr.Recording;
 import jdk.jfr.consumer.RecordingFile;
@@ -18,8 +26,9 @@ class IdleOwnerGrowthTest {
         .mapToInt(Integer::parseInt)
         .peek(
             n -> {
-              if (n < 0 || n > 10000)
+              if (n < 0 || n > 10000) {
                 throw new IllegalArgumentException("Use 0..10000 history inputs");
+              }
             });
   }
 
@@ -55,14 +64,15 @@ class IdleOwnerGrowthTest {
                   .start("alice", "idle-history", payload)
                   .get("sessionId");
       f.runner.start();
-      for (String key : List.of("active", "idle"))
+      for (String key : List.of("active", "idle")) {
         ClauseGrowthTest.call(
             f, documents, root, root, "owner", "createChild", Map.of("childId", key), 2);
+      }
       String active =
           (String) f.service.graphs().embedding("alice", root, "/children/active").get("document");
       String idle =
           (String) f.service.graphs().embedding("alice", root, "/children/idle").get("document");
-      for (int i = 0; i < history; i++)
+      for (int i = 0; i < history; i++) {
         ClauseGrowthTest.call(
             f,
             documents,
@@ -72,6 +82,7 @@ class IdleOwnerGrowthTest {
             "increment",
             Map.of("probeId", "history-" + i),
             2);
+      }
       List<Map<String, Object>> samples = new ArrayList<>();
       Path recording = Files.createTempFile("idle-owner-growth-", ".jfr");
       List<Map<String, Object>> phases = new ArrayList<>();
@@ -107,7 +118,9 @@ class IdleOwnerGrowthTest {
           profile.dump(recording);
         }
         for (var event : RecordingFile.readAllEvents(recording)) {
-          if (!event.getEventType().getName().equals("myos.OwnerExecution")) continue;
+          if (!event.getEventType().getName().equals("myos.OwnerExecution")) {
+            continue;
+          }
           Map<String, Object> row = new LinkedHashMap<>();
           row.put("entry", event.getString("entry"));
           row.put("owner", event.getString("owner").equals(idle) ? "idle-child" : "root");
@@ -119,7 +132,9 @@ class IdleOwnerGrowthTest {
                   "admissionNanos",
                   "executionNanos",
                   "preparationNanos",
-                  "commitNanos")) row.put(field, event.getLong(field));
+                  "commitNanos")) {
+            row.put(field, event.getLong(field));
+          }
           phases.add(row);
         }
       } finally {
@@ -136,7 +151,9 @@ class IdleOwnerGrowthTest {
       String page = (String) records.head(idle).value().get("page");
       var recovered = new CanonicalSnapshots(f.store).execution("alice", page);
       assertNotNull(recovered.content());
-      if (history <= 32) OwnerReplay.verify(f.store, "alice", root, language, f.service);
+      if (history <= 32) {
+        OwnerReplay.verify(f.store, "alice", root, language, f.service);
+      }
       Path out = Path.of(System.getProperty("blue.idle.output", "build/idle-owner"));
       Files.createDirectories(out);
       Files.writeString(
@@ -155,13 +172,17 @@ class IdleOwnerGrowthTest {
                   history <= 32,
                   "correctTotals",
                   true)));
-      if (Boolean.parseBoolean(System.getProperty("blue.idle.assertBound", "true")))
+      if (Boolean.parseBoolean(System.getProperty("blue.idle.assertBound", "true"))) {
         assertTrue(
             samples.stream().allMatch(s -> ((Number) s.get("contentKeys")).intValue() < 256),
             "One idle update must not copy unrelated original-entry history: " + samples);
+      }
     } finally {
-      if (previous == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", previous);
+      if (previous == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", previous);
+      }
     }
   }
 }

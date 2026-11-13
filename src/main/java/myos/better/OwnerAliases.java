@@ -1,7 +1,11 @@
 package myos.better;
 
 import blue.Contracts;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Durable owner identity is separate from a member key in a canonical rooted invocation. */
 final class OwnerAliases {
@@ -22,8 +26,9 @@ final class OwnerAliases {
     private static void put(OwnerMetadata.Transaction tx, String kind, String id, String value) {
       String key = OwnerRecords.key(kind, id);
       String previous = tx.get(key);
-      if (previous != null && !previous.equals(value))
+      if (previous != null && !previous.equals(value)) {
         throw new IllegalStateException("Conflicting durable owner identity");
+      }
       tx.put(key, value);
     }
   }
@@ -33,7 +38,9 @@ final class OwnerAliases {
     Map<String, String> aliases = new HashMap<>();
     for (var member : outcome.after().members()) {
       var owner = records.owner(member.key());
-      if (!owner.equals(member.key())) aliases.put(member.key(), owner);
+      if (!owner.equals(member.key())) {
+        aliases.put(member.key(), owner);
+      }
     }
     String birth =
         JsonText.of(
@@ -47,14 +54,18 @@ final class OwnerAliases {
     outcome.before().members().forEach(member -> previous.add(member.key()));
     for (var member : outcome.after().members()) {
       String owner = records.owner(member.key());
-      if (!owner.equals(member.key())) aliases.put(member.key(), owner);
+      if (!owner.equals(member.key())) {
+        aliases.put(member.key(), owner);
+      }
     }
     String cause = outcome.event() == null ? outcome.before().identity() : outcome.event();
     var edges = outcome.after().embeddings();
     for (int pass = 0; pass <= edges.size(); pass++) {
       boolean changed = false;
       for (var edge : edges) {
-        if (previous.contains(edge.target())) continue;
+        if (previous.contains(edge.target())) {
+          continue;
+        }
         String identity =
             JsonText.of(
                 List.of(
@@ -68,12 +79,18 @@ final class OwnerAliases {
           changed = true;
         }
       }
-      if (!changed) break;
-      if (pass == edges.size()) throw new IllegalStateException("Unstable owner identity");
+      if (!changed) {
+        break;
+      }
+      if (pass == edges.size()) {
+        throw new IllegalStateException("Unstable owner identity");
+      }
     }
     Map<String, String> births = new HashMap<>();
     for (var edge : edges) {
-      if (previous.contains(edge.target())) continue;
+      if (previous.contains(edge.target())) {
+        continue;
+      }
       String identity =
           JsonText.of(
               List.of(

@@ -1,9 +1,20 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import blue.Contracts;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 import org.junit.jupiter.api.Test;
 
 class CanonicalSnapshotsTest {
@@ -82,7 +93,9 @@ class CanonicalSnapshotsTest {
     var child = type.specializeYaml("count: 7");
     Map<String, Object> shared = new LinkedHashMap<>();
     type.records().forEach((id, record) -> shared.put(id.value(), Json.object(record.toJson())));
-    for (int i = 0; i < 2000; i++) shared.put("unrelated-" + i, Map.of("text", "old-" + i));
+    for (int i = 0; i < 2000; i++) {
+      shared.put("unrelated-" + i, Map.of("text", "old-" + i));
+    }
     var parentWire =
         Map.of(
             "root",
@@ -145,7 +158,9 @@ class CanonicalSnapshotsTest {
   void coldHandoffBatchesKnownDestinationPaths() {
     var store = new ReadingStore();
     Map<String, Object> content = new LinkedHashMap<>();
-    for (int i = 0; i < 2000; i++) content.put("record-" + i, Map.of("text", "value-" + i));
+    for (int i = 0; i < 2000; i++) {
+      content.put("record-" + i, Map.of("text", "value-" + i));
+    }
     var member = Map.of("key", "root", "blueId", "body");
     var wire =
         new LinkedHashMap<String, Object>(
@@ -171,8 +186,9 @@ class CanonicalSnapshotsTest {
             .save("alice", null, Map.of("snapshot", wire, "identity", "test", "content", content));
     var blobs = new Repository(store).blobs("alice");
     Map<String, String> borrowed = new LinkedHashMap<>();
-    for (int i = 0; i < 64; i++)
+    for (int i = 0; i < 64; i++) {
       borrowed.put("added-" + i, blobs.put(Json.bytes(Map.of("text", "new-" + i))));
+    }
     blobs.flush();
     store.points = store.batches = 0;
     String after =
@@ -201,8 +217,9 @@ class CanonicalSnapshotsTest {
     var store = new ReadingStore();
     var snapshots = new CanonicalSnapshots(store);
     Map<String, Object> rows = new TreeMap<>();
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 1000; i++) {
       rows.put("member-" + i, Map.of("blueId", "body-" + i, "declarations", "x".repeat(700)));
+    }
     var base =
         Map.<String, Object>of(
             "environment", "native-test", "snapshot", "one", "documents", Map.copyOf(rows));
@@ -267,9 +284,10 @@ class CanonicalSnapshotsTest {
     var store = new ReadingStore();
     var snapshots = new CanonicalSnapshots(store);
     Map<String, Object> rows = new LinkedHashMap<>();
-    for (int index = 0; index < 1000; index++)
+    for (int index = 0; index < 1000; index++) {
       rows.put(
           "member-" + index, Map.of("blueId", "body-" + index, "declarations", "x".repeat(700)));
+    }
     Map<String, Object> first =
         Map.of("environment", "native-test", "snapshot", "one", "documents", Map.copyOf(rows));
     var pointer = snapshots.retainPreparation("alice", null, first);
@@ -344,8 +362,9 @@ class CanonicalSnapshotsTest {
   void smallMetadataSharesRadixPagesWithoutOneBlobReadPerMember() {
     var store = new ReadingStore();
     List<Object> documents = new ArrayList<>();
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 1000; i++) {
       documents.add(Map.of("key", "member-" + i, "blueId", "identity-" + i));
+    }
     var wire =
         Map.of(
             "root", "member-0", "documents", documents, "edges", List.of(), "runtimes", List.of());
@@ -597,34 +616,41 @@ class CanonicalSnapshotsTest {
     private final AtomicStore delegate = new JsonBoundaryStore();
     int reads, written, maximumBytes, points, batches;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       reads++;
       points++;
       return delegate.content(account, identity);
     }
 
+    @Override
     public Map<String, byte[]> contentAll(String account, List<String> identities) {
       batches++;
       reads += identities.size();
       return delegate.contentAll(account, identities);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       written += pages.size();
       pages.values().forEach(bytes -> maximumBytes = Math.max(maximumBytes, bytes.length));
@@ -639,7 +665,9 @@ class CanonicalSnapshotsTest {
     // not a timing threshold or a shortcut around Language admission of actual content.
     var store = new MeasuredStore(new JsonBoundaryStore());
     var children = new java.util.LinkedHashMap<String, Object>();
-    for (int i = 0; i < count; i++) children.put("child" + i, Map.of("count", i));
+    for (int i = 0; i < count; i++) {
+      children.put("child" + i, Map.of("count", i));
+    }
     String source =
         JsonText.of(
             Map.of(

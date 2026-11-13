@@ -1,9 +1,19 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
 /** Storage-level ordering/claim qualification; native document parity is a separate gate. */
@@ -309,8 +319,9 @@ class OwnerFrontiersTest {
     assertEquals("b0", scheduler.head("b").snapshot());
     scheduler.register(
         "abcd", "cycle0", List.of(timeline("ta"), timeline("tb"), timeline("tc"), timeline("td")));
-    for (String timeline : List.of("td", "tb", "ta", "tc"))
+    for (String timeline : List.of("td", "tb", "ta", "tc")) {
       scheduler.accept(entry(20, timeline, timeline));
+    }
     scheduler.sealLocalBefore(21);
     for (String expected : List.of("ta", "tb", "tc", "td")) {
       var selected = claim(scheduler, "abcd");
@@ -323,12 +334,15 @@ class OwnerFrontiersTest {
   @Test
   void oneAppendPublishesMoreThanOneHundredDirectFrontiersAtomically() {
     var scheduler = new OwnerFrontiers(new MemoryStore(), "account");
-    for (int i = 0; i < 128; i++)
+    for (int i = 0; i < 128; i++) {
       scheduler.register("owner-" + i, "initial", List.of(timeline("shared")));
+    }
     scheduler.accept(entry(10, "shared", "one"));
     scheduler.sealLocalBefore(11);
     assertEquals(128, scheduler.ready(0, 200).size());
-    for (String owner : scheduler.ready(0, 200)) complete(scheduler, claim(scheduler, owner));
+    for (String owner : scheduler.ready(0, 200)) {
+      complete(scheduler, claim(scheduler, owner));
+    }
     assertTrue(scheduler.ready(0, 200).isEmpty());
   }
 
@@ -433,8 +447,9 @@ class OwnerFrontiersTest {
   void failedManifestPublicationExposesNeitherTheEntryNorPartialFanout() {
     var store = new CanonicalGraphsTest.FaultStore();
     var scheduler = new OwnerFrontiers(store, "account");
-    for (int i = 0; i < 128; i++)
+    for (int i = 0; i < 128; i++) {
       scheduler.register("owner-" + i, "initial", List.of(timeline("shared")));
+    }
     store.beforeCommit = true;
     var original = entry(10, "shared", "entry");
     assertThrows(IllegalStateException.class, () -> scheduler.accept(original));
@@ -504,7 +519,9 @@ class OwnerFrontiersTest {
           return null;
         });
     var history = new java.util.ArrayList<OwnerFrontiers.Original>();
-    for (int n = 1; n <= 100; n++) history.add(entry(n, "control", "entry-" + n));
+    for (int n = 1; n <= 100; n++) {
+      history.add(entry(n, "control", "entry-" + n));
+    }
     scheduler.acquire("control", history, 101, "verified-range");
     scheduler.accept(entry(101, "data", "operation"));
     scheduler.sealLocalBefore(102);

@@ -1,6 +1,8 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import org.junit.jupiter.api.Test;
@@ -44,10 +46,12 @@ class AdoptedTimelineIndexTest {
     var visits = new java.util.concurrent.atomic.AtomicInteger();
     var registrations =
         new java.util.AbstractList<TimelineArchive>() {
+          @Override
           public int size() {
             return 1000;
           }
 
+          @Override
           public TimelineArchive get(int index) {
             java.util.Objects.checkIndex(index, size());
             visits.incrementAndGet();

@@ -1,7 +1,15 @@
 package myos.better;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.UUID;
 
 /** Retained callback payloads, leased attempts and retry-safe state transitions. */
 final class CoreWebhookDelivery {
@@ -22,10 +30,14 @@ final class CoreWebhookDelivery {
   int stage(String account, String hook) {
     for (int attempt = 0; attempt < 8; attempt++) {
       var configuration = hooks.require(account, hook, true);
-      if (!"ACTIVE".equals(configuration.value().get("status"))) return 0;
+      if (!"ACTIVE".equals(configuration.value().get("status"))) {
+        return 0;
+      }
       long cursor = Repository.number(configuration.value().get("cursor"));
       var facts = hooks.events.retained(account, cursor, 16);
-      if (facts.isEmpty()) return 0;
+      if (facts.isEmpty()) {
+        return 0;
+      }
       var writes = new ArrayList<AtomicStore.Write>();
       var counts = counts(account, hook);
       var tally = tally(counts);
@@ -33,12 +45,15 @@ final class CoreWebhookDelivery {
         var event = fact.value();
         if (CoreEventSource.generation(event)
                 < Repository.number(configuration.value().get("startGeneration"))
-            || !CoreWebhookSettings.matches(configuration.value(), event)) continue;
+            || !CoreWebhookSettings.matches(configuration.value(), event)) {
+          continue;
+        }
         String eventId = (String) event.get("id"), id = identity(hook, eventId);
         long sequence = Repository.number(event.get("sequence"));
         byte[] payload = Json.bytes(CorePublicationEvents.expand(store, event));
-        if (payload.length > 4 * 1024 * 1024)
+        if (payload.length > 4 * 1024 * 1024) {
           throw new IllegalStateException("Retained callback event exceeds its supported bound");
+        }
         String content = Json.hash(payload);
         store.publishContent(account, Map.of(content, payload));
         String queue = "QUEUE#" + Repository.version(sequence) + "#" + id;
@@ -63,7 +78,9 @@ final class CoreWebhookDelivery {
       advanced.put("cursor", Repository.number(facts.getLast().value().get("sequence")));
       writes.add(AtomicStore.Write.put(configuration.key(), configuration.version(), advanced));
       saveCounts(writes, account, hook, counts, tally);
-      if (store.commit(writes, List.of())) return facts.size();
+      if (store.commit(writes, List.of())) {
+        return facts.size();
+      }
     }
     throw busy();
   }
@@ -75,10 +92,14 @@ final class CoreWebhookDelivery {
   Claim claim(String account, String hook) {
     for (int attempt = 0; attempt < 8; attempt++) {
       var configuration = hooks.require(account, hook, true);
-      if (!"ACTIVE".equals(configuration.value().get("status"))) return null;
+      if (!"ACTIVE".equals(configuration.value().get("status"))) {
+        return null;
+      }
       var sender = store.get(key(account, hook, "SENDER"));
       if (sender != null) {
-        if (Repository.number(sender.value().get("due")) > hooks.clock.millis()) return null;
+        if (Repository.number(sender.value().get("due")) > hooks.clock.millis()) {
+          return null;
+        }
         var active = delivery(account, hook, (String) sender.value().get("delivery"));
         finish(
             new Claim(
@@ -94,14 +115,20 @@ final class CoreWebhookDelivery {
         continue;
       }
       var queued = store.query(key(account, hook, "").partition(), "QUEUE#", null, 1).rows();
-      if (queued.isEmpty()) return null;
+      if (queued.isEmpty()) {
+        return null;
+      }
       var row = delivery(account, hook, (String) queued.getFirst().value().get("delivery"));
       long now = hooks.clock.millis();
-      if (Repository.number(row.value().get("due")) > now) return null;
-      if ("SENDING".equals(row.value().get("status")))
+      if (Repository.number(row.value().get("due")) > now) {
+        return null;
+      }
+      if ("SENDING".equals(row.value().get("status"))) {
         throw new IllegalStateException("Callback sender lease missing");
-      if (TERMINAL.contains(row.value().get("status")))
+      }
+      if (TERMINAL.contains(row.value().get("status"))) {
         throw new IllegalStateException("Terminal callback remains queued");
+      }
       String token = UUID.randomUUID().toString();
       long number = Math.incrementExact(Repository.number(row.value().get("attempts")));
       var value = new LinkedHashMap<>(row.value());
@@ -141,7 +168,7 @@ final class CoreWebhookDelivery {
       add(tally, "attempts", 1);
       saveCounts(writes, account, hook, count, tally);
       if (store.commit(
-          writes, List.of(new AtomicStore.Check(configuration.key(), configuration.version()))))
+          writes, List.of(new AtomicStore.Check(configuration.key(), configuration.version())))) {
         return new Claim(
             account,
             hook,
@@ -149,6 +176,7 @@ final class CoreWebhookDelivery {
             token,
             number,
             Repository.number(value.get("generation")));
+      }
     }
     throw busy();
   }
@@ -156,7 +184,9 @@ final class CoreWebhookDelivery {
   void send(Claim claim, WebhookTransport transport) {
     var configuration = hooks.require(claim.account(), claim.hook(), true);
     var row = delivery(claim.account(), claim.hook(), claim.delivery());
-    if (!current(row, claim)) return;
+    if (!current(row, claim)) {
+      return;
+    }
     if (!"ACTIVE".equals(configuration.value().get("status"))
         || Repository.number(configuration.value().get("generation")) != claim.generation()) {
       finish(claim, null, "Subscription changed before send", true);
@@ -184,7 +214,9 @@ final class CoreWebhookDelivery {
                   claim.token()),
               body);
     } catch (Exception unavailable) {
-      if (unavailable instanceof InterruptedException) Thread.currentThread().interrupt();
+      if (unavailable instanceof InterruptedException) {
+        Thread.currentThread().interrupt();
+      }
       failure = "Network or TLS failure";
     }
     finish(claim, status, failure, false);
@@ -193,7 +225,9 @@ final class CoreWebhookDelivery {
   void finish(Claim claim, Integer response, String error, boolean changed) {
     for (int attempt = 0; attempt < 8; attempt++) {
       var row = delivery(claim.account(), claim.hook(), claim.delivery());
-      if (!current(row, claim)) return;
+      if (!current(row, claim)) {
+        return;
+      }
       var configuration = hooks.require(claim.account(), claim.hook(), true);
       boolean removed = "DELETED".equals(configuration.value().get("status"));
       boolean success = response != null && response >= 200 && response < 300;
@@ -221,8 +255,9 @@ final class CoreWebhookDelivery {
       putOptional(value, "error", error);
       var record =
           store.get(attemptKey(claim.account(), claim.hook(), claim.delivery(), claim.number()));
-      if (record == null || !claim.token().equals(record.value().get("id")))
+      if (record == null || !claim.token().equals(record.value().get("id"))) {
         throw new IllegalStateException("Callback attempt is missing");
+      }
       var observation = new LinkedHashMap<>(record.value());
       observation.put("status", success ? "SUCCEEDED" : removed || changed ? "CANCELED" : "FAILED");
       observation.put("completedAt", value.get("updatedAt"));
@@ -230,14 +265,17 @@ final class CoreWebhookDelivery {
       putOptional(observation, "error", error);
       var writes = new ArrayList<AtomicStore.Write>();
       var sender = store.get(key(claim.account(), claim.hook(), "SENDER"));
-      if (sender == null || !claim.token().equals(sender.value().get("token")))
+      if (sender == null || !claim.token().equals(sender.value().get("token"))) {
         throw new IllegalStateException("Callback sender lease differs");
+      }
       writes.add(AtomicStore.Write.delete(sender));
       writes.add(AtomicStore.Write.put(row.key(), row.version(), value));
       writes.add(AtomicStore.Write.put(record.key(), record.version(), observation));
       if (TERMINAL.contains(state)) {
         var queue = store.get(key(claim.account(), claim.hook(), (String) value.get("queue")));
-        if (queue == null) throw new IllegalStateException("Callback queue record missing");
+        if (queue == null) {
+          throw new IllegalStateException("Callback queue record missing");
+        }
         writes.add(AtomicStore.Write.delete(queue));
       }
       var count = counts(claim.account(), claim.hook());
@@ -245,8 +283,9 @@ final class CoreWebhookDelivery {
       move(tally, "SENDING", state);
       saveCounts(writes, claim.account(), claim.hook(), count, tally);
       if (store.commit(
-          writes, List.of(new AtomicStore.Check(configuration.key(), configuration.version()))))
+          writes, List.of(new AtomicStore.Check(configuration.key(), configuration.version())))) {
         return;
+      }
     }
     throw busy();
   }
@@ -263,9 +302,10 @@ final class CoreWebhookDelivery {
           var configuration = hooks.require(account, hook, false);
           checks.add(new AtomicStore.Check(configuration.key(), configuration.version()));
           var row = delivery(account, hook, id);
-          if (!TERMINAL.contains(row.value().get("status")))
+          if (!TERMINAL.contains(row.value().get("status"))) {
             throw new ConsoleProblem(
                 409, "delivery_active", "Delivery is already pending or in flight.");
+          }
           var value = new LinkedHashMap<>(row.value());
           value.put("status", "PENDING");
           value.put("due", hooks.clock.millis());
@@ -305,8 +345,9 @@ final class CoreWebhookDelivery {
 
   Map<String, Object> list(CoreAccounts.Session session, String hook, Map<String, String> query) {
     RuntimeConfiguration.fields(new HashMap<>(query), Set.of("limit", "pageToken", "status"));
-    if (query.containsKey("status") && !STATES.contains(query.get("status")))
+    if (query.containsKey("status") && !STATES.contains(query.get("status"))) {
       throw new ConsoleProblem(400, "invalid_status", "Unsupported delivery status.");
+    }
     CoreAccountAuthority.administrator(store, session);
     String account = session.principal().account();
     var configuration = hooks.require(account, hook, true);
@@ -332,9 +373,10 @@ final class CoreWebhookDelivery {
     var row = delivery(account, hook, id);
     var attempts =
         store.query(key(account, hook, "").partition(), "ATTEMPT#" + id + "#", null, 100);
-    if (attempts.after() != null)
+    if (attempts.after() != null) {
       throw new ConsoleProblem(
           422, "attempt_page_required", "Use the paginated attempts endpoint for this delivery.");
+    }
     return Map.of(
         "delivery",
         display(row.value(), configuration.value()),
@@ -390,7 +432,9 @@ final class CoreWebhookDelivery {
 
   private AtomicStore.Row delivery(String account, String hook, String id) {
     var row = store.get(key(account, hook, "DEL#" + id));
-    if (row == null) throw new ConsoleProblem(404, "delivery_not_found", "Delivery not found.");
+    if (row == null) {
+      throw new ConsoleProblem(404, "delivery_not_found", "Delivery not found.");
+    }
     return row;
   }
 
@@ -400,16 +444,21 @@ final class CoreWebhookDelivery {
 
   private static Map<String, Long> tally(AtomicStore.Row row) {
     var result = new TreeMap<String, Long>();
-    for (String state : STATES) result.put(state, 0L);
+    for (String state : STATES) {
+      result.put(state, 0L);
+    }
     result.put("attempts", 0L);
-    if (row != null)
+    if (row != null) {
       row.value().forEach((name, value) -> result.put(name, Repository.number(value)));
+    }
     return result;
   }
 
   private static void add(Map<String, Long> tally, String name, long amount) {
     long value = Math.addExact(tally.get(name), amount);
-    if (value < 0) throw new IllegalStateException("Callback count underflow");
+    if (value < 0) {
+      throw new IllegalStateException("Callback count underflow");
+    }
     tally.put(name, value);
   }
 
@@ -435,8 +484,11 @@ final class CoreWebhookDelivery {
   }
 
   private static void putOptional(Map<String, Object> target, String field, Object value) {
-    if (value == null) target.remove(field);
-    else target.put(field, value);
+    if (value == null) {
+      target.remove(field);
+    } else {
+      target.put(field, value);
+    }
   }
 
   private static AtomicStore.Key key(String account, String hook, String sort) {
@@ -475,7 +527,11 @@ final class CoreWebhookDelivery {
             "createdAt",
             "updatedAt",
             "responseStatus",
-            "error")) if (row.containsKey(field)) value.put(field, row.get(field));
+            "error")) {
+      if (row.containsKey(field)) {
+        value.put(field, row.get(field));
+      }
+    }
     if ("DELETED".equals(hook.get("status")) && !TERMINAL.contains(row.get("status"))) {
       value.put("status", "CANCELED");
       value.put("error", "Subscription removed");

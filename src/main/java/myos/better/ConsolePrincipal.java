@@ -38,6 +38,8 @@ record ConsolePrincipal(
   }
 
   void requireUser() {
-    if (!user) throw new ConsoleProblem(403, "USER_REQUIRED", "Sign in to manage API keys.");
+    if (!user) {
+      throw new ConsoleProblem(403, "USER_REQUIRED", "Sign in to manage API keys.");
+    }
   }
 }

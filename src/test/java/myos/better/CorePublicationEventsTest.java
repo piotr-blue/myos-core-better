@@ -1,11 +1,20 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.lang.reflect.*;
-import java.nio.file.*;
-import java.util.*;
+import blue.AdmissionEvidence;
+import blue.Contracts;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
@@ -100,16 +109,18 @@ class CorePublicationEventsTest {
                 new Class<?>[] {AtomicStore.class},
                 (proxy, method, args) -> {
                   boolean commit = method.getName().equals("commit");
-                  if (commit && before.getAndSet(false))
+                  if (commit && before.getAndSet(false)) {
                     throw new IllegalStateException("Failed before commit");
+                  }
                   Object value;
                   try {
                     value = method.invoke(delegate, args);
                   } catch (InvocationTargetException error) {
                     throw error.getCause();
                   }
-                  if (commit && after.getAndSet(false))
+                  if (commit && after.getAndSet(false)) {
                     throw new IllegalStateException("Lost success response");
+                  }
                   return value;
                 });
     var events = new CoreEvents(store, new CorePageTokens(store));
@@ -139,7 +150,7 @@ class CorePublicationEventsTest {
     var store = new JsonBoundaryStore();
     List<Object> facts = new ArrayList<>();
     // Exactly one fact beyond the projection limit exercises the persisted batch offset.
-    for (int i = 0; i < 25; i++)
+    for (int i = 0; i < 25; i++) {
       facts.add(
           Map.of(
               "id",
@@ -154,6 +165,7 @@ class CorePublicationEventsTest {
               Map.of("sessionId", "graph-one"),
               "object",
               Map.of("blueId", "example")));
+    }
     store.commit(
         List.of(
             AtomicStore.Write.put(

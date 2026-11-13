@@ -30,11 +30,16 @@ class SigningSecretTest {
                 SecretsManagerClient.class.getClassLoader(),
                 new Class<?>[] {SecretsManagerClient.class},
                 (proxy, method, args) -> {
-                  if (!method.getName().equals("getSecretValue"))
+                  if (!method.getName().equals("getSecretValue")) {
                     throw new AssertionError("Unexpected custody mutation: " + method.getName());
+                  }
                   requests.add((GetSecretValueRequest) args[0]);
-                  if (failure != null) throw failure;
-                  if (unavailable-- > 0) throw ResourceNotFoundException.builder().build();
+                  if (failure != null) {
+                    throw failure;
+                  }
+                  if (unavailable-- > 0) {
+                    throw ResourceNotFoundException.builder().build();
+                  }
                   return value;
                 });
   }

@@ -1,9 +1,14 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -21,7 +26,7 @@ class OwnerInitializationTest {
       var configuration = Contracts.create();
       var language = Language.newBuilder().mount("Contracts", Contracts.publication()).build();
       Map<String, Object> children = new LinkedHashMap<>();
-      for (int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++) {
         children.put(
             "child-" + i,
             Map.of(
@@ -44,6 +49,7 @@ class OwnerInitializationTest {
                                 "Contracts/Trigger Event",
                                 "event",
                                 Map.of("number", i)))))));
+      }
       var document =
           language.readJson(
               JsonText.of(
@@ -71,9 +77,10 @@ class OwnerInitializationTest {
           int events = member.key().equals(root) ? 0 : 1;
           assertEquals(events, ((List<?>) publication.get("events")).size());
           assertEquals(events, ((List<?>) publication.get("emissions")).size());
-          for (Object raw : (List<?>) publication.get("emissions"))
+          for (Object raw : (List<?>) publication.get("emissions")) {
             assertEquals(
                 member.key(), RuntimeConfiguration.object(raw, "emission").get("document"));
+          }
           totalBytes += Json.bytes(publication).length;
         }
         assertTrue(

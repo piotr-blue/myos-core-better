@@ -10,13 +10,15 @@ public final class PublishedTimelineProbe {
   private static final BluePackage COORDINATION = QualificationTimeline.COORDINATION;
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 3 || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}"))
+    if (args.length != 3 || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}")) {
       throw new IllegalArgumentException(
           "Expected new native-bench-* account, warmups and samples");
+    }
     String account = args[0];
     int warmups = Integer.parseInt(args[1]), samples = Integer.parseInt(args[2]);
-    if (warmups < 0 || warmups > 64 || samples < 1 || samples > 64)
+    if (warmups < 0 || warmups > 64 || samples < 1 || samples > 64) {
       throw new IllegalArgumentException("Warmups must be0..64; samples must be1..64");
+    }
     String table = System.getenv("MYOS_TABLE");
     MemoryStore memory = new MemoryStore();
     Supplier<AtomicStore> stores =
@@ -303,7 +305,11 @@ public final class PublishedTimelineProbe {
   }
 
   private static void drain(Core core) {
-    for (int i = 0; i < 30; i++) if (core.drain(100) == 0) return;
+    for (int i = 0; i < 30; i++) {
+      if (core.drain(100) == 0) {
+        return;
+      }
+    }
     throw new AssertionError("Propagation did not quiesce");
   }
 
@@ -323,6 +329,8 @@ public final class PublishedTimelineProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new AssertionError(message);
+    if (!condition) {
+      throw new AssertionError(message);
+    }
   }
 }

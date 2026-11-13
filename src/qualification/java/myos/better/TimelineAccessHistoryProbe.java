@@ -1,8 +1,13 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageDocument;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 
 /** Explicit bounded consumer-history measurement. Never part of normal test execution. */
@@ -13,8 +18,9 @@ public final class TimelineAccessHistoryProbe {
   private TimelineAccessHistoryProbe() {}
 
   public static void main(String[] args) throws Exception {
-    if (args.length > 1 || args.length == 1 && !args[0].equals("changing"))
+    if (args.length > 1 || args.length == 1 && !args[0].equals("changing")) {
       throw new IllegalArgumentException("Expected no arguments or changing; this probe is local");
+    }
     boolean changing = args.length == 1;
     long started = System.nanoTime();
     try (MeasuredStore store = new MeasuredStore(new MemoryStore())) {
@@ -23,11 +29,14 @@ public final class TimelineAccessHistoryProbe {
       List<Sample> shortCold = new ArrayList<>(), longCold = new ArrayList<>();
       for (int i = 0; i < 10; i++) {
         for (Fixture fixture : i % 2 == 0 ? List.of(small, large) : List.of(large, small)) {
-          if (System.nanoTime() - started > 120_000_000_000L)
+          if (System.nanoTime() - started > 120_000_000_000L) {
             throw new IllegalStateException("Probe deadline exceeded");
+          }
           try (TimelineAccessHistory history = new TimelineAccessHistory()) {
             Sample sample = measure(store, () -> fixture.check(history));
-            if (i >= 2) (fixture == small ? shortCold : longCold).add(sample);
+            if (i >= 2) {
+              (fixture == small ? shortCold : longCold).add(sample);
+            }
           }
         }
       }
@@ -128,10 +137,11 @@ public final class TimelineAccessHistoryProbe {
       initial = grant.initial();
       for (int i = 0; i < updates; i++) {
         clock.addAndGet(100);
-        if (changing)
+        if (changing) {
           permissions =
               new HostedAccess.Permissions(
                   List.of(source.id()), List.of(key, "%064x".formatted(i + 1)));
+        }
         host.access().update(name, "update-" + i, initial.blueId(), permissions);
       }
       expectedKeys = Set.copyOf(permissions.keys());
@@ -157,8 +167,9 @@ public final class TimelineAccessHistoryProbe {
       NativeTimelineApi api = new NativeTimelineApi(host, signing);
       TimelineTransport transport =
           (target, request, maximum, timeout) -> {
-            if (request == null)
+            if (request == null) {
               return new TimelineTransport.Reply(200, Json.bytes(api.descriptor()));
+            }
             String route =
                 target.toString().substring(protocol.provider.at("/endpoint").text().length());
             return new TimelineTransport.Reply(
@@ -199,6 +210,8 @@ public final class TimelineAccessHistoryProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new IllegalStateException(message);
+    if (!condition) {
+      throw new IllegalStateException(message);
+    }
   }
 }

@@ -1,8 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.AdmissionEvidence;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
 import java.math.BigInteger;
 import java.util.Map;
 import org.junit.jupiter.api.Nested;
@@ -48,8 +56,9 @@ class CanonicalSessionCacheTest {
         Contracts.Session initial =
             graphs.inspect("owner", "graph", CanonicalGraphs.Context::session);
         LanguageDocument borrowed = initial.document();
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++) {
           assertSame(initial, graphs.inspect("owner", "graph", CanonicalGraphs.Context::session));
+        }
         assertEquals(0L, graphs.cacheStatistics().get("graphSessions.historyRenewals"));
         graphs.process("owner", "graph", "one", Map.of("input", 1), 1, AdmissionEvidence.empty());
         assertEquals(0L, graphs.measurement("owner", "graph", 2).get("sessionRestoreNanos"));
@@ -179,7 +188,9 @@ class CanonicalSessionCacheTest {
                   Map.of()));
           long deadline = System.nanoTime() + java.time.Duration.ofSeconds(8).toNanos();
           while (((Number) f.service.graphs().readValue("owner", id, "/count")).intValue() < i
-              && System.nanoTime() < deadline) Thread.sleep(10);
+              && System.nanoTime() < deadline) {
+            Thread.sleep(10);
+          }
           assertEquals(
               i, ((Number) f.service.graphs().readValue("owner", id, "/count")).intValue());
           // Inspection continues through the rebuilt current state without durable reload.
@@ -253,8 +264,11 @@ class CanonicalSessionCacheTest {
               graphs.process("owner", "graph", "call-" + i, event, i, AdmissionEvidence.empty());
           var measurement = graphs.measurement("owner", "graph", actual.version());
           // Exact replay at the end of the preceding iteration already restored its session.
-          if (i == 1) assertTrue(measurement.get("sessionRestoreNanos") > 0);
-          else assertEquals(0L, measurement.get("sessionRestoreNanos"));
+          if (i == 1) {
+            assertTrue(measurement.get("sessionRestoreNanos") > 0);
+          } else {
+            assertEquals(0L, measurement.get("sessionRestoreNanos"));
+          }
           assertEquals(1L, measurement.get("sessionHistoryRenewal"));
           assertEquals(expected.receipt(), actual.receipt());
           assertEquals(expected.gas(), actual.gas());

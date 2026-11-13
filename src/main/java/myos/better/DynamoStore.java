@@ -82,8 +82,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
                     text("MEMBER#")));
     if (after != null) {
       var cursor = Json.object(java.util.Base64.getUrlDecoder().decode(after));
-      if (!cursor.keySet().equals(java.util.Set.of("pk", "sk")))
+      if (!cursor.keySet().equals(java.util.Set.of("pk", "sk"))) {
         throw new IllegalArgumentException("Invalid public directory inventory cursor");
+      }
       request.exclusiveStartKey(
           Map.of("pk", text((String) cursor.get("pk")), "sk", text((String) cursor.get("sk"))));
     }
@@ -109,8 +110,12 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
   }
 
   private Map<Key, Map<String, AttributeValue>> readItems(List<Key> keys) {
-    if (keys.size() > 100) throw new IllegalArgumentException("At most 100 keys per batch");
-    if (keys.isEmpty()) return Map.of();
+    if (keys.size() > 100) {
+      throw new IllegalArgumentException("At most 100 keys per batch");
+    }
+    if (keys.isEmpty()) {
+      return Map.of();
+    }
     var selected = new java.util.LinkedHashSet<>(keys);
     var pending =
         Map.of(
@@ -121,7 +126,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
                 .build());
     Map<Key, Map<String, AttributeValue>> found = new HashMap<>();
     for (int attempt = 0; !pending.isEmpty(); attempt++) {
-      if (attempt == 8) throw new IllegalStateException("Record read batch remains throttled");
+      if (attempt == 8) {
+        throw new IllegalStateException("Record read batch remains throttled");
+      }
       pauseBatch(attempt);
       var request =
           software.amazon.awssdk.services.dynamodb.model.BatchGetItemRequest.builder()
@@ -132,7 +139,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
               "BatchGetItem", pending.get(table).keys().size(), () -> client.batchGetItem(request));
       for (var item : response.responses().getOrDefault(table, List.of())) {
         Key key = new Key(item.get("pk").s(), item.get("sk").s());
-        if (!selected.contains(key)) throw new IllegalStateException("Unrequested batch item");
+        if (!selected.contains(key)) {
+          throw new IllegalStateException("Unrequested batch item");
+        }
         found.put(key, item);
       }
       pending = response.unprocessedKeys();
@@ -141,7 +150,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
   }
 
   private static void pauseBatch(int attempt) {
-    if (attempt == 0) return;
+    if (attempt == 0) {
+      return;
+    }
     try {
       Thread.sleep(Math.min(1000L, 25L << attempt));
     } catch (InterruptedException error) {
@@ -160,7 +171,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
     if (projected && !item.isEmpty()) {
       AttributeValue identity = item.get("bodyHash");
       Map<String, Object> known = identity == null ? null : bodies.known(identity.s());
-      if (known != null) return new Row(key, Long.parseLong(item.get("revision").n()), known);
+      if (known != null) {
+        return new Row(key, Long.parseLong(item.get("revision").n()), known);
+      }
       // A changed body or an evicted decode needs the current full item. A peer may publish
       // between these reads; returning that newer complete row is still a strong read.
       item = readItem(key, false);
@@ -176,7 +189,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
 
   private Map<String, AttributeValue> readItem(Key key, boolean projected) {
     var request = GetItemRequest.builder().tableName(table).key(key(key)).consistentRead(true);
-    if (projected) request.projectionExpression("pk, sk, revision, bodyHash");
+    if (projected) {
+      request.projectionExpression("pk, sk, revision, bodyHash");
+    }
     return StorageRequestEvent.call("GetItem", 1, () -> client.getItem(request.build())).item();
   }
 
@@ -193,7 +208,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
                 prefix.isEmpty()
                     ? Map.of(":pk", text(partition))
                     : Map.of(":pk", text(partition), ":prefix", text(prefix)));
-    if (after != null) request.exclusiveStartKey(key(new Key(partition, after)));
+    if (after != null) {
+      request.exclusiveStartKey(key(new Key(partition, after)));
+    }
     var result = StorageRequestEvent.call("Query", limit, () -> client.query(request.build()));
     return new Page(
         result.items().stream().map(this::row).toList(),
@@ -202,7 +219,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
 
   @Override
   public Page work(String shard, String after, int limit) {
-    if (limit < 1) throw new IllegalArgumentException("Positive page size required");
+    if (limit < 1) {
+      throw new IllegalArgumentException("Positive page size required");
+    }
     var request =
         QueryRequest.builder()
             .tableName(table)
@@ -236,13 +255,16 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
   @Override
   public boolean commitWithContent(
       List<Write> writes, List<Check> checks, String account, Map<String, byte[]> pages) {
-    if (writes.isEmpty() && checks.isEmpty() || writes.size() + checks.size() > 100)
+    if (writes.isEmpty() && checks.isEmpty() || writes.size() + checks.size() > 100) {
       throw new IllegalArgumentException("Transaction must contain 1..100 items");
+    }
     List<TransactWriteItem> items = new ArrayList<>();
     var keys = new java.util.HashSet<Key>();
     long bytes = 0;
     for (Write write : writes) {
-      if (!keys.add(write.key())) throw new IllegalArgumentException("Duplicate transaction key");
+      if (!keys.add(write.key())) {
+        throw new IllegalArgumentException("Duplicate transaction key");
+      }
       String condition = condition(write.expected());
       if (write.next() == null) {
         items.add(
@@ -258,8 +280,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
       } else {
         Map<String, AttributeValue> encoded = item(write.next());
         bytes += encoded.get("body").b().asByteArray().length + 1024L;
-        if (bytes > 3_500_000)
+        if (bytes > 3_500_000) {
           throw new IllegalArgumentException("Transaction payload exceeds host bound");
+        }
         items.add(
             TransactWriteItem.builder()
                 .put(
@@ -273,7 +296,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
       }
     }
     for (Check check : checks) {
-      if (!keys.add(check.key())) throw new IllegalArgumentException("Duplicate transaction key");
+      if (!keys.add(check.key())) {
+        throw new IllegalArgumentException("Duplicate transaction key");
+      }
       items.add(
           TransactWriteItem.builder()
               .conditionCheck(
@@ -291,8 +316,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
     // Publish immutable pages to completion before making any new reference visible.
     for (var page : pages.entrySet()) {
       Map<String, AttributeValue> encoded = contentItem(account, page.getKey(), page.getValue());
-      if (!keys.add(new Key(encoded.get("pk").s(), encoded.get("sk").s())))
+      if (!keys.add(new Key(encoded.get("pk").s(), encoded.get("sk").s()))) {
         throw new IllegalArgumentException("Duplicate transaction key");
+      }
     }
     publishContent(account, pages);
     try {
@@ -302,7 +328,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
           () -> client.transactWriteItems(request -> request.transactItems(items)));
       return true;
     } catch (TransactionCanceledException error) {
-      if (retryableCancellation(error.cancellationReasons())) return false;
+      if (retryableCancellation(error.cancellationReasons())) {
+        return false;
+      }
       throw error;
     }
   }
@@ -315,7 +343,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
       List<software.amazon.awssdk.services.dynamodb.model.CancellationReason> reasons) {
     boolean retryable = false;
     for (var reason : reasons) {
-      if (reason.code() == null) return false;
+      if (reason.code() == null) {
+        return false;
+      }
       switch (reason.code()) {
         case "None" -> {}
         case "ConditionalCheckFailed",
@@ -351,13 +381,16 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
     Map<String, AttributeValue> item = new HashMap<>(key(row.key()));
     item.put("revision", AttributeValue.fromN(Long.toString(row.version())));
     byte[] bytes = compress(Json.bytes(row.value()));
-    if (bytes.length > 350_000)
+    if (bytes.length > 350_000) {
       throw new IllegalArgumentException("Record exceeds DynamoDB host bound");
+    }
     item.put("body", AttributeValue.fromB(SdkBytes.fromByteArray(bytes)));
     item.put("bodyHash", text(Json.hash(bytes)));
     for (String name : List.of("work", "position")) {
       Object value = row.value().get(name);
-      if (value instanceof String text) item.put(name, text(text));
+      if (value instanceof String text) {
+        item.put(name, text(text));
+      }
     }
     return item;
   }
@@ -366,14 +399,19 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
     Key key = new Key(item.get("pk").s(), item.get("sk").s());
     byte[] encoded = item.get("body").b().asByteArray();
     AttributeValue identity = item.get("bodyHash");
-    if (identity != null && !Json.hash(encoded).equals(identity.s()))
+    if (identity != null && !Json.hash(encoded).equals(identity.s())) {
       throw new IllegalStateException("Stored body digest mismatch");
+    }
     Map<String, Object> value = bodies.decode(encoded, DynamoStore::decompress);
     synchronized (largeRows) {
       if (identity != null && encoded.length >= 4096) {
         largeRows.put(key, Boolean.TRUE);
-        while (largeRows.size() > 512) largeRows.remove(largeRows.keySet().iterator().next());
-      } else largeRows.remove(key);
+        while (largeRows.size() > 512) {
+          largeRows.remove(largeRows.keySet().iterator().next());
+        }
+      } else {
+        largeRows.remove(key);
+      }
     }
     return new Row(key, Long.parseLong(item.get("revision").n()), value);
   }
@@ -393,8 +431,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
   private static byte[] decompress(byte[] value) {
     try (GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(value))) {
       byte[] result = input.readNBytes(16 * 1024 * 1024 + 1);
-      if (result.length > 16 * 1024 * 1024)
+      if (result.length > 16 * 1024 * 1024) {
         throw new IllegalStateException("Inflated record exceeds host bound");
+      }
       return result;
     } catch (IOException error) {
       throw new UncheckedIOException(error);
@@ -405,7 +444,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
   public byte[] content(String account, String identity) {
     String key = contentKey(account, identity);
     byte[] cached = contentCache.get(key);
-    if (cached != null) return cached;
+    if (cached != null) {
+      return cached;
+    }
     var item =
         client
             .getItem(
@@ -415,35 +456,45 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
                         .key(key(new Key(contentKey(account, identity), "CONTENT")))
                         .consistentRead(true))
             .item();
-    if (item.isEmpty()) throw new IllegalStateException("Missing content: " + identity);
+    if (item.isEmpty()) {
+      throw new IllegalStateException("Missing content: " + identity);
+    }
     byte[] bytes = item.get("body").b().asByteArray();
-    if (bytes.length > 128 * 1024 || !Json.hash(bytes).equals(identity))
+    if (bytes.length > 128 * 1024 || !Json.hash(bytes).equals(identity)) {
       throw new IllegalStateException("Corrupt immutable content");
+    }
     contentCache.put(key, bytes);
     return bytes;
   }
 
   @Override
   public Map<String, byte[]> contentAll(String account, List<String> identities) {
-    if (identities.size() > BlobStore.READ_BATCH_SIZE)
+    if (identities.size() > BlobStore.READ_BATCH_SIZE) {
       throw new IllegalArgumentException("At most 100 content pages per batch");
+    }
     var selected = new java.util.LinkedHashSet<>(identities);
     Map<String, Key> keys = new java.util.LinkedHashMap<>();
     Map<String, byte[]> pages = new HashMap<>();
     for (String id : selected) {
       String key = contentKey(account, id);
       byte[] cached = contentCache.get(key);
-      if (cached == null) keys.put(id, new Key(key, "CONTENT"));
-      else pages.put(id, cached);
+      if (cached == null) {
+        keys.put(id, new Key(key, "CONTENT"));
+      } else {
+        pages.put(id, cached);
+      }
     }
     Map<Key, Map<String, AttributeValue>> found = readItems(List.copyOf(keys.values()));
     keys.forEach(
         (id, key) -> {
           Map<String, AttributeValue> item = found.get(key);
-          if (item == null) throw new IllegalStateException("Missing content: " + id);
+          if (item == null) {
+            throw new IllegalStateException("Missing content: " + id);
+          }
           byte[] bytes = item.get("body").b().asByteArray();
-          if (bytes.length > 128 * 1024 || !Json.hash(bytes).equals(id))
+          if (bytes.length > 128 * 1024 || !Json.hash(bytes).equals(id)) {
             throw new IllegalStateException("Corrupt immutable content");
+          }
           contentCache.put(contentKey(account, id), bytes);
           pages.put(id, bytes);
         });
@@ -460,8 +511,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
 
   private static Map<String, AttributeValue> contentItem(
       String account, String identity, byte[] bytes) {
-    if (!Json.hash(bytes).equals(identity) || bytes.length > 128 * 1024)
+    if (!Json.hash(bytes).equals(identity) || bytes.length > 128 * 1024) {
       throw new IllegalArgumentException("Invalid immutable page");
+    }
     Map<String, AttributeValue> item =
         new HashMap<>(key(new Key(contentKey(account, identity), "CONTENT")));
     item.put("body", AttributeValue.fromB(SdkBytes.fromByteArray(bytes)));
@@ -480,7 +532,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
                   .build());
         });
     if (writes.size() <= 25) {
-      if (!writes.isEmpty()) writeContentBatch(writes);
+      if (!writes.isEmpty()) {
+        writeContentBatch(writes);
+      }
     } else {
       // Pages are immutable and idempotent. Bound concurrent I/O, then wait for every
       // acknowledgment before publishing any mutable head or caching these records.
@@ -498,8 +552,12 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
               Thread.currentThread().interrupt();
               throw new IllegalStateException("Interrupted content publication", error);
             } catch (java.util.concurrent.ExecutionException error) {
-              if (error.getCause() instanceof RuntimeException failure) throw failure;
-              if (error.getCause() instanceof Error failure) throw failure;
+              if (error.getCause() instanceof RuntimeException failure) {
+                throw failure;
+              }
+              if (error.getCause() instanceof Error failure) {
+                throw failure;
+              }
               throw new IllegalStateException("Content publication failed", error.getCause());
             }
           }
@@ -514,7 +572,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
       List<software.amazon.awssdk.services.dynamodb.model.WriteRequest> writes) {
     var pending = Map.of(table, writes);
     for (int attempt = 0; !pending.isEmpty(); attempt++) {
-      if (attempt == 8) throw new IllegalStateException("Immutable page batch remains throttled");
+      if (attempt == 8) {
+        throw new IllegalStateException("Immutable page batch remains throttled");
+      }
       pauseBatch(attempt);
       var request =
           software.amazon.awssdk.services.dynamodb.model.BatchWriteItemRequest.builder()

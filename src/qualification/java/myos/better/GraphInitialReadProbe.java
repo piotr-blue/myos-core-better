@@ -1,7 +1,13 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /** Isolated original-member source reads after execution eviction; no AWS or HTTP. */
 public final class GraphInitialReadProbe {
@@ -16,7 +22,9 @@ public final class GraphInitialReadProbe {
     long expectedLoads = Long.getLong("myos.probe.expectedLoads", 0L);
     for (int count : List.of(16, 256, 1024)) {
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       String source =
           JsonText.of(
               Map.of(
@@ -60,10 +68,13 @@ public final class GraphInitialReadProbe {
           long start = System.nanoTime();
           LanguageDocument original = reader.initial("initial", selected.id());
           double millis = (System.nanoTime() - start) / 1e6;
-          if (!selected.original().equals(original.blueId()))
+          if (!selected.original().equals(original.blueId())) {
             throw new AssertionError("Wrong original source");
+          }
           long loads = reader.statistics().get("graphSessions.loads");
-          if (loads != expectedLoads) throw new AssertionError("Unexpected execution session load");
+          if (loads != expectedLoads) {
+            throw new AssertionError("Unexpected execution session load");
+          }
           samples.add(Map.of("millis", millis, "sessionLoads", loads, "warmup", i < 2));
         }
       }

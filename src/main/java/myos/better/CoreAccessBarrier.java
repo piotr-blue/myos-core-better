@@ -15,7 +15,9 @@ final class CoreAccessBarrier {
         accounts.compute(
             account,
             (_, current) -> {
-              if (current == null) current = new Gate();
+              if (current == null) {
+                current = new Gate();
+              }
               current.users++;
               return current;
             });
@@ -23,14 +25,17 @@ final class CoreAccessBarrier {
     boolean acquired = false;
     try {
       acquired = lock.tryLock(30, TimeUnit.SECONDS);
-      if (!acquired)
+      if (!acquired) {
         throw new ConsoleProblem(503, "account_busy", "Retry after the account change completes.");
+      }
       return new Lease(account, gate, lock);
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
       throw new ConsoleProblem(503, "account_busy", "Account request was interrupted; retry.");
     } finally {
-      if (!acquired) release(account, gate);
+      if (!acquired) {
+        release(account, gate);
+      }
     }
   }
 
@@ -42,7 +47,9 @@ final class CoreAccessBarrier {
     accounts.compute(
         account,
         (_, current) -> {
-          if (current != gate) throw new IllegalStateException("Account lease changed");
+          if (current != gate) {
+            throw new IllegalStateException("Account lease changed");
+          }
           return --gate.users == 0 ? null : gate;
         });
   }
@@ -61,7 +68,9 @@ final class CoreAccessBarrier {
 
     @Override
     public void close() {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
       lock.unlock();
       closed = true;
       release(account, gate);

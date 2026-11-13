@@ -1,6 +1,11 @@
 package myos.better;
 
-import jdk.jfr.*;
+import jdk.jfr.Category;
+import jdk.jfr.Event;
+import jdk.jfr.Label;
+import jdk.jfr.Name;
+import jdk.jfr.StackTrace;
+import jdk.jfr.Timespan;
 
 /** Optional recording of one owner attempt; observations do not enter canonical state or gas. */
 @Name("myos.OwnerExecution")

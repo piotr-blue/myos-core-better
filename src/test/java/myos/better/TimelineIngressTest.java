@@ -1,11 +1,23 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.TimelineVerifier;
 import java.math.BigInteger;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -234,12 +246,16 @@ class TimelineIngressTest {
         String source = unobserved(f);
         f.create("doc", source);
         Repository.Document before = f.repository.load("alice", "doc");
-        for (int i = 1; i <= 33; i++) f.publish(i, "{unrelated: publication}");
+        for (int i = 1; i <= 33; i++) {
+          f.publish(i, "{unrelated: publication}");
+        }
         f.operation(34, "all", f.language.readYaml(source), false);
         f.closeQuiet(35);
         for (int i = 0; i < 3; i++) {
           assertEquals(TimelineIngress.Status.INAPPLICABLE, f.step("doc").status());
-          if (i < 2) assertEquals(0L, f.ingress.metrics.snapshot().get("RESOLVE_INPUT.calls"));
+          if (i < 2) {
+            assertEquals(0L, f.ingress.metrics.snapshot().get("RESOLVE_INPUT.calls"));
+          }
         }
         // The final batch looks ahead at the following relevant operation before stopping.
         assertEquals(1L, f.ingress.metrics.snapshot().get("RESOLVE_INPUT.calls"));
@@ -260,10 +276,13 @@ class TimelineIngressTest {
         f.create("target", source);
         f.create("other", source.replace("count: 0", "count: 99"));
         LanguageDocument target = f.language.readYaml(source);
-        for (int i = 1; i <= 33; i++) f.operation(i, "all", target, false);
+        for (int i = 1; i <= 33; i++) {
+          f.operation(i, "all", target, false);
+        }
         f.closeQuiet(34);
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 3; i++) {
           assertEquals(TimelineIngress.Status.INAPPLICABLE, f.step("other").status());
+        }
         assertEquals(TimelineIngress.Status.IDLE, f.step("other").status());
         assertEquals(1, f.repository.load("alice", "other").version());
         List<AtomicStore.Row> history = f.history("other");
@@ -273,9 +292,12 @@ class TimelineIngressTest {
           Map<?, ?> audit = (Map<?, ?>) row.value().get("assessments");
           if (audit.get("entries") instanceof List<?> entries) {
             assertEquals(16, entries.size());
-            for (Object entry : entries)
+            for (Object entry : entries) {
               timestamps.add(timestamp(((Map<?, ?>) entry).get("input")));
-          } else timestamps.add(timestamp(row.value().get("input")));
+            }
+          } else {
+            timestamps.add(timestamp(row.value().get("input")));
+          }
         }
         assertEquals(java.util.stream.LongStream.rangeClosed(1, 33).boxed().toList(), timestamps);
       }
@@ -361,7 +383,9 @@ class TimelineIngressTest {
         f.create("target", source);
         f.create("other", source.replace("count: 0", "count: 99"));
         LanguageDocument target = f.language.readYaml(source);
-        for (int i = 1; i <= 3; i++) f.operation(i, "all", target, false);
+        for (int i = 1; i <= 3; i++) {
+          f.operation(i, "all", target, false);
+        }
         f.closeQuiet(4);
         TimelineIngress peerIngress =
             new TimelineIngress(f.repository, TimelineFixture.COORDINATION);
@@ -619,7 +643,7 @@ class TimelineIngressTest {
               + "    provider: {blueId: '"
               + b.provider.blueId()
               + "'}\n    url: https://provider.example/quiet\n";
-      if (!operations)
+      if (!operations) {
         return base
             + """
               countFirst:
@@ -629,6 +653,7 @@ class TimelineIngressTest {
                   - type: Contracts/Update Document
                     changeset: [{op: replace, path: /count, val: {$add: [{$document: /count}, {$event: /message/amount}]}}]
             """;
+      }
       return base
           + """
             all:
@@ -738,15 +763,17 @@ class TimelineIngressTest {
 
     @Override
     public Row get(Key key) {
-      if (unavailableIdentity != null && key.partition().contains(unavailableIdentity))
+      if (unavailableIdentity != null && key.partition().contains(unavailableIdentity)) {
         throw new IllegalStateException("Identity store temporarily unavailable");
+      }
       return hideCheckpoints && key.sort().startsWith("TIMELINE_EVENT#") ? null : delegate.get(key);
     }
 
     @Override
     public Page query(String partition, String prefix, String after, int limit) {
-      if (unavailableIdentity != null && partition.contains(unavailableIdentity))
+      if (unavailableIdentity != null && partition.contains(unavailableIdentity)) {
         throw new IllegalStateException("Identity store temporarily unavailable");
+      }
       return delegate.query(partition, prefix, after, limit);
     }
 
@@ -769,7 +796,9 @@ class TimelineIngressTest {
     public boolean commit(List<Write> writes, List<Check> checks) {
       Runnable race = beforeCommit;
       beforeCommit = null;
-      if (race != null) race.run();
+      if (race != null) {
+        race.run();
+      }
       boolean committed = delegate.commit(writes, checks);
       if (committed && loseResponse) {
         loseResponse = false;

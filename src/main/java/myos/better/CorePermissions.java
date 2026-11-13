@@ -24,17 +24,22 @@ final class CorePermissions {
   }
 
   static void request(String role, String method, String route) {
-    if (!ROLES.contains(role))
+    if (!ROLES.contains(role)) {
       denied("membership_role_invalid", "The membership role is unavailable.");
+    }
     // User profile/discovery is independent of the selected account's role.
     if (route.equals("me")
         || route.startsWith("me/")
         || route.equals("identity")
         || route.equals("accounts")
         || route.equals("accounts/lookup")
-        || route.startsWith("invitations/") && route.endsWith("/accept")) return;
+        || route.startsWith("invitations/") && route.endsWith("/accept")) {
+      return;
+    }
     // Credential handlers enforce human ownership and current membership, independently of role.
-    if (route.equals("api-keys") || route.startsWith("api-keys/")) return;
+    if (route.equals("api-keys") || route.startsWith("api-keys/")) {
+      return;
+    }
     boolean read = method.equals("GET") || method.equals("HEAD");
     if (read
         && (Set.of(
@@ -49,13 +54,18 @@ final class CorePermissions {
                     "examples")
                 .contains(route)
             || route.startsWith("types/")
-            || route.startsWith("references/"))) return;
-    if (role.equals("READ_SELECTED"))
+            || route.startsWith("references/"))) {
+      return;
+    }
+    if (role.equals("READ_SELECTED")) {
       denied(
           "representation_required",
           "This route requires proven representation coverage; account-wide access is not"
               + " granted.");
-    if (!read && !write(role)) denied("account_write_required", "An account writer is required.");
+    }
+    if (!read && !write(role)) {
+      denied("account_write_required", "An account writer is required.");
+    }
     if (!administrator(role)
         && (route.equals("webhooks")
             || route.startsWith("webhooks/")
@@ -69,8 +79,9 @@ final class CorePermissions {
                     || route.equals("account/agents")
                     || route.startsWith("account/agents/")
                     || route.startsWith("account/access-automation")
-                    || route.startsWith("account/mandate-sharing"))))
+                    || route.startsWith("account/mandate-sharing")))) {
       denied("account_admin_required", "An account administrator is required.");
+    }
   }
 
   private static void denied(String code, String message) {

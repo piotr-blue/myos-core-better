@@ -1,7 +1,12 @@
 package myos.better;
 
 import blue.Contracts;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Immutable address history published with its graph head, never inferred from caller content. */
 final class GraphLineage {
@@ -32,7 +37,9 @@ final class GraphLineage {
     identities(after)
         .forEach(
             (member, id) -> {
-              if (!id.equals(previous.get(member))) changed.put(member, id);
+              if (!id.equals(previous.get(member))) {
+                changed.put(member, id);
+              }
             });
     return appendMembers(account, root, version, changed);
   }
@@ -44,12 +51,15 @@ final class GraphLineage {
     Map<String, Target> changed = new HashMap<>();
     for (var member : identities.entrySet()) {
       Target found = changed.get(member.getValue());
-      if (found == null) found = index.get(root, member.getValue());
+      if (found == null) {
+        found = index.get(root, member.getValue());
+      }
       Map<String, Long> members = new TreeMap<>(found == null ? Map.of() : found.members());
       members.putIfAbsent(member.getKey(), version);
       changed.put(member.getValue(), new Target(members));
-      if (index.get(root, "member:" + member.getKey()) == null)
+      if (index.get(root, "member:" + member.getKey()) == null) {
         changed.put("member:" + member.getKey(), new Target(Map.of(member.getValue(), version)));
+      }
     }
     root = index.update(root, changed, Set.of());
     blobs.flush();
@@ -74,8 +84,9 @@ final class GraphLineage {
 
   String root(String account, String document, long version) {
     var row = repository.store.get(key(account, document, version));
-    if (row == null)
+    if (row == null) {
       throw new IllegalStateException("Missing canonical receiver history; replay is required");
+    }
     return (String) row.value().get("root");
   }
 
@@ -89,10 +100,11 @@ final class GraphLineage {
 
   private static Map<String, String> identities(Contracts.Reception reception) {
     Map<String, String> result = new TreeMap<>();
-    if (reception != null)
+    if (reception != null) {
       reception
           .channels()
           .forEach(c -> result.put(c.receiver().member(), c.receiver().documentId().value()));
+    }
     return result;
   }
 }

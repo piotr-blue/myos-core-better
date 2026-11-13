@@ -18,8 +18,9 @@ final class SnapshotContent {
 
   record Timeline(long position, String content) {
     Timeline {
-      if (position < 1 || content == null || content.isEmpty())
+      if (position < 1 || content == null || content.isEmpty()) {
         throw new IllegalArgumentException("Invalid retained timeline catalogue");
+      }
     }
   }
 
@@ -42,13 +43,17 @@ final class SnapshotContent {
 
   static List<String> definitions(Map<String, Object> manifest) {
     Object retained = manifest.get("definitionContent");
-    if (retained == null) return List.of();
-    if (!(retained instanceof List<?> roots))
+    if (retained == null) {
+      return List.of();
+    }
+    if (!(retained instanceof List<?> roots)) {
       throw new IllegalArgumentException("Invalid retained definitions");
+    }
     var result = new java.util.TreeSet<String>();
     for (Object value : roots) {
-      if (!(value instanceof String root) || !root.matches("[a-f0-9]{64}"))
+      if (!(value instanceof String root) || !root.matches("[a-f0-9]{64}")) {
         throw new IllegalArgumentException("Invalid retained definition catalogue");
+      }
       result.add(root);
     }
     return List.copyOf(result);
@@ -56,10 +61,14 @@ final class SnapshotContent {
 
   String get(String key) {
     String found = index.get(local, key);
-    if (found != null) return found;
+    if (found != null) {
+      return found;
+    }
     for (String source : catalogues) {
       found = index.get(source, key);
-      if (found != null) return "blocks:" + found;
+      if (found != null) {
+        return "blocks:" + found;
+      }
     }
     return null;
   }
@@ -68,7 +77,9 @@ final class SnapshotContent {
     Map<String, String> found = new LinkedHashMap<>(index.getAll(local, keys));
     for (String source : catalogues) {
       var missing = keys.stream().filter(key -> !found.containsKey(key)).toList();
-      if (missing.isEmpty()) break;
+      if (missing.isEmpty()) {
+        break;
+      }
       index.getAll(source, missing).forEach((key, value) -> found.put(key, "blocks:" + value));
     }
     return found;
@@ -78,8 +89,9 @@ final class SnapshotContent {
   Map<String, String> all() {
     Map<String, String> result = new LinkedHashMap<>();
     index.forEach(local, result::put);
-    for (String source : catalogues)
+    for (String source : catalogues) {
       index.forEach(source, (key, value) -> result.putIfAbsent(key, "blocks:" + value));
+    }
     return result;
   }
 }

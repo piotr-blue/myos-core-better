@@ -1,9 +1,17 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageRecord;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
@@ -46,7 +54,9 @@ class TimelineContentExpansionTest {
   void theRecordBudgetBoundsReadAheadAndTheRemainderStaysResolvable() {
     Language language = Language.create();
     List<LanguageDocument> children = new ArrayList<>();
-    for (int i = 0; i < 140; i++) children.add(language.readYaml("n: " + i));
+    for (int i = 0; i < 140; i++) {
+      children.add(language.readYaml("n: " + i));
+    }
     Language.Builder builder = language.toBuilder();
     children.forEach(builder::content);
     LanguageContent root =
@@ -99,7 +109,9 @@ class TimelineContentExpansionTest {
         .access()
         .create("alice", "grant", new HostedAccess.Permissions(List.of(source.id()), List.of(key)));
     List<Object> orders = new ArrayList<>();
-    for (int i = 0; i < 40; i++) orders.add(Map.of("number", i, "payment", Map.of("paid", i * 10)));
+    for (int i = 0; i < 40; i++) {
+      orders.add(Map.of("number", i, "payment", Map.of("paid", i * 10)));
+    }
     LanguageDocument document = Language.create().readJson(JsonText.of(Map.of("orders", orders)));
     Language language = Language.newBuilder().content(document).build();
     LanguageContent message =
@@ -125,7 +137,9 @@ class TimelineContentExpansionTest {
         AtomicInteger reads = new AtomicInteger();
         TimelineTransport transport =
             (uri, request, maximum, timeout) -> {
-              if (uri.getPath().endsWith("/content")) reads.incrementAndGet();
+              if (uri.getPath().endsWith("/content")) {
+                reads.incrementAndGet();
+              }
               var reply = local.exchange(uri, request, maximum, timeout);
               return wire ? new TimelineTransport.Reply(reply.status(), reply.body()) : reply;
             };
@@ -139,7 +153,9 @@ class TimelineContentExpansionTest {
         var result = new TimelinePull(archive, transport, signer).acquire();
         assertEquals(1, result.entries().size());
         assertTrue(reads.get() <= 4, "Content reads: " + reads.get());
-        if (previous != null) assertEquals(previous.entries(), result.entries());
+        if (previous != null) {
+          assertEquals(previous.entries(), result.entries());
+        }
         previous = result;
       }
     }

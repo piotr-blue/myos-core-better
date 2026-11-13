@@ -1,6 +1,10 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -16,7 +20,9 @@ class EmbeddingReadsTest {
     EmbeddingReads reads = new EmbeddingReads(new ReadBudget.Limits(1, 1000, 1000, 2));
     Link link = new Link("child", 1, "generation");
     Repository.Document first = reads.load(repository, "alice", link, 1);
-    for (int i = 0; i < 1000; i++) assertSame(first, reads.load(repository, "alice", link, 2));
+    for (int i = 0; i < 1000; i++) {
+      assertSame(first, reads.load(repository, "alice", link, 2));
+    }
     assertThrows(ReadBudget.Exceeded.class, () -> reads.load(repository, "alice", link, 3));
     assertSame(first, reads.load(repository, "alice", link, 1));
   }

@@ -1,11 +1,25 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.TimelineAccess;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 /** Access publication, executed-state authority and its durable transaction boundary. */
 class HostedAccessTest {
@@ -117,8 +131,9 @@ class HostedAccessTest {
       TimelineArchive control = control(f, host, "alice");
       var expected = host.unchangedAt(control, grant, order(host, 200)).orElseThrow();
       long before = f.store.getCalls;
-      for (int i = 0; i < 10; i++)
+      for (int i = 0; i < 10; i++) {
         assertEquals(expected, host.unchangedAt(control, grant, order(host, 200)).orElseThrow());
+      }
       assertEquals(10, f.store.getCalls - before, "Every reuse checks the current grant once");
       assertTrue(host.unchangedAt(control, grant, order(host, 99)).orElseThrow().state().isEmpty());
       assertTrue(host.unchangedAt(control(f, host, "bob"), grant, order(host, 200)).isEmpty());
@@ -136,8 +151,9 @@ class HostedAccessTest {
       HostedAccess host = service(f);
       HostedTimelines.Created source = f.create();
       BlueId grant = host.create("alice", "grant", permissions(source, READER)).initial().blueId();
-      for (int i = 0; i < 16; i++)
+      for (int i = 0; i < 16; i++) {
         host.create("alice", "other-" + i, permissions(source, "%064x".formatted(i + 100)));
+      }
       host = service(f);
       TimelineArchive control = control(f, host, "alice");
       long before = f.store.getCalls;
@@ -246,8 +262,9 @@ class HostedAccessTest {
       HostedTimelines.Created source = f.create();
       HostedAccess host = service(f);
       BlueId grant = host.create("alice", "grant", permissions(source, READER)).initial().blueId();
-      for (int i = 0; i < 5; i++)
+      for (int i = 0; i < 5; i++) {
         assertEquals("alice", host.authorize(source.id(), Optional.of(READER)));
+      }
       HostedAccess peer = service(f);
       peer.update("alice", "revoke", grant, permissions(source));
       assertThrows(
@@ -577,7 +594,9 @@ class HostedAccessTest {
     range.put("type", ref(TimelineFixture.COORDINATION.export("Timeline Range Evidence")));
     range.put("checkpoint", wire(checkpoint.attestation()));
     range.put("entries", List.of(wire(publication.entry())));
-    if (previous != null) range.put("after", ref(previous));
+    if (previous != null) {
+      range.put("after", ref(previous));
+    }
     TimelineAccess.Update replayed =
         consumer.advance(language.prepare(Language.Input.exactJson(JsonText.of(range))));
     Contracts.Transition transition = replayed.dispositions().getFirst().transition().orElseThrow();

@@ -1,8 +1,17 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueException;
+import blue.ContractInspection;
+import blue.Contracts;
+import blue.LanguageContent;
+import blue.ProjectionLimits;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Bounded exact context from the same authorized stable publication used by operation discovery.
@@ -39,7 +48,7 @@ final class CoreOperationContext {
         "publication_required",
         "Provide both documentBlueId and epoch, or omit both to read the current stable"
             + " publication");
-    if (pinned)
+    if (pinned) {
       check(
           Objects.equals(
                   RuntimeConfiguration.object(publication.get("documentRef"), "documentRef")
@@ -49,6 +58,7 @@ final class CoreOperationContext {
           409,
           "document_changed",
           "Read the current document publication again");
+    }
     String path = query.getOrDefault("path", "");
     check(
         path.isEmpty() || path.startsWith("/") && !path.matches(".*~(?![01]).*"),
@@ -102,10 +112,14 @@ final class CoreOperationContext {
             JsonText.of(
                 selected.readableLiteral(inlineContracts ? Set.of() : Set.of("contracts"), LIMITS));
       } catch (BlueException limit) {
-        if (!limit.code().equals("PROJECTION_LIMIT_EXCEEDED")) throw limit;
+        if (!limit.code().equals("PROJECTION_LIMIT_EXCEEDED")) {
+          throw limit;
+        }
         throw oversized(selected);
       }
-      if (json.getBytes(StandardCharsets.UTF_8).length > MAX_BYTES) throw oversized(selected);
+      if (json.getBytes(StandardCharsets.UTF_8).length > MAX_BYTES) {
+        throw oversized(selected);
+      }
       return Map.of("valueJson", json);
     }
     List<String> selectors = selected.children();
@@ -125,7 +139,9 @@ final class CoreOperationContext {
           413,
           "context_path_too_large",
           "A canonical child path exceeds the bounded context response");
-      if (bytes + size > MAX_BYTES / 2) break;
+      if (bytes + size > MAX_BYTES / 2) {
+        break;
+      }
       children.add(row);
       bytes += size;
       index++;
@@ -147,7 +163,9 @@ final class CoreOperationContext {
                     .length
                 > MAX_BYTES;
       } catch (BlueException failure) {
-        if (!failure.code().equals("PROJECTION_LIMIT_EXCEEDED")) throw failure;
+        if (!failure.code().equals("PROJECTION_LIMIT_EXCEEDED")) {
+          throw failure;
+        }
         scalarTooLarge = true;
       }
     }
@@ -165,6 +183,8 @@ final class CoreOperationContext {
   }
 
   private static void check(boolean condition, int status, String code, String message) {
-    if (!condition) throw new ConsoleProblem(status, code, message);
+    if (!condition) {
+      throw new ConsoleProblem(status, code, message);
+    }
   }
 }

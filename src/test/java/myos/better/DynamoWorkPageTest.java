@@ -22,8 +22,12 @@ class DynamoWorkPageTest {
                 DynamoDbClient.class.getClassLoader(),
                 new Class<?>[] {DynamoDbClient.class},
                 (proxy, method, args) -> {
-                  if (method.getName().equals("close")) return null;
-                  if (!method.getName().equals("query")) throw new AssertionError(method.getName());
+                  if (method.getName().equals("close")) {
+                    return null;
+                  }
+                  if (!method.getName().equals("query")) {
+                    throw new AssertionError(method.getName());
+                  }
                   requests.add((QueryRequest) args[0]);
                   return QueryResponse.builder().build();
                 });
@@ -65,8 +69,12 @@ class DynamoWorkPageTest {
                 DynamoDbClient.class.getClassLoader(),
                 new Class<?>[] {DynamoDbClient.class},
                 (proxy, method, args) -> {
-                  if (method.getName().equals("close")) return null;
-                  if (!method.getName().equals("query")) throw new AssertionError(method.getName());
+                  if (method.getName().equals("close")) {
+                    return null;
+                  }
+                  if (!method.getName().equals("query")) {
+                    throw new AssertionError(method.getName());
+                  }
                   requests.add((QueryRequest) args[0]);
                   return requests.size() == 1
                       ? QueryResponse.builder().lastEvaluatedKey(key).build()

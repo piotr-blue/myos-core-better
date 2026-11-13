@@ -1,7 +1,11 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /** Selected member reads after eviction; setup, cold reads and warm reads are separate. */
 public final class GraphPropertyReadProbe {
@@ -13,7 +17,9 @@ public final class GraphPropertyReadProbe {
     var results = new ArrayList<Object>();
     for (int count : List.of(16, 256)) {
       var children = new LinkedHashMap<String, Object>();
-      for (int i = 0; i < count; i++) children.put("child-" + i, Map.of("count", i));
+      for (int i = 0; i < count; i++) {
+        children.put("child-" + i, Map.of("count", i));
+      }
       String source =
           JsonText.of(
               Map.of(
@@ -45,7 +51,9 @@ public final class GraphPropertyReadProbe {
       try (var view = new GraphDocuments(store, contracts, language, null)) {
         for (int i = 0; i < 30; i++) {
           double millis = read(view, count);
-          if (i >= 10) warm.add(millis);
+          if (i >= 10) {
+            warm.add(millis);
+          }
         }
       }
       results.add(
@@ -70,8 +78,9 @@ public final class GraphPropertyReadProbe {
     long started = System.nanoTime();
     Object value = view.readValue("property", "graph-property", "/stats");
     double millis = (System.nanoTime() - started) / 1e6;
-    if (!Map.of("count", java.math.BigInteger.valueOf(count)).equals(value))
+    if (!Map.of("count", java.math.BigInteger.valueOf(count)).equals(value)) {
       throw new AssertionError("Incorrect stats read");
+    }
     return millis;
   }
 }

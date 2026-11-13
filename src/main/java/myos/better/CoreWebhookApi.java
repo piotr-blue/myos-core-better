@@ -1,6 +1,6 @@
 package myos.better;
 
-import java.util.*;
+import java.util.Map;
 
 /** Original dashboard routes; public selectors and native callback bodies keep their meanings. */
 final class CoreWebhookApi implements AutoCloseable {
@@ -16,16 +16,22 @@ final class CoreWebhookApi implements AutoCloseable {
   }
 
   void check() {
-    if (dispatch != null) dispatch.check();
+    if (dispatch != null) {
+      dispatch.check();
+    }
   }
 
   void start() {
-    if (dispatch != null) dispatch.start();
+    if (dispatch != null) {
+      dispatch.start();
+    }
   }
 
   @Override
   public void close() {
-    if (dispatch != null) dispatch.close();
+    if (dispatch != null) {
+      dispatch.close();
+    }
   }
 
   Object call(
@@ -37,15 +43,21 @@ final class CoreWebhookApi implements AutoCloseable {
       Map<String, Object> input) {
     String[] path = route.split("/", -1);
     boolean get = method.equals("GET"), post = method.equals("POST");
-    if (path.length == 1 && get) return hooks.list(session, query);
+    if (path.length == 1 && get) {
+      return hooks.list(session, query);
+    }
     if (path.length == 1 && post) {
       empty(query);
       return new CoreDashboardApi.Response(201, hooks.create(session, command, input));
     }
     if (path.length == 2) {
       empty(query);
-      if (get) return hooks.read(session, path[1]);
-      if (post) return hooks.change(session, path[1], command, input, false);
+      if (get) {
+        return hooks.read(session, path[1]);
+      }
+      if (post) {
+        return hooks.change(session, path[1], command, input, false);
+      }
       if (method.equals("DELETE")) {
         hooks.change(session, path[1], command, input, true);
         return new CoreDashboardApi.Response(204, null);
@@ -56,13 +68,16 @@ final class CoreWebhookApi implements AutoCloseable {
       return deliveries.health(session, path[1]);
     }
     if (path.length >= 3 && path[2].equals("events")) {
-      if (path.length == 3 && get) return deliveries.list(session, path[1], query);
+      if (path.length == 3 && get) {
+        return deliveries.list(session, path[1], query);
+      }
       if (path.length == 4 && get) {
         empty(query);
         return deliveries.detail(session, path[1], path[3]);
       }
-      if (path.length == 5 && path[4].equals("attempts") && get)
+      if (path.length == 5 && path[4].equals("attempts") && get) {
         return deliveries.attempts(session, path[1], path[3], query);
+      }
       if (path.length == 5 && path[4].equals("retry") && post) {
         empty(query);
         empty(input);
@@ -74,8 +89,9 @@ final class CoreWebhookApi implements AutoCloseable {
   }
 
   private static void empty(Map<String, ?> value) {
-    if (!value.isEmpty())
+    if (!value.isEmpty()) {
       throw new ConsoleProblem(
           400, "unsupported_field", "This request does not accept extra fields.");
+    }
   }
 }

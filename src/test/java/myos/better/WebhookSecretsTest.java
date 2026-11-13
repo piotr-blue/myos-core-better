@@ -1,9 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class WebhookSecretsTest {
@@ -27,8 +34,9 @@ class WebhookSecretsTest {
     String first = secrets.seal(value, context), second = secrets.seal(value, context);
     assertNotEquals(first, second);
     assertEquals(value, new WebhookSecrets(key).open(first, context));
-    for (String other : List.of("bob/hook/one", "alice/receipt/one", "alice/hook/two"))
+    for (String other : List.of("bob/hook/one", "alice/receipt/one", "alice/hook/two")) {
       assertThrows(IllegalStateException.class, () -> secrets.open(first, other));
+    }
     byte[] broken = Base64.getDecoder().decode(first);
     broken[broken.length - 1] ^= 1;
     assertThrows(

@@ -1,11 +1,22 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueException;
+import blue.Language;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -354,31 +365,41 @@ class TimelineConfigurationTest {
       this.mode = mode;
     }
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String id) {
       return delegate.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
-      if (writes.stream().noneMatch(write -> write.key().partition().endsWith("#TIMELINE_CONFIG")))
+      if (writes.stream()
+          .noneMatch(write -> write.key().partition().endsWith("#TIMELINE_CONFIG"))) {
         return delegate.commit(writes, checks);
+      }
       calls++;
-      if (calls == 1 && mode.equals("retry")) return false;
+      if (calls == 1 && mode.equals("retry")) {
+        return false;
+      }
       if (calls == 1 && mode.equals("conflict")) {
         Write state =
             writes.stream()

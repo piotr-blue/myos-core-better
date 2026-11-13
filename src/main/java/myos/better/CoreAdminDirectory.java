@@ -1,7 +1,16 @@
 package myos.better;
 
-import java.time.*;
-import java.util.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Private lifecycle directory. Every observation updates its indexes and outbox atomically. */
 final class CoreAdminDirectory {
@@ -56,7 +65,9 @@ final class CoreAdminDirectory {
     String email = email(rawEmail);
     var tx = metadata.begin();
     var matches = tx.page(pendingPrefix(email), null, 2);
-    if (matches.size() != 1) return null;
+    if (matches.size() != 1) {
+      return null;
+    }
     return (String) Objects.requireNonNull(read(tx, matches.getFirst().value())).get("subject");
   }
 
@@ -69,9 +80,10 @@ final class CoreAdminDirectory {
       String status,
       boolean registration,
       Long exactVerifiedAt) {
-    if (subject == null || subject.isBlank() || subject.length() > 500)
+    if (subject == null || subject.isBlank() || subject.length() > 500) {
       throw new ConsoleProblem(
           502, "admin_identity_invalid", "Identity evidence contains an invalid subject.");
+    }
     String email = email(rawEmail), id = directoryId(subject);
     String userId = new ConsoleLogin.User(subject, email).account();
     for (int attempt = 0; attempt < 16; attempt++) {
@@ -82,9 +94,13 @@ final class CoreAdminDirectory {
       long now = clock.millis();
       Long createdAt = earlier(created, nullableLong(inherited, "createdAt"));
       Long verifiedAt = nullableLong(inherited, "verifiedAt");
-      if (verifiedAt == null) verifiedAt = exactVerifiedAt;
+      if (verifiedAt == null) {
+        verifiedAt = exactVerifiedAt;
+      }
       Long observed = nullableLong(inherited, "verificationObservedAt");
-      if (observed == null && verified) observed = now;
+      if (observed == null && verified) {
+        observed = now;
+      }
       boolean confirmed = verified;
       String providerStatus = status;
       boolean wasVerified = inherited != null && Boolean.TRUE.equals(inherited.get("verified"));
@@ -119,7 +135,9 @@ final class CoreAdminDirectory {
       next.put("verificationObservedAt", observed);
       next.put("registrationRecorded", registrationRecorded || registeredEvent);
       next.put("verificationRecorded", verificationRecorded || verifiedEvent);
-      if (previous != null && JsonText.of(next).equals(JsonText.of(previous))) return;
+      if (previous != null && JsonText.of(next).equals(JsonText.of(previous))) {
+        return;
+      }
       if (fallback != null && !fallback.equals(id)) {
         replace(tx, inherited, null);
         tx.remove(userKey(fallback));
@@ -127,15 +145,19 @@ final class CoreAdminDirectory {
       replace(tx, previous, next);
       tx.put("user\0" + userId, id);
       var events = new ArrayList<CoreAdminNotifications.Lifecycle>();
-      if (registeredEvent)
+      if (registeredEvent) {
         events.add(new CoreAdminNotifications.Lifecycle("REGISTERED", email, createdAt));
-      if (verifiedEvent)
+      }
+      if (verifiedEvent) {
         events.add(new CoreAdminNotifications.Lifecycle("VERIFIED", email, verifiedAt));
+      }
       var writes = new ArrayList<AtomicStore.Write>();
       var checks = new ArrayList<AtomicStore.Check>();
       notifications.stage(id, events, writes, checks);
       tx.publish(writes, checks);
-      if (tx.commit()) return;
+      if (tx.commit()) {
+        return;
+      }
     }
     throw new ConsoleProblem(
         503, "admin_directory_busy", "Identity observation is temporarily unavailable.");
@@ -149,8 +171,12 @@ final class CoreAdminDirectory {
       var tx = metadata.begin();
       String id = tx.get("user\0" + userId);
       var previous = id == null ? null : read(tx, id);
-      if (previous != null && email.equals(previous.get("email"))) return;
-      if (id == null) id = "host:" + userId;
+      if (previous != null && email.equals(previous.get("email"))) {
+        return;
+      }
+      if (id == null) {
+        id = "host:" + userId;
+      }
       var next =
           previous == null ? new LinkedHashMap<String, Object>() : new LinkedHashMap<>(previous);
       if (previous == null) {
@@ -169,7 +195,9 @@ final class CoreAdminDirectory {
       next.put("email", email);
       replace(tx, previous, next);
       tx.put("user\0" + userId, id);
-      if (tx.commit()) return;
+      if (tx.commit()) {
+        return;
+      }
     }
     throw new ConsoleProblem(
         503, "admin_directory_busy", "Identity observation is temporarily unavailable.");
@@ -188,15 +216,18 @@ final class CoreAdminDirectory {
     if (!search.isEmpty()
         && (search.length() < 2
             || search.length() > 254
-            || search.codePoints().anyMatch(Character::isISOControl)))
+            || search.codePoints().anyMatch(Character::isISOControl))) {
       throw new ConsoleProblem(
           422, "invalid_admin_search", "Search requires 2 to 254 email characters.");
+    }
     if (!Set.of("createdAt", "verifiedAt").contains(sort)
-        || !Set.of("asc", "desc").contains(direction))
+        || !Set.of("asc", "desc").contains(direction)) {
       throw new ConsoleProblem(
           422, "invalid_admin_sort", "Use createdAt or verifiedAt with asc or desc.");
-    if (limit < 1 || limit > 100 || offset < 0 || offset > 1_000_000)
+    }
+    if (limit < 1 || limit > 100 || offset < 0 || offset > 1_000_000) {
       throw new ConsoleProblem(422, "invalid_admin_page", "Invalid directory pagination.");
+    }
     var tx = metadata.begin();
     var page = CoreAdminDirectoryIndex.page(tx, search, sort, direction, verified, limit, offset);
     tx.prefetch(page.ids().stream().map(CoreAdminDirectory::userKey).toList());
@@ -226,9 +257,13 @@ final class CoreAdminDirectory {
 
   Map<String, Object> detail(CoreAccounts.Session session, String id) {
     administrators.session(session);
-    if (id == null || id.isBlank() || id.length() > 200) throw missing();
+    if (id == null || id.isBlank() || id.length() > 200) {
+      throw missing();
+    }
     var row = read(metadata.begin(), id);
-    if (row == null) throw missing();
+    if (row == null) {
+      throw missing();
+    }
     var user = representation(row);
     return Map.of(
         "user",
@@ -255,7 +290,9 @@ final class CoreAdminDirectory {
             "enabled",
             "createdAt",
             "verifiedAt",
-            "verificationObservedAt")) result.put(key, row.get(key));
+            "verificationObservedAt")) {
+      result.put(key, row.get(key));
+    }
     result.put("userId", profile == null ? null : userId);
     result.put("firstName", profile == null ? null : profile.value().get("firstName"));
     result.put("lastName", profile == null ? null : profile.value().get("lastName"));
@@ -275,7 +312,9 @@ final class CoreAdminDirectory {
     for (String id : ids) {
       var account = store.get(CoreWorkspaces.accountKey(id, "ACCOUNT"));
       var member = store.get(CoreWorkspaces.accountKey(id, "MEMBER#" + user));
-      if (!id.equals(user) && (account == null || member == null)) continue;
+      if (!id.equals(user) && (account == null || member == null)) {
+        continue;
+      }
       var value = new LinkedHashMap<String, Object>();
       value.put("accountId", id);
       value.put("kind", account == null ? "PERSONAL" : account.value().get("kind"));
@@ -300,12 +339,14 @@ final class CoreAdminDirectory {
   private static void replace(
       IndexedMetadata.Transaction tx, Map<String, Object> previous, Map<String, Object> next) {
     CoreAdminDirectoryIndex.replace(tx, previous, next);
-    if (previous != null && pending(previous))
+    if (previous != null && pending(previous)) {
       tx.remove(pendingPrefix((String) previous.get("email")) + previous.get("id"));
+    }
     if (next != null) {
       tx.put(userKey((String) next.get("id")), JsonText.of(next));
-      if (pending(next))
+      if (pending(next)) {
         tx.put(pendingPrefix((String) next.get("email")) + next.get("id"), (String) next.get("id"));
+      }
     }
   }
 
@@ -336,14 +377,19 @@ final class CoreAdminDirectory {
 
   private static String email(String value) {
     String normalized = CoreUserIdentities.email(value);
-    if (normalized.codePoints().anyMatch(Character::isISOControl))
+    if (normalized.codePoints().anyMatch(Character::isISOControl)) {
       throw new ConsoleProblem(422, "invalid_email", "Provide a valid email address.");
+    }
     return normalized;
   }
 
   private static Long earlier(Long a, Long b) {
-    if (a == null) return b;
-    if (b == null) return a;
+    if (a == null) {
+      return b;
+    }
+    if (b == null) {
+      return a;
+    }
     return Math.min(a, b);
   }
 

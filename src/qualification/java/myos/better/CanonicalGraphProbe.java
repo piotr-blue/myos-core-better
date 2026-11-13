@@ -49,25 +49,29 @@ public final class CanonicalGraphProbe {
                   "probe", "agreement", "call-" + i, event, i + 1L, AdmissionEvidence.empty());
           double durableMillis = (System.nanoTime() - start) / 1e6;
           if (!expected.receipt().equals(actual.receipt())
-              || !inline.identity().equals(actual.identity()))
+              || !inline.identity().equals(actual.identity())) {
             throw new AssertionError("Canonical result differs");
-          if (!BigInteger.valueOf(42L * (i + 1)).equals(inline.read("/paidTotal")))
+          }
+          if (!BigInteger.valueOf(42L * (i + 1)).equals(inline.read("/paidTotal"))) {
             throw new AssertionError("Payment did not reach the Agreement");
+          }
           Map<String, Object> after = memberIdentities(inline.snapshot());
           long changed =
               after.entrySet().stream()
                   .filter(e -> !e.getValue().equals(before.get(e.getKey())))
                   .count();
-          if (changed != (broadcast ? 1 + 2 * count : 3))
+          if (changed != (broadcast ? 1 + 2 * count : 3)) {
             throw new AssertionError("Unexpected changed document count: " + changed);
+          }
           if (i > 0) {
             execution.add(directMillis);
             durable.add(durableMillis);
           }
         }
         if (!java.util.Arrays.equals(
-            Json.bytes(inline.snapshot()), Json.bytes(stored.snapshot("probe", "agreement"))))
+            Json.bytes(inline.snapshot()), Json.bytes(stored.snapshot("probe", "agreement")))) {
           throw new AssertionError("Canonical snapshots differ");
+        }
         results.add(
             Map.of(
                 "orders",
@@ -108,9 +112,10 @@ public final class CanonicalGraphProbe {
           (Map<String, Object>) ((Map<?, ?>) order.get("payments")).get("p0");
       Map<String, Object> paymentContracts = (Map<String, Object>) payment.get("contracts");
       paymentContracts.put("payment-" + key, paymentContracts.remove("input"));
-      if (!broadcast)
+      if (!broadcast) {
         ((Map<String, Object>) paymentContracts.get("payment-" + key))
             .put("event", Map.of("channel", "payment-" + key));
+      }
       ((Map<String, Object>) paymentContracts.get("record")).put("channel", "payment-" + key);
       ((Map<String, Object>) paymentContracts.get("settle")).put("channel", "payment-" + key);
       orders.put(key, order);

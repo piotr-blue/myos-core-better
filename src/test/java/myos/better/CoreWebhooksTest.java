@@ -1,12 +1,27 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import java.lang.reflect.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
 import java.nio.charset.StandardCharsets;
-import java.time.*;
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -81,7 +96,7 @@ class CoreWebhooksTest {
           List.of(
               "CONTENT_CREATED",
               Map.of("category", "CONTENT_CREATED"),
-              Map.of("type", "CONTENT_CREATED", "extra", true)))
+              Map.of("type", "CONTENT_CREATED", "extra", true))) {
         assertEquals(
             400,
             problem(
@@ -93,11 +108,12 @@ class CoreWebhooksTest {
                             Map.of("events", List.of(invalid)),
                             false))
                 .status);
+      }
       for (Map<String, Object> input :
           List.<Map<String, Object>>of(
               Map.of("sessionIds", List.of("x")),
               Map.of("filters", Map.of("emitted", List.of())),
-              Map.of("status", "UNKNOWN")))
+              Map.of("status", "UNKNOWN"))) {
         assertEquals(
             400,
             problem(
@@ -105,6 +121,7 @@ class CoreWebhooksTest {
                         fixture.hooks.change(
                             fixture.alice, hook, UUID.randomUUID().toString(), input, false))
                 .status);
+      }
       var first = fixture.hooks.list(fixture.alice, Map.of("limit", "1", "status", "ACTIVE"));
       assertEquals(1, items(first).size());
       String token = (String) first.get("nextPageToken");
@@ -373,7 +390,9 @@ class CoreWebhooksTest {
       var fixture = new Fixture();
       String hook = fixture.create("hook");
       // One record beyond the 16-event staging boundary proves continuation without a long run.
-      for (int i = 0; i < 17; i++) fixture.event("event-" + i, "session");
+      for (int i = 0; i < 17; i++) {
+        fixture.event("event-" + i, "session");
+      }
       fixture.events.project("alice");
       assertEquals(16, fixture.deliveries.stage("alice", hook));
       var restarted = new CoreWebhookDelivery(fixture.restart(), fixture.pages);
@@ -388,20 +407,25 @@ class CoreWebhooksTest {
         throws Exception {
       var fixture = new Fixture();
       // Five subscriptions cross the four-sender boundary and detect discovery starvation.
-      for (int i = 0; i < 5; i++) fixture.create("hook-" + i);
+      for (int i = 0; i < 5; i++) {
+        fixture.create("hook-" + i);
+      }
       fixture.event("one", "session");
       var received = java.util.concurrent.ConcurrentHashMap.<String>newKeySet();
       var completed = new java.util.concurrent.CountDownLatch(5);
       var closed = new AtomicBoolean();
       WebhookTransport transport =
           new WebhookTransport() {
+            @Override
             public int send(String target, Map<String, String> headers, byte[] body) {
               assertFalse(closed.get());
-              if (received.add(headers.get("x-myos-webhook-event-delivery-id")))
+              if (received.add(headers.get("x-myos-webhook-event-delivery-id"))) {
                 completed.countDown();
+              }
               return 200;
             }
 
+            @Override
             public void close() {
               closed.set(true);
             }
@@ -412,11 +436,12 @@ class CoreWebhooksTest {
       }
       assertTrue(closed.get());
       assertEquals(5, received.size());
-      for (var hook : items(fixture.hooks.list(fixture.alice, Map.of())))
+      for (var hook : items(fixture.hooks.list(fixture.alice, Map.of()))) {
         assertEquals(
             0,
             number(
                 fixture.deliveries.health(fixture.alice, (String) hook.get("id")).get("queued")));
+      }
     }
   }
 
@@ -461,8 +486,9 @@ class CoreWebhooksTest {
                   AtomicStore.class.getClassLoader(),
                   new Class<?>[] {AtomicStore.class},
                   (proxy, method, args) -> {
-                    if (method.getName().equals("commit") && once.getAndSet(false))
+                    if (method.getName().equals("commit") && once.getAndSet(false)) {
                       keys.revoke("alice", principal.credentialId());
+                    }
                     try {
                       return method.invoke(store, args);
                     } catch (InvocationTargetException failed) {
@@ -556,15 +582,20 @@ class CoreWebhooksTest {
       now += amount;
     }
 
+    @Override
     public ZoneId getZone() {
       return ZoneOffset.UTC;
     }
 
+    @Override
     public Clock withZone(ZoneId zone) {
-      if (!zone.equals(ZoneOffset.UTC)) throw new IllegalArgumentException();
+      if (!zone.equals(ZoneOffset.UTC)) {
+        throw new IllegalArgumentException();
+      }
       return this;
     }
 
+    @Override
     public Instant instant() {
       return Instant.ofEpochMilli(now);
     }

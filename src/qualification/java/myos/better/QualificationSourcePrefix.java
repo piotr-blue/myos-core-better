@@ -1,8 +1,14 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.LanguageRecord;
+import blue.TimelinePublisher;
 import java.security.GeneralSecurityException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /** Acquires existing Order content in normal signed batches before timing targeted submissions. */
 final class QualificationSourcePrefix {
@@ -29,8 +35,9 @@ final class QualificationSourcePrefix {
     var publisher =
         TimelinePublisher.forTimeline(
             QualificationTimeline.COORDINATION, source.provider, source.timeline);
-    if (!publisher.retainValue(reviewed))
+    if (!publisher.retainValue(reviewed)) {
       throw new IllegalStateException("Reviewed target header could not be retained");
+    }
     publisher.shareValidationWith(archive.readContext(Map.of()).verifier());
   }
 
@@ -47,7 +54,9 @@ final class QualificationSourcePrefix {
     var marker = language.readJson("{\"purpose\":\"qualification-content-import\"}");
     var orders = document.at("/orders");
     var keys = orders.keys();
-    if (keys.size() != definitions.size()) throw new AssertionError("Incomplete seed corpus");
+    if (keys.size() != definitions.size()) {
+      throw new AssertionError("Incomplete seed corpus");
+    }
     for (int i = 0; i < keys.size(); i += ORDERS_PER_BATCH) {
       List<Object> references = new ArrayList<>();
       for (int n = i; n < Math.min(i + ORDERS_PER_BATCH, keys.size()); n++) {
@@ -95,6 +104,8 @@ final class QualificationSourcePrefix {
   }
 
   void replay(TimelineArchive oracle) {
-    for (var batch : batches) oracle.acquire(batch.range(), batch.records());
+    for (var batch : batches) {
+      oracle.acquire(batch.range(), batch.records());
+    }
   }
 }

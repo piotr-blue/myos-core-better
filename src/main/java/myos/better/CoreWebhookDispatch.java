@@ -1,7 +1,15 @@
 package myos.better;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Callback I/O has its own bounded workers and durable cursors; document workers never wait on it.
@@ -47,7 +55,9 @@ final class CoreWebhookDispatch implements AutoCloseable {
   }
 
   synchronized void start() {
-    if (started || closed) return;
+    if (started || closed) {
+      return;
+    }
     started = true;
     coordinator.scheduleWithFixedDelay(health.guard(this::discover), 0, 500, TimeUnit.MILLISECONDS);
   }
@@ -55,7 +65,9 @@ final class CoreWebhookDispatch implements AutoCloseable {
   private void discover() {
     try {
       synchronized (this) {
-        if (closed || active.size() >= 4) return;
+        if (closed || active.size() >= 4) {
+          return;
+        }
       }
       if (discovered.isEmpty()) {
         var page = hooks.store.work(CoreWebhooks.WORK, after, 32);
@@ -65,9 +77,13 @@ final class CoreWebhookDispatch implements AutoCloseable {
       while (!discovered.isEmpty()) {
         AtomicStore.Row row;
         synchronized (this) {
-          if (closed || active.size() >= 4) break;
+          if (closed || active.size() >= 4) {
+            break;
+          }
           row = discovered.removeFirst();
-          if (!active.add(row.key())) continue;
+          if (!active.add(row.key())) {
+            continue;
+          }
         }
         try {
           senders.execute(health.guard(() -> deliver(row)));
@@ -91,10 +107,14 @@ final class CoreWebhookDispatch implements AutoCloseable {
       deliveries.stage(account, hook);
       for (int i = 0; i < 4; i++) {
         synchronized (this) {
-          if (closed) return;
+          if (closed) {
+            return;
+          }
         }
         var claim = deliveries.claim(account, hook);
-        if (claim == null) return;
+        if (claim == null) {
+          return;
+        }
         deliveries.send(claim, transport::send);
       }
     } catch (RuntimeException unavailable) {
@@ -116,7 +136,9 @@ final class CoreWebhookDispatch implements AutoCloseable {
   @Override
   public void close() {
     synchronized (this) {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
       closed = true;
       coordinator.shutdownNow();
     }
@@ -124,9 +146,11 @@ final class CoreWebhookDispatch implements AutoCloseable {
     senders.shutdownNow();
     long end = System.nanoTime() + TimeUnit.SECONDS.toNanos(25);
     try {
-      for (var worker : List.of(coordinator, senders))
-        if (!worker.awaitTermination(Math.max(0, end - System.nanoTime()), TimeUnit.NANOSECONDS))
+      for (var worker : List.of(coordinator, senders)) {
+        if (!worker.awaitTermination(Math.max(0, end - System.nanoTime()), TimeUnit.NANOSECONDS)) {
           throw new IllegalStateException("Callback workers did not stop before store shutdown");
+        }
+      }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException("Interrupted while stopping callbacks");

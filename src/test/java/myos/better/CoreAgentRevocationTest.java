@@ -1,9 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.*;
-import java.util.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class CoreAgentRevocationTest {
@@ -71,11 +78,12 @@ class CoreAgentRevocationTest {
                   ConsoleProblem.class,
                   () -> agents.revoke(user, agent, "two", "same", Map.of("expectedRevision", 1L)))
               .code);
-      for (Object revision : List.of(0, -1, 1.5, "1"))
+      for (Object revision : List.of(0, -1, 1.5, "1")) {
         assertThrows(
             ConsoleProblem.class,
             () ->
                 agents.revoke(user, agent, "two", "invalid", Map.of("expectedRevision", revision)));
+      }
     }
   }
 

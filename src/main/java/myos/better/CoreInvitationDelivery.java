@@ -50,8 +50,9 @@ final class CoreInvitationDelivery implements AutoCloseable {
         || origin.getUserInfo() != null
         || origin.getQuery() != null
         || origin.getFragment() != null
-        || !Set.of("", "/").contains(origin.getPath()))
+        || !Set.of("", "/").contains(origin.getPath())) {
       throw new IllegalArgumentException("Invitation links require the exact HTTPS console origin");
+    }
     this.store = store;
     this.secrets = Objects.requireNonNull(secrets);
     this.clock = clock;
@@ -70,15 +71,21 @@ final class CoreInvitationDelivery implements AutoCloseable {
             "CORE_INVITATION_FROM",
             "CORE_INVITATION_CONFIGURATION_SET",
             "CORE_SHARED_PORTAL_ORIGIN");
-    if (names.stream().noneMatch(environment::containsKey)) return null;
-    for (String name : names)
-      if (environment.getOrDefault(name, "").isBlank())
+    if (names.stream().noneMatch(environment::containsKey)) {
+      return null;
+    }
+    for (String name : names) {
+      if (environment.getOrDefault(name, "").isBlank()) {
         throw new IllegalArgumentException("Incomplete invitation delivery configuration: " + name);
-    if (custody == null)
+      }
+    }
+    if (custody == null) {
       throw new IllegalArgumentException("Pinned invitation custody is required");
+    }
     String from = environment.get("CORE_INVITATION_FROM");
-    if (from.contains("\r") || from.contains("\n"))
+    if (from.contains("\r") || from.contains("\n")) {
       throw new IllegalArgumentException("Invalid invitation sender");
+    }
     var client =
         SesV2Client.builder()
             .region(Region.of(environment.get("AWS_REGION")))
@@ -153,8 +160,12 @@ final class CoreInvitationDelivery implements AutoCloseable {
   }
 
   synchronized void start() {
-    if (closed) throw new IllegalStateException("Invitation delivery is closed");
-    if (started) throw new IllegalStateException("Invitation delivery already started");
+    if (closed) {
+      throw new IllegalStateException("Invitation delivery is closed");
+    }
+    if (started) {
+      throw new IllegalStateException("Invitation delivery already started");
+    }
     started = true;
     worker.scheduleWithFixedDelay(
         health.guard(
@@ -171,17 +182,24 @@ final class CoreInvitationDelivery implements AutoCloseable {
   }
 
   void turn() {
-    for (String shard : List.of("CORE_INVITATION_DELIVERY", "CORE_SIGNUP_DELIVERY"))
+    for (String shard : List.of("CORE_INVITATION_DELIVERY", "CORE_SIGNUP_DELIVERY")) {
       deliverPage(shard);
+    }
   }
 
   private void deliverPage(String shard) {
-    if (closed || Thread.currentThread().isInterrupted()) return;
+    if (closed || Thread.currentThread().isInterrupted()) {
+      return;
+    }
     var page = store.work(shard, cursors.get(shard), 25);
     for (var row : page.rows()) {
-      if (closed || Thread.currentThread().isInterrupted()) return;
+      if (closed || Thread.currentThread().isInterrupted()) {
+        return;
+      }
       var claim = claim((String) row.value().get("invitationId"));
-      if (claim == null) continue;
+      if (claim == null) {
+        continue;
+      }
       boolean delivered = false;
       try {
         String id = (String) claim.get("invitationId");
@@ -213,8 +231,9 @@ final class CoreInvitationDelivery implements AutoCloseable {
       if (row == null
           || !"PENDING".equals(row.value().get("status"))
           || Repository.number(row.value().get("availableAt")) > clock.millis()
-          || Repository.number(row.value().getOrDefault("leaseUntil", 0L)) > clock.millis())
+          || Repository.number(row.value().getOrDefault("leaseUntil", 0L)) > clock.millis()) {
         return null;
+      }
       boolean signup = "SIGNUP".equals(row.value().get("purpose"));
       var invitationKey =
           signup
@@ -242,8 +261,10 @@ final class CoreInvitationDelivery implements AutoCloseable {
       if (store.commit(
           List.of(AtomicStore.Write.put(row.key(), row.version(), next)),
           List.of(
-              new AtomicStore.Check(invitationKey, invitation == null ? 0 : invitation.version()))))
+              new AtomicStore.Check(
+                  invitationKey, invitation == null ? 0 : invitation.version())))) {
         return eligible ? next : null;
+      }
     }
     throw new ConsoleProblem(503, "account_busy", "Invitation delivery is temporarily busy.");
   }
@@ -254,7 +275,9 @@ final class CoreInvitationDelivery implements AutoCloseable {
       var row = store.get(CoreInvitations.outboxKey(id));
       if (row == null
           || !"PENDING".equals(row.value().get("status"))
-          || !claim.get("leaseId").equals(row.value().get("leaseId"))) return;
+          || !claim.get("leaseId").equals(row.value().get("leaseId"))) {
+        return;
+      }
       var next = new LinkedHashMap<>(row.value());
       next.remove("leaseId");
       next.remove("leaseUntil");
@@ -263,26 +286,31 @@ final class CoreInvitationDelivery implements AutoCloseable {
         next.put("deliveredAt", clock.millis());
         next.remove("work");
         next.remove("position");
-      } else
+      } else {
         next.put(
             "availableAt",
             clock.millis()
                 + Math.min(
                     3_600_000L, 1000L << Math.min(12L, Repository.number(next.get("attempts")))));
-      if (store.commit(List.of(AtomicStore.Write.put(row.key(), row.version(), next)), List.of()))
+      }
+      if (store.commit(List.of(AtomicStore.Write.put(row.key(), row.version(), next)), List.of())) {
         return;
+      }
     }
     throw new ConsoleProblem(503, "account_busy", "Invitation delivery is temporarily busy.");
   }
 
   @Override
   public synchronized void close() {
-    if (closed) return;
+    if (closed) {
+      return;
+    }
     closed = true;
     worker.shutdownNow();
     try {
-      if (!worker.awaitTermination(20, TimeUnit.SECONDS))
+      if (!worker.awaitTermination(20, TimeUnit.SECONDS)) {
         throw new IllegalStateException("Invitation delivery did not terminate");
+      }
     } catch (InterruptedException failure) {
       Thread.currentThread().interrupt();
       throw new IllegalStateException(failure);

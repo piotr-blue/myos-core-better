@@ -1,9 +1,24 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.AdmissionEvidence;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageException;
+import blue.LanguageRecord;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /** Pinned execution content: demand-only reads, historical preparations and corrupt records. */
@@ -210,10 +225,11 @@ class CanonicalExecutionContentTest {
         text(added.records().get(added.blueId())),
         text(snapshots.execution("account", later).content().find(added.blueId()).orElseThrow()));
     assertThrows(IllegalStateException.class, () -> snapshots.execution("foreign", fixture.page));
-    for (int i = 0; i < fixture.ids.size(); i++)
+    for (int i = 0; i < fixture.ids.size(); i++) {
       assertEquals(
           text(fixture.records.get(i)),
           text(original.content().find(fixture.ids.get(i)).orElseThrow()));
+    }
     assertTrue(original.content().find(added.blueId()).isEmpty());
   }
 
@@ -268,33 +284,40 @@ class CanonicalExecutionContentTest {
       largestBatch = 0;
     }
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       points++;
       return delegate.content(account, identity);
     }
 
+    @Override
     public Map<String, byte[]> contentAll(String account, List<String> identities) {
       batches++;
       largestBatch = Math.max(largestBatch, identities.size());
       return delegate.contentAll(account, identities);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }

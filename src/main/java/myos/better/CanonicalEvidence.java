@@ -1,7 +1,14 @@
 package myos.better;
 
 import blue.Contracts;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Physical storage for native observations. Unchanged canonical unit/turn records are retained by
@@ -26,8 +33,9 @@ final class CanonicalEvidence {
   /** The optional catalogue comes from the same protected publication as the previous page. */
   Saved saveWithCatalog(
       String account, String previous, String previousCatalog, Contracts.Transition transition) {
-    if (previous == null && previousCatalog != null)
+    if (previous == null && previousCatalog != null) {
       throw new IllegalArgumentException("Catalogue requires its protected predecessor");
+    }
     Repository.Blobs blobs = repository.blobs(account);
     ContentBlocks blocks = new ContentBlocks(blobs);
     Map<String, Object> before =
@@ -49,8 +57,9 @@ final class CanonicalEvidence {
       for (Object raw : (List<?>) fields.remove(part)) {
         Map<String, Object> record = RuntimeConfiguration.object(raw, part);
         Object identity = record.get("identity");
-        if (!(identity instanceof String id) || !id.matches("sha256:[0-9a-f]{64}"))
+        if (!(identity instanceof String id) || !id.matches("sha256:[0-9a-f]{64}")) {
           throw new IllegalArgumentException("Native proof record has no canonical commitment");
+        }
         String key = part + ":" + identity;
         keys.add(key);
         records.putIfAbsent(key, record);
@@ -64,8 +73,11 @@ final class CanonicalEvidence {
     Set<String> preceding = new HashSet<>();
     if (!before.isEmpty()) {
       var priorOccurrences = RuntimeConfiguration.object(before.get("occurrences"), "occurrences");
-      for (String part : PARTS)
-        for (Object key : (List<?>) priorOccurrences.get(part)) preceding.add((String) key);
+      for (String part : PARTS) {
+        for (Object key : (List<?>) priorOccurrences.get(part)) {
+          preceding.add((String) key);
+        }
+      }
     }
     Set<String> unknown = new LinkedHashSet<>(records.keySet());
     unknown.removeAll(preceding);
@@ -78,8 +90,9 @@ final class CanonicalEvidence {
     Map<String, String> additions = new LinkedHashMap<>();
     records.forEach(
         (key, value) -> {
-          if (!preceding.contains(key) && !retained.containsKey(key))
+          if (!preceding.contains(key) && !retained.containsKey(key)) {
             additions.put(key, blocks.put(Json.bytes(value)));
+          }
         });
     additionsTiming.finish();
     String next =
@@ -109,22 +122,28 @@ final class CanonicalEvidence {
     Repository.Blobs blobs = repository.blobs(account);
     ContentBlocks blocks = new ContentBlocks(blobs);
     Map<String, Object> manifest = manifest(blocks, identity);
-    if (!receipt.equals(manifest.get("receipt")))
+    if (!receipt.equals(manifest.get("receipt"))) {
       throw new IllegalStateException("Canonical evidence belongs to another receipt");
+    }
     Map<String, Object> occurrences =
         RuntimeConfiguration.object(manifest.get("occurrences"), "occurrences");
     Set<String> keys = new LinkedHashSet<>();
-    for (String part : PARTS)
-      for (Object key : (List<?>) occurrences.get(part)) keys.add((String) key);
+    for (String part : PARTS) {
+      for (Object key : (List<?>) occurrences.get(part)) {
+        keys.add((String) key);
+      }
+    }
     Map<String, String> references =
         new RadixIndex<>(blobs, String.class).getAll((String) manifest.get("catalog"), keys);
-    if (!references.keySet().equals(keys))
+    if (!references.keySet().equals(keys)) {
       throw new IllegalStateException("Canonical evidence has a missing record");
+    }
     Map<String, Object> records = new HashMap<>();
     List<String> pages = new ArrayList<>(new LinkedHashSet<>(references.values()));
-    for (int offset = 0; offset < pages.size(); offset += BlobStore.READ_BATCH_SIZE)
+    for (int offset = 0; offset < pages.size(); offset += BlobStore.READ_BATCH_SIZE) {
       blocks.prefetch(
           pages.subList(offset, Math.min(offset + BlobStore.READ_BATCH_SIZE, pages.size())));
+    }
     Map<String, Object> result =
         new LinkedHashMap<>(RuntimeConfiguration.object(manifest.get("fields"), "fields"));
     for (String part : PARTS) {
@@ -136,8 +155,9 @@ final class CanonicalEvidence {
                 key,
                 ignored -> {
                   Map<String, Object> value = Json.object(blocks.get(references.get(key)));
-                  if (!key.equals(part + ":" + value.get("identity")))
+                  if (!key.equals(part + ":" + value.get("identity"))) {
                     throw new IllegalStateException("Canonical evidence record identity mismatch");
+                  }
                   return value;
                 });
         values.add(record);
@@ -149,8 +169,9 @@ final class CanonicalEvidence {
 
   private static Map<String, Object> manifest(ContentBlocks blocks, String identity) {
     Map<String, Object> value = Json.object(blocks.get(identity));
-    if (!FORMAT.equals(value.get("format")))
+    if (!FORMAT.equals(value.get("format"))) {
       throw new IllegalStateException("Unsupported canonical evidence format");
+    }
     return value;
   }
 }

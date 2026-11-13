@@ -1,9 +1,19 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -121,9 +131,10 @@ class DocumentLineageTest {
       core.create("alice", "one", "create", "fixed: true");
       BlueId id = new BlueId(repository.load("alice", "one").localBlueId());
       DocumentLineage.Membership first = lineage.find("alice", "one", 1, id).orElseThrow();
-      for (int i = 1; i <= 3; i++)
+      for (int i = 1; i <= 3; i++) {
         assertEquals(
             "APPLIED", core.process("alice", "one", "step" + i, Map.of("event", i), i).status());
+      }
       assertEquals(id.value(), repository.load("alice", "one").localBlueId());
       assertEquals(first, lineage.find("alice", "one", 4, id).orElseThrow());
     }
@@ -263,11 +274,12 @@ class DocumentLineageTest {
     try (Core core = core(store)) {
       core.create("alice", "one", "create", SOURCE);
       BlueId first = new BlueId(repository.load("alice", "one").localBlueId());
-      for (int i = 1; i <= calls; i++)
+      for (int i = 1; i <= calls; i++) {
         assertEquals(
             "APPLIED",
             core.call("alice", "one", "step" + i, "input", "increment", Map.of("requestId", i), i)
                 .status());
+      }
       store.reads = 0;
       assertTrue(
           new DocumentLineage(repository).find("alice", "one", calls + 1, first).isPresent());
@@ -320,6 +332,7 @@ class DocumentLineageTest {
     String corruptField;
     int reads;
 
+    @Override
     public Row get(Key key) {
       reads++;
       if (key.sort().equals("LINEAGE") && beforeLineageRead != null) {
@@ -342,14 +355,17 @@ class DocumentLineageTest {
       return row;
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean committed = delegate.commit(writes, checks);
       if (committed && loseResponse) {
@@ -359,10 +375,12 @@ class DocumentLineageTest {
       return committed;
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }

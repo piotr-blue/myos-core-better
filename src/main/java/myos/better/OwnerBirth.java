@@ -1,7 +1,10 @@
 package myos.better;
 
 import blue.Contracts;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeSet;
 
 /**
  * Propagation metadata for a native, acyclic one-member birth; never infers topology from patches.
@@ -15,7 +18,9 @@ final class OwnerBirth {
       String page,
       String eventContent) {
     var proof = execution.singleBirthCompletion(outcome);
-    if (proof.isEmpty()) return Map.of();
+    if (proof.isEmpty()) {
+      return Map.of();
+    }
     var after = outcome.after();
     var members = new HashMap<String, Object>();
     var admissions = new HashMap<String, Object>();

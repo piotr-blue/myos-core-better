@@ -243,8 +243,9 @@ class CoreCollaborativeBootstrapTest {
   }
 
   private static LanguageDocument readSource(Language language, Object source) {
-    if (source instanceof Map<?, ?> map && map.get("exactDocument") instanceof String exact)
+    if (source instanceof Map<?, ?> map && map.get("exactDocument") instanceof String exact) {
       return language.read(Language.Input.exactJson(exact), Language.Goal.VALUE);
+    }
     return source instanceof String text
         ? language.readYaml(text)
         : language.readJson(JsonText.of(source));
@@ -291,9 +292,13 @@ class CoreCollaborativeBootstrapTest {
                       w.key().partition().startsWith("CORE_COLLABORATIVE_BOOTSTRAP#")
                           && w.next() != null
                           && w.next().value().containsKey("result"));
-      if (completion && !afterCommit) throw new CompletionLost();
+      if (completion && !afterCommit) {
+        throw new CompletionLost();
+      }
       boolean result = delegate.commit(writes, checks);
-      if (completion && result) throw new CompletionLost();
+      if (completion && result) {
+        throw new CompletionLost();
+      }
       return result;
     }
   }
@@ -326,7 +331,9 @@ class CoreCollaborativeBootstrapTest {
           new CoreReaderKeys(
               nativeFixture.store, new SecretEnvelope(new byte[32], "myos.better.reader-key/1"));
       var f = nativeFixture;
-      for (String user : List.of("alice", "bob")) register(user);
+      for (String user : List.of("alice", "bob")) {
+        register(user);
+      }
       documents = new ConsoleDocuments(f.core, f.store, Path.of("examples"), f.timelines);
       runtime = new CoreRuntime(f.core, f.timelines);
       contents = new CoreContents(f.store, f.core.language(), runtime.packages());
@@ -390,7 +397,9 @@ class CoreCollaborativeBootstrapTest {
     void await(String id, int expected) throws Exception {
       long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(20);
       while (System.nanoTime() < deadline) {
-        if (value("alice", id) == expected && value("bob", id) == expected) return;
+        if (value("alice", id) == expected && value("bob", id) == expected) {
+          return;
+        }
         Thread.sleep(10);
       }
       var diagnostic = new LinkedHashMap<String, Object>();

@@ -1,7 +1,15 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueException;
+import blue.Contracts;
+import blue.GasSchedule;
+import blue.LanguageContent;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 /** Runs one protected owner and publishes only the changed causal records. */
 final class OwnerLocal {
@@ -44,11 +52,14 @@ final class OwnerLocal {
     var checkpoint = object(publication.get("local"));
     String member = (String) checkpoint.get("root");
     String previousPage = (String) publication.get("page");
-    if (!previousPage.equals(claim.snapshot()))
+    if (!previousPage.equals(claim.snapshot())) {
       throw new IllegalStateException("Stale local claim");
+    }
     var cut = new Predecessor(records, claim, publication, checkpoint);
     OwnerLocalDelta delta = new OwnerLocalDelta();
-    if (!delta.collect(records, processor, claim, member, previousPage, timing)) return null;
+    if (!delta.collect(records, processor, claim, member, previousPage, timing)) {
+      return null;
+    }
     processor.withContent(records.snapshots.contentProvider(account, previousPage));
     var before = processor.restoreLocal(checkpoint);
     timing.restoreNanos = System.nanoTime() - started;
@@ -59,8 +70,9 @@ final class OwnerLocal {
     List<TimelineArchive> archives = new ArrayList<>(own.archives());
     if (timed == null
         && archives.stream()
-            .noneMatch(a -> a.source().timeline().value().equals(claim.order().timeline())))
+            .noneMatch(a -> a.source().timeline().value().equals(claim.order().timeline()))) {
       archives.add(timelines.originalSource(account, claim.order().timeline()));
+    }
     var declarations =
         new GraphTimelineIngress.OwnerDeclarations(
             own.reception(), List.copyOf(archives), own.bindings(), own.access());
@@ -78,7 +90,9 @@ final class OwnerLocal {
                   var retained =
                       records.lineage.find(
                           account, (String) publication.get("lineage"), id.value());
-                  if (retained != null) return retained;
+                  if (retained != null) {
+                    return retained;
+                  }
                   // Commands may address the original definition after initialization. The general
                   // owner path recognizes that alias too; this local path needs only its one
                   // member.
@@ -140,7 +154,9 @@ final class OwnerLocal {
       GraphTimelineIngress.OwnerDeclarations childChannels = null;
       if (created != null) {
         childChannels = prepareBirth(cut, outcome, delta, created, own);
-        if (childChannels == null) return null;
+        if (childChannels == null) {
+          return null;
+        }
       }
       Prepared prepared =
           stage(cut, processor, outcome, delta, scope, created, childChannels, executionNanos);
@@ -209,13 +225,19 @@ final class OwnerLocal {
     var leaf = child.localCheckpoint();
     if (leaf.isEmpty()
         || records.get("publication", OwnerGraphs.address(created.target())) != null
-        || !records.owner(created.target()).equals(created.target())) return null;
+        || !records.owner(created.target()).equals(created.target())) {
+      return null;
+    }
     var prior = new LinkedHashMap<String, Object>();
     prior.put(member, cut.checkpoint().get("member"));
     for (var edge : child.embeddings()) {
-      if (!edge.source().equals(child.root())) return null;
+      if (!edge.source().equals(child.root())) {
+        return null;
+      }
       var metadata = child.rooted(edge.target()).localCheckpoint().get("member");
-      if (metadata == null) return null;
+      if (metadata == null) {
+        return null;
+      }
       prior.put(edge.target(), metadata);
     }
     var edges =
@@ -233,11 +255,15 @@ final class OwnerLocal {
                         e.generation()))
             .toList();
     delta.birthDelta = Map.of("member", child.root(), "prior", Map.copyOf(prior), "edges", edges);
-    if (!records.snapshots.canAdoptBirth(account, cut.page(), delta.birthDelta)) return null;
+    if (!records.snapshots.canAdoptBirth(account, cut.page(), delta.birthDelta)) {
+      return null;
+    }
     var birthKey =
         JsonText.of(
             List.of(records.owner(member), created.path(), created.generation(), outcome.event()));
-    if (records.read.get(OwnerRecords.key("owner-birth", birthKey)) != null) return null;
+    if (records.read.get(OwnerRecords.key("owner-birth", birthKey)) != null) {
+      return null;
+    }
     delta.includeMember(child, leaf);
     var childChannels = ingress.declarations(account, child, timelines.ownerSources());
     var known =
@@ -447,10 +473,14 @@ final class OwnerLocal {
         added,
         Set.of(),
         tx -> {
-          if (prepared.childPlan() != null) graphs.publish(records, tx, prepared.childPlan());
+          if (prepared.childPlan() != null) {
+            graphs.publish(records, tx, prepared.childPlan());
+          }
           new OwnerGasClaims(account)
               .settle(tx, claim, result.gas(), result.status(), result.receipt());
-          if (timers != null) time.publish(records, tx, timers);
+          if (timers != null) {
+            time.publish(records, tx, timers);
+          }
           OwnerRecords.put(tx, OwnerRecords.key("publication", owner), published.value());
           OwnerRecords.indexInput(tx, owner, published.value());
           OwnerRecords.put(
@@ -482,8 +512,9 @@ final class OwnerLocal {
                       OwnerRecords.put(tx, OwnerRecords.key("calculation", id), calculation));
           records.frontiers.target(tx, owner, result.blueId());
           List<AtomicStore.Write> writes = new ArrayList<>();
-          if (subscription != null)
+          if (subscription != null) {
             timelines.subscribe(writes, account, owner, subscription.reception(), true);
+          }
           OwnerGraphs.event(writes, account, owner, published);
           tx.publish(writes, List.of(control));
         });

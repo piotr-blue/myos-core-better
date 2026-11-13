@@ -1,11 +1,26 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.*;
-import java.time.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -65,8 +80,11 @@ class CoreApiKeysTest {
               underlying,
               (method, args) -> {},
               (method, result) -> {
-                if (method.equals("commit") && Boolean.TRUE.equals(result) && lose.getAndSet(false))
+                if (method.equals("commit")
+                    && Boolean.TRUE.equals(result)
+                    && lose.getAndSet(false)) {
                   throw new IllegalStateException("reply lost");
+                }
               });
       var f = new Fixture(wrapped);
       lose.set(true);
@@ -148,8 +166,9 @@ class CoreApiKeysTest {
     @Test
     void keyCommandsAndListingsAreScopedToTheHumanEvenInsideOneSharedAccount() {
       var f = new Fixture();
-      for (String user : List.of("alice", "bob"))
+      for (String user : List.of("alice", "bob")) {
         CorePermissionsTest.member(f.store, "team", user, "ADMIN", "ACTIVE", 1);
+      }
       var alice = f.session("alice", "team");
       var bob = f.session("bob", "team");
       var a = f.keys.create(alice, "same", Map.of("name", "Private"));
@@ -180,8 +199,9 @@ class CoreApiKeysTest {
           proxy(
               underlying,
               (method, args) -> {
-                if (method.equals("commit") && race.getAndSet(false))
+                if (method.equals("commit") && race.getAndSet(false)) {
                   CorePermissionsTest.member(underlying, "team", "alice", "WRITE", "REMOVED", 1);
+                }
               },
               (method, result) -> {});
       var f = new Fixture(wrapped);
@@ -198,12 +218,15 @@ class CoreApiKeysTest {
     @Test
     void originalUnpagedListingIsCompleteWhileExplicitCursorsBindUserAndMembership() {
       var f = new Fixture();
-      for (String user : List.of("alice", "bob"))
+      for (String user : List.of("alice", "bob")) {
         CorePermissionsTest.member(f.store, "team", user, "READ_ALL", "ACTIVE", 1);
+      }
       var alice = f.session("alice", "team");
       var bob = f.session("bob", "team");
       // 51 crosses the former default 50-row page; the native SDK expects a complete list.
-      for (int i = 0; i < 51; i++) f.keys.create(alice, "key-" + i, Map.of("name", "Key " + i));
+      for (int i = 0; i < 51; i++) {
+        f.keys.create(alice, "key-" + i, Map.of("name", "Key " + i));
+      }
       assertEquals(51, items(f.keys.list(alice, Map.of())).size());
       var first = f.keys.list(alice, Map.of("limit", "1"));
       String token = (String) first.get("nextPageToken");
@@ -305,18 +328,22 @@ class CoreApiKeysTest {
   private static final class MutableClock extends Clock {
     long millis = Instant.parse("2026-11-07T00:00:00Z").toEpochMilli();
 
+    @Override
     public ZoneId getZone() {
       return ZoneOffset.UTC;
     }
 
+    @Override
     public Clock withZone(ZoneId zone) {
       return this;
     }
 
+    @Override
     public Instant instant() {
       return Instant.ofEpochMilli(millis);
     }
 
+    @Override
     public long millis() {
       return millis;
     }

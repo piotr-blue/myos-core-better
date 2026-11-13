@@ -1,11 +1,18 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -70,11 +77,12 @@ class CoreDashboardHttpTest {
   @Test
   void credentialPaginationHonorsTheLimitAndBindsCursorsToAccountAndQuery() throws Exception {
     try (var f = new ConsoleHttpTest.Fixture(web)) {
-      for (int i = 0; i < 3; i++)
+      for (int i = 0; i < 3; i++) {
         assertEquals(
             201,
             f.post("blue/v1/api-keys", "alice", "key-" + i, Map.of("name", "Key " + i))
                 .statusCode());
+      }
       var first = f.json(f.get("blue/v1/api-keys?limit=1", "alice"));
       assertEquals(1, ((List<?>) first.get("items")).size());
       String token = (String) first.get("nextPageToken");
@@ -386,10 +394,18 @@ class CoreDashboardHttpTest {
       Object body)
       throws Exception {
     var request = HttpRequest.newBuilder(URI.create(f.url + "/api/blue/v1/" + path));
-    if (user != null) request.header("Authorization", "Bearer " + user);
-    if (account != null) request.header("X-MyOS-Account", account);
-    if (guard != null) request.header("X-MyOS-Session-Context", guard);
-    if (key != null) request.header("Idempotency-Key", key);
+    if (user != null) {
+      request.header("Authorization", "Bearer " + user);
+    }
+    if (account != null) {
+      request.header("X-MyOS-Account", account);
+    }
+    if (guard != null) {
+      request.header("X-MyOS-Session-Context", guard);
+    }
+    if (key != null) {
+      request.header("Idempotency-Key", key);
+    }
     request.header("Origin", "https://console.example").header("Content-Type", "application/json");
     request.method(
         method,

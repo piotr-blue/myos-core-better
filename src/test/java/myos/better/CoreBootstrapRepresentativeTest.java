@@ -1,10 +1,18 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import blue.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.PackageLoader;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
@@ -99,8 +107,9 @@ class CoreBootstrapRepresentativeTest {
       assertEquals(first, entries.append("alice", timeline, "allowed", call));
       long until = System.nanoTime() + TimeUnit.SECONDS.toNanos(12);
       while (value(f, "alice", id) != 1 || value(f, "bob", id) != 1) {
-        if (System.nanoTime() >= until)
+        if (System.nanoTime() >= until) {
           fail("Representative event did not propagate to both accounts");
+        }
         Thread.sleep(10);
       }
       assertEquals(
@@ -110,8 +119,11 @@ class CoreBootstrapRepresentativeTest {
       assertThrows(ConsoleProblem.class, () -> entries.append("alice", timeline, "revoked", call));
       assertEquals(1, host.head("alice", timeline).count());
     } finally {
-      if (before == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", before);
+      if (before == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", before);
+      }
     }
   }
 

@@ -45,8 +45,9 @@ final class PublicDns implements DnsResolver, AutoCloseable {
     try {
       InetAddress[] addresses = pending.get(timeout.toNanos(), TimeUnit.NANOSECONDS);
       if (addresses.length == 0
-          || Arrays.stream(addresses).anyMatch(a -> !PublicAddress.allowed(a)))
+          || Arrays.stream(addresses).anyMatch(a -> !PublicAddress.allowed(a))) {
         throw new UnknownHostException("Public HTTP requires public addresses");
+      }
       return addresses.clone();
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();

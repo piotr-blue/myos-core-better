@@ -1,12 +1,23 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import blue.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -109,10 +120,12 @@ class CoreAccessImportsTest {
               f.source.publisher.host,
               f.selectedRuntime,
               new CoreAccessUpdates.Follower() {
+                @Override
                 public void check(String account, BlueId access, Map<String, Object> selection) {
                   f.api.checkSelection(account, access, selection);
                 }
 
+                @Override
                 public void retain(String account, BlueId access, Map<String, Object> selection) {
                   f.importer.add(
                       account,
@@ -191,7 +204,9 @@ class CoreAccessImportsTest {
               .mount("Contracts", Contracts.publication())
               .build();
       service.bind();
-      if (graph) service.enableCanonicalGraphs(language, List.of());
+      if (graph) {
+        service.enableCanonicalGraphs(language, List.of());
+      }
       var runtime =
           CanonicalRuntime.newBuilder()
               .language(language)
@@ -219,7 +234,9 @@ class CoreAccessImportsTest {
       TimelineTransport transport =
           (target, request, bytes, timeout) -> {
             var reply = source.transport.exchange(target, request, bytes, timeout);
-            if (!falsify || !target.getPath().endsWith("/access/get")) return reply;
+            if (!falsify || !target.getPath().endsWith("/access/get")) {
+              return reply;
+            }
             var envelope = Json.object(reply.body());
             var body =
                 new LinkedHashMap<>(
@@ -262,12 +279,15 @@ class CoreAccessImportsTest {
     void drain(String account, String id) {
       for (int i = 0; i < 20; i++) {
         String status = (String) service.step(core, account, id).get("status");
-        if (status.equals("IDLE")) return;
+        if (status.equals("IDLE")) {
+          return;
+        }
         assertNotEquals("WAITING", status);
       }
       fail("Access follower did not become idle");
     }
 
+    @Override
     public void close() {
       importer.close();
       timelines.close();

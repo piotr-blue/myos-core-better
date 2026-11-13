@@ -1,8 +1,15 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Bounded exact materialization for portable content reads; never flattens inheritance. */
 final class TimelineContentExpansion {
@@ -24,28 +31,41 @@ final class TimelineContentExpansion {
     expansion.seen.add(id);
     Object body = expansion.visit(ProviderSigning.wire(root), 0);
     LanguageContent result = language.prepare(Language.Input.exactJson(JsonText.of(body)));
-    if (!result.blueId().equals(id))
+    if (!result.blueId().equals(id)) {
       throw new IllegalStateException("Content expansion changed its identity");
+    }
     return result;
   }
 
   private Object visit(Object value, int depth) {
-    if (++visits > VISITS || depth >= DEPTH) return value;
+    if (++visits > VISITS || depth >= DEPTH) {
+      return value;
+    }
     if (value instanceof List<?> list) {
       List<Object> result = new ArrayList<>(list.size());
-      for (Object item : list) result.add(visit(item, depth + 1));
+      for (Object item : list) {
+        result.add(visit(item, depth + 1));
+      }
       return result;
     }
-    if (!(value instanceof Map<?, ?> map)) return value;
+    if (!(value instanceof Map<?, ?> map)) {
+      return value;
+    }
     if (map.size() == 1 && map.get("blueId") instanceof String id) {
       // Cyclic members require an owning-set proof; they cannot be encoded as an inline body.
-      if (id.contains("#") || records >= RECORDS || bytes >= BYTES) return value;
+      if (id.contains("#") || records >= RECORDS || bytes >= BYTES) {
+        return value;
+      }
       BlueId target = new BlueId(id);
-      if (!seen.add(target)) return value;
+      if (!seen.add(target)) {
+        return value;
+      }
       LanguageContent expanded = language.expand(language.reference(target), "");
       String text = expanded.toJson();
       int size = text.getBytes(StandardCharsets.UTF_8).length;
-      if (size > BYTES - bytes) return value;
+      if (size > BYTES - bytes) {
+        return value;
+      }
       records++;
       bytes += size;
       return visit(ProviderSigning.wire(expanded), depth + 1);

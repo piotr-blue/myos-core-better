@@ -1,9 +1,17 @@
 package myos.better;
 
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
 import java.time.Clock;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.UUID;
 
 /** Invitation intent, recipient binding and membership acceptance share atomic publication. */
 final class CoreInvitations {
@@ -20,8 +28,9 @@ final class CoreInvitations {
   }
 
   static boolean acceptance(String path, String method) {
-    if (!method.equals("POST") || !path.startsWith(CoreDashboardApi.BASE + "invitations/"))
+    if (!method.equals("POST") || !path.startsWith(CoreDashboardApi.BASE + "invitations/")) {
       return false;
+    }
     String[] route = path.substring(CoreDashboardApi.BASE.length()).split("/", -1);
     return route.length == 3 && !route[1].isEmpty() && route[2].equals("accept");
   }
@@ -32,13 +41,15 @@ final class CoreInvitations {
     RuntimeConfiguration.fields(input, Set.of("email", "role", "targetUserId"));
     String email = CoreUserIdentities.email(input.get("email"));
     String role = RuntimeConfiguration.text(input.get("role"), "role");
-    if (role.equals("OWNER"))
+    if (role.equals("OWNER")) {
       throw problem(
           422,
           "owner_invitation_forbidden",
           "Invite another role, then assign Owner after joining.");
-    if (!Set.of("ADMIN", "WRITE", "READ_ALL", "READ_SELECTED").contains(role))
+    }
+    if (!Set.of("ADMIN", "WRITE", "READ_ALL", "READ_SELECTED").contains(role)) {
       throw problem(422, "invalid_account_input", "Invalid invitation role.");
+    }
     String explicit =
         input.get("targetUserId") == null
             ? null
@@ -46,7 +57,9 @@ final class CoreInvitations {
                 RuntimeConfiguration.text(input.get("targetUserId"), "targetUserId"));
     String account = caller.principal().account();
     var intent = new LinkedHashMap<String, Object>(Map.of("email", email, "role", role));
-    if (explicit != null) intent.put("target", explicit);
+    if (explicit != null) {
+      intent.put("target", explicit);
+    }
     String fingerprint = Json.hash(Json.bytes(intent));
     var receipt =
         CoreWorkspaces.accountKey(
@@ -55,17 +68,20 @@ final class CoreInvitations {
     boolean resolved = false;
     for (int attempt = 0; attempt < 8; attempt++) {
       var previous = store.get(receipt);
-      if (previous != null) return replay(previous, fingerprint);
+      if (previous != null) {
+        return replay(previous, fingerprint);
+      }
       var checks = new ArrayList<>(CoreAccountAuthority.administrator(store, caller));
       var emailKey = CoreUserIdentities.emailKey(email);
       var emailVersion = store.get(emailKey);
       checks.add(new AtomicStore.Check(emailKey, version(emailVersion)));
       String target = explicit == null ? formerRecipient(account, email) : explicit;
-      if (resolved && !Objects.equals(observed, target))
+      if (resolved && !Objects.equals(observed, target)) {
         throw problem(
             409,
             "invitation_recipient_changed",
             "Recipient changed. Review the roster and try again.");
+      }
       observed = target;
       resolved = true;
       AtomicStore.Row member = null;
@@ -73,25 +89,30 @@ final class CoreInvitations {
         var identityKey = CoreWorkspaces.accountKey(target, "IDENTITY");
         var identity = store.get(identityKey);
         if (identity == null
-            || !email.equals(CoreUserIdentities.email(identity.value().get("email"))))
+            || !email.equals(CoreUserIdentities.email(identity.value().get("email")))) {
           throw problem(403, "invitation_recipient_mismatch", "Verified recipient email differs.");
+        }
         checks.add(new AtomicStore.Check(identityKey, identity.version()));
         var memberKey = CoreWorkspaces.accountKey(account, "MEMBER#" + target);
         member = store.get(memberKey);
         if (member != null && "ACTIVE".equals(member.value().get("status"))
-            || member == null && target.equals(account))
+            || member == null && target.equals(account)) {
           throw problem(409, "membership_exists", "Recipient already has an active membership.");
+        }
         checks.add(new AtomicStore.Check(memberKey, version(member)));
       }
-      if (secrets == null)
+      if (secrets == null) {
         throw problem(
             503, "invitation_custody_unavailable", "Invitation custody is not configured.");
+      }
       String id = UUID.randomUUID().toString(), token = token();
       var invitation = new LinkedHashMap<String, Object>();
       invitation.put("invitationId", id);
       invitation.put("accountId", account);
       invitation.put("recipientEmail", email);
-      if (target != null) invitation.put("recipientUserId", target);
+      if (target != null) {
+        invitation.put("recipientUserId", target);
+      }
       invitation.put("role", role);
       invitation.put("tokenDigest", digest(token));
       invitation.put("expiresAt", Math.addExact(clock.millis(), LIFETIME_MILLIS));
@@ -119,7 +140,9 @@ final class CoreInvitations {
       writes.add(AtomicStore.Write.put(outboxKey(id), 0, outbox));
       writes.add(
           AtomicStore.Write.put(receipt, 0, Map.of("fingerprint", fingerprint, "result", result)));
-      if (store.commit(writes, distinct(checks))) return result;
+      if (store.commit(writes, distinct(checks))) {
+        return result;
+      }
     }
     throw busy();
   }
@@ -129,8 +152,9 @@ final class CoreInvitations {
     RuntimeConfiguration.fields(input, Set.of("token", "expectedRevision"));
     String token = RuntimeConfiguration.text(input.get("token"), "token");
     long revision = positive(input.get("expectedRevision"));
-    if (!token.matches("[A-Za-z0-9_-]{43}"))
+    if (!token.matches("[A-Za-z0-9_-]{43}")) {
       throw problem(422, "invalid_account_input", "Provide an invitation token and revision.");
+    }
     String digest = digest(token);
     String fingerprint = Json.hash(Json.bytes(Map.of("tokenDigest", digest, "revision", revision)));
     var receipt =
@@ -141,14 +165,20 @@ final class CoreInvitations {
       var invitation = current.value();
       if (!MessageDigest.isEqual(
           digest.getBytes(StandardCharsets.US_ASCII),
-          ((String) invitation.get("tokenDigest")).getBytes(StandardCharsets.US_ASCII)))
+          ((String) invitation.get("tokenDigest")).getBytes(StandardCharsets.US_ASCII))) {
         throw problem(403, "invitation_token_invalid", "Invitation token is invalid.");
+      }
       var previous = store.get(receipt);
-      if (previous != null) return replay(previous, fingerprint);
+      if (previous != null) {
+        return replay(previous, fingerprint);
+      }
       if (!"PENDING".equals(invitation.get("status"))
-          || Repository.number(invitation.get("expiresAt")) <= clock.millis())
+          || Repository.number(invitation.get("expiresAt")) <= clock.millis()) {
         throw problem(409, "invitation_unavailable", "Invitation is no longer available.");
-      if (Repository.number(invitation.get("revision")) != revision) throw stale();
+      }
+      if (Repository.number(invitation.get("revision")) != revision) {
+        throw stale();
+      }
       var identityKey = CoreWorkspaces.accountKey(caller.userId(), "IDENTITY");
       var identity = store.get(identityKey);
       if (identity == null
@@ -157,30 +187,37 @@ final class CoreInvitations {
               .get("recipientEmail")
               .equals(CoreUserIdentities.email(caller.principal().email()))
           || invitation.containsKey("recipientUserId")
-              && !caller.userId().equals(invitation.get("recipientUserId")))
+              && !caller.userId().equals(invitation.get("recipientUserId"))) {
         throw problem(
             403, "invitation_recipient_mismatch", "Invitation belongs to another recipient.");
+      }
       String account = (String) invitation.get("accountId");
       var accountKey = CoreWorkspaces.accountKey(account, "ACCOUNT");
       var workspace = store.get(accountKey);
-      if (workspace != null && !"ACTIVE".equals(workspace.value().getOrDefault("status", "ACTIVE")))
+      if (workspace != null
+          && !"ACTIVE".equals(workspace.value().getOrDefault("status", "ACTIVE"))) {
         throw problem(403, "account_unavailable", "Workspace is unavailable.");
-      if (workspace == null && !account.startsWith("user-"))
+      }
+      if (workspace == null && !account.startsWith("user-")) {
         throw problem(403, "account_unavailable", "Workspace is unavailable.");
+      }
       var memberKey = CoreWorkspaces.accountKey(account, "MEMBER#" + caller.userId());
       var member = store.get(memberKey);
       if (member != null && "ACTIVE".equals(member.value().get("status"))
-          || member == null && account.equals(caller.userId()))
+          || member == null && account.equals(caller.userId())) {
         throw problem(409, "membership_exists", "User already has an active membership.");
+      }
       long generation = member == null ? 0 : Repository.number(member.value().get("generation"));
       long memberRevision = member == null ? 0 : Repository.number(member.value().get("revision"));
       if (generation != Repository.number(invitation.get("expectedMembershipGeneration"))
-          || memberRevision != Repository.number(invitation.get("expectedMembershipRevision")))
+          || memberRevision != Repository.number(invitation.get("expectedMembershipRevision"))) {
         throw problem(409, "membership_stale", "Invitation predates the current membership state.");
+      }
       String role = (String) invitation.get("role");
-      if (role.equals("OWNER"))
+      if (role.equals("OWNER")) {
         throw problem(
             422, "owner_invitation_forbidden", "Owner can only be assigned to an active member.");
+      }
       var updatedAccount =
           workspace == null
               ? new LinkedHashMap<String, Object>(
@@ -248,8 +285,9 @@ final class CoreInvitations {
               listingKey, version(store.get(listingKey)), Map.of("accountId", account)));
       writes.add(
           AtomicStore.Write.put(receipt, 0, Map.of("fingerprint", fingerprint, "result", result)));
-      if (store.commit(writes, List.of(new AtomicStore.Check(identityKey, identity.version()))))
+      if (store.commit(writes, List.of(new AtomicStore.Check(identityKey, identity.version())))) {
         return result;
+      }
     }
     throw busy();
   }
@@ -266,13 +304,20 @@ final class CoreInvitations {
             account, "REVOKE_INVITE#" + caller.userId() + "#" + Repository.identifier(command));
     for (int attempt = 0; attempt < 8; attempt++) {
       var previous = store.get(receipt);
-      if (previous != null) return replay(previous, fingerprint);
+      if (previous != null) {
+        return replay(previous, fingerprint);
+      }
       var checks = CoreAccountAuthority.administrator(store, caller);
       var current = require(id);
-      if (!account.equals(current.value().get("accountId"))) throw missing();
-      if (!"PENDING".equals(current.value().get("status")))
+      if (!account.equals(current.value().get("accountId"))) {
+        throw missing();
+      }
+      if (!"PENDING".equals(current.value().get("status"))) {
         throw problem(409, "invitation_unavailable", "Invitation is no longer pending.");
-      if (Repository.number(current.value().get("revision")) != revision) throw stale();
+      }
+      if (Repository.number(current.value().get("revision")) != revision) {
+        throw stale();
+      }
       var revoked = new LinkedHashMap<>(current.value());
       revoked.put("status", "REVOKED");
       revoked.put("revision", Math.incrementExact(revision));
@@ -281,7 +326,9 @@ final class CoreInvitations {
       publish(writes, current, revoked);
       writes.add(
           AtomicStore.Write.put(receipt, 0, Map.of("fingerprint", fingerprint, "result", result)));
-      if (store.commit(writes, checks)) return result;
+      if (store.commit(writes, checks)) {
+        return result;
+      }
     }
     throw busy();
   }
@@ -294,18 +341,24 @@ final class CoreInvitations {
           store.query(
               CoreWorkspaces.accountKey(account, "ACCOUNT").partition(), "MEMBER#", after, 100);
       for (var row : page.rows()) {
-        if (++scanned > 4096)
+        if (++scanned > 4096) {
           throw problem(422, "account_roster_limit", "Account roster exceeds the supported bound.");
-        if (!"REMOVED".equals(row.value().get("status"))) continue;
+        }
+        if (!"REMOVED".equals(row.value().get("status"))) {
+          continue;
+        }
         String user = (String) row.value().get("userId");
         var identity = store.get(CoreWorkspaces.accountKey(user, "IDENTITY"));
         if (identity == null
-            || !email.equals(CoreUserIdentities.email(identity.value().get("email")))) continue;
-        if (target != null)
+            || !email.equals(CoreUserIdentities.email(identity.value().get("email")))) {
+          continue;
+        }
+        if (target != null) {
           throw problem(
               409,
               "invitation_recipient_ambiguous",
               "Choose Invite this user again from the member list.");
+        }
         target = user;
       }
       after = page.after();
@@ -315,7 +368,9 @@ final class CoreInvitations {
 
   AtomicStore.Row require(String id) {
     var row = store.get(key(id));
-    if (row == null) throw missing();
+    if (row == null) {
+      throw missing();
+    }
     return row;
   }
 
@@ -343,8 +398,11 @@ final class CoreInvitations {
             "expiresAt",
             "createdAt",
             "acceptedAt",
-            "acceptedBy"))
-      if (invitation.get(field) != null) result.put(field, invitation.get(field));
+            "acceptedBy")) {
+      if (invitation.get(field) != null) {
+        result.put(field, invitation.get(field));
+      }
+    }
     return result;
   }
 
@@ -360,16 +418,18 @@ final class CoreInvitations {
     var unique = new LinkedHashMap<AtomicStore.Key, AtomicStore.Check>();
     for (var check : checks) {
       var before = unique.putIfAbsent(check.key(), check);
-      if (before != null && before.version() != check.version())
+      if (before != null && before.version() != check.version()) {
         throw problem(409, "membership_stale", "Membership context changed.");
+      }
     }
     return List.copyOf(unique.values());
   }
 
   private static Map<String, Object> replay(AtomicStore.Row row, String fingerprint) {
-    if (!fingerprint.equals(row.value().get("fingerprint")))
+    if (!fingerprint.equals(row.value().get("fingerprint"))) {
       throw problem(
           409, "idempotency_conflict", "The invitation command has different parameters.");
+    }
     return RuntimeConfiguration.object(row.value().get("result"), "invitation receipt");
   }
 
@@ -385,8 +445,9 @@ final class CoreInvitations {
 
   private static long positive(Object value) {
     long number = Repository.number(value);
-    if (number < 1)
+    if (number < 1) {
       throw problem(422, "invalid_account_input", "Provide a positive invitation revision.");
+    }
     return number;
   }
 

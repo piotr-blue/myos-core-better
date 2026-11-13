@@ -23,9 +23,10 @@ final class TimelineHttpTransport implements TimelineTransport {
     this.client = Objects.requireNonNull(client);
     if (client.followRedirects() != HttpClient.Redirect.NEVER
         || client.authenticator().isPresent()
-        || client.cookieHandler().isPresent())
+        || client.cookieHandler().isPresent()) {
       throw new IllegalArgumentException(
           "Timeline transport must not redirect or supply ambient credentials");
+    }
   }
 
   @Override
@@ -35,21 +36,25 @@ final class TimelineHttpTransport implements TimelineTransport {
         || target.getHost() == null
         || target.getRawUserInfo() != null
         || target.getRawQuery() != null
-        || target.getRawFragment() != null)
+        || target.getRawFragment() != null) {
       throw new IllegalArgumentException("Pinned HTTPS provider route required");
+    }
     if (maximumBytes < 1
         || maximumBytes > 4 * 1024 * 1024
         || timeout.isNegative()
         || timeout.isZero()
-        || timeout.compareTo(Duration.ofMinutes(1)) > 0)
+        || timeout.compareTo(Duration.ofMinutes(1)) > 0) {
       throw new IllegalArgumentException("Invalid provider transport bound");
+    }
     HttpRequest.Builder builder =
         HttpRequest.newBuilder(target).timeout(timeout).header("Accept", "application/json");
-    if (request == null) builder.GET();
-    else
+    if (request == null) {
+      builder.GET();
+    } else {
       builder
           .header("Content-Type", "application/json")
           .POST(HttpRequest.BodyPublishers.ofString(request));
+    }
     CompletableFuture<HttpResponse<byte[]>> response =
         client.sendAsync(
             builder.build(),
@@ -65,7 +70,9 @@ final class TimelineHttpTransport implements TimelineTransport {
       response.cancel(true);
       throw failure;
     } catch (ExecutionException failure) {
-      if (failure.getCause() instanceof IOException io) throw io;
+      if (failure.getCause() instanceof IOException io) {
+        throw io;
+      }
       throw new IOException("Timeline transport failed", failure.getCause());
     }
   }

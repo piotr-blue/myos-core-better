@@ -1,10 +1,20 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.time.Clock;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -118,8 +128,9 @@ class ApiKeysTest {
               ApiKeys.PREFIX,
               secret + "x",
               secret.substring(0, secret.length() - 1),
-              secret.substring(0, secret.indexOf('.') + 1) + "a".repeat(43)))
+              secret.substring(0, secret.indexOf('.') + 1) + "a".repeat(43))) {
         assertEquals(401, assertThrows(ConsoleProblem.class, () -> keys.verify(token)).status);
+      }
       assertEquals(401, assertThrows(ConsoleProblem.class, () -> keys.verify(null)).status);
     }
 
@@ -130,8 +141,9 @@ class ApiKeysTest {
               Map.<String, Object>of("name", " "),
               Map.<String, Object>of("name", "a".repeat(121)),
               Map.<String, Object>of("name", "x", "account", "bob"),
-              Map.<String, Object>of("name", "x", "secret", "chosen")))
+              Map.<String, Object>of("name", "x", "secret", "chosen"))) {
         assertThrows(IllegalArgumentException.class, () -> keys.create("alice", "one", input));
+      }
       assertTrue(((List<?>) keys.list("alice", Map.of()).get("items")).isEmpty());
       assertThrows(
           IllegalArgumentException.class, () -> keys.list("alice", Map.of("cursor", "CREATE#one")));
@@ -140,7 +152,9 @@ class ApiKeysTest {
     @Test
     void listingPagesExposeOnlyMetadataAndStayWithinAccount() {
       // 51 crosses exactly one API page; no timing threshold or unnecessary long history.
-      for (int i = 0; i < 51; i++) keys.create("alice", "key-" + i, Map.of("name", "Key " + i));
+      for (int i = 0; i < 51; i++) {
+        keys.create("alice", "key-" + i, Map.of("name", "Key " + i));
+      }
       keys.create("bob", "one", Map.of("name", "Other"));
       var first = keys.list("alice", Map.of());
       var second = keys.list("alice", Map.of("cursor", (String) first.get("nextCursor")));
@@ -155,26 +169,32 @@ class ApiKeysTest {
     private final AtomicStore store = new JsonBoundaryStore();
     boolean lose;
 
+    @Override
     public Row get(Key key) {
       return store.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return store.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return store.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String id) {
       return store.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       store.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean result = store.commit(writes, checks);
       if (result && lose) {

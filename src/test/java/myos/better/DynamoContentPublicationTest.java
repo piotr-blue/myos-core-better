@@ -66,8 +66,9 @@ class DynamoContentPublicationTest {
     void fullRecordTransactionPublishesPagesBeforeItsReferences() {
       Transport transport = new Transport();
       List<AtomicStore.Write> writes = new ArrayList<>();
-      for (int i = 0; i < 100; i++)
+      for (int i = 0; i < 100; i++) {
         writes.add(AtomicStore.Write.put(Repository.key(ACCOUNT, "doc" + i, "STATE"), 0, Map.of()));
+      }
       try (DynamoStore store = transport.open()) {
         assertTrue(store.commitWithContent(writes, List.of(), ACCOUNT, page()));
       }
@@ -148,8 +149,9 @@ class DynamoContentPublicationTest {
       Transport transport = new Transport();
       transport.batchFailure = new IllegalStateException("Page service unavailable");
       List<AtomicStore.Check> checks = new ArrayList<>();
-      for (int i = 0; i < 100; i++)
+      for (int i = 0; i < 100; i++) {
         checks.add(new AtomicStore.Check(Repository.key(ACCOUNT, "doc" + i, "STATE"), 1));
+      }
       try (DynamoStore store = transport.open()) {
         assertSame(
             transport.batchFailure,
@@ -195,19 +197,25 @@ class DynamoContentPublicationTest {
                   DynamoDbClient.class.getClassLoader(),
                   new Class<?>[] {DynamoDbClient.class},
                   (proxy, method, args) -> {
-                    if (method.getName().equals("close")) return null;
+                    if (method.getName().equals("close")) {
+                      return null;
+                    }
                     if (method.getName().equals("transactWriteItems")) {
                       var builder = TransactWriteItemsRequest.builder();
                       ((Consumer<TransactWriteItemsRequest.Builder>) args[0]).accept(builder);
                       transactions.add(builder.build());
                       calls.add("transaction");
-                      if (failure != null) throw failure;
+                      if (failure != null) {
+                        throw failure;
+                      }
                       return TransactWriteItemsResponse.builder().build();
                     }
                     if (method.getName().equals("batchWriteItem")) {
                       batches.add((BatchWriteItemRequest) args[0]);
                       calls.add("batch");
-                      if (batchFailure != null) throw batchFailure;
+                      if (batchFailure != null) {
+                        throw batchFailure;
+                      }
                       return BatchWriteItemResponse.builder().build();
                     }
                     throw new AssertionError("Unexpected SDK call: " + method.getName());

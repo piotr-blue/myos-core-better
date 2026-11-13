@@ -15,14 +15,16 @@ public final class ExternalProviderProbe {
   private ExternalProviderProbe() {}
 
   public static void main(String[] args) throws Exception {
-    if (args.length < 4)
+    if (args.length < 4) {
       throw new IllegalArgumentException("mode table endpoint protected-key-file [arguments]");
+    }
     String mode = args[0], endpoint = args[2];
     Path key = Path.of(args[3]);
     var coordination = ProviderIdentity.coordination();
     if (!Files.exists(key)) {
-      if (!mode.equals("init"))
+      if (!mode.equals("init")) {
         throw new IllegalStateException("Initialize the protected identity first");
+      }
       var pair = KeyPairGenerator.getInstance("Ed25519").generateKeyPair();
       byte[] encoded = pair.getPublic().getEncoded();
       String publicKey =
@@ -124,7 +126,9 @@ public final class ExternalProviderProbe {
                   original.entry().at("/timestamp").integer())));
       return;
     }
-    if (!mode.equals("serve")) throw new IllegalArgumentException("Unknown mode");
+    if (!mode.equals("serve")) {
+      throw new IllegalArgumentException("Unknown mode");
+    }
     var server = HttpServer.create(new InetSocketAddress(8089), 32);
     var workers = Executors.newFixedThreadPool(4);
     server.setExecutor(workers);
@@ -145,8 +149,9 @@ public final class ExternalProviderProbe {
                   && !NativeTimelineApi.ownerRequired(path)
                   && exchange.getRequestMethod().equals("POST")) {
                 byte[] body = exchange.getRequestBody().readNBytes(256 * 1024 + 1);
-                if (body.length > 256 * 1024)
+                if (body.length > 256 * 1024) {
                   throw new IllegalArgumentException("Request too large");
+                }
                 response = api.call(path, null, Json.object(body));
               } else {
                 status = 404;

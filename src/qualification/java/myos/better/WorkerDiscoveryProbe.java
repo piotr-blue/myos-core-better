@@ -14,9 +14,10 @@ import java.util.function.Supplier;
 public final class WorkerDiscoveryProbe {
   public static void main(String[] args) throws Exception {
     if ((args.length != 4 && args.length != 5)
-        || !args[0].matches("worker-bench-[A-Za-z0-9._-]{1,80}"))
+        || !args[0].matches("worker-bench-[A-Za-z0-9._-]{1,80}")) {
       throw new IllegalArgumentException(
           "Expected new worker-bench-* account, workers, idle seconds, samples, optional backlog");
+    }
     String account = args[0];
     int workers = Integer.parseInt(args[1]),
         idleSeconds = Integer.parseInt(args[2]),
@@ -29,8 +30,9 @@ public final class WorkerDiscoveryProbe {
         || samples < 1
         || samples > 16
         || backlog < 0
-        || backlog > 128)
+        || backlog > 128) {
       throw new IllegalArgumentException("Invalid bounded qualification dimensions");
+    }
     String table = System.getenv("MYOS_TABLE");
     MemoryStore memory = new MemoryStore();
     Supplier<AtomicStore> stores =
@@ -107,10 +109,11 @@ public final class WorkerDiscoveryProbe {
       report.put("finalTotal", expected);
       report.put("consumerStorage", store.statistics());
     }
-    if (backlog > 0)
+    if (backlog > 0) {
       report.put(
           "backlog",
           backlog(stores, runtime, account + "-backlog", workers, backlog, table != null));
+    }
     report.put("status", "PASSED");
     report.put("account", account);
     report.put("workers", workers);
@@ -168,17 +171,20 @@ public final class WorkerDiscoveryProbe {
       }
       for (int i = 0;
           i < orders * 2 && count(producer, account, "initializedOrders") != orders;
-          i++) producer.drain(128);
+          i++) {
+        producer.drain(128);
+      }
       require(
           count(producer, account, "initializedOrders") == orders,
           "Backlog initialization incomplete");
-      for (int i = 0; i < orders; i++)
+      for (int i = 0; i < orders; i++) {
         require(
             producer
                 .call(account, payments.get(i), "pay", "input", "record", Map.of(), orders + i + 1)
                 .status()
                 .equals("APPLIED"),
             "Backlog payment failed");
+      }
       require(
           count(producer, account, "paidTotal") == 0, "Producer unexpectedly propagated backlog");
     }
@@ -265,7 +271,9 @@ public final class WorkerDiscoveryProbe {
     long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(seconds);
     while (true) {
       long actual = count(core, account, field);
-      if (actual == expected) return;
+      if (actual == expected) {
+        return;
+      }
       require(actual < expected, "Duplicate business effect");
       require(System.nanoTime() - deadline < 0, "Parent propagation timed out");
       Thread.sleep(5);
@@ -294,6 +302,8 @@ public final class WorkerDiscoveryProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new AssertionError(message);
+    if (!condition) {
+      throw new AssertionError(message);
+    }
   }
 }

@@ -1,6 +1,13 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.LongAdder;
@@ -115,28 +122,44 @@ final class TimelineWork {
     value.put("account", account);
     value.put("timeline", timeline);
     value.put("pending", position);
-    if (entries) value.remove("prioritized");
+    if (entries) {
+      value.remove("prioritized");
+    }
     boolean active = before != null && before.value().containsKey("work");
     // Only verified non-operation occurrences can make this promise. An overlapping
     // operation or legacy notification widens the whole pending pass again.
-    if (!active) value.put("observedOnly", observedOnly);
-    else if (entries && !observedOnly) value.put("observedOnly", false);
+    if (!active) {
+      value.put("observedOnly", observedOnly);
+    } else if (entries && !observedOnly) {
+      value.put("observedOnly", false);
+    }
     if (!active) {
       value.remove("recipients");
-      if (recipients != null) value.put("recipients", List.copyOf(new TreeSet<>(recipients)));
+      if (recipients != null) {
+        value.put("recipients", List.copyOf(new TreeSet<>(recipients)));
+      }
     } else if (entries) {
-      if (recipients == null || !value.containsKey("recipients")) value.remove("recipients");
-      else {
+      if (recipients == null || !value.containsKey("recipients")) {
+        value.remove("recipients");
+      } else {
         Set<String> combined = new TreeSet<>(recipients);
-        for (Object recipient : (List<?>) value.get("recipients")) combined.add((String) recipient);
-        if (combined.size() > 64) value.remove("recipients");
-        else value.put("recipients", List.copyOf(combined));
+        for (Object recipient : (List<?>) value.get("recipients")) {
+          combined.add((String) recipient);
+        }
+        if (combined.size() > 64) {
+          value.remove("recipients");
+        } else {
+          value.put("recipients", List.copyOf(combined));
+        }
       }
     }
     // Empty coverage can unblock a waiting receiver, but adds no work for an idle one.
     // Preserve a real arrival across all in-flight fanout passes and following quiet polls.
-    if (before == null || !before.value().containsKey("work")) value.put("wakeIdle", entries);
-    else if (entries) value.put("wakeIdle", true);
+    if (before == null || !before.value().containsKey("work")) {
+      value.put("wakeIdle", entries);
+    } else if (entries) {
+      value.put("wakeIdle", true);
+    }
     // Do not reset an in-flight pass when acquisition runs faster than fanout. Complete that
     // pass, then restart at the latest pending prefix so early subscribers see it as well.
     if (before == null || !before.value().containsKey("work")) {
@@ -149,8 +172,9 @@ final class TimelineWork {
       AtomicStore.Row configuration = store.get(configuration(account));
       if (configuration != null) {
         if (configuration.version() != 1
-            || !"myos.timeline-config/1".equals(configuration.value().get("format")))
+            || !"myos.timeline-config/1".equals(configuration.value().get("format"))) {
           throw new IllegalStateException("Invalid Timeline account binding");
+        }
         value.put("scope", Json.hash(Json.bytes(configuration.value())));
       }
     }
@@ -204,10 +228,12 @@ final class TimelineWork {
       Set<String> inputSources,
       boolean addressHints,
       boolean addingChild) {
-    if (inputSources != null && !sources.containsAll(inputSources))
+    if (inputSources != null && !sources.containsAll(inputSources)) {
       throw new IllegalArgumentException("Input sources must be receiving sources");
-    if (observedSources != null && !sources.containsAll(observedSources))
+    }
+    if (observedSources != null && !sources.containsAll(observedSources)) {
       throw new IllegalArgumentException("Observed sources must be receiving sources");
+    }
     AtomicStore.Key key = receiver(account, document);
     AtomicStore.Row before = store.get(key);
     Set<String> previous = sources(before);
@@ -217,10 +243,15 @@ final class TimelineWork {
       observedSources = unionSources(before, "observedSources", observedSources);
       inputSources = unionSources(before, "inputSources", inputSources);
     }
-    if (before == null && next.isEmpty()) return;
-    if (before == null || !scope.equals(before.value().get("scope"))) requireAccount(account);
-    if (!supported.test(account, next))
+    if (before == null && next.isEmpty()) {
+      return;
+    }
+    if (before == null || !scope.equals(before.value().get("scope"))) {
+      requireAccount(account);
+    }
+    if (!supported.test(account, next)) {
       throw new IllegalArgumentException("Runtime does not support all receiver sources");
+    }
     requireScope(before, scope);
     // These immutable reverse pointers are candidates, never subscription authority. Publish
     // them before the receiver CAS so large source sets do not exceed DynamoDB's item limit.
@@ -233,11 +264,19 @@ final class TimelineWork {
     value.put("account", account);
     value.put("document", document);
     value.put("sources", List.copyOf(next));
-    if (!addressHints) value.put("addressHints", false);
-    if (observedSources == null) value.remove("observedSources");
-    else value.put("observedSources", List.copyOf(new TreeSet<>(observedSources)));
-    if (inputSources == null) value.remove("inputSources");
-    else value.put("inputSources", List.copyOf(new TreeSet<>(inputSources)));
+    if (!addressHints) {
+      value.put("addressHints", false);
+    }
+    if (observedSources == null) {
+      value.remove("observedSources");
+    } else {
+      value.put("observedSources", List.copyOf(new TreeSet<>(observedSources)));
+    }
+    if (inputSources == null) {
+      value.remove("inputSources");
+    } else {
+      value.put("inputSources", List.copyOf(new TreeSet<>(inputSources)));
+    }
     if (next.isEmpty()) {
       unschedule(value);
       value.put("status", "IDLE");
@@ -250,7 +289,9 @@ final class TimelineWork {
 
   private static Set<String> unionSources(
       AtomicStore.Row before, String field, Set<String> additions) {
-    if (!(before.value().get(field) instanceof List<?> old) || additions == null) return null;
+    if (!(before.value().get(field) instanceof List<?> old) || additions == null) {
+      return null;
+    }
     Set<String> result = new TreeSet<>(additions);
     old.forEach(id -> result.add((String) id));
     return result;
@@ -269,17 +310,20 @@ final class TimelineWork {
         List<AtomicStore.Write> additions = new ArrayList<>();
         for (var key : keys) {
           var row = existing.get(key);
-          if (row == null) additions.add(AtomicStore.Write.put(key, 0, value));
-          else if (row.version() != 1 || !row.value().equals(value))
+          if (row == null) {
+            additions.add(AtomicStore.Write.put(key, 0, value));
+          } else if (row.version() != 1 || !row.value().equals(value)) {
             throw new IllegalStateException("Invalid immutable Timeline subscriber pointer");
+          }
         }
         if (additions.isEmpty() || store.commit(additions, List.of())) {
           published = true;
           break;
         }
       }
-      if (!published)
+      if (!published) {
         throw new IllegalStateException("Timeline subscriber indexing remains contended");
+      }
     }
   }
 
@@ -292,15 +336,21 @@ final class TimelineWork {
   }
 
   int drain(Receiver receiver, int maximum) {
-    if (maximum < 1 || maximum > 1024) throw new IllegalArgumentException("Invalid work limit");
+    if (maximum < 1 || maximum > 1024) {
+      throw new IllegalArgumentException("Invalid work limit");
+    }
     drains.increment();
     long now = clock.getAsLong(), due = discoveryAt.get();
-    if (now - due >= 0 && discoveryAt.compareAndSet(due, now + TimeUnit.MILLISECONDS.toNanos(250)))
+    if (now - due >= 0
+        && discoveryAt.compareAndSet(due, now + TimeUnit.MILLISECONDS.toNanos(250))) {
       discover();
+    }
     int done = 0;
     for (int attempt = 0; attempt < maximum; attempt++) {
       TimelineWorkQueue.Job job = ready.poll();
-      if (job == null) break;
+      if (job == null) {
+        break;
+      }
       AtomicStore.Key key = job.key();
       try {
         AtomicStore.Row current = store.get(key);
@@ -308,8 +358,11 @@ final class TimelineWork {
           skipped.increment();
           continue;
         }
-        if ("source".equals(current.value().get("kind"))) fanout(current);
-        else process(current, receiver);
+        if ("source".equals(current.value().get("kind"))) {
+          fanout(current);
+        } else {
+          process(current, receiver);
+        }
         processed.increment();
         done++;
       } catch (RuntimeException failure) {
@@ -378,27 +431,39 @@ final class TimelineWork {
       // The receiver record fences uncommitted additions and removed subscriptions.
       if (target == null
           || !sources(target).contains(timeline)
-          || Boolean.TRUE.equals(target.value().get("blocked"))) continue;
+          || Boolean.TRUE.equals(target.value().get("blocked"))) {
+        continue;
+      }
       if (Boolean.FALSE.equals(before.value().get("wakeIdle"))
-          && "IDLE".equals(target.value().get("status"))) continue;
+          && "IDLE".equals(target.value().get("status"))) {
+        continue;
+      }
       if (Boolean.TRUE.equals(before.value().get("observedOnly"))
           && "IDLE".equals(target.value().get("status"))
           && target.value().get("observedSources") instanceof List<?> observed
-          && !observed.contains(timeline)) continue;
+          && !observed.contains(timeline)) {
+        continue;
+      }
       // Control-only sources advance access evidence but cannot start business execution.
       // A waiting receiver still needs their progress; an idle receiver catches up with its
       // next real input, under the same historical permission checks.
       if ("IDLE".equals(target.value().get("status"))
           && target.value().get("inputSources") instanceof List<?> inputs
-          && !inputs.contains(timeline)) continue;
+          && !inputs.contains(timeline)) {
+        continue;
+      }
       if ("IDLE".equals(target.value().get("status"))
           && !Boolean.FALSE.equals(target.value().get("addressHints"))
           && before.value().get("recipients") instanceof List<?> recipients
           && target.value().get("observedSources") instanceof List<?> observed
           && !recipients.contains(text(target, "document"))
-          && !observed.contains(timeline)) continue;
+          && !observed.contains(timeline)) {
+        continue;
+      }
       Object previousScope = target.value().get("scope");
-      if (previousScope != null && !scope.equals(previousScope)) continue;
+      if (previousScope != null && !scope.equals(previousScope)) {
+        continue;
+      }
       Map<String, Object> wake = copy(target);
       wake.put("scope", scope);
       wake.put("status", "READY");
@@ -413,18 +478,25 @@ final class TimelineWork {
       }
     }
     Map<String, Object> value = copy(before);
-    if (after != null) value.put("after", after);
-    else {
+    if (after != null) {
+      value.put("after", after);
+    } else {
       value.remove("after");
-      if (number(before, "pending") > number(before, "cycle"))
+      if (number(before, "pending") > number(before, "cycle")) {
         value.put("cycle", number(before, "pending"));
-      else unschedule(value);
+      } else {
+        unschedule(value);
+      }
     }
     writes.add(AtomicStore.Write.put(before.key(), before.version(), value));
     if (store.commit(writes, List.of())) {
       notified.forEach(this::hint);
-      if (value.containsKey("work")) hint(before.key());
-    } else hint(before.key());
+      if (value.containsKey("work")) {
+        hint(before.key());
+      }
+    } else {
+      hint(before.key());
+    }
   }
 
   /** A directly addressed document never waits behind a full subscriber-page scan. */
@@ -440,8 +512,9 @@ final class TimelineWork {
       if (target == null
           || !sources(target).contains(timeline)
           || Boolean.TRUE.equals(target.value().get("blocked"))
-          || target.value().containsKey("scope") && !scope.equals(target.value().get("scope")))
+          || target.value().containsKey("scope") && !scope.equals(target.value().get("scope"))) {
         continue;
+      }
       Map<String, Object> wake = copy(target);
       wake.put("scope", scope);
       wake.put("status", "READY");
@@ -452,7 +525,9 @@ final class TimelineWork {
     Map<String, Object> value = copy(before);
     value.put("prioritized", true);
     writes.add(AtomicStore.Write.put(before.key(), before.version(), value));
-    if (store.commit(writes, List.of())) notified.forEach(this::signal);
+    if (store.commit(writes, List.of())) {
+      notified.forEach(this::signal);
+    }
     hint(before.key());
   }
 
@@ -469,8 +544,11 @@ final class TimelineWork {
       value.put(
           "retryGeneration", ((Number) value.getOrDefault("retryGeneration", 0L)).longValue() + 1);
       value.put("status", sources(job).isEmpty() ? "IDLE" : "READY");
-      if (sources(job).isEmpty()) unschedule(value);
-      else schedule(job.key(), value);
+      if (sources(job).isEmpty()) {
+        unschedule(value);
+      } else {
+        schedule(job.key(), value);
+      }
     }
     return AtomicStore.Write.put(job.key(), job.version(), value);
   }
@@ -501,7 +579,9 @@ final class TimelineWork {
         unschedule(value);
         value.put("status", outcome.status().name());
         value.put("reason", outcome.reason());
-        if (outcome.status() == TimelineIngress.Status.FAILED) value.put("blocked", true);
+        if (outcome.status() == TimelineIngress.Status.FAILED) {
+          value.put("blocked", true);
+        }
         List<AtomicStore.Check> checks = List.of();
         if (outcome.sources() != null) {
           var description = outcome.sources();
@@ -515,12 +595,14 @@ final class TimelineWork {
         }
         // Never load a newer wakeup here: it may represent an arrival after the worker's cut.
         if (store.commit(
-            List.of(AtomicStore.Write.put(before.key(), before.version(), value)), checks))
+            List.of(AtomicStore.Write.put(before.key(), before.version(), value)), checks)) {
           rememberWaiting(
               before,
               outcome.status() == TimelineIngress.Status.WAITING
                   || outcome.status() == TimelineIngress.Status.PENDING_ACCESS);
-        else hint(before.key());
+        } else {
+          hint(before.key());
+        }
       }
     }
   }
@@ -536,14 +618,20 @@ final class TimelineWork {
       Set<AtomicStore.Key> selected = waiting.get(source);
       if (retain) {
         if (selected == null) {
-          if (waiting.size() == 256) waiting.remove(waiting.keySet().iterator().next());
+          if (waiting.size() == 256) {
+            waiting.remove(waiting.keySet().iterator().next());
+          }
           selected = new LinkedHashSet<>();
           waiting.put(source, selected);
         }
-        if (selected.size() < PAGE) selected.add(receiver.key());
+        if (selected.size() < PAGE) {
+          selected.add(receiver.key());
+        }
       } else if (selected != null) {
         selected.remove(receiver.key());
-        if (selected.isEmpty()) waiting.remove(source);
+        if (selected.isEmpty()) {
+          waiting.remove(source);
+        }
       }
     }
   }
@@ -561,7 +649,9 @@ final class TimelineWork {
           || Boolean.TRUE.equals(target.value().get("blocked"))
           || !scope.equals(target.value().get("scope"))
           || !("WAITING".equals(target.value().get("status"))
-              || "PENDING_ACCESS".equals(target.value().get("status")))) continue;
+              || "PENDING_ACCESS".equals(target.value().get("status")))) {
+        continue;
+      }
       Map<String, Object> wake = copy(target);
       wake.put("status", "READY");
       schedule(key, wake);
@@ -571,7 +661,9 @@ final class TimelineWork {
     Map<String, Object> value = copy(before);
     value.put("waitersAt", value.get("pending"));
     writes.add(AtomicStore.Write.put(before.key(), before.version(), value));
-    if (store.commit(writes, List.of())) notified.forEach(this::signal);
+    if (store.commit(writes, List.of())) {
+      notified.forEach(this::signal);
+    }
     hint(before.key());
   }
 
@@ -587,8 +679,9 @@ final class TimelineWork {
           || document == null
           || document.version() != failed.version()
           || !Objects.equals(
-              current.value().get("retryGeneration"), observed.value().get("retryGeneration")))
+              current.value().get("retryGeneration"), observed.value().get("retryGeneration"))) {
         break;
+      }
       Map<String, Object> value = copy(current);
       unschedule(value);
       value.put("blocked", true);
@@ -596,7 +689,9 @@ final class TimelineWork {
       value.put("reason", outcome.reason());
       if (store.commit(
           List.of(AtomicStore.Write.put(current.key(), current.version(), value)),
-          List.of(new AtomicStore.Check(state, failed.version())))) return;
+          List.of(new AtomicStore.Check(state, failed.version())))) {
+        return;
+      }
     }
     hint(observed.key());
   }
@@ -631,11 +726,13 @@ final class TimelineWork {
     AtomicStore.Key key = receiver(account, document);
     for (int attempt = 0; attempt < 3; attempt++) {
       AtomicStore.Row row = store.get(key);
-      if (row == null || sources(row).isEmpty())
+      if (row == null || sources(row).isEmpty()) {
         throw new IllegalArgumentException("No Timeline subscription");
+      }
       requireScope(row, scope);
-      if (!supported.test(account, sources(row)))
+      if (!supported.test(account, sources(row))) {
         throw new IllegalArgumentException("Runtime does not support all receiver sources");
+      }
       var control = DocumentControls.permit(store, account, document);
       Map<String, Object> value = copy(row);
       value.put("scope", scope);
@@ -660,13 +757,16 @@ final class TimelineWork {
    */
   void recover(String account, String timeline) {
     requireAccount(account);
-    if (!supported.test(account, Set.of(timeline)))
+    if (!supported.test(account, Set.of(timeline))) {
       throw new IllegalArgumentException("Runtime does not support this source");
+    }
     AtomicStore.Key key = source(account, timeline);
     for (int attempt = 0; attempt < 8; attempt++) {
       AtomicStore.Row before = store.get(key);
       requireScope(before, scope);
-      if (before != null && scope.equals(before.value().get("scope"))) return;
+      if (before != null && scope.equals(before.value().get("scope"))) {
+        return;
+      }
       Map<String, Object> value = copy(before);
       value.put("scope", scope);
       value.put("kind", "source");
@@ -688,7 +788,9 @@ final class TimelineWork {
   }
 
   private boolean owns(AtomicStore.Row row) {
-    if (!scope.equals(row.value().get("scope"))) return false;
+    if (!scope.equals(row.value().get("scope"))) {
+      return false;
+    }
     String account = text(row, "account");
     if ("source".equals(row.value().get("kind"))) {
       String timeline = text(row, "timeline");
@@ -704,16 +806,18 @@ final class TimelineWork {
     AtomicStore.Row configuration = store.get(configuration(account));
     if (configuration == null
         || configuration.version() != 1
-        || !binding.equals(configuration.value()))
+        || !binding.equals(configuration.value())) {
       throw new IllegalArgumentException("Timeline work belongs to another runtime binding");
+    }
   }
 
   private static void requireScope(AtomicStore.Row row, String expected) {
     if (row != null
         && row.value().containsKey("scope")
-        && !expected.equals(row.value().get("scope")))
+        && !expected.equals(row.value().get("scope"))) {
       throw new IllegalArgumentException(
           "Timeline work scope differs; explicit migration required");
+    }
   }
 
   private static AtomicStore.Key configuration(String account) {
@@ -745,9 +849,13 @@ final class TimelineWork {
   }
 
   private static Set<String> sources(AtomicStore.Row row) {
-    if (row == null) return Set.of();
+    if (row == null) {
+      return Set.of();
+    }
     Set<String> result = new TreeSet<>();
-    for (Object source : (List<?>) row.value().get("sources")) result.add((String) source);
+    for (Object source : (List<?>) row.value().get("sources")) {
+      result.add((String) source);
+    }
     return result;
   }
 

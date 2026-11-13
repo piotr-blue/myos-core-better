@@ -25,9 +25,12 @@ class DynamoTransactionTest {
                 DynamoDbClient.class.getClassLoader(),
                 new Class<?>[] {DynamoDbClient.class},
                 (proxy, method, args) -> {
-                  if (method.getName().equals("close")) return null;
-                  if (!method.getName().equals("transactWriteItems"))
+                  if (method.getName().equals("close")) {
+                    return null;
+                  }
+                  if (!method.getName().equals("transactWriteItems")) {
                     throw new AssertionError("Unexpected SDK call: " + method.getName());
+                  }
                   TransactWriteItemsRequest.Builder builder = TransactWriteItemsRequest.builder();
                   ((Consumer<TransactWriteItemsRequest.Builder>) args[0]).accept(builder);
                   var items = builder.build().transactItems();
@@ -43,11 +46,12 @@ class DynamoTransactionTest {
                   assertTrue(condition.conditionExpression().contains("revision"));
                   assertEquals(
                       "7", condition.expressionAttributeValues().values().iterator().next().n());
-                  if (calls.incrementAndGet() == 2)
+                  if (calls.incrementAndGet() == 2) {
                     throw TransactionCanceledException.builder()
                         .cancellationReasons(
                             CancellationReason.builder().code("ConditionalCheckFailed").build())
                         .build();
+                  }
                   return TransactWriteItemsResponse.builder().build();
                 });
     try (DynamoStore store = new DynamoStore("table", client)) {

@@ -1,8 +1,12 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.math.*;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import org.junit.jupiter.api.Test;
 
@@ -42,7 +46,9 @@ class CoreRequestBodyTest {
     for (String yaml :
         new String[] {
           "x: 1\nx: 2", "x: 1\n---\ny: 2", "x: &a [*a]", "x: !arbitrary value", "- item", "1: value"
-        }) assertThrows(IllegalArgumentException.class, () -> read(yaml, true), yaml);
+        }) {
+      assertThrows(IllegalArgumentException.class, () -> read(yaml, true), yaml);
+    }
     assertThrows(IllegalArgumentException.class, () -> read("{\"x\":1,\"x\":2}", false));
     assertThrows(IllegalArgumentException.class, () -> read("{} {}", false));
     assertThrows(IllegalArgumentException.class, () -> read("null", false));

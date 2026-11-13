@@ -68,9 +68,10 @@ class ConsoleIdentityTest {
               Map.of("aud", "another-client"),
               Map.of("token_use", "access"),
               Map.of("exp", Date.from(Instant.now().minusSeconds(1))),
-              Map.of("sub", "")))
+              Map.of("sub", ""))) {
         assertEquals(
             401, assertThrows(ConsoleProblem.class, () -> identity.verify(token(mismatch))).status);
+      }
       assertEquals(
           403,
           assertThrows(

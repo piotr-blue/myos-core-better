@@ -1,6 +1,10 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,8 +16,9 @@ class LinkIndexTest {
     Memory pages = new Memory();
     LinkIndex index = new LinkIndex(pages);
     String root = "";
-    for (int i = 0; i < 65; i++)
+    for (int i = 0; i < 65; i++) {
       root = index.put(root, "/orders/żółć-" + i, new Link("order-" + i, 1, "generation"));
+    }
     assertEquals("eec06bec6afcc49ef1fc16f4e051d85713a42c7894b54f616abd570a62f1d7e5", root);
     root = index.put(root, "/orders/żółć-17", new Link("order-17", 2, "generation"));
     assertEquals("40af03089c64ef76fca3f436af082884366db367e63c066735072aeab9c9aff0", root);
@@ -25,6 +30,7 @@ class LinkIndexTest {
     final Map<String, byte[]> pages = new HashMap<>();
     int writes, reads;
 
+    @Override
     public String put(byte[] value) {
       writes++;
       String id = Json.hash(value);
@@ -32,6 +38,7 @@ class LinkIndexTest {
       return id;
     }
 
+    @Override
     public byte[] get(String identity) {
       reads++;
       return pages.get(identity).clone();
@@ -43,8 +50,9 @@ class LinkIndexTest {
     Memory pages = new Memory();
     LinkIndex index = new LinkIndex(pages);
     String root = LinkIndex.EMPTY;
-    for (int i = 0; i < 20_000; i++)
+    for (int i = 0; i < 20_000; i++) {
       root = index.put(root, "/orders/" + i, new Link("order-" + i, 1, "initial"));
+    }
     String before = root;
     pages.writes = 0;
     pages.reads = 0;
@@ -101,9 +109,12 @@ class LinkIndexTest {
     Map<String, Link> observed = new HashMap<>();
     while (true) {
       assertTrue(page.entries().size() <= 7);
-      for (LinkIndex.Entry entry : page.entries())
+      for (LinkIndex.Entry entry : page.entries()) {
         assertNull(observed.put(entry.path(), entry.link()), "No duplicates across pages");
-      if (page.after() == null) break;
+      }
+      if (page.after() == null) {
+        break;
+      }
       page = index.page(snapshot, page.after(), 7);
     }
     assertEquals(expected, observed);

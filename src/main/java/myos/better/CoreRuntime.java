@@ -1,7 +1,20 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.Bex;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Contracts;
+import blue.Language;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Exact deployed publications and selection checks, independent of historical Core defaults. */
 final class CoreRuntime {
@@ -34,8 +47,12 @@ final class CoreRuntime {
     configured.publications().values().forEach(p -> add(roots, p));
     add(roots, Bex.publication());
     add(roots, Contracts.publication());
-    if (coordination != null) add(roots, coordination);
-    if (time != null) add(roots, time);
+    if (coordination != null) {
+      add(roots, coordination);
+    }
+    if (time != null) {
+      add(roots, time);
+    }
     publications = Map.copyOf(roots);
     var mounts = new LinkedHashMap<String, BluePackage>();
     roots.values().forEach(p -> mounts.putIfAbsent(coreName(p), p));
@@ -44,8 +61,12 @@ final class CoreRuntime {
     value.put("language", Contracts.publication().languageId().value());
     protocol(value, "bex", Bex.publication());
     protocol(value, "contracts", Contracts.publication());
-    if (coordination != null) protocol(value, "coordination", coordination);
-    if (time != null) protocol(value, "time", time);
+    if (coordination != null) {
+      protocol(value, "coordination", coordination);
+    }
+    if (time != null) {
+      protocol(value, "time", time);
+    }
     value.put("supportedPackages", roots.keySet().stream().map(BlueId::value).sorted().toList());
     // This host history format is deliberately distinguishable from original Core proof history.
     value.put("hostHistory", "myos.better.processing-receipt/1");
@@ -54,7 +75,9 @@ final class CoreRuntime {
   }
 
   private static void add(Map<BlueId, BluePackage> roots, BluePackage publication) {
-    if (roots.putIfAbsent(publication.blueId(), publication) != null) return;
+    if (roots.putIfAbsent(publication.blueId(), publication) != null) {
+      return;
+    }
     publication.imports().keySet().forEach(prefix -> add(roots, publication.imported(prefix)));
   }
 
@@ -79,7 +102,9 @@ final class CoreRuntime {
     value.put("email", principal.email());
     value.put("principalType", principal.user() ? "user" : "api-key");
     var capabilities = new ArrayList<>(List.of("documents", "timelines", "contents", "api-keys"));
-    if (selection.containsKey("time")) capabilities.add("timers");
+    if (selection.containsKey("time")) {
+      capabilities.add("timers");
+    }
     value.put("capabilities", List.copyOf(capabilities));
     value.put("limits", Map.of("requestBytes", 1_048_576));
     value.put("runtime", selection);
@@ -98,19 +123,23 @@ final class CoreRuntime {
 
   void validate(Map<String, Object> input) {
     if (input.containsKey("executionSelection")
-        && !selection.equals(input.get("executionSelection")))
+        && !selection.equals(input.get("executionSelection"))) {
       throw new ConsoleProblem(
           422, "EXECUTION_UNSUPPORTED", "Select the complete runtime advertised by this account.");
+    }
     if (input.containsKey("packages")) {
       var ids = RuntimeConfiguration.list(input.get("packages"), "packages");
-      if (ids.size() > 64 || new HashSet<>(ids).size() != ids.size())
+      if (ids.size() > 64 || new HashSet<>(ids).size() != ids.size()) {
         throw new IllegalArgumentException("Select at most 64 distinct exact package identities");
-      for (Object id : ids)
-        if (!publications.containsKey(new BlueId(RuntimeConfiguration.text(id, "package"))))
+      }
+      for (Object id : ids) {
+        if (!publications.containsKey(new BlueId(RuntimeConfiguration.text(id, "package")))) {
           throw new ConsoleProblem(
               422,
               "PACKAGE_UNAVAILABLE",
               "The exact package is not deployed in this runtime: " + id);
+        }
+      }
     }
   }
 
@@ -182,7 +211,7 @@ final class CoreRuntime {
                 p.exports()
                     .forEach(
                         (name, type) -> {
-                          if (type.equals(id))
+                          if (type.equals(id)) {
                             names.add(
                                 Map.of(
                                     "name",
@@ -191,9 +220,11 @@ final class CoreRuntime {
                                     coreName(p),
                                     "packageId",
                                     p.blueId().value()));
+                          }
                         }));
-    if (names.isEmpty())
+    if (names.isEmpty()) {
       throw new ConsoleProblem(404, "TYPE_NOT_FOUND", "No published type with this identity.");
+    }
     var first = RuntimeConfiguration.object(names.getFirst(), "type");
     var result = new LinkedHashMap<>(first);
     result.put("blueId", id.value());
@@ -207,8 +238,12 @@ final class CoreRuntime {
   }
 
   String reference(BlueId id) {
-    if (publications.containsKey(id)) return "packages/" + id.value();
-    if (packages.types().containsKey(id.value())) return "types/" + id.value();
+    if (publications.containsKey(id)) {
+      return "packages/" + id.value();
+    }
+    if (packages.types().containsKey(id.value())) {
+      return "types/" + id.value();
+    }
     return "contents/" + id.value();
   }
 }

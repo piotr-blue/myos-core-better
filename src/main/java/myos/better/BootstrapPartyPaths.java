@@ -1,8 +1,19 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageView;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /** Typed Parties in this document, excluding executable recipes and embedded document scopes. */
 final class BootstrapPartyPaths {
@@ -20,33 +31,43 @@ final class BootstrapPartyPaths {
     var excluded = new HashSet<String>();
     for (String field : List.of("paths", "collectionPaths")) {
       var paths = definition.at("/contracts/embedded/" + field);
-      if (!paths.exists()) continue;
-      for (int i = 0; i < paths.size(); i++) excluded.add(paths.at("/items/" + i).text());
+      if (!paths.exists()) {
+        continue;
+      }
+      for (int i = 0; i < paths.size(); i++) {
+        excluded.add(paths.at("/items/" + i).text());
+      }
     }
     var found = new TreeSet<String>();
     walk("", "", excluded, new HashSet<>(), found, 0);
     String roster = activation.isEmpty() ? "" : activation + "/parameters/parties";
-    if (!roster.isEmpty())
+    if (!roster.isEmpty()) {
       for (String role : definition.at(roster).declaredFields()) {
         String path = roster + "/" + escape(role);
-        if (!party(definition.at(path)))
+        if (!party(definition.at(path))) {
           throw invalid("party_type_required", "Use a typed Party at " + path);
+        }
         found.add(path);
       }
+    }
     var selected = new TreeMap<String, String>();
     for (String path : found) {
       int separator = path.lastIndexOf('/');
       String parent = separator < 0 ? "" : path.substring(0, separator);
-      if (parent.equals("/parties") || !roster.isEmpty() && parent.equals(roster))
+      if (parent.equals("/parties") || !roster.isEmpty() && parent.equals(roster)) {
         bind(selected, unescape(path.substring(separator + 1)), path);
+      }
     }
     for (Object raw : mappings) {
       var mapping = RuntimeConfiguration.object(raw, "participant mapping");
-      if (!mapping.containsKey("partyPath")) continue;
+      if (!mapping.containsKey("partyPath")) {
+        continue;
+      }
       String path = RuntimeConfiguration.text(mapping.get("partyPath"), "partyPath");
-      if (!found.contains(path))
+      if (!found.contains(path)) {
         throw invalid(
             "party_scope_invalid", "partyPath must select a typed Party in this document: " + path);
+      }
       String channel = RuntimeConfiguration.text(mapping.get("channelName"), "channelName");
       boolean representative =
           selected.entrySet().stream()
@@ -55,12 +76,15 @@ final class BootstrapPartyPaths {
                       entry.getValue().equals(path)
                           && at(definition, path).at("/representatives").declaredFields().stream()
                               .anyMatch(name -> channel.equals(entry.getKey() + "__" + name)));
-      if (!representative) bind(selected, channel, path);
+      if (!representative) {
+        bind(selected, channel, path);
+      }
     }
-    if (!new HashSet<>(selected.values()).equals(found))
+    if (!new HashSet<>(selected.values()).equals(found)) {
       throw invalid(
           "party_mapping_required",
           "Every Party outside /parties or Activation requires an explicit partyPath mapping.");
+    }
     return selected;
   }
 
@@ -71,23 +95,32 @@ final class BootstrapPartyPaths {
       Set<BlueId> ancestors,
       Set<String> found,
       int depth) {
-    if (++visited > 10_000 || depth > 128)
+    if (++visited > 10_000 || depth > 128) {
       throw invalid("party_scope_limit", "Party discovery exceeds its bounded scope.");
-    if (excluded.stream().anyMatch(prefix -> path.equals(prefix) || path.startsWith(prefix + "/")))
+    }
+    if (excluded.stream()
+        .anyMatch(prefix -> path.equals(prefix) || path.startsWith(prefix + "/"))) {
       return;
+    }
     var value = definition.at(logical);
     if (party(value)) {
       found.add(path);
       return;
     }
-    if (!path.isEmpty() && value.at("/contracts").content().isPresent()) return;
+    if (!path.isEmpty() && value.at("/contracts").content().isPresent()) {
+      return;
+    }
     // Cyclic type declarations are not additional Parties or authoring values.
     var exact = value.observation("exactId");
     BlueId identity = exact.isMissing() ? null : new BlueId(exact.text());
-    if (identity != null && !ancestors.add(identity)) return;
+    if (identity != null && !ancestors.add(identity)) {
+      return;
+    }
     try {
       for (String field : value.declaredFields()) {
-        if (Set.of("contracts", "clauses").contains(field) || field.startsWith("$")) continue;
+        if (Set.of("contracts", "clauses").contains(field) || field.startsWith("$")) {
+          continue;
+        }
         walk(
             path + "/" + escape(field),
             logical + "/" + escape(field),
@@ -97,11 +130,15 @@ final class BootstrapPartyPaths {
             depth + 1);
       }
       var kind = value.observation("kind");
-      if (!kind.isMissing() && kind.text().equals("list"))
-        for (int i = 0; i < value.size(); i++)
+      if (!kind.isMissing() && kind.text().equals("list")) {
+        for (int i = 0; i < value.size(); i++) {
           walk(path + "/" + i, logical + "/items/" + i, excluded, ancestors, found, depth + 1);
+        }
+      }
     } finally {
-      if (identity != null) ancestors.remove(identity);
+      if (identity != null) {
+        ancestors.remove(identity);
+      }
     }
   }
 
@@ -110,8 +147,12 @@ final class BootstrapPartyPaths {
     var seen = new HashSet<BlueId>();
     while (type.isPresent()) {
       BlueId id = type.orElseThrow();
-      if (id.equals(PARTY)) return true;
-      if (!seen.add(id) || seen.size() > 128) return false;
+      if (id.equals(PARTY)) {
+        return true;
+      }
+      if (!seen.add(id) || seen.size() > 128) {
+        return false;
+      }
       type = language.define(id).at("").type();
     }
     return false;
@@ -120,15 +161,18 @@ final class BootstrapPartyPaths {
   private static void bind(Map<String, String> selected, String role, String path) {
     if (selected.containsKey(role) && !selected.get(role).equals(path)
         || selected.entrySet().stream()
-            .anyMatch(e -> !e.getKey().equals(role) && e.getValue().equals(path)))
+            .anyMatch(e -> !e.getKey().equals(role) && e.getValue().equals(path))) {
       throw invalid("party_binding_conflict", "A Party requires one participant binding: " + path);
+    }
     selected.put(role, path);
   }
 
   /** Translate public list pointers to Language's explicit /items paths. */
   static LanguageView at(LanguageContent document, String pointer) {
     LanguageView current = document.at("");
-    if (pointer.isEmpty()) return current;
+    if (pointer.isEmpty()) {
+      return current;
+    }
     for (String part : pointer.substring(1).split("/")) {
       var kind = current.observation("kind");
       current =
@@ -154,8 +198,9 @@ final class BootstrapPartyPaths {
               : ((Map<?, ?>) container).get(part);
       Object next;
       var view = at(definition, prefix);
-      if (old instanceof List<?> list) next = new ArrayList<>(list);
-      else {
+      if (old instanceof List<?> list) {
+        next = new ArrayList<>(list);
+      } else {
         var selected = view.content();
         Object expanded =
             selected.isEmpty()
@@ -168,11 +213,13 @@ final class BootstrapPartyPaths {
                         .toJson()
                         .getBytes(StandardCharsets.UTF_8),
                     Object.class);
-        if (expanded instanceof List<?> list) next = new ArrayList<>(list);
-        else {
+        if (expanded instanceof List<?> list) {
+          next = new ArrayList<>(list);
+        } else {
           var materialized = new LinkedHashMap<>(RuntimeConfiguration.object(expanded, prefix));
-          if (old instanceof Map<?, ?> object && !object.keySet().equals(Set.of("blueId")))
+          if (old instanceof Map<?, ?> object && !object.keySet().equals(Set.of("blueId"))) {
             materialized.putAll(RuntimeConfiguration.object(object, prefix));
+          }
           next = materialized;
         }
       }
@@ -184,8 +231,11 @@ final class BootstrapPartyPaths {
 
   @SuppressWarnings("unchecked")
   private static void set(Object container, String part, Object value) {
-    if (container instanceof List<?> list) ((List<Object>) list).set(Integer.parseInt(part), value);
-    else ((Map<String, Object>) container).put(part, value);
+    if (container instanceof List<?> list) {
+      ((List<Object>) list).set(Integer.parseInt(part), value);
+    } else {
+      ((Map<String, Object>) container).put(part, value);
+    }
   }
 
   static String escape(String value) {

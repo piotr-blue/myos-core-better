@@ -1,16 +1,24 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.ProviderSignatures;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.security.*;
-import java.util.*;
-import org.junit.jupiter.api.*;
+import java.security.GeneralSecurityException;
+import java.security.Signature;
+import java.util.HexFormat;
+import java.util.List;
+import java.util.Map;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 /**

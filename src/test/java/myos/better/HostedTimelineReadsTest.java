@@ -1,11 +1,24 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.TimelineReader;
+import blue.TimelineVerifier;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -62,7 +75,9 @@ class HostedTimelineReadsTest {
     void cursorKeepsOriginalCheckpointAcrossAppendsAndPublisherRestart() {
       Fixture f = new Fixture();
       List<BlueId> expected = new ArrayList<>();
-      for (int i = 0; i < 7; i++) expected.add(f.append(i).entry().blueId());
+      for (int i = 0; i < 7; i++) {
+        expected.add(f.append(i).entry().blueId());
+      }
       LanguageContent request = f.request(Map.of("limit", 2));
       TimelineReader.Page page =
           f.reader.begin(f.reader.initial(), request).accept(f.read(request));
@@ -165,7 +180,9 @@ class HostedTimelineReadsTest {
     @Test
     void readsNearTheTailNeverLoadUnselectedEarlierBodies() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 64; i++) f.append(i);
+      for (int i = 0; i < 64; i++) {
+        f.append(i);
+      }
       f.base.store.unavailable.addAll(f.base.store.published);
       HostedTimelines.Published predecessor = f.append(65), newest = f.append(66);
       f.reads = new HostedTimelineReads(f.base.restart(), f.base.signing, 10, 1024 * 1024);
@@ -213,7 +230,7 @@ class HostedTimelineReadsTest {
     @Test
     void byteLimitedPagesStillEnumerateEveryOriginalEntry() {
       Fixture f = new Fixture();
-      for (int i = 0; i < 7; i++)
+      for (int i = 0; i < 7; i++) {
         f.base.host.append(
             "alice",
             f.created.id(),
@@ -222,6 +239,7 @@ class HostedTimelineReadsTest {
                 .prepare(
                     Language.Input.json(
                         JsonText.of(Map.of("payload", "x".repeat(1_000), "amount", i)))));
+      }
       // An interior predecessor carries prevEntry; genesis is a smaller wire value.
       BlueId first = f.base.host.entry("alice", f.created.id(), 2).entry().blueId();
       int oneWithPredecessor =

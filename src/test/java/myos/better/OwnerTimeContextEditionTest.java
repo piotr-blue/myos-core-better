@@ -1,10 +1,13 @@
 package myos.better;
 
-import static myos.better.OwnerTimeIntegrationTest.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.OwnerTimeIntegrationTest.ROOT;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import blue.*;
+import blue.BluePackage;
+import blue.PackageLoader;
+import blue.TimeBindings;
 import java.util.stream.Stream;
+import myos.better.OwnerTimeIntegrationTest.Fixture;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;

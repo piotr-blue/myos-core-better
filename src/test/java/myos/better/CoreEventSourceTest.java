@@ -1,10 +1,18 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 /** Subscription boundaries follow source commits, including delayed projections and races. */
@@ -27,8 +35,9 @@ class CoreEventSourceTest {
             .map(row -> (String) row.value().get("id"))
             .toList());
     // Generation is host bookkeeping, not part of the Core callback/API event body.
-    for (String id : List.of("evt_before", "evt_after"))
+    for (String id : List.of("evt_before", "evt_after")) {
       assertFalse(events.read("alice", id).containsKey(CoreEventSource.GENERATION));
+    }
     var page = events.list("alice", "events", Map.of(), null, null, true);
     assertFalse(
         new String(Json.bytes(page), java.nio.charset.StandardCharsets.UTF_8)
@@ -43,8 +52,9 @@ class CoreEventSourceTest {
         intercept(
             store,
             (method, args) -> {
-              if (method.equals("commit") && once.getAndSet(false))
+              if (method.equals("commit") && once.getAndSet(false)) {
                 boundary(store, "alice", "hook");
+              }
             });
     var writes = List.of(source("alice", "late"));
     assertFalse(CoreEventSource.commit(racing, writes, List.of()));
@@ -88,7 +98,9 @@ class CoreEventSourceTest {
                     var rows = new LinkedHashMap<AtomicStore.Key, AtomicStore.Row>();
                     rows.put(keys.getFirst(), store.get(keys.getFirst()));
                     boundary(store, "alice", "two");
-                    for (var key : keys.subList(1, keys.size())) rows.put(key, store.get(key));
+                    for (var key : keys.subList(1, keys.size())) {
+                      rows.put(key, store.get(key));
+                    }
                     return rows;
                   }
                   try {
@@ -113,7 +125,9 @@ class CoreEventSourceTest {
         intercept(
             store,
             (method, args) -> {
-              if (method.equals("get")) reads.incrementAndGet();
+              if (method.equals("get")) {
+                reads.incrementAndGet();
+              }
               if (method.equals("commit")) {
                 sourceCommits.incrementAndGet();
                 @SuppressWarnings("unchecked")
@@ -126,8 +140,9 @@ class CoreEventSourceTest {
                 assertEquals(0, checks.getFirst().version());
               }
             });
-    for (String source : List.of("one", "two"))
+    for (String source : List.of("one", "two")) {
       assertTrue(CoreEventSource.commit(measured, List.of(source("alice", source)), List.of()));
+    }
     assertEquals(2, reads.get());
     assertEquals(2, sourceCommits.get());
   }
@@ -196,14 +211,18 @@ class CoreEventSourceTest {
             (proxy, method, args) -> {
               // Source race needs to win before commit; read races intervene after their snapshot.
               boolean before = method.getName().equals("commit");
-              if (before) interleave.after(method.getName(), args);
+              if (before) {
+                interleave.after(method.getName(), args);
+              }
               Object result;
               try {
                 result = method.invoke(store, args);
               } catch (InvocationTargetException failure) {
                 throw failure.getCause();
               }
-              if (!before) interleave.after(method.getName(), args);
+              if (!before) {
+                interleave.after(method.getName(), args);
+              }
               return result;
             });
   }

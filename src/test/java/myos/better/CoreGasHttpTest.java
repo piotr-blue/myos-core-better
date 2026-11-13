@@ -1,11 +1,13 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -35,9 +37,11 @@ class CoreGasHttpTest {
       assertEquals(503, call(f, "GET", "account/gas", "bob", bob).statusCode());
       assertEquals(400, call(f, "GET", "account/gas?grant=1", "alice", alice).statusCode());
       assertEquals(405, call(f, "POST", "account/gas", "alice", alice).statusCode());
-      for (String suffix : List.of("credits", "settlements", "reservations", "waiters", "grants"))
-        for (String method : List.of("GET", "POST"))
+      for (String suffix : List.of("credits", "settlements", "reservations", "waiters", "grants")) {
+        for (String method : List.of("GET", "POST")) {
           assertEquals(404, call(f, method, "account/gas/" + suffix, "alice", alice).statusCode());
+        }
+      }
       assertEquals(
           "1000000000",
           new OwnerGas(alice).summary(new OwnerMetadata(f.store, alice).begin()).get("available"));
@@ -52,12 +56,14 @@ class CoreGasHttpTest {
             .header("Authorization", "Bearer " + user)
             .header("X-MyOS-Account", account)
             .header("Origin", "https://console.example");
-    if (method.equals("GET")) request.GET();
-    else
+    if (method.equals("GET")) {
+      request.GET();
+    } else {
       request
           .header("Content-Type", "application/json")
           .header("Idempotency-Key", UUID.randomUUID().toString())
           .method(method, HttpRequest.BodyPublishers.ofString("{}"));
+    }
     return f.http.send(request.build(), HttpResponse.BodyHandlers.ofString());
   }
 }

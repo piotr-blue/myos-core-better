@@ -1,7 +1,11 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageDocument;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Optional protected admission cache for immutable publications created before embedded
@@ -16,12 +20,15 @@ final class CanonicalAdmissions {
 
   Map<String, Object> find(String account, String page, String member, BlueId expected) {
     var row = store.get(key(account, page, member));
-    if (row == null) return null;
+    if (row == null) {
+      return null;
+    }
     var value = row.value();
     if (!page.equals(value.get("page"))
         || !member.equals(value.get("member"))
-        || !expected.value().equals(value.get("blueId")))
+        || !expected.value().equals(value.get("blueId"))) {
       throw new IllegalStateException("Admission cache differs from its immutable publication");
+    }
     return RuntimeConfiguration.object(value.get("checkpoint"), "checkpoint");
   }
 
@@ -43,11 +50,14 @@ final class CanonicalAdmissions {
             Map.of("record", checkpoint.record(), "identity", checkpoint.identity()));
     var key = key(account, page, member);
     var previous = store.get(key);
-    if (previous == null && store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of()))
+    if (previous == null
+        && store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of())) {
       return;
+    }
     previous = store.get(key);
-    if (previous == null || !previous.value().equals(value))
+    if (previous == null || !previous.value().equals(value)) {
       throw new IllegalStateException("Conflicting protected admission cache");
+    }
   }
 
   private static AtomicStore.Key key(String account, String page, String member) {

@@ -1,9 +1,13 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -15,7 +19,7 @@ class OwnerMetadataContentionTest {
     var start = new CountDownLatch(1);
     try (var workers = Executors.newFixedThreadPool(concurrency)) {
       List<Future<?>> futures = new ArrayList<>();
-      for (int worker = 0; worker < concurrency; worker++)
+      for (int worker = 0; worker < concurrency; worker++) {
         futures.add(
             workers.submit(
                 () -> {
@@ -34,8 +38,11 @@ class OwnerMetadataContentionTest {
                   }
                   return null;
                 }));
+      }
       start.countDown();
-      for (var future : futures) future.get(30, TimeUnit.SECONDS);
+      for (var future : futures) {
+        future.get(30, TimeUnit.SECONDS);
+      }
     }
     assertEquals(
         Long.toString(concurrency * 50L),

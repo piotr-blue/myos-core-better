@@ -1,7 +1,12 @@
 package myos.better;
 
-import java.security.*;
-import java.util.*;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
@@ -23,9 +28,13 @@ final class CorePageTokens {
           List.of());
       row = store.get(location);
     }
-    if (row == null) throw new IllegalStateException("Cannot establish cursor key");
+    if (row == null) {
+      throw new IllegalStateException("Cannot establish cursor key");
+    }
     byte[] secret = DECODER.decode((String) row.value().get("key"));
-    if (secret.length != 32) throw new IllegalStateException("Invalid cursor key");
+    if (secret.length != 32) {
+      throw new IllegalStateException("Invalid cursor key");
+    }
     key = new SecretKeySpec(secret, "HmacSHA256");
   }
 
@@ -37,17 +46,25 @@ final class CorePageTokens {
 
   Map<String, Object> decode(String account, String resource, Map<String, String> query) {
     String token = query.get("pageToken");
-    if (token == null) return Map.of();
+    if (token == null) {
+      return Map.of();
+    }
     try {
-      if (token.length() > 4096) throw new IllegalArgumentException("Oversized cursor");
+      if (token.length() > 4096) {
+        throw new IllegalArgumentException("Oversized cursor");
+      }
       String[] pieces = token.split("\\.", -1);
-      if (pieces.length != 2) throw new IllegalArgumentException("Invalid cursor");
+      if (pieces.length != 2) {
+        throw new IllegalArgumentException("Invalid cursor");
+      }
       byte[] payload = DECODER.decode(pieces[0]), signature = DECODER.decode(pieces[1]);
-      if (!MessageDigest.isEqual(sign(payload), signature))
+      if (!MessageDigest.isEqual(sign(payload), signature)) {
         throw new IllegalArgumentException("Invalid cursor signature");
+      }
       Map<String, Object> decoded = Json.object(payload);
-      if (!scope(account, resource, query).equals(decoded.get("scope")))
+      if (!scope(account, resource, query).equals(decoded.get("scope"))) {
         throw new IllegalArgumentException("Cursor belongs to another listing");
+      }
       return RuntimeConfiguration.object(decoded.get("state"), "cursor state");
     } catch (IllegalArgumentException | java.io.UncheckedIOException failure) {
       throw new ConsoleProblem(

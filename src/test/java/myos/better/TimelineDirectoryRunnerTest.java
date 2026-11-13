@@ -32,9 +32,11 @@ class TimelineDirectoryRunnerTest {
     timelines.put("automatic", Map.of("pollMillis", 100, "workers", 2));
     config.put("timelines", timelines);
     f.write(config);
-    for (String name : List.of("active", "quiet"))
-      for (String kind : List.of("provider", "timeline"))
+    for (String name : List.of("active", "quiet")) {
+      for (String kind : List.of("provider", "timeline")) {
         java.nio.file.Files.delete(directory.resolve(name + "-" + kind + ".json"));
+      }
+    }
     JsonBoundaryStore store = new JsonBoundaryStore();
     TimelineReadFixture active = new TimelineReadFixture(f.active, 0),
         quiet = new TimelineReadFixture(f.quiet, 0);
@@ -44,8 +46,9 @@ class TimelineDirectoryRunnerTest {
           synchronized (selected) {
             // Remote polling requests the latest frontier, rather than repeatedly asking
             // for an old minimum the provider is entitled to reuse forever.
-            if (request != null && uri.getPath().endsWith("/timelines/read"))
+            if (request != null && uri.getPath().endsWith("/timelines/read")) {
               assertFalse(request.contains("minimumCompleteBefore"));
+            }
             return selected.exchange(uri, request, maximum, timeout);
           }
         };
@@ -128,8 +131,9 @@ class TimelineDirectoryRunnerTest {
         new java.util.concurrent.atomic.AtomicBoolean(injectConflict);
     TimelineTransport transport =
         (uri, request, maximum, timeout) -> {
-          if (conflict.getAndSet(false))
+          if (conflict.getAndSet(false)) {
             throw new TimelineArchive.PublicationConflict("Competing local publication");
+          }
           return active.exchange(uri, request, maximum, timeout);
         };
     JsonBoundaryStore store = new JsonBoundaryStore();
@@ -286,8 +290,9 @@ class TimelineDirectoryRunnerTest {
             false,
             true)) {
       service.bind();
-      for (int i = 0; i < 130; i++)
+      for (int i = 0; i < 130; i++) {
         service.adopt("tenant" + i, "input", TimelineServiceFixture.definitions(source));
+      }
       java.util.concurrent.CountDownLatch entered = new java.util.concurrent.CountDownLatch(2);
       java.util.concurrent.atomic.AtomicInteger network =
           new java.util.concurrent.atomic.AtomicInteger();
@@ -327,8 +332,9 @@ class TimelineDirectoryRunnerTest {
                 (proxy, method, args) -> {
                   if (method.getName().equals("work")
                       && ((String) args[0]).startsWith("timeline-poll-")
-                      && ((String) args[0]).endsWith("-0"))
+                      && ((String) args[0]).endsWith("-0")) {
                     return new AtomicStore.Page(List.of(), "more-arrivals");
+                  }
                   try {
                     return method.invoke(memory, args);
                   } catch (java.lang.reflect.InvocationTargetException failure) {
@@ -384,7 +390,9 @@ class TimelineDirectoryRunnerTest {
   private static void await(BooleanSupplier condition) throws InterruptedException {
     long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(15);
     while (!condition.getAsBoolean()) {
-      if (System.nanoTime() > deadline) fail("Directory polling did not reach expected state");
+      if (System.nanoTime() > deadline) {
+        fail("Directory polling did not reach expected state");
+      }
       Thread.sleep(10);
     }
   }

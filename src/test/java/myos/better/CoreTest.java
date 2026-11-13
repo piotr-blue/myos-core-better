@@ -1,7 +1,7 @@
 package myos.better;
 
 import static myos.better.HostFixtures.drain;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
 import java.math.BigInteger;

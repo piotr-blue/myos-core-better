@@ -1,11 +1,21 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
 import java.net.URI;
-import java.net.http.*;
-import java.nio.file.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -16,16 +26,19 @@ public final class TimelineServiceProbe {
 
   public static void main(String[] args) throws Exception {
     if ((args.length != 3 && args.length != 4)
-        || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}"))
+        || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}")) {
       throw new IllegalArgumentException(
           "Expected new native-bench-* account, warmups, samples and optional directory profile");
+    }
     boolean directoryProfile = args.length == 4;
-    if (directoryProfile && !args[3].equals("directory"))
+    if (directoryProfile && !args[3].equals("directory")) {
       throw new IllegalArgumentException("Unknown source profile");
+    }
     String account = args[0];
     int warmups = Integer.parseInt(args[1]), samples = Integer.parseInt(args[2]);
-    if (warmups < 0 || warmups > 64 || samples < 1 || samples > 64)
+    if (warmups < 0 || warmups > 64 || samples < 1 || samples > 64) {
       throw new IllegalArgumentException("Invalid qualification bounds");
+    }
     boolean durable = System.getenv("MYOS_TABLE") != null;
     QualificationTimeline active = new QualificationTimeline("active"),
         quiet = new QualificationTimeline("quiet");
@@ -37,7 +50,9 @@ public final class TimelineServiceProbe {
     try {
       configure(directory, account, active, quiet);
       String agreement = TimelineWorkload.agreement(active, quiet);
-      if (directoryProfile) agreement = directory(directory, agreement, active, quiet);
+      if (directoryProfile) {
+        agreement = directory(directory, agreement, active, quiet);
+      }
       try (Running service = new Running(directory)) {
         if (directoryProfile) {
           service.post("/timelines/adopt", adoption(account, "active", active));
@@ -127,7 +142,7 @@ public final class TimelineServiceProbe {
           service.awaitCount(account, "agreement", i * 7L);
           long throughParent = System.nanoTime() - start;
           require(service.count(account, child) == i * 7L, "Child total mismatch");
-          if (i > warmups + 1)
+          if (i > warmups + 1) {
             timings.add(
                 Map.of(
                     "position",
@@ -142,6 +157,7 @@ public final class TimelineServiceProbe {
                     number(result.get("executionNanos")) / 1e6,
                     "gas",
                     number(result.get("gas"))));
+          }
           previous = entry.blueId();
         }
         require(
@@ -193,8 +209,9 @@ public final class TimelineServiceProbe {
       System.out.println(JsonText.of(report));
     } finally {
       try (var paths = Files.walk(directory)) {
-        for (Path path : paths.sorted(Comparator.reverseOrder()).toList())
+        for (Path path : paths.sorted(Comparator.reverseOrder()).toList()) {
           Files.deleteIfExists(path);
+        }
       }
     }
   }
@@ -243,7 +260,9 @@ public final class TimelineServiceProbe {
                 "qualified-timeline-service",
                 "sources",
                 sources));
-    if (automatic != null) timelines.put("automatic", automatic);
+    if (automatic != null) {
+      timelines.put("automatic", automatic);
+    }
     Files.write(
         directory.resolve("runtime.json"),
         Json.bytes(
@@ -284,12 +303,15 @@ public final class TimelineServiceProbe {
             "active-provider.json",
             "active-timeline.json",
             "quiet-provider.json",
-            "quiet-timeline.json")) Files.delete(directory.resolve(name));
-    for (QualificationTimeline source : sources)
+            "quiet-timeline.json")) {
+      Files.delete(directory.resolve(name));
+    }
+    for (QualificationTimeline source : sources) {
       agreement =
           agreement.replace(
               "provider: {blueId: '" + source.provider.blueId() + "'}",
               "provider: " + source.provider.toJson());
+    }
     return agreement;
   }
 
@@ -314,7 +336,9 @@ public final class TimelineServiceProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new AssertionError(message);
+    if (!condition) {
+      throw new AssertionError(message);
+    }
   }
 
   private static String artifact(Class<?> type) throws Exception {
@@ -385,7 +409,9 @@ public final class TimelineServiceProbe {
             }
           }
           require(System.nanoTime() < deadline, "Main startup deadline exceeded");
-          if (url == null) Thread.sleep(25);
+          if (url == null) {
+            Thread.sleep(25);
+          }
         }
       } catch (Exception | Error failure) {
         close();

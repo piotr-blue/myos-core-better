@@ -1,14 +1,30 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.PackageLoader;
+import blue.ProviderSignatures;
 import java.net.URI;
-import java.net.http.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.security.Signature;
 import java.time.Duration;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /** Deployed native protocol qualification; the owner session arrives only on private stdin. */
 public final class NativeTimelineHttpProbe {
@@ -30,8 +46,9 @@ public final class NativeTimelineHttpProbe {
 
   private NativeTimelineHttpProbe(Map<String, Object> input) throws Exception {
     origin = (String) input.get("origin");
-    if (!"https://d2ya9daeiur7nz.cloudfront.net".equals(origin))
+    if (!"https://d2ya9daeiur7nz.cloudfront.net".equals(origin)) {
       throw new IllegalArgumentException("Expected the isolated Better console");
+    }
     cookie = (String) input.get("cookie");
     reader = KeyPairGenerator.getInstance("Ed25519").generateKeyPair();
     byte[] encoded = reader.getPublic().getEncoded();
@@ -41,7 +58,9 @@ public final class NativeTimelineHttpProbe {
 
   public static void main(String[] args) throws Exception {
     byte[] input = System.in.readNBytes(16 * 1024 + 1);
-    if (input.length > 16 * 1024) throw new IllegalArgumentException("Input exceeds 16 KiB");
+    if (input.length > 16 * 1024) {
+      throw new IllegalArgumentException("Input exceeds 16 KiB");
+    }
     Map<String, Object> settings = Json.object(input);
     NativeTimelineHttpProbe probe = new NativeTimelineHttpProbe(settings);
     probe.run(
@@ -234,7 +253,9 @@ public final class NativeTimelineHttpProbe {
                       "private importer exact original entries, cold restore and revoked refusal",
                       "provider response signatures"))));
     } finally {
-      if (!grantRevoked) request("access/update", update, true, 200);
+      if (!grantRevoked) {
+        request("access/update", update, true, 200);
+      }
     }
   }
 
@@ -266,7 +287,9 @@ public final class NativeTimelineHttpProbe {
         HttpRequest.newBuilder(URI.create(origin + "/api/provider/" + route))
             .timeout(Duration.ofSeconds(20))
             .header("Content-Type", "application/json");
-    if (owner) builder.header("Origin", origin).header("Cookie", cookie);
+    if (owner) {
+      builder.header("Origin", origin).header("Cookie", cookie);
+    }
     HttpResponse<String> response =
         http.send(
             builder.POST(HttpRequest.BodyPublishers.ofString(request.toJson())).build(),
@@ -288,10 +311,11 @@ public final class NativeTimelineHttpProbe {
       require(
           expected.equals(content.at("/object/request").observation("exactId").text()),
           "Response correlation mismatch");
-    } else
+    } else {
       require(
           content.resolve().type().orElseThrow().equals(coordination.export("Provider Failure")),
           "Expected typed failure");
+    }
     return content;
   }
 
@@ -305,6 +329,8 @@ public final class NativeTimelineHttpProbe {
   }
 
   private static void require(boolean value, String detail) {
-    if (!value) throw new IllegalStateException(detail);
+    if (!value) {
+      throw new IllegalStateException(detail);
+    }
   }
 }

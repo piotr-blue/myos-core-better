@@ -1,7 +1,11 @@
 package myos.better;
 
-import static myos.better.NativeAdmissionFixture.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.NativeAdmissionFixture.EVENT;
+import static myos.better.NativeAdmissionFixture.NAMESPACE;
+import static myos.better.NativeAdmissionFixture.SOURCE;
+import static myos.better.NativeAdmissionFixture.permit;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.URI;
 import java.net.http.HttpClient;

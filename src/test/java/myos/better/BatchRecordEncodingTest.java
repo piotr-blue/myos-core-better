@@ -1,10 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Proxy;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
@@ -85,8 +91,9 @@ class BatchRecordEncodingTest {
                 AtomicStore.class.getClassLoader(),
                 new Class<?>[] {AtomicStore.class},
                 (proxy, method, arguments) -> {
-                  if (method.getName().equals("publishContent") && fail.get())
+                  if (method.getName().equals("publishContent") && fail.get()) {
                     throw new IllegalStateException("injected publication failure");
+                  }
                   try {
                     return method.invoke(durable, arguments);
                   } catch (InvocationTargetException exception) {

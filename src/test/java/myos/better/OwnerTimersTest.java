@@ -1,8 +1,15 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 class OwnerTimersTest {
@@ -47,7 +54,9 @@ class OwnerTimersTest {
 
   private static OwnerFrontiers scheduler(MemoryStore store, String account, String... members) {
     var f = new OwnerFrontiers(store, account);
-    for (String member : members) f.register(member, "initial-" + member, List.of());
+    for (String member : members) {
+      f.register(member, "initial-" + member, List.of());
+    }
     return f;
   }
 
@@ -146,8 +155,9 @@ class OwnerTimersTest {
   void memberQuotaIsAtomicAndOtherMembersHaveIndependentCapacity() {
     var f = scheduler(new MemoryStore(), "account", "first", "second");
     List<OwnerTimers.Effect> tooMany = new ArrayList<>();
-    for (int i = 0; i <= OwnerTimers.MAX_PER_MEMBER; i++)
+    for (int i = 0; i <= OwnerTimers.MAX_PER_MEMBER; i++) {
       tooMany.add(schedule("first", "first-" + i, null, 10 + i, 1));
+    }
     assertThrows(IllegalArgumentException.class, () -> apply(f, member("first", 1, null), tooMany));
     assertTrue(OwnerTimers.pending(f.metadata.begin(), "first").isEmpty());
     apply(f, member("first", 1, null), tooMany.subList(0, OwnerTimers.MAX_PER_MEMBER));

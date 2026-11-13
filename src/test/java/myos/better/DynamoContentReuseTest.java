@@ -139,13 +139,17 @@ class DynamoContentReuseTest {
                                         .toList()))
                             .build();
                       case "batchWriteItem":
-                        if (failWrite) throw new IllegalStateException("lost response");
+                        if (failWrite) {
+                          throw new IllegalStateException("lost response");
+                        }
                         mutateAfterWrite.run();
                         return BatchWriteItemResponse.builder().build();
                       case "transactWriteItems":
                         var builder = TransactWriteItemsRequest.builder();
                         ((Consumer<TransactWriteItemsRequest.Builder>) args[0]).accept(builder);
-                        if (failWrite) throw new IllegalStateException("lost response");
+                        if (failWrite) {
+                          throw new IllegalStateException("lost response");
+                        }
                         return TransactWriteItemsResponse.builder().build();
                       default:
                         throw new AssertionError("Unexpected SDK call " + method.getName());

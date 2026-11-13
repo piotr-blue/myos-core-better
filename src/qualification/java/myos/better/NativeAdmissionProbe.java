@@ -25,12 +25,14 @@ public final class NativeAdmissionProbe {
   private static final String DOCUMENT = "one";
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 3 || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}"))
+    if (args.length != 3 || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}")) {
       throw new IllegalArgumentException(
           "Expected new native-bench-* account, warmups and samples");
+    }
     int warmups = Integer.parseInt(args[1]), samples = Integer.parseInt(args[2]);
-    if (warmups < 0 || warmups > 64 || samples < 1 || samples > 64)
+    if (warmups < 0 || warmups > 64 || samples < 1 || samples > 64) {
       throw new IllegalArgumentException("Warmups must be0..64; samples must be1..64");
+    }
     String account = args[0], peer = account + "-peer";
     String table = System.getenv("MYOS_TABLE");
     MemoryStore local = new MemoryStore();
@@ -100,7 +102,9 @@ public final class NativeAdmissionProbe {
           object(retained).get("evidence").equals(firstProof), "Original proof was not retained");
       Map<String, Long> before = null;
       for (int i = 0; i < warmups + samples; i++) {
-        if (i == warmups) before = core.statistics();
+        if (i == warmups) {
+          before = core.statistics();
+        }
         String command = "tick-" + i;
         long timestamp = i + 2L;
         long start = System.nanoTime();
@@ -274,8 +278,9 @@ public final class NativeAdmissionProbe {
                 receiver.channel(),
                 receiver.generation()));
         if (!verifier.verify(
-            Base64.getDecoder().decode((String) object(input.evidence()).get("signature"))))
+            Base64.getDecoder().decode((String) object(input.evidence()).get("signature")))) {
           input.reject("Invalid scoped signature");
+        }
       } catch (GeneralSecurityException error) {
         input.reject("Invalid signature encoding");
       }
@@ -381,6 +386,8 @@ public final class NativeAdmissionProbe {
   }
 
   private static void require(boolean value, String message) {
-    if (!value) throw new IllegalStateException(message);
+    if (!value) {
+      throw new IllegalStateException(message);
+    }
   }
 }

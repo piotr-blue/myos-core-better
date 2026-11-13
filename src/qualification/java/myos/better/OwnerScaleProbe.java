@@ -16,12 +16,14 @@ public final class OwnerScaleProbe {
   }
 
   public static void main(String[] args) throws Exception {
-    if (args.length < 2)
+    if (args.length < 2) {
       throw new IllegalArgumentException("Expected memory/table and isolated account");
+    }
     long maximumHeap = Runtime.getRuntime().maxMemory();
     long expectedHeap = Long.getLong("blue.probe.expectedHeapBytes", 0L);
-    if (expectedHeap > 0 && Math.abs(maximumHeap - expectedHeap) > expectedHeap / 50)
+    if (expectedHeap > 0 && Math.abs(maximumHeap - expectedHeap) > expectedHeap / 50) {
       throw new IllegalStateException("Actual qualification heap differs from expected heap");
+    }
     System.out.println(
         JsonText.of(
             Map.of(
@@ -52,12 +54,14 @@ public final class OwnerScaleProbe {
       for (int count : sizes) {
         String account = args[1] + "-" + count;
         int timelineCount = Boolean.getBoolean("blue.probe.separateTimelines") ? count : 1;
-        if (timelineCount > 1 && Boolean.getBoolean("blue.probe.rotateTargets"))
+        if (timelineCount > 1 && Boolean.getBoolean("blue.probe.rotateTargets")) {
           throw new IllegalArgumentException(
               "Separate-source probe reserves quiet source prefixes; use fixed target");
+        }
         List<QualificationTimeline> sources = new ArrayList<>();
-        for (int i = 0; i < timelineCount; i++)
+        for (int i = 0; i < timelineCount; i++) {
           sources.add(new QualificationTimeline("owner-scale-" + count + "-" + i));
+        }
         var timeline = sources.getFirst();
         var archives = archives(store, account, sources);
         var archive = archives.getFirst();
@@ -65,7 +69,9 @@ public final class OwnerScaleProbe {
             Language.newBuilder()
                 .mount("Contracts", Contracts.publication())
                 .mount("Coordination", QualificationTimeline.COORDINATION);
-        for (var source : sources) builder.content(source.provider).content(source.timeline);
+        for (var source : sources) {
+          builder.content(source.provider).content(source.timeline);
+        }
         var language = builder.build();
         var authored = RuntimeConfiguration.object(source(count, sources), "fixture");
         var orderDocuments = RuntimeConfiguration.object(authored.get("orders"), "fixture orders");
@@ -84,8 +90,9 @@ public final class OwnerScaleProbe {
                 Language.Input.json(JsonText.of(authored)),
                 Language.Goal.VALUE,
                 admittedOrders.toArray(LanguageDocument[]::new));
-        if (originalIdentity != null && !originalIdentity.equals(document.blueId().value()))
+        if (originalIdentity != null && !originalIdentity.equals(document.blueId().value())) {
           throw new AssertionError("Independent document fixture changed root identity");
+        }
         long setupStarted = System.nanoTime();
         seedQuiet(archives, sources);
         double quietSetup = (System.nanoTime() - setupStarted) / 1e6;
@@ -142,9 +149,10 @@ public final class OwnerScaleProbe {
                               "Missing protected admission for the reviewed Agreement")
                           : inspection.snapshots.member(account, page, member, language);
               if (seedSource) {
-                if (channelOnly)
+                if (channelOnly) {
                   throw new IllegalArgumentException(
                       "Source preloading requires document addressing");
+                }
                 if (n == 0) {
                   prefix.acquire(timeline, archive, language, target, admittedOrders);
                   previous = prefix.head();
@@ -159,13 +167,17 @@ public final class OwnerScaleProbe {
                               count)));
                   for (int i = 0; ; i++) {
                     var settled = engine.step(account, root);
-                    if (settled.status() == TimelineIngress.Status.IDLE) break;
+                    if (settled.status() == TimelineIngress.Status.IDLE) {
+                      break;
+                    }
                     if (settled.status() != TimelineIngress.Status.INAPPLICABLE
-                        || i > 2L * count * (prefix.length() + 1))
+                        || i > 2L * count * (prefix.length() + 1)) {
                       throw new AssertionError("Unexpected content preload receiver: " + settled);
+                    }
                   }
-                  if (!page.equals(inspection.records(account).head(root).value().get("page")))
+                  if (!page.equals(inspection.records(account).head(root).value().get("page"))) {
                     throw new AssertionError("Content preload modified the Agreement");
+                  }
                 }
                 QualificationSourcePrefix.retainReview(timeline, archive, target);
               }
@@ -217,8 +229,9 @@ public final class OwnerScaleProbe {
               double acquisition = (System.nanoTime() - accepted) / 1e6;
               int applied = 0, skipped = 0;
               var beforeIo = store.statistics();
-              if (Boolean.getBoolean("blue.probe.cold"))
+              if (Boolean.getBoolean("blue.probe.cold")) {
                 engine = new OwnerGraphs(store, contracts, service, ingress);
+              }
               Recording recording = n == 3 ? recording() : null;
               long gcBefore = gcMillis(), heapBefore = usedHeap();
               var threadBean = java.lang.management.ManagementFactory.getThreadMXBean();
@@ -227,10 +240,13 @@ public final class OwnerScaleProbe {
                           && supported.isThreadAllocatedMemorySupported()
                       ? supported
                       : null;
-              if (allocationBean != null && !allocationBean.isThreadAllocatedMemoryEnabled())
+              if (allocationBean != null && !allocationBean.isThreadAllocatedMemoryEnabled()) {
                 allocationBean.setThreadAllocatedMemoryEnabled(true);
+              }
               if (threadBean.isCurrentThreadCpuTimeSupported()
-                  && !threadBean.isThreadCpuTimeEnabled()) threadBean.setThreadCpuTimeEnabled(true);
+                  && !threadBean.isThreadCpuTimeEnabled()) {
+                threadBean.setThreadCpuTimeEnabled(true);
+              }
               long thread = Thread.currentThread().threadId();
               long allocatedBefore =
                   allocationBean == null ? -1 : allocationBean.getThreadAllocatedBytes(thread);
@@ -241,10 +257,16 @@ public final class OwnerScaleProbe {
               long processing = System.nanoTime();
               for (int attempt = 0; attempt < count * 4 + 100; attempt++) {
                 var result = engine.step(account, root);
-                if (result.status() == TimelineIngress.Status.IDLE) break;
-                if (result.status() == TimelineIngress.Status.APPLIED) applied++;
-                else if (result.status() == TimelineIngress.Status.INAPPLICABLE) skipped++;
-                else throw new IllegalStateException("Unexpected owner progress: " + result);
+                if (result.status() == TimelineIngress.Status.IDLE) {
+                  break;
+                }
+                if (result.status() == TimelineIngress.Status.APPLIED) {
+                  applied++;
+                } else if (result.status() == TimelineIngress.Status.INAPPLICABLE) {
+                  skipped++;
+                } else {
+                  throw new IllegalStateException("Unexpected owner progress: " + result);
+                }
               }
               double duration = (System.nanoTime() - processing) / 1e6;
               long cpuAfter = cpuBefore < 0 ? -1 : threadBean.getCurrentThreadCpuTime();
@@ -274,9 +296,10 @@ public final class OwnerScaleProbe {
                   && !"owner-local"
                       .equals(
                           RuntimeConfiguration.object(head.value().get("input"), "input")
-                              .get("mode")))
+                              .get("mode"))) {
                 throw new AssertionError(
                     "Owner-local qualification silently used full graph execution");
+              }
               replays.add(
                   new Replay(
                       selectedIndex(n, count),
@@ -291,8 +314,9 @@ public final class OwnerScaleProbe {
                               .records(account)
                               .completion((String) actual.get("receipt"))
                               .observations())));
-              if (applied != (append ? 1 : 3))
+              if (applied != (append ? 1 : 3)) {
                 throw new AssertionError("Unexpected number of processed owners: " + applied);
+              }
               if (append) {
                 var durable = (String) head.value().get("page");
                 String fresh =
@@ -303,8 +327,9 @@ public final class OwnerScaleProbe {
                 var registered = inspection.records(account).head(OwnerGraphs.address(fresh));
                 if (!Objects.equals(
                     registered.value().get("blueId"),
-                    inspection.snapshots.memberIdentity(account, durable, fresh).value()))
+                    inspection.snapshots.memberIdentity(account, durable, fresh).value())) {
                   throw new AssertionError("New Order registration differs from root");
+                }
               }
               Map<String, Object> row =
                   new LinkedHashMap<>(
@@ -337,8 +362,9 @@ public final class OwnerScaleProbe {
                     RuntimeConfiguration.object(audit.get("channels"), "channels").values().stream()
                         .mapToInt(v -> ((List<?>) v).size())
                         .sum();
-                if (receivers != 1)
+                if (receivers != 1) {
                   throw new AssertionError("Unexpected receiver count: " + receivers);
+                }
                 row.put("receiverDecisions", receivers);
                 row.put("address", channelOnly ? "channel" : "document-and-channel");
                 row.put("operation", "placeOrder");
@@ -375,8 +401,9 @@ public final class OwnerScaleProbe {
             }
           }
           verify(account, root, document, language, sources, created.receipt(), prefix, replays);
-          for (Object call : calls)
+          for (Object call : calls) {
             RuntimeConfiguration.object(call, "measurement").put("parity", true);
+          }
           System.out.println(
               JsonText.of(
                   Map.of("phase", "parity-verified", "orders", count, "inputs", replays.size())));
@@ -447,7 +474,9 @@ public final class OwnerScaleProbe {
       Map<String, Object> semantics) {}
 
   private static Recording recording() throws Exception {
-    if (System.getProperty("blue.probe.profile") == null) return null;
+    if (System.getProperty("blue.probe.profile") == null) {
+      return null;
+    }
     var recording = new Recording(Configuration.getConfiguration("profile"));
     recording.start();
     return recording;
@@ -473,23 +502,33 @@ public final class OwnerScaleProbe {
                   "encodedBytes",
                   "recordsReused",
                   "recordsChanged",
-                  "recordsRemoved")) row.put(counter, event.getLong(counter));
+                  "recordsRemoved")) {
+            row.put(counter, event.getLong(counter));
+          }
           preparation.add(row);
         }
-        if (!event.getEventType().getName().equals("jdk.ExecutionSample")) continue;
+        if (!event.getEventType().getName().equals("jdk.ExecutionSample")) {
+          continue;
+        }
         var stack = event.getStackTrace();
-        if (stack == null || stack.getFrames().isEmpty()) continue;
+        if (stack == null || stack.getFrames().isEmpty()) {
+          continue;
+        }
         samples++;
         Set<String> methods = new HashSet<>();
         boolean firstFrame = true;
         for (var frame : stack.getFrames()) {
           var method = frame.getMethod();
           String name = method.getType().getName() + "." + method.getName();
-          if (firstFrame) leaves.merge(name, 1L, Long::sum);
+          if (firstFrame) {
+            leaves.merge(name, 1L, Long::sum);
+          }
           firstFrame = false;
           if ((name.startsWith("blue.") || name.startsWith("myos."))
               && !name.contains("Lambda")
-              && !name.contains("lambda$")) methods.add(name);
+              && !name.contains("lambda$")) {
+            methods.add(name);
+          }
         }
         methods.forEach(name -> inclusive.merge(name, 1L, Long::sum));
       }
@@ -552,13 +591,15 @@ public final class OwnerScaleProbe {
                 .build();
         try (var oracle = Contracts.Execution.using(contracts, null)) {
           var initialized = oracle.initialize(oracle.prepare(root, document)).requireApplied();
-          if (!initializationReceipt.equals(initialized.transition().receipt()))
+          if (!initializationReceipt.equals(initialized.transition().receipt())) {
             throw new AssertionError("Initialization receipt parity failed");
+          }
           var whole = initialized.after();
           for (int n = 0; n < inputs.size(); n++) {
             Replay input = inputs.get(n);
-            if (prefix.length() != 0)
+            if (prefix.length() != 0) {
               QualificationSourcePrefix.retainReview(timeline, archive, whole.document());
+            }
             archive.acquire(input.range(), input.content());
             String member = root;
             if (!directAppend()) {
@@ -604,9 +645,10 @@ public final class OwnerScaleProbe {
                       .requireApplied();
               whole = expected.after();
               if (Boolean.getBoolean("blue.probe.observableRoot")
-                  && ((List<?>) input.semantics().get("publicEvents")).size() != 2)
+                  && ((List<?>) input.semantics().get("publicEvents")).size() != 2) {
                 throw new AssertionError(
                     "Expected two distinct public event occurrences, even with identical values");
+              }
               System.out.println(
                   JsonText.of(
                       Map.of(
@@ -643,8 +685,9 @@ public final class OwnerScaleProbe {
               if (!whole.blueId().equals(input.blueId())
                   || !JsonText.of(OwnerReplay.semantic(expected.transition().observations()))
                       .equals(JsonText.of(input.semantics()))
-                  || expected.transition().gas() != input.gas())
+                  || expected.transition().gas() != input.gas()) {
                 throw new AssertionError("Whole native parity failed for input " + n);
+              }
             }
           }
         }
@@ -672,8 +715,9 @@ public final class OwnerScaleProbe {
   private static List<TimelineService.Adopted> adopted(
       String account, List<TimelineArchive> archives) {
     List<TimelineService.Adopted> result = new ArrayList<>();
-    for (int i = 0; i < archives.size(); i++)
+    for (int i = 0; i < archives.size(); i++) {
       result.add(new TimelineService.Adopted(account, "source-" + i, archives.get(i)));
+    }
     return List.copyOf(result);
   }
 
@@ -682,12 +726,14 @@ public final class OwnerScaleProbe {
     // The quiet providers have already certified a prefix beyond the measured active inputs.
     // No later append is allowed behind that prefix. Their acquisition cost is reported separately.
     long through = Integer.getInteger("blue.probe.samples", 5) + 1L;
-    if (directAppend() && Boolean.getBoolean("blue.probe.seedSource"))
+    if (directAppend() && Boolean.getBoolean("blue.probe.seedSource")) {
       through += QualificationSourcePrefix.batchCount(sources.size());
-    for (int i = 1; i < archives.size(); i++)
+    }
+    for (int i = 1; i < archives.size(); i++) {
       archives
           .get(i)
           .acquire(sources.get(i).range(null, null, through, List.of(), false), Map.of());
+    }
   }
 
   private static long gcMillis() {

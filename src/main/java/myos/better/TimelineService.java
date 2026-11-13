@@ -23,10 +23,11 @@ final class TimelineService implements AutoCloseable {
           || workers < 1
           || workers > 8
           || receiverWorkers < 1
-          || receiverWorkers > 8)
+          || receiverWorkers > 8) {
         throw new IllegalArgumentException(
             "Timeline polling requires 100..60000 ms, 1..8 acquisition workers and 1..8 receiver"
                 + " workers");
+      }
     }
   }
 
@@ -37,13 +38,16 @@ final class TimelineService implements AutoCloseable {
   private volatile java.util.function.BiConsumer<String, String> arrivals = NO_ARRIVALS;
 
   synchronized void listen(java.util.function.BiConsumer<String, String> listener) {
-    if (arrivals != NO_ARRIVALS)
+    if (arrivals != NO_ARRIVALS) {
       throw new IllegalStateException("A Timeline runner is already listening");
+    }
     arrivals = Objects.requireNonNull(listener);
   }
 
   synchronized void unlisten(java.util.function.BiConsumer<String, String> listener) {
-    if (arrivals == listener) arrivals = NO_ARRIVALS;
+    if (arrivals == listener) {
+      arrivals = NO_ARRIVALS;
+    }
   }
 
   void arrived(String account, String timeline) {
@@ -81,18 +85,30 @@ final class TimelineService implements AutoCloseable {
   }
 
   void checkWorkers() {
-    if (timeWork != null) timeWork.check();
-    if (gasWork != null) gasWork.check();
+    if (timeWork != null) {
+      timeWork.check();
+    }
+    if (gasWork != null) {
+      gasWork.check();
+    }
   }
 
   void startTime() {
-    if (timeWork != null) timeWork.start();
-    if (gasWork != null) gasWork.start();
+    if (timeWork != null) {
+      timeWork.start();
+    }
+    if (gasWork != null) {
+      gasWork.start();
+    }
   }
 
   void stopTime() {
-    if (timeWork != null) timeWork.close();
-    if (gasWork != null) gasWork.close();
+    if (timeWork != null) {
+      timeWork.close();
+    }
+    if (gasWork != null) {
+      gasWork.close();
+    }
   }
 
   OwnerTime time() {
@@ -105,8 +121,9 @@ final class TimelineService implements AutoCloseable {
 
   void enableTime(
       Language language, BluePackage publication, java.util.function.LongSupplier clock) {
-    if (time != null || graphs != null)
+    if (time != null || graphs != null) {
       throw new IllegalStateException("Time must be configured once before graph execution");
+    }
     time = new OwnerTime(repository.store, language, publication, clock);
     graphIngress.enableTime(time.recipes.channelType);
   }
@@ -116,8 +133,9 @@ final class TimelineService implements AutoCloseable {
   }
 
   void sealLocal(String account, long requiredTimestamp) {
-    if (requiredTimestamp >= 0 && localAuthority != null && OwnerGraphs.enabled())
+    if (requiredTimestamp >= 0 && localAuthority != null && OwnerGraphs.enabled()) {
       localAuthority.sealAuthority(account, requiredTimestamp);
+    }
   }
 
   void demandOwnerSource(String account, String timeline, long timestamp) {
@@ -153,27 +171,33 @@ final class TimelineService implements AutoCloseable {
       Language language,
       java.util.Collection<BluePackage> requirements,
       blue.GasSchedule gasSchedule) {
-    if (graphs != null) throw new IllegalStateException("Canonical graphs are already installed");
+    if (graphs != null) {
+      throw new IllegalStateException("Canonical graphs are already installed");
+    }
     Contracts.Builder builder =
         Contracts.newBuilder().language(language).timelineChannels(graphIngress.channels());
-    if (time != null) builder.timeBindings(time.ingress.bindings());
+    if (time != null) {
+      builder.timeBindings(time.ingress.bindings());
+    }
     requirements.stream()
         .filter(p -> time == null || !TimeBindings.supports(p.blueId()))
         .forEach(builder::require);
     graphs = new GraphDocuments(repository.store, builder.build(), language, this, gasSchedule);
-    if (Boolean.getBoolean("myos.gas.enabled"))
+    if (Boolean.getBoolean("myos.gas.enabled")) {
       gasWork =
           new OwnerGasWork(
               repository.store,
               System::currentTimeMillis,
               (account, owner) -> graphs.step(graphIngress, account, owner, ownerSources()),
               graphs::resumeInitialization);
-    if (time != null)
+    }
+    if (time != null) {
       timeWork =
           new OwnerTimeWork(
               repository.store,
               time::nowMicros,
               (account, owner) -> graphs.step(graphIngress, account, owner, ownerSources()));
+    }
   }
 
   private final Map<Key, TimelineArchive> sources;
@@ -189,15 +213,17 @@ final class TimelineService implements AutoCloseable {
 
   synchronized void useManagedReaders(CoreReaderKeys keys) {
     keys.requireStore(repository.store);
-    if (managedReaders != null && managedReaders != keys)
+    if (managedReaders != null && managedReaders != keys) {
       throw new IllegalStateException("Managed reader custody is already configured");
+    }
     managedReaders = keys;
   }
 
   private CoreReaderKeys managedReaders() {
     CoreReaderKeys configured = managedReaders;
-    if (configured == null)
+    if (configured == null) {
       throw new IllegalStateException("Managed reader custody is not configured");
+    }
     return configured;
   }
 
@@ -228,8 +254,9 @@ final class TimelineService implements AutoCloseable {
 
   void validateReader(AtomicStore.Row registration) {
     Map<String, Object> reader = TimelinePolling.reader(registration);
-    if (reader != null && reader.containsKey("managedKey"))
+    if (reader != null && reader.containsKey("managedKey")) {
       managedReaders().validate(TimelinePolling.text(registration, "account"), reader);
+    }
   }
 
   TimelineService(
@@ -307,9 +334,10 @@ final class TimelineService implements AutoCloseable {
       boolean durableDirectory,
       SigningSecret.Source secrets,
       PublicPackages packages) {
-    if (durableDirectory && adopted.stream().anyMatch(s -> s.reader() != null))
+    if (durableDirectory && adopted.stream().anyMatch(s -> s.reader() != null)) {
       throw new IllegalArgumentException(
           "Configure directory reader custody through the operator polling registration");
+    }
     this.repository = Objects.requireNonNull(repository);
     ownerStorage = new OwnerStorage(repository.store);
     this.packages = Objects.requireNonNull(packages);
@@ -342,20 +370,24 @@ final class TimelineService implements AutoCloseable {
       if (automatic != null
           && !durableDirectory
           && !binding.publicRead()
-          && source.reader() == null)
+          && source.reader() == null) {
         throw new IllegalArgumentException(
             "Automatic private Timeline acquisition requires a pinned reader key");
-      if (!account.equals(binding.account()))
+      }
+      if (!account.equals(binding.account())) {
         throw new IllegalArgumentException("Source account mismatch");
-      if (sources.putIfAbsent(new Key(account, name), source.archive()) != null)
+      }
+      if (sources.putIfAbsent(new Key(account, name), source.archive()) != null) {
         throw new IllegalArgumentException("Duplicate Timeline source name");
+      }
       List<TimelineArchive> siblings =
           accounts.computeIfAbsent(account, ignored -> new ArrayList<>());
       for (TimelineArchive sibling : siblings) {
         TimelineArchive.Source other = sibling.source();
         if (other.timeline().equals(binding.timeline())
-            || other.provider().equals(binding.provider()) && other.url().equals(binding.url()))
+            || other.provider().equals(binding.provider()) && other.url().equals(binding.url())) {
           throw new IllegalArgumentException("Ambiguous Timeline source binding");
+        }
       }
       if (source.reader() != null) {
         source.reader().requireSource(binding);
@@ -392,9 +424,10 @@ final class TimelineService implements AutoCloseable {
     if (directory == null
         || polling == null
         || !privateAccess
-        || !coordination.equals(expected.blueId()))
+        || !coordination.equals(expected.blueId())) {
       throw new IllegalArgumentException(
           "Owner inputs require the matching automatic private Timeline directory");
+    }
   }
 
   Optional<TimelinePolling> polling() {
@@ -403,16 +436,19 @@ final class TimelineService implements AutoCloseable {
 
   /** Operator-only custody registration. Stored references never grant access to the Timeline. */
   Map<String, Object> poll(String account, String name, Map<String, Object> reader) {
-    if (polling == null)
+    if (polling == null) {
       throw new IllegalArgumentException("Automatic directory polling is not configured");
+    }
     TimelineArchive archive = directory.named(account, name);
     if (archive.source().publicRead()) {
-      if (reader != null)
+      if (reader != null) {
         throw new IllegalArgumentException("Public Timeline polling does not accept a reader key");
+      }
     } else {
-      if (reader == null)
+      if (reader == null) {
         throw new IllegalArgumentException(
             "Private Timeline polling requires pinned reader custody");
+      }
       reader(account, archive, reader);
     }
     directory.poll(account, name, reader);
@@ -423,12 +459,13 @@ final class TimelineService implements AutoCloseable {
   Map<String, Object> pollingStatus(String account, String name) {
     TimelineArchive archive = directory.named(account, name);
     AtomicStore.Row row = polling.registered(account, name);
-    if (row == null)
+    if (row == null) {
       return Map.of(
           "automatic",
           false,
           "status",
           archive.source().publicRead() ? "NOT_REGISTERED" : "READER_REQUIRED");
+    }
     polling.requireSource(row, archive);
     return Map.of("automatic", true, "status", "PENDING");
   }
@@ -452,11 +489,13 @@ final class TimelineService implements AutoCloseable {
   /** Inclusive diagnostic totals overlap across phases and concurrently polled sources. */
   Map<String, Long> statistics() {
     Map<String, Long> result = new TreeMap<>(ingress.metrics.snapshot());
-    if (graphs != null)
+    if (graphs != null) {
       graphs.statistics().forEach((key, value) -> result.merge(key, value, Long::sum));
+    }
     work.metrics.snapshot().forEach((key, value) -> result.merge(key, value, Long::sum));
-    if (directory != null)
+    if (directory != null) {
       directory.metrics.snapshot().forEach((key, value) -> result.merge(key, value, Long::sum));
+    }
     sources
         .values()
         .forEach(
@@ -481,9 +520,10 @@ final class TimelineService implements AutoCloseable {
   }
 
   void acquired(Adopted source, TimelineArchive.Acquired result) {
-    if (!result.duplicate())
+    if (!result.duplicate()) {
       work.signal(
           TimelineWork.source(source.account(), source.archive().source().timeline().value()));
+    }
   }
 
   /** Prefetch the declared sources in parallel with acquisition of a newly published input. */
@@ -495,7 +535,9 @@ final class TimelineService implements AutoCloseable {
       // The representative handles members of an indivisible cycle without walking ancestors.
       var records = ownerStorage.records(account);
       var publication = records.get("publication", document);
-      if (publication == null) return;
+      if (publication == null) {
+        return;
+      }
       String owner = OwnerGraphs.address((String) publication.get("representative"));
       records.frontiers.sources(records.read, owner).stream()
           .filter(source -> source.kind() == OwnerFrontiers.Kind.TIMELINE)
@@ -504,14 +546,19 @@ final class TimelineService implements AutoCloseable {
           .forEach(source -> cuts.add(new TimelineInputs.Cut(source, 0, "", 0)));
     } else {
       AtomicStore.Row receiver = repository.store.get(TimelineWork.receiver(account, document));
-      if (receiver == null) return;
-      for (Object source : (List<?>) receiver.value().get("sources"))
+      if (receiver == null) {
+        return;
+      }
+      for (Object source : (List<?>) receiver.value().get("sources")) {
         cuts.add(new TimelineInputs.Cut((String) source, 0, "", 0));
+      }
     }
     // These are only monotonic requests. The receiver still verifies actual historical coverage,
     // permission and its current declarations before admitting the original signed input.
     TimelineCoverage.require(repository.store, account, cuts, timestamp);
-    for (TimelineInputs.Cut cut : cuts) arrived(account, cut.timeline());
+    for (TimelineInputs.Cut cut : cuts) {
+      arrived(account, cut.timeline());
+    }
   }
 
   String namespace() {
@@ -544,7 +591,9 @@ final class TimelineService implements AutoCloseable {
               declaration.put("provider", source.provider().value());
               declaration.put("timeline", source.timeline().value());
               TimelineReaderSigning reader = readers.get(key);
-              if (reader != null) declaration.put("readerKey", reader.publicKey());
+              if (reader != null) {
+                declaration.put("readerKey", reader.publicKey());
+              }
               expected.put(new AtomicStore.Key(partition, "SOURCE#" + key.name()), declaration);
             }
           });
@@ -556,8 +605,9 @@ final class TimelineService implements AutoCloseable {
       for (int offset = 0; offset < aliases.size(); offset += 99) {
         Map<AtomicStore.Key, Map<String, Object>> page = new LinkedHashMap<>();
         page.put(namespaceKey, binding);
-        for (var key : aliases.subList(offset, Math.min(aliases.size(), offset + 99)))
+        for (var key : aliases.subList(offset, Math.min(aliases.size(), offset + 99))) {
           page.put(key, expected.get(key));
+        }
         bindPage(page);
       }
       accounts
@@ -576,17 +626,23 @@ final class TimelineService implements AutoCloseable {
       expected.forEach(
           (key, value) -> {
             AtomicStore.Row prior = found.get(key);
-            if (prior == null) writes.add(AtomicStore.Write.put(key, 0, value));
-            else {
-              if (prior.version() != 1 || !prior.key().equals(key) || !prior.value().equals(value))
+            if (prior == null) {
+              writes.add(AtomicStore.Write.put(key, 0, value));
+            } else {
+              if (prior.version() != 1
+                  || !prior.key().equals(key)
+                  || !prior.value().equals(value)) {
                 throw new IllegalArgumentException(
                     "Stored Timeline configuration differs; explicit migration required");
+              }
               checks.add(new AtomicStore.Check(key, 1));
             }
           });
       bound = writes.isEmpty() || repository.store.commit(writes, checks);
     }
-    if (!bound) throw new IllegalStateException("Concurrent Timeline configuration publication");
+    if (!bound) {
+      throw new IllegalStateException("Concurrent Timeline configuration publication");
+    }
   }
 
   Map<String, Object> acquire(
@@ -609,8 +665,9 @@ final class TimelineService implements AutoCloseable {
 
   Map<String, Object> discover(String account, String name, String exactJson) {
     TimelineArchive archive = source(account, name);
-    if (exactJson.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 256 * 1024)
+    if (exactJson.getBytes(java.nio.charset.StandardCharsets.UTF_8).length > 256 * 1024) {
       throw new IllegalArgumentException("Provider descriptor exceeds 256 KiB");
+    }
     Language language =
         Language.newBuilder()
             .mount("Coordination", archive.coordination())
@@ -677,12 +734,15 @@ final class TimelineService implements AutoCloseable {
     for (Contracts.ReceivingChannel channel : reception.channels()) {
       List<TimelineArchive> matches =
           available.stream().filter(archive -> ingress.matches(channel, archive.source())).toList();
-      if (matches.size() != 1)
+      if (matches.size() != 1) {
         throw new IllegalArgumentException("Every Timeline receiver requires one adopted source");
+      }
       String source = matches.getFirst().source().timeline().value();
       required.add(source);
       inputs.add(source);
-      if (channel.observed()) observed.add(source);
+      if (channel.observed()) {
+        observed.add(source);
+      }
       if (privateAccess && !matches.getFirst().source().publicRead()) {
         // Discovery can arrive after document creation. Subscribe to the bounded configured
         // public sources for this provider; selection later requires its exact signed control ID.
@@ -719,7 +779,9 @@ final class TimelineService implements AutoCloseable {
             ? (owner, reception) -> accounts.getOrDefault(owner, List.of())
             : (owner, reception) -> directory.select(owner, reception, false);
     if (GraphDocuments.handles(document)) {
-      if (graphs == null) throw new IllegalStateException("Canonical graph runtime is unavailable");
+      if (graphs == null) {
+        throw new IllegalStateException("Canonical graph runtime is unavailable");
+      }
       return graphs.step(graphIngress, account, document, selected);
     }
     return ingress.step(core, account, document, selected);
@@ -741,8 +803,11 @@ final class TimelineService implements AutoCloseable {
         }
       }
     }
-    if (polling == null || !(result.get("sources") instanceof List<?> sources) || sources.isEmpty())
+    if (polling == null
+        || !(result.get("sources") instanceof List<?> sources)
+        || sources.isEmpty()) {
       return result;
+    }
     Map<String, Map<String, Object>> failures = new TreeMap<>();
     for (int start = 0; start < sources.size(); start += 100) {
       var selected = sources.subList(start, Math.min(start + 100, sources.size()));
@@ -751,7 +816,9 @@ final class TimelineService implements AutoCloseable {
               directory.pollingRegistrations(
                   account, selected.stream().map(String.class::cast).toList())));
     }
-    if (failures.isEmpty()) return result;
+    if (failures.isEmpty()) {
+      return result;
+    }
     var observed = new LinkedHashMap<>(result);
     observed.put("sourceFailures", failures);
     return Collections.unmodifiableMap(observed);
@@ -762,8 +829,9 @@ final class TimelineService implements AutoCloseable {
   }
 
   Map<String, Object> adopt(String account, String name, Map<String, Object> definitions) {
-    if (directory == null)
+    if (directory == null) {
       throw new IllegalArgumentException("Durable source directory is not configured");
+    }
     TimelineArchive.Source source = directory.adopt(account, name, definitions).source();
     work.recover(account, source.timeline().value());
     arrived(account, source.timeline().value());
@@ -781,8 +849,9 @@ final class TimelineService implements AutoCloseable {
   }
 
   Map<String, Object> sources(String account, String after, int limit) {
-    if (directory == null)
+    if (directory == null) {
       throw new IllegalArgumentException("Durable source directory is not configured");
+    }
     AtomicStore.Page page = directory.list(account, after, limit);
     List<Object> items = new ArrayList<>();
     for (AtomicStore.Row row : page.rows()) {
@@ -799,7 +868,9 @@ final class TimelineService implements AutoCloseable {
   }
 
   TimelineArchive originalSource(String account, String identity) {
-    if (directory != null) return directory.timeline(account, identity);
+    if (directory != null) {
+      return directory.timeline(account, identity);
+    }
     return accounts.getOrDefault(account, List.of()).stream()
         .filter(a -> a.source().timeline().value().equals(identity))
         .findFirst()
@@ -807,10 +878,14 @@ final class TimelineService implements AutoCloseable {
   }
 
   TimelineArchive source(String account, String name) {
-    if (directory != null) return directory.named(account, name);
+    if (directory != null) {
+      return directory.named(account, name);
+    }
     TimelineArchive result =
         sources.get(new Key(Repository.identifier(account), Repository.identifier(name)));
-    if (result == null) throw new MissingSource();
+    if (result == null) {
+      throw new MissingSource();
+    }
     return result;
   }
 
@@ -826,6 +901,8 @@ final class TimelineService implements AutoCloseable {
     stopTime();
     ingress.close();
     graphIngress.close();
-    if (graphs != null) graphs.close();
+    if (graphs != null) {
+      graphs.close();
+    }
   }
 }

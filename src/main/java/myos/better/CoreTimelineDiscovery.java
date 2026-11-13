@@ -1,6 +1,13 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageException;
+import blue.TimelineAccess;
+import blue.TimelineReader;
 import java.io.IOException;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -51,12 +58,14 @@ final class CoreTimelineDiscovery {
             .content(response)
             .build()
             .read(new BlueId(response.at("/object/content").observation("exactId").text()));
-    if (!expected.equals(timeline.blueId()))
+    if (!expected.equals(timeline.blueId())) {
       throw new IllegalArgumentException("Provider returned another Timeline identity");
+    }
     TimelineReader reader = TimelineReader.adopt(coordination, provider, timeline, descriptor);
     LanguageContent verified = reader.content(lookup.request()).accept(response);
-    if (!expected.equals(verified.blueId()))
+    if (!expected.equals(verified.blueId())) {
       throw new IllegalArgumentException("Verified Timeline identity differs from selection");
+    }
     keys.read(account, key);
     return new Source(provider, timeline, control, descriptor);
   }
@@ -79,14 +88,17 @@ final class CoreTimelineDiscovery {
     try {
       provider = context.read(providerId);
     } catch (LanguageException unavailable) {
-      if (!"ProviderUnavailable".equals(unavailable.category())) throw unavailable;
+      if (!"ProviderUnavailable".equals(unavailable.category())) {
+        throw unavailable;
+      }
       context = providerDefinition(endpoint, deadline).toBuilder().content(descriptor).build();
       provider = context.read(providerId);
       // Preserve the original prepared closure while attaching the newly verified definition.
       descriptor = context.prepare(Language.Input.exactJson(descriptor.toJson()));
     }
-    if (!endpoint.equals(provider.at("/endpoint").text()))
+    if (!endpoint.equals(provider.at("/endpoint").text())) {
       throw new IllegalArgumentException("Provider endpoint differs from the selected endpoint");
+    }
     LanguageDocument control =
         context.read(
             new BlueId(descriptor.at("/object/controlTimeline").observation("exactId").text()));
@@ -122,18 +134,22 @@ final class CoreTimelineDiscovery {
         LanguageDocument initial = context.read(expected);
         try (var verification =
             TimelineAccess.track(coordination, source.provider(), source.descriptor(), initial)) {
-          if (verification.view().isPresent())
+          if (verification.view().isPresent()) {
             throw new IllegalStateException("Discovery granted access before replay");
+          }
         }
         return new Access(
             new Source(source.provider(), source.control(), source.control(), source.descriptor()),
             initial,
             description);
       } catch (LanguageException unavailable) {
-        if (!"ProviderUnavailable".equals(unavailable.category()) || attempt == 64)
+        if (!"ProviderUnavailable".equals(unavailable.category()) || attempt == 64) {
           throw unavailable;
+        }
         BlueId missing = new BlueId(unavailable.diagnostic().at("/detail").text());
-        if (!fetched.add(missing)) throw unavailable;
+        if (!fetched.add(missing)) {
+          throw unavailable;
+        }
         LanguageContent lookup =
             context.prepare(
                 Language.Input.yaml(
@@ -171,8 +187,9 @@ final class CoreTimelineDiscovery {
         language.admit(
             language.prepare(Language.Input.exactJson(JsonText.of(advertised.get("definition")))),
             Language.Goal.DEFINITION);
-    if (!expected.equals(definition.blueId()))
+    if (!expected.equals(definition.blueId())) {
       throw new IllegalArgumentException("Provider type definition has another identity");
+    }
     return language.toBuilder().content(definition).build();
   }
 
@@ -187,7 +204,9 @@ final class CoreTimelineDiscovery {
           || uri.getRawFragment() != null
           || !uri.normalize().equals(uri)
           || uri.getPort() != -1 && uri.getPort() != 443
-          || value.endsWith("/")) throw new IllegalArgumentException();
+          || value.endsWith("/")) {
+        throw new IllegalArgumentException();
+      }
       return uri;
     } catch (RuntimeException invalid) {
       throw new ConsoleProblem(
@@ -206,14 +225,17 @@ final class CoreTimelineDiscovery {
   private String exchangeText(String target, String request, long deadline)
       throws IOException, InterruptedException {
     long remaining = deadline - System.nanoTime();
-    if (remaining <= 0)
+    if (remaining <= 0) {
       throw new java.net.http.HttpTimeoutException("Provider discovery deadline exceeded");
+    }
     var response =
         transport.exchange(URI.create(target), request, 256 * 1024, Duration.ofNanos(remaining));
-    if (response.status() != 200)
+    if (response.status() != 200) {
       throw new IOException("Provider discovery HTTP " + response.status());
-    if (response.byteSize() > 256 * 1024)
+    }
+    if (response.byteSize() > 256 * 1024) {
       throw new IOException("Provider discovery response exceeds 256 KiB");
+    }
     // Decode only valid UTF-8; a replacement character must not change signed wire meaning.
     String json =
         StandardCharsets.UTF_8

@@ -1,7 +1,26 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Contracts;
+import blue.LanguageContent;
+import blue.LanguageException;
+import blue.NativeAdmission;
+import blue.NativeChannel;
+import blue.TimelineChannels;
+import blue.TimelineVerifier;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 /**
  * One original source occurrence through the published channels and a durable local document.
@@ -97,7 +116,9 @@ final class TimelineIngress implements AutoCloseable {
   }
 
   void useLocalHistory(TimelinePermissions.LocalHistory history) {
-    if (permissions == null) throw new IllegalStateException("Private access is not configured");
+    if (permissions == null) {
+      throw new IllegalStateException("Private access is not configured");
+    }
     permissions.useLocalHistory(history);
   }
 
@@ -114,14 +135,18 @@ final class TimelineIngress implements AutoCloseable {
   @SuppressWarnings("try")
   Outcome step(Core core, String account, String document, Sources sources) {
     core.requireNativeStore(repository.store);
-    if (invocation.get() != null) throw new IllegalStateException("Nested Timeline ingress");
+    if (invocation.get() != null) {
+      throw new IllegalStateException("Nested Timeline ingress");
+    }
     Prepared prepared;
     try (var timing = metrics.time(TimelineMetrics.Phase.PREPARE_INPUT)) {
       prepared =
           core.inspectNative(
               account, document, (stored, session) -> prepare(core, stored, session, sources));
     }
-    if (prepared.waiting() != null) return prepared.waiting();
+    if (prepared.waiting() != null) {
+      return prepared.waiting();
+    }
     Frame frame = prepared.frame();
     Map<String, Object> evidence = new LinkedHashMap<>();
     frame.assessments().keySet().forEach(type -> evidence.put(type.value(), frame.proof()));
@@ -155,12 +180,14 @@ final class TimelineIngress implements AutoCloseable {
 
   boolean matches(Contracts.ReceivingChannel channel, TimelineArchive.Source source) {
     Map<String, BlueId> fields = channel.headerIdentities();
-    if (channel.typeId().equals(timelineType))
+    if (channel.typeId().equals(timelineType)) {
       return source.timeline().equals(fields.get("timeline"));
-    if (channel.typeId().equals(publicType))
+    }
+    if (channel.typeId().equals(publicType)) {
       return source.publicRead()
           && source.provider().equals(fields.get("provider"))
           && source.url().equals(channel.receiver().header().get("url"));
+    }
     throw new IllegalStateException("Receiver also requires an unsupported native protocol");
   }
 
@@ -171,33 +198,45 @@ final class TimelineIngress implements AutoCloseable {
     List<Binding> bindings = new ArrayList<>();
     Map<BlueId, TimelineArchive> required = new TreeMap<>(Comparator.comparing(BlueId::value));
     for (Contracts.ReceivingChannel channel : reception.channels()) {
-      if (!channel.typeId().equals(timelineType) && !channel.typeId().equals(publicType))
+      if (!channel.typeId().equals(timelineType) && !channel.typeId().equals(publicType)) {
         throw new IllegalStateException("Receiver also requires an unsupported native protocol");
+      }
       List<Binding> matches = new ArrayList<>();
       for (TimelineArchive archive : archives) {
         TimelineArchive.Source source = archive.source();
-        if (!source.account().equals(stored.account())) continue;
-        if (matches(channel, source))
+        if (!source.account().equals(stored.account())) {
+          continue;
+        }
+        if (matches(channel, source)) {
           matches.add(
               new Binding(channel, archive, source, channel.headerIdentities().get("actor")));
+        }
       }
-      if (matches.isEmpty())
+      if (matches.isEmpty()) {
         return waiting("Required source is not adopted: " + channel.receiver().channel());
-      if (matches.size() != 1) throw new IllegalStateException("Ambiguous adopted source binding");
+      }
+      if (matches.size() != 1) {
+        throw new IllegalStateException("Ambiguous adopted source binding");
+      }
       Binding binding = matches.getFirst();
-      if (!binding.source().publicRead() && permissions == null)
+      if (!binding.source().publicRead() && permissions == null) {
         return waiting("Historical private access is not established");
+      }
       bindings.add(binding);
       required.put(binding.source().timeline(), binding.archive());
     }
     Prepared prepared =
         prepareSelected(core, stored, session, reception, archives, bindings, required);
-    if (prepared.waiting() == null) return prepared;
+    if (prepared.waiting() == null) {
+      return prepared;
+    }
     Set<String> inputs = new TreeSet<>(), observed = new TreeSet<>();
     for (Binding binding : bindings) {
       String id = binding.source().timeline().value();
       inputs.add(id);
-      if (binding.channel().observed()) observed.add(id);
+      if (binding.channel().observed()) {
+        observed.add(id);
+      }
     }
     Outcome outcome = prepared.waiting();
     return new Prepared(
@@ -217,8 +256,9 @@ final class TimelineIngress implements AutoCloseable {
       List<TimelineArchive> archives,
       List<Binding> bindings,
       Map<BlueId, TimelineArchive> required) {
-    if (required.isEmpty())
+    if (required.isEmpty()) {
       return new Prepared(null, new Outcome(Status.IDLE, "No Timeline channels"));
+    }
     TimelinePermissions.Selection access = null;
     String shape = shape(reception);
     if (permissions != null) {
@@ -231,8 +271,9 @@ final class TimelineIngress implements AutoCloseable {
       } catch (TimelinePermissions.Unavailable missing) {
         return waiting(missing.getMessage());
       }
-      for (TimelineArchive control : access.controls())
+      for (TimelineArchive control : access.controls()) {
         required.put(control.source().timeline(), control);
+      }
       shape =
           Json.hash(
               Json.bytes(
@@ -262,19 +303,28 @@ final class TimelineIngress implements AutoCloseable {
       } catch (RuntimeException failure) {
         // Preserve the already established prefix. The next selection encounters the same
         // failure at its original position; a later bad input cannot erase earlier dispositions.
-        if (lastSkipped == null) throw failure;
+        if (lastSkipped == null) {
+          throw failure;
+        }
         return dispose(lastSkipped, reception, skipped);
       }
-      if (prepared.waiting() != null || participates(prepared.frame()))
+      if (prepared.waiting() != null || participates(prepared.frame())) {
         return lastSkipped == null ? prepared : dispose(lastSkipped, reception, skipped);
+      }
       skipped.add(Map.of("input", plan.order().orElseThrow(), "channels", audit(prepared.frame())));
       lastSkipped = plan;
-      if (skipped.size() == DISPOSITION_BATCH) break;
+      if (skipped.size() == DISPOSITION_BATCH) {
+        break;
+      }
       plan = plan.following();
     }
-    if (lastSkipped != null) return dispose(lastSkipped, reception, skipped);
+    if (lastSkipped != null) {
+      return dispose(lastSkipped, reception, skipped);
+    }
     plan.requestCoverage();
-    for (String timeline : plan.waitingSources()) demand.accept(stored.account(), timeline);
+    for (String timeline : plan.waitingSources()) {
+      demand.accept(stored.account(), timeline);
+    }
     return new Prepared(
         null,
         new Outcome(
@@ -307,13 +357,18 @@ final class TimelineIngress implements AutoCloseable {
     }
 
     private Set<String> resolve(BlueId target) {
-      if (graph == null) graph = graphs.root(document.account(), document.id(), document.version());
+      if (graph == null) {
+        graph = graphs.root(document.account(), document.id(), document.version());
+      }
       GraphLineage.Target found = graphs.find(document.account(), graph, target.value());
       Set<String> result = new HashSet<>(found == null ? Set.of() : found.members().keySet());
       // The original authored root identity predates its first initialized receiver view.
-      if (view == null) view = lineage.view(document.account(), document.id(), document.version());
-      if (view.find(target).isPresent())
+      if (view == null) {
+        view = lineage.view(document.account(), document.id(), document.version());
+      }
+      if (view.find(target).isPresent()) {
         result.add((String) ((Map<?, ?>) document.checkpoint().get("snapshot")).get("root"));
+      }
       return Set.copyOf(result);
     }
   }
@@ -332,7 +387,9 @@ final class TimelineIngress implements AutoCloseable {
     Map<String, Object> audit = new LinkedHashMap<>();
     audit.put("snapshot", reception.snapshotIdentity());
     audit.put("channels", skipped.getLast().get("channels"));
-    if (skipped.size() > 1) audit.put("entries", List.copyOf(skipped));
+    if (skipped.size() > 1) {
+      audit.put("entries", List.copyOf(skipped));
+    }
     last.appendTo(writes, checks, TimelineInputs.Disposition.INAPPLICABLE, null, audit);
     return new Prepared(
         null,
@@ -358,11 +415,14 @@ final class TimelineIngress implements AutoCloseable {
       try {
         decision = permissions.check(access, plan);
       } catch (LanguageException missing) {
-        if (!missing.incomplete()) throw missing;
+        if (!missing.incomplete()) {
+          throw missing;
+        }
         return waiting("Access history is incomplete: " + missing.category());
       }
-      if (decision.status() != Status.APPLIED)
+      if (decision.status() != Status.APPLIED) {
         return new Prepared(null, new Outcome(decision.status(), decision.reason()));
+      }
       accessFacts = decision.facts();
     }
     TimelineVerifier.Entry verified = plan.verifiedEntry().orElse(null);
@@ -375,8 +435,9 @@ final class TimelineIngress implements AutoCloseable {
             && (!verified.mayInvokeOperation() || target != null && !routing.addressed(target));
     Optional<Contracts.OperationRequest> operation =
         operationExcluded ? Optional.empty() : operation(session, plan, verified);
-    if (!operationExcluded)
+    if (!operationExcluded) {
       target = operation.flatMap(Contracts.OperationRequest::document).orElse(null);
+    }
     // A complete receiver lineage establishes both membership and nonmembership. An
     // unrelated target need not be installed elsewhere in this account to exclude this receiver.
     // Its declared raw event observers still participate below.
@@ -524,20 +585,25 @@ final class TimelineIngress implements AutoCloseable {
         || !request.inputId().equals(frame.input())
         || !request.entryId().value().equals(order.entry())
         || request.timestamp() != order.timestamp()
-        || !frame.proof().equals(request.evidence()))
+        || !frame.proof().equals(request.evidence())) {
       request.reject("Different receiving input or scope");
+    }
     List<TimelineChannels.Assessment> expected = frame.assessments().get(request.channelTypeId());
     if (expected == null
         || expected.size() != request.receivers().size()
         || !new HashSet<>(request.receivers())
             .equals(
                 new HashSet<>(
-                    expected.stream().map(TimelineChannels.Assessment::receiver).toList())))
+                    expected.stream().map(TimelineChannels.Assessment::receiver).toList()))) {
       request.reject("Different receiving declarations or lifetimes");
+    }
     return expected;
   }
 
+  @Override
   public void close() {
-    if (permissions != null) permissions.close();
+    if (permissions != null) {
+      permissions.close();
+    }
   }
 }

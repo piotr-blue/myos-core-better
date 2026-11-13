@@ -1,11 +1,26 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
-import java.util.concurrent.*;
-import org.junit.jupiter.api.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 /** Durable adoption, tenant isolation, corrupt pins and source-selection locality. */
 class TimelineDirectoryTest {
@@ -73,7 +88,7 @@ class TimelineDirectoryTest {
       CountDownLatch ready = new CountDownLatch(4), start = new CountDownLatch(1);
       try (ExecutorService pool = Executors.newFixedThreadPool(4)) {
         List<Future<Boolean>> results = new ArrayList<>();
-        for (TimelineFixture source : List.of(a, b, a, b))
+        for (TimelineFixture source : List.of(a, b, a, b)) {
           results.add(
               pool.submit(
                   () -> {
@@ -87,10 +102,15 @@ class TimelineDirectoryTest {
                       return false;
                     }
                   }));
+        }
         assertTrue(ready.await(5, TimeUnit.SECONDS));
         start.countDown();
         int successful = 0;
-        for (Future<Boolean> result : results) if (result.get(10, TimeUnit.SECONDS)) successful++;
+        for (Future<Boolean> result : results) {
+          if (result.get(10, TimeUnit.SECONDS)) {
+            successful++;
+          }
+        }
         assertEquals(2, successful);
       }
       TimelineDirectory fresh = directory(store);
@@ -281,27 +301,35 @@ class TimelineDirectoryTest {
     boolean loseReply, failContent;
     int commits;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
-      if (failContent) throw new IllegalStateException("Unavailable source definition");
+      if (failContent) {
+        throw new IllegalStateException("Unavailable source definition");
+      }
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       commits++;
       boolean committed = delegate.commit(writes, checks);

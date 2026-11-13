@@ -1,7 +1,14 @@
 package myos.better;
 
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Durable event facts are committed with their source; account sequencing runs on the read side.
@@ -84,8 +91,9 @@ final class CoreEvents {
                 ? batch
                 : List.of(row.value().get("event"));
         int offset = Math.toIntExact(Repository.number(row.value().getOrDefault("offset", 0)));
-        if (facts.isEmpty() || offset < 0 || offset >= facts.size())
+        if (facts.isEmpty() || offset < 0 || offset >= facts.size()) {
           throw new IllegalStateException("Invalid retained event batch");
+        }
         int end = Math.min(facts.size(), offset + remaining);
         for (int index = offset; index < end; index++) {
           var event = new LinkedHashMap<>(RuntimeConfiguration.object(facts.get(index), "event"));
@@ -100,18 +108,23 @@ final class CoreEvents {
                   Map.of("sequence", sequence)));
         }
         remaining -= end - offset;
-        if (end == facts.size()) writes.add(AtomicStore.Write.delete(row));
-        else {
+        if (end == facts.size()) {
+          writes.add(AtomicStore.Write.delete(row));
+        } else {
           var advanced = new LinkedHashMap<>(row.value());
           advanced.put("offset", end);
           writes.add(AtomicStore.Write.put(row.key(), row.version(), advanced));
         }
-        if (remaining == 0) break;
+        if (remaining == 0) {
+          break;
+        }
       }
       writes.add(
           AtomicStore.Write.put(
               sequenceKey, before == null ? 0 : before.version(), Map.of("last", sequence)));
-      if (store.commit(writes, List.of())) return sequence;
+      if (store.commit(writes, List.of())) {
+        return sequence;
+      }
     }
     throw new ConsoleProblem(
         503, "EVENTS_BUSY", "Retained event projection is busy. Retry this read.");
@@ -122,9 +135,10 @@ final class CoreEvents {
     project(account);
     var location = store.get(new AtomicStore.Key(partition(account), "ID#" + id));
     if (location == null) {
-      if (pending(account))
+      if (pending(account)) {
         throw new ConsoleProblem(
             503, "EVENTS_PROJECTING", "Retained events are being projected. Retry this read.");
+      }
       throw new ConsoleProblem(404, "EVENT_NOT_FOUND", "Event not retained in this account.");
     }
     return CorePublicationEvents.expand(
@@ -139,53 +153,73 @@ final class CoreEvents {
       String admission,
       boolean follow) {
     Set<String> allowed = new HashSet<>(Set.of("limit", "pageToken", "from", "to", "order"));
-    if (admission == null) allowed.add("type");
-    if (session == null && admission == null) allowed.addAll(Set.of("sessionId", "admissionId"));
+    if (admission == null) {
+      allowed.add("type");
+    }
+    if (session == null && admission == null) {
+      allowed.addAll(Set.of("sessionId", "admissionId"));
+    }
     RuntimeConfiguration.fields(new HashMap<>(query), allowed);
-    if (query.containsKey("type") && !TYPES.contains(query.get("type")))
+    if (query.containsKey("type") && !TYPES.contains(query.get("type"))) {
       throw new IllegalArgumentException("Unsupported event category");
+    }
     String order = query.getOrDefault("order", "asc");
-    if (!Set.of("asc", "desc").contains(order))
+    if (!Set.of("asc", "desc").contains(order)) {
       throw new IllegalArgumentException("Use asc or desc");
+    }
     boolean descending = order.equals("desc"), live = follow && !descending;
     Instant from = time(query.get("from")), to = time(query.get("to"));
-    if (from != null && to != null && from.isAfter(to))
+    if (from != null && to != null && from.isAfter(to)) {
       throw new IllegalArgumentException("Invalid event time range");
+    }
     int limit = CoreListFilter.limit(query);
     var cursor = pages.decode(account, resource, query);
     long latest = project(account);
-    if (!live && cursor.isEmpty() && pending(account))
+    if (!live && cursor.isEmpty() && pending(account)) {
       throw new ConsoleProblem(
           503,
           "read_model_not_ready",
           "Retained events are still being projected. Retry the history read.");
+    }
     long upper = live || cursor.isEmpty() ? latest : Repository.number(cursor.get("upper"));
     long after =
         cursor.isEmpty() ? (descending ? upper + 1 : 0) : Repository.number(cursor.get("after"));
-    if (upper > latest || after < 0 || after > upper + 1)
+    if (upper > latest || after < 0 || after > upper + 1) {
       throw new IllegalArgumentException("Invalid event boundary");
+    }
     String selectedSession = session == null ? query.get("sessionId") : session;
     String nativeSession = selectedSession;
     if (selectedSession != null) {
       var alias = store.get(RootDocuments.root(account, selectedSession));
-      if (alias != null && alias.value().get("instance") instanceof String instance)
+      if (alias != null && alias.value().get("instance") instanceof String instance) {
         nativeSession = instance;
+      }
     }
     String selectedAdmission = admission == null ? query.get("admissionId") : admission;
     List<Object> items = new ArrayList<>();
     for (int scanned = 0; scanned < 200 && items.size() < limit; scanned++) {
       long next = after + (descending ? -1 : 1);
-      if (next < 1 || next > upper) break;
+      if (next < 1 || next > upper) {
+        break;
+      }
       after = next;
       var event = event(account, next);
       var ref = RuntimeConfiguration.object(event.get("ref"), "event reference");
       if (selectedSession != null
           && !selectedSession.equals(ref.get("sessionId"))
-          && !nativeSession.equals(ref.get("sessionId"))) continue;
-      if (selectedAdmission != null && !selectedAdmission.equals(ref.get("admissionId"))) continue;
-      if (query.containsKey("type") && !query.get("type").equals(event.get("type"))) continue;
+          && !nativeSession.equals(ref.get("sessionId"))) {
+        continue;
+      }
+      if (selectedAdmission != null && !selectedAdmission.equals(ref.get("admissionId"))) {
+        continue;
+      }
+      if (query.containsKey("type") && !query.get("type").equals(event.get("type"))) {
+        continue;
+      }
       var created = Instant.parse((String) event.get("created"));
-      if (from != null && created.isBefore(from) || to != null && created.isAfter(to)) continue;
+      if (from != null && created.isBefore(from) || to != null && created.isAfter(to)) {
+        continue;
+      }
       items.add(CorePublicationEvents.expand(store, event));
     }
     boolean more = descending ? after > 1 : after < upper || live && pending(account);
@@ -224,7 +258,9 @@ final class CoreEvents {
 
   private Map<String, Object> event(String account, long sequence) {
     var row = store.get(eventKey(account, sequence));
-    if (row == null) throw new IllegalStateException("Retained event sequence has a gap");
+    if (row == null) {
+      throw new IllegalStateException("Retained event sequence has a gap");
+    }
     return row.value();
   }
 

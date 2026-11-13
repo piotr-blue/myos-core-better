@@ -1,14 +1,22 @@
 package myos.better;
 
-import static myos.better.CoreWorkspacesHttpTest.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static myos.better.CoreWorkspacesHttpTest.json;
+import static myos.better.CoreWorkspacesHttpTest.request;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.io.*;
-import java.net.*;
-import java.net.http.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.*;
-import java.util.*;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -147,7 +155,7 @@ class CoreImagesHttpTest {
   void malformedPartsInvalidRevisionsAndUnsupportedImagesAreBounded() throws Exception {
     try (var f = new ConsoleHttpTest.Fixture(web)) {
       String guard = (String) f.json(f.get("blue/v1/me", "alice")).get("sessionContext");
-      for (String revision : List.of("-1", "1.5", "01", "9223372036854775808"))
+      for (String revision : List.of("-1", "1.5", "01", "9223372036854775808")) {
         assertEquals(
             422,
             uploadBearer(
@@ -159,6 +167,7 @@ class CoreImagesHttpTest {
                     UUID.randomUUID().toString(),
                     multipart(CoreImagesTest.png(4, 4), revision))
                 .statusCode());
+      }
       assertEquals(
           422,
           uploadBearer(
@@ -191,8 +200,12 @@ class CoreImagesHttpTest {
       ConsoleHttpTest.Fixture f, String path, String cookie, String etag, boolean head)
       throws Exception {
     var request = HttpRequest.newBuilder(URI.create(f.url + path));
-    if (cookie != null) request.header("Cookie", cookie);
-    if (etag != null) request.header("If-None-Match", etag);
+    if (cookie != null) {
+      request.header("Cookie", cookie);
+    }
+    if (etag != null) {
+      request.header("If-None-Match", etag);
+    }
     request.method(head ? "HEAD" : "GET", HttpRequest.BodyPublishers.noBody());
     return f.http.send(request.build(), HttpResponse.BodyHandlers.ofByteArray());
   }
@@ -237,8 +250,12 @@ class CoreImagesHttpTest {
             .header("Origin", "https://console.example")
             .header("Content-Type", "multipart/form-data; boundary=avatar-test")
             .header("Idempotency-Key", command);
-    if (account != null) request.header("X-MyOS-Account", account);
-    if (guard != null) request.header("X-MyOS-Session-Context", guard);
+    if (account != null) {
+      request.header("X-MyOS-Account", account);
+    }
+    if (guard != null) {
+      request.header("X-MyOS-Session-Context", guard);
+    }
     return f.http.send(
         request.PUT(HttpRequest.BodyPublishers.ofByteArray(body)).build(),
         HttpResponse.BodyHandlers.ofString());

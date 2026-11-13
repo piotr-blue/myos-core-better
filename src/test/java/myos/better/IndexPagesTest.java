@@ -1,6 +1,11 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
 import java.util.Map;
@@ -71,24 +76,32 @@ class IndexPagesTest {
     var repository = new Repository(new JsonBoundaryStore());
     var writer = repository.blobs("alice");
     var values = new TreeMap<String, String>();
-    for (int i = 0; i < 1000; i++) values.put(String.format("%04d", i), "value" + i);
+    for (int i = 0; i < 1000; i++) {
+      values.put(String.format("%04d", i), "value" + i);
+    }
     String root = new OrderedIndex(writer).update("", values);
     writer.flush();
     assertEquals(values, new OrderedIndex(repository.blobs("alice")).getAll(root, values.keySet()));
     BlobStore sharedOnly =
         new BlobStore() {
+          @Override
           public String put(byte[] ignored) {
             throw new AssertionError("Unexpected write");
           }
 
+          @Override
           public byte[] get(String ignored) {
             throw new AssertionError("Repeated page decode");
           }
 
+          @Override
           public void prefetch(List<String> ids) {
-            if (!ids.isEmpty()) throw new AssertionError("Repeated byte prefetch");
+            if (!ids.isEmpty()) {
+              throw new AssertionError("Repeated byte prefetch");
+            }
           }
 
+          @Override
           public OrderedIndex.Page orderedPage(String id) {
             return repository.blobs("alice").orderedPage(id);
           }

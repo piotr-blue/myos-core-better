@@ -1,7 +1,8 @@
 package myos.better;
 
 import blue.LanguageDocument;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /** Public processing state before the first native publication exists. */
 final class CoreInitializations {
@@ -12,7 +13,9 @@ final class CoreInitializations {
   }
 
   OwnerInitializations.State pending(String account, String instance) {
-    if (!OwnerGraphs.handles(instance)) return null;
+    if (!OwnerGraphs.handles(instance)) {
+      return null;
+    }
     var state =
         new OwnerInitializations(account).find(new OwnerMetadata(store, account).begin(), instance);
     return state == null || "SUCCEEDED".equals(state.status()) ? null : state;
@@ -49,7 +52,9 @@ final class CoreInitializations {
               case "WAITING" -> "Initialization is waiting for account gas.";
               default -> "The document is waiting for its first native publication.";
             });
-    if (state.terminal() != null) reason.put("details", state.terminal());
+    if (state.terminal() != null) {
+      reason.put("details", state.terminal());
+    }
     var value = new LinkedHashMap<String, Object>();
     value.put("state", paused ? "PAUSED" : nativeState);
     value.put("nativeState", nativeState);

@@ -1,7 +1,11 @@
 package myos.better;
 
 import blue.BlueId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Per-invocation source lookup. Matching an adopted source grants no read or execution authority.
@@ -15,13 +19,16 @@ final class AdoptedTimelineIndex {
   AdoptedTimelineIndex(String account, Collection<TimelineArchive> archives) {
     for (TimelineArchive archive : archives) {
       TimelineArchive.Source source = archive.source();
-      if (!source.account().equals(account)) continue;
+      if (!source.account().equals(account)) {
+        continue;
+      }
       timelines.computeIfAbsent(source.timeline(), ignored -> new ArrayList<>()).add(archive);
-      if (source.publicRead())
+      if (source.publicRead()) {
         publicTimelines
             .computeIfAbsent(
                 new PublicKey(source.provider(), source.url()), ignored -> new ArrayList<>())
             .add(archive);
+      }
     }
     // Keep every matching registration: callers must still reject ambiguous adoption.
     timelines.replaceAll((key, values) -> List.copyOf(values));

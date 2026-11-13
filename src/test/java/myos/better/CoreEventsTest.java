@@ -1,10 +1,17 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
@@ -104,7 +111,9 @@ class CoreEventsTest {
     var store = new JsonBoundaryStore();
     var admissions = new CoreAdmissions(store);
     // 13 admissions cross the 24-fact transaction boundary with only two excess records.
-    for (int i = 0; i < 13; i++) submit(admissions, "alice", "command-" + i);
+    for (int i = 0; i < 13; i++) {
+      submit(admissions, "alice", "command-" + i);
+    }
     var events = new CoreEvents(store, new CorePageTokens(store));
     var page = events.list("alice", "events", Map.of("limit", "100"), null, null, true);
     assertEquals(24, items(page).size());
@@ -146,8 +155,9 @@ class CoreEventsTest {
                   // its outbox query. Returning the old sequence would hide committed events.
                   if (method.getName().equals("query")
                       && args[0].equals("CORE_EVENT_OUTBOX#alice")
-                      && intervene.getAndSet(false))
+                      && intervene.getAndSet(false)) {
                     assertEquals(2L, new CoreEvents(store, pages).project("alice"));
+                  }
                   try {
                     return method.invoke(store, args);
                   } catch (InvocationTargetException failure) {
@@ -179,8 +189,9 @@ class CoreEventsTest {
                   } catch (InvocationTargetException failure) {
                     throw failure.getCause();
                   }
-                  if (method.getName().equals("commit") && fail.getAndSet(false))
+                  if (method.getName().equals("commit") && fail.getAndSet(false)) {
                     throw new IllegalStateException("Simulated lost commit response");
+                  }
                   return result;
                 });
     assertThrows(

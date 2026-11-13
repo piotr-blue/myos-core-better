@@ -1,10 +1,18 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
+import static myos.better.ProviderSigning.ref;
+import static myos.better.ProviderSigning.wire;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.TimelineRequests;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * Signed, checkpoint-bound read assembly after an owner-scoped lookup. This component does not
@@ -17,8 +25,9 @@ final class HostedTimelineReads {
 
   HostedTimelineReads(
       HostedTimelines timelines, ProviderSigning signing, int pageSize, int maximumBytes) {
-    if (pageSize < 1 || pageSize > 256 || maximumBytes < 1024 || maximumBytes > 4 * 1024 * 1024)
+    if (pageSize < 1 || pageSize > 256 || maximumBytes < 1024 || maximumBytes > 4 * 1024 * 1024) {
       throw new IllegalArgumentException("Invalid provider read limits");
+    }
     this.timelines = Objects.requireNonNull(timelines);
     this.signing = Objects.requireNonNull(signing);
     this.pageSize = pageSize;
@@ -31,13 +40,14 @@ final class HostedTimelineReads {
     HostedTimelines.Snapshot snapshot =
         timelines.snapshot(
             account, id, query.checkpoint().orElse(null), query.minimumCompleteBefore());
-    if (query.limit() == 0)
+    if (query.limit() == 0) {
       return bounded(
           response(
               request,
               snapshot.checkpoint().attestation(),
               null,
               context(owned, request, snapshot)));
+    }
     long lower =
         query.afterEntry().isPresent()
             ? snapshot.position(query.afterEntry().orElseThrow())
@@ -53,17 +63,24 @@ final class HostedTimelineReads {
       selected.add(entry);
       bytes += bytes(entry);
       // Keep one over-budget candidate so the exact envelope size, not an estimate, decides.
-      if (bytes > maximumBytes) break;
+      if (bytes > maximumBytes) {
+        break;
+      }
     }
     Language.Builder context = context(owned, request, snapshot);
-    if (predecessor != null) context.content(predecessor);
+    if (predecessor != null) {
+      context.content(predecessor);
+    }
     selected.forEach(context::content);
     Language language = context.build();
-    if (selected.isEmpty())
+    if (selected.isEmpty()) {
       return bounded(page(query, snapshot, id, lower, predecessor, selected, language));
+    }
     // Serialization/signing is bounded by log(pageSize), never by the total source length.
     LanguageContent full = page(query, snapshot, id, lower, predecessor, selected, language);
-    if (bytes(full) <= maximumBytes) return full;
+    if (bytes(full) <= maximumBytes) {
+      return full;
+    }
     int low = 1, high = selected.size() - 1;
     LanguageContent accepted = null;
     while (low <= high) {
@@ -73,9 +90,13 @@ final class HostedTimelineReads {
       if (bytes(candidate) <= maximumBytes) {
         accepted = candidate;
         low = count + 1;
-      } else high = count - 1;
+      } else {
+        high = count - 1;
+      }
     }
-    if (accepted == null) throw new LimitExceeded();
+    if (accepted == null) {
+      throw new LimitExceeded();
+    }
     return accepted;
   }
 
@@ -132,9 +153,13 @@ final class HostedTimelineReads {
     fields.put("checkpoint", ref(checkpoint.blueId()));
     fields.put("entries", entries.stream().map(ProviderSigning::wire).toList());
     fields.put("hasMore", more);
-    if (predecessor != null) fields.put("predecessor", wire(predecessor));
+    if (predecessor != null) {
+      fields.put("predecessor", wire(predecessor));
+    }
     if (more) {
-      if (entries.isEmpty()) throw new LimitExceeded();
+      if (entries.isEmpty()) {
+        throw new LimitExceeded();
+      }
       LanguageContent cursor =
           signing.typed(
               "Timeline Read Cursor",
@@ -167,13 +192,17 @@ final class HostedTimelineReads {
     Map<String, Object> fields = new LinkedHashMap<>();
     fields.put("request", ref(request.blueId()));
     fields.put("checkpoint", wire(checkpoint));
-    if (page != null) fields.put("page", wire(page));
+    if (page != null) {
+      fields.put("page", wire(page));
+    }
     LanguageContent result = signing.attest(signing.typed("Timeline Read Response", fields));
     return language.prepare(Language.Input.exactJson(result.toJson()));
   }
 
   private LanguageContent bounded(LanguageContent content) {
-    if (bytes(content) > maximumBytes) throw new LimitExceeded();
+    if (bytes(content) > maximumBytes) {
+      throw new LimitExceeded();
+    }
     return content;
   }
 

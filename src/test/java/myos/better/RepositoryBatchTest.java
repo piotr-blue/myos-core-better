@@ -1,8 +1,13 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 @SuppressWarnings("try")
@@ -38,7 +43,9 @@ class RepositoryBatchTest {
         page[0] = (byte) i;
         page[1] = (byte) (i >> 8);
         String id = writer.put(page);
-        if (i == 0) first = id;
+        if (i == 0) {
+          first = id;
+        }
       }
       // No explicit writer flush and no mutable publication, but the initial immutable window
       // is already durable. Mutating the input array cannot corrupt that content address.

@@ -1,6 +1,9 @@
 package myos.better;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /** Single-account ownership claims share the membership transaction and verified-email fence. */
 final class CoreOwnership {
@@ -17,12 +20,14 @@ final class CoreOwnership {
 
   Plan claim(String account, String user) {
     var plan = new Plan();
-    if (plan.accountOwner(account) != null)
+    if (plan.accountOwner(account) != null) {
       throw problem(
           "account_owner_exists",
           "Release the current Owner to Admin before assigning another Owner.");
-    if (plan.userOwner(user) != null)
+    }
+    if (plan.userOwner(user) != null) {
       throw problem("user_already_owner", "This user already owns an account.");
+    }
     String email = plan.email(user);
     plan.availableEmail(user, email);
     plan.touchEmail(email);
@@ -35,16 +40,21 @@ final class CoreOwnership {
 
   Creation creation(String account, String user) {
     var plan = new Plan();
-    if (plan.userOwner(user) != null) return new Creation(plan, false);
+    if (plan.userOwner(user) != null) {
+      return new Creation(plan, false);
+    }
     String email = plan.email(user);
     try {
       plan.availableEmail(user, email);
     } catch (ConsoleProblem conflict) {
-      if (conflict.status == 409) return new Creation(plan, false);
+      if (conflict.status == 409) {
+        return new Creation(plan, false);
+      }
       throw conflict;
     }
-    if (plan.accountOwner(account) != null)
+    if (plan.accountOwner(account) != null) {
       throw problem("account_owner_exists", "The new account already has an Owner.");
+    }
     plan.touchEmail(email);
     plan.put(accountKey(account), Map.of("format", 1, "user", user));
     plan.put(userKey(user), Map.of("format", 1, "account", account));
@@ -53,10 +63,13 @@ final class CoreOwnership {
 
   Plan release(String account, String user) {
     var plan = new Plan();
-    if (!account.equals(plan.userOwner(user)))
+    if (!account.equals(plan.userOwner(user))) {
       throw problem("account_owner_changed", "Account ownership changed.");
+    }
     var identity = plan.read(CoreWorkspaces.accountKey(user, "IDENTITY"));
-    if (identity != null) plan.touchEmail(CoreUserIdentities.email(identity.value().get("email")));
+    if (identity != null) {
+      plan.touchEmail(CoreUserIdentities.email(identity.value().get("email")));
+    }
     plan.put(accountKey(account), Map.of("format", 1, "user", ""));
     plan.put(userKey(user), Map.of("format", 1, "account", ""));
     return plan;
@@ -65,34 +78,40 @@ final class CoreOwnership {
   /** The identity writer already updates old and new email fences in its own write set. */
   Plan emailChange(String user, String email) {
     var plan = new Plan();
-    if (plan.userOwner(user) != null) plan.availableEmail(user, email);
+    if (plan.userOwner(user) != null) {
+      plan.availableEmail(user, email);
+    }
     return plan;
   }
 
   Plan verifiedIdentity(String user, String email, boolean first) {
     var plan = new Plan();
     var reservation = plan.read(CorePendingRecipients.key(email));
-    if (reservation == null || !"PENDING".equals(reservation.value().get("status")))
+    if (reservation == null || !"PENDING".equals(reservation.value().get("status"))) {
       return first ? firstIdentity(user, email) : emailChange(user, email);
+    }
     boolean newUser =
         plan.read(CoreWorkspaces.accountKey(user, "IDENTITY")) == null
             && plan.read(CoreWorkspaces.accountKey(user, "ACCOUNT")) == null
             && plan.read(userKey(user)) == null
             && plan.read(CoreWorkspaces.accountKey(user, "MEMBER#" + user)) == null;
-    if (!newUser && plan.userOwner(user) != null)
+    if (!newUser && plan.userOwner(user) != null) {
       throw problem(
           "recipient_ownership_conflict",
           "Release the existing owned account before claiming this recipient account.");
+    }
     plan.availableEmail(user, email);
     String account = (String) reservation.value().get("account");
     var workspace = plan.read(CoreWorkspaces.accountKey(account, "ACCOUNT"));
     if (workspace == null
         || !"ACTIVE".equals(workspace.value().get("status"))
         || !Boolean.TRUE.equals(workspace.value().get("pendingRecipient"))
-        || plan.accountOwner(account) != null)
+        || plan.accountOwner(account) != null) {
       throw problem("recipient_unavailable", "The reserved recipient account is unavailable.");
-    if (plan.read(CoreWorkspaces.accountKey(account, "MEMBER#" + user)) != null)
+    }
+    if (plan.read(CoreWorkspaces.accountKey(account, "MEMBER#" + user)) != null) {
       throw problem("recipient_membership_conflict", "The recipient membership changed.");
+    }
     var current = new LinkedHashMap<>(workspace.value());
     current.remove("pendingRecipient");
     current.put("activeAdminCount", 1L);
@@ -135,9 +154,10 @@ final class CoreOwnership {
               "status",
               "ACTIVE"));
       plan.put(accountKey(user), Map.of("format", 1, "user", ""));
-      if (plan.read(CoreWorkspaces.accountKey(user, "PREFERENCES")) == null)
+      if (plan.read(CoreWorkspaces.accountKey(user, "PREFERENCES")) == null) {
         plan.put(
             CoreWorkspaces.accountKey(user, "PREFERENCES"), Map.of("defaultAccountId", account));
+      }
     }
     var claimed = new LinkedHashMap<>(reservation.value());
     claimed.put("status", "CLAIMED");
@@ -153,12 +173,16 @@ final class CoreOwnership {
         || plan.read(CoreWorkspaces.accountKey(user, "ACCOUNT")) != null
         || plan.read(CoreWorkspaces.accountKey(user, "MEMBER#" + user)) != null
         || plan.read(accountKey(user)) != null
-        || plan.read(userKey(user)) != null) return emailChange(user, email);
+        || plan.read(userKey(user)) != null) {
+      return emailChange(user, email);
+    }
     boolean owner = true;
     try {
       plan.availableEmail(user, email);
     } catch (ConsoleProblem conflict) {
-      if (!conflict.code.equals("email_already_owner")) throw conflict;
+      if (!conflict.code.equals("email_already_owner")) {
+        throw conflict;
+      }
       owner = false;
     }
     plan.put(
@@ -183,12 +207,16 @@ final class CoreOwnership {
 
   boolean available(String user) {
     var plan = new Plan();
-    if (plan.userOwner(user) != null) return false;
+    if (plan.userOwner(user) != null) {
+      return false;
+    }
     try {
       plan.availableEmail(user, plan.email(user));
       return true;
     } catch (ConsoleProblem conflict) {
-      if (conflict.status == 409) return false;
+      if (conflict.status == 409) {
+        return false;
+      }
       throw conflict;
     }
   }
@@ -199,11 +227,12 @@ final class CoreOwnership {
 
     private AtomicStore.Row read(AtomicStore.Key key) {
       if (!observed.containsKey(key)) {
-        if (observed.size() == 80)
+        if (observed.size() == 80) {
           throw new ConsoleProblem(
               503,
               "ownership_resolution_limit",
               "Too many conflicting ownership identities; resolve the duplicate identities first.");
+        }
         observed.put(key, store.get(key));
       }
       return observed.get(key);
@@ -217,7 +246,9 @@ final class CoreOwnership {
     private String userOwner(String user) {
       var row = read(userKey(user));
       String account = row == null ? user : pointer(row, "account");
-      if (account.isEmpty()) return null;
+      if (account.isEmpty()) {
+        return null;
+      }
       // Earlier Better editions could only create the implicit personal Owner. Explicit
       // pointers introduced here are always checked against current membership, including
       // when an older compatible writer has subsequently released that membership.
@@ -228,9 +259,13 @@ final class CoreOwnership {
       var row = read(accountKey(account));
       String user;
       if (row == null) {
-        if (read(CoreWorkspaces.accountKey(account, "IDENTITY")) == null) return null;
+        if (read(CoreWorkspaces.accountKey(account, "IDENTITY")) == null) {
+          return null;
+        }
         user = account;
-      } else user = pointer(row, "user");
+      } else {
+        user = pointer(row, "user");
+      }
       return !user.isEmpty() && owns(user, account) ? user : null;
     }
 
@@ -244,9 +279,10 @@ final class CoreOwnership {
 
     private String email(String user) {
       var identity = read(CoreWorkspaces.accountKey(user, "IDENTITY"));
-      if (identity == null)
+      if (identity == null) {
         throw new ConsoleProblem(
             503, "identity_unavailable", "A verified user identity is required for ownership.");
+      }
       return CoreUserIdentities.email(identity.value().get("email"));
     }
 
@@ -254,9 +290,11 @@ final class CoreOwnership {
       // Capture the fence before reading the projection. Every identity change and every
       // new ownership claim advances it, closing both missing-user and competing-claim races.
       read(CoreUserIdentities.emailKey(email));
-      for (String candidate : new CorePublicDirectory(store).identityCandidates(email))
-        if (!candidate.equals(user) && userOwner(candidate) != null)
+      for (String candidate : new CorePublicDirectory(store).identityCandidates(email)) {
+        if (!candidate.equals(user) && userOwner(candidate) != null) {
           throw problem("email_already_owner", "This verified email already owns an account.");
+        }
+      }
     }
 
     private void touchEmail(String email) {
@@ -266,19 +304,25 @@ final class CoreOwnership {
     /** Adds unique conditions; false means the caller's earlier reads already became stale. */
     boolean stage(List<AtomicStore.Write> writes, List<AtomicStore.Check> checks) {
       var expected = new LinkedHashMap<AtomicStore.Key, Long>();
-      for (var write : writes) expected.put(write.key(), write.expected());
+      for (var write : writes) {
+        expected.put(write.key(), write.expected());
+      }
       for (var check : checks) {
         Long prior = expected.putIfAbsent(check.key(), check.version());
-        if (prior != null && prior != check.version()) return false;
+        if (prior != null && prior != check.version()) {
+          return false;
+        }
       }
       for (var entry : observed.entrySet()) {
         long version = entry.getValue() == null ? 0 : entry.getValue().version();
-        if (expected.containsKey(entry.getKey()) && expected.get(entry.getKey()) != version)
+        if (expected.containsKey(entry.getKey()) && expected.get(entry.getKey()) != version) {
           return false;
+        }
       }
       for (var entry : changed.entrySet()) {
-        if (expected.containsKey(entry.getKey()))
+        if (expected.containsKey(entry.getKey())) {
           throw new IllegalStateException("Ownership mutation overlaps caller write set");
+        }
         var old = observed.get(entry.getKey());
         writes.add(
             AtomicStore.Write.put(
@@ -298,8 +342,9 @@ final class CoreOwnership {
 
   private static String pointer(AtomicStore.Row row, String field) {
     if (Repository.number(row.value().get("format")) != 1
-        || !(row.value().get(field) instanceof String value))
+        || !(row.value().get(field) instanceof String value)) {
       throw new IllegalStateException("Invalid ownership pointer");
+    }
     return value;
   }
 

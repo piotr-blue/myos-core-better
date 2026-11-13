@@ -1,9 +1,15 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class OwnerInitializationRuntimeTest {
@@ -160,26 +166,32 @@ class OwnerInitializationRuntimeTest {
     final AtomicStore delegate = new JsonBoundaryStore();
     boolean armed;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean cut =
           armed
@@ -198,6 +210,7 @@ class OwnerInitializationRuntimeTest {
       return committed;
     }
 
+    @Override
     public void close() {
       delegate.close();
     }
@@ -245,6 +258,7 @@ class OwnerInitializationRuntimeTest {
       return Long.parseLong((String) gas.summary(frontiers.metadata.begin()).get(key));
     }
 
+    @Override
     public void close() {
       timelines.close();
       store.close();

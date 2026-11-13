@@ -10,8 +10,9 @@ interface ConsoleLogin extends AutoCloseable {
     }
 
     public User {
-      if (subject == null || subject.isBlank() || email == null || email.isBlank())
+      if (subject == null || subject.isBlank() || email == null || email.isBlank()) {
         throw new IllegalArgumentException("Missing verified identity");
+      }
     }
 
     String account() {

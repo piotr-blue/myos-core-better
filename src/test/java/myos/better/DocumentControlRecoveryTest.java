@@ -1,8 +1,13 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -18,7 +23,9 @@ class DocumentControlRecoveryTest {
       var alice = deferred(store, "alice");
       var bob = deferred(store, "bob");
       var controls = new DocumentControls(store);
-      if (action.equals("resume")) controls.apply("alice", OWNER, "pause", "pause");
+      if (action.equals("resume")) {
+        controls.apply("alice", OWNER, "pause", "pause");
+      }
       store.afterCommit = afterCommit;
       store.armed = true;
       assertThrows(
@@ -81,38 +88,49 @@ class DocumentControlRecoveryTest {
     boolean armed;
     boolean afterCommit;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean interrupt =
           armed && writes.stream().anyMatch(w -> w.key().sort().startsWith("CONTROL_CMD#"));
       if (interrupt) {
         armed = false;
-        if (!afterCommit) throw new LostAcknowledgment();
+        if (!afterCommit) {
+          throw new LostAcknowledgment();
+        }
       }
       boolean committed = delegate.commit(writes, checks);
-      if (interrupt && committed) throw new LostAcknowledgment();
+      if (interrupt && committed) {
+        throw new LostAcknowledgment();
+      }
       return committed;
     }
 
+    @Override
     public void close() {
       delegate.close();
     }

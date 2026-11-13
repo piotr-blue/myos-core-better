@@ -1,8 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -107,21 +115,27 @@ class ContentBlocksTest {
     final Map<String, byte[]> values = new HashMap<>();
     final List<List<String>> prefetched = new ArrayList<>();
 
+    @Override
     public void prefetch(List<String> identities) {
       prefetched.add(List.copyOf(identities));
     }
 
+    @Override
     public String put(byte[] value) {
-      if (value.length > 128 * 1024)
+      if (value.length > 128 * 1024) {
         throw new IllegalArgumentException("Store page bound exceeded");
+      }
       String id = Json.hash(value);
       values.put(id, value.clone());
       return id;
     }
 
+    @Override
     public byte[] get(String id) {
       byte[] value = values.get(id);
-      if (value == null) throw new IllegalStateException("Missing page");
+      if (value == null) {
+        throw new IllegalStateException("Missing page");
+      }
       return value.clone();
     }
   }

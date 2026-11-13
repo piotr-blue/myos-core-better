@@ -1,8 +1,19 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.LanguageView;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Pure authoring validation. No Timeline, reader key or document is created during preview. */
 final class BootstrapPreparation {
@@ -54,47 +65,61 @@ final class BootstrapPreparation {
     String activation = "";
     for (String name : definition.at("/clauses").declaredFields()) {
       String path = "/clauses/" + escape(name);
-      if (!subtype(scoped, definition.at(path), ACTIVATION)) continue;
-      if (!activation.isEmpty()) throw invalid("Use one Activation clause per document");
+      if (!subtype(scoped, definition.at(path), ACTIVATION)) {
+        continue;
+      }
+      if (!activation.isEmpty()) {
+        throw invalid("Use one Activation clause per document");
+      }
       activation = path;
       absent(definition, path + "/parameters/accessPaths");
       var readers = definition.at(path + "/parameters/readers").declaredFields();
-      if (readers.size() > 64) throw invalid("At most 64 reader groups are supported");
+      if (readers.size() > 64) {
+        throw invalid("At most 64 reader groups are supported");
+      }
       readers.forEach(BootstrapPreparation::role);
-      if (definition.at(path + "/parameters/parties").declaredFields().isEmpty())
+      if (definition.at(path + "/parameters/parties").declaredFields().isEmpty()) {
         throw invalid("Activation requires named participants");
+      }
     }
     roles.putAll(new BootstrapPartyPaths(scoped, definition).discover(activation, mappings));
     var representatives = new TreeMap<String, String>();
     for (var entry : new TreeMap<>(roles).entrySet()) {
       role(entry.getKey());
       var party = BootstrapPartyPaths.at(definition, entry.getValue());
-      for (String field : List.of("/lead/channel"))
-        if (party.at(field).exists())
+      for (String field : List.of("/lead/channel")) {
+        if (party.at(field).exists()) {
           throw invalid("Bootstrap supplies " + entry.getValue() + field);
+        }
+      }
       for (String name : party.at("/representatives").declaredFields()) {
         role(name);
         String channel = entry.getKey() + "__" + name;
         channel(channel);
-        if (roles.putIfAbsent(channel, entry.getValue()) != null)
+        if (roles.putIfAbsent(channel, entry.getValue()) != null) {
           throw invalid("Representative channel collision: " + channel);
+        }
         representatives.put(channel, name);
-        if (party.at("/representatives/" + escape(name) + "/channel").exists())
+        if (party.at("/representatives/" + escape(name) + "/channel").exists()) {
           throw invalid("Bootstrap supplies fresh representative channels");
+        }
       }
     }
     for (String role : definition.at("/contracts").declaredFields()) {
       String path = "/contracts/" + escape(role);
-      if (!subtype(scoped, definition.at(path), channelType)) continue;
+      if (!subtype(scoped, definition.at(path), channelType)) {
+        continue;
+      }
       channel(role);
       absent(definition, path + "/timeline");
       absent(definition, path + "/actor");
       roles.putIfAbsent(role, "");
     }
-    if (roles.isEmpty() || roles.size() > 64)
+    if (roles.isEmpty() || roles.size() > 64) {
       throw invalid(
           "Bootstrap requires 1..64 participant channels; use direct creation for a fully bound"
               + " document");
+    }
     absent(definition, "/timelineReadAccess");
     absent(definition, "/timelineAccess");
     Map<String, Participant> supplied = new TreeMap<>();
@@ -102,23 +127,29 @@ final class BootstrapPreparation {
       Map<String, Object> mapping = RuntimeConfiguration.object(raw, "participant mapping");
       RuntimeConfiguration.fields(mapping, Set.of("channelName", "partyPath", "timeline"));
       String role = RuntimeConfiguration.text(mapping.get("channelName"), "channelName");
-      if (!roles.containsKey(role)) throw invalid("Unknown participant channel: " + role);
+      if (!roles.containsKey(role)) {
+        throw invalid("Unknown participant channel: " + role);
+      }
       String party = (String) mapping.getOrDefault("partyPath", roles.get(role));
-      if (!Objects.equals(party, roles.get(role)))
+      if (!Objects.equals(party, roles.get(role))) {
         throw invalid("Participant path does not match the declared role: " + role);
+      }
       String timeline =
           mapping.containsKey("timeline")
               ? new BlueId(RuntimeConfiguration.text(mapping.get("timeline"), "timeline")).value()
               : "";
       if (supplied.putIfAbsent(
               role, new Participant(role, party, timeline, representatives.getOrDefault(role, "")))
-          != null) throw invalid("Duplicate participant mapping: " + role);
+          != null) {
+        throw invalid("Duplicate participant mapping: " + role);
+      }
     }
-    for (var role : roles.entrySet())
+    for (var role : roles.entrySet()) {
       supplied.putIfAbsent(
           role.getKey(),
           new Participant(
               role.getKey(), role.getValue(), "", representatives.getOrDefault(role.getKey(), "")));
+    }
     return new Plan(
         source,
         definition.blueId().value(),
@@ -171,7 +202,9 @@ final class BootstrapPreparation {
           BootstrapPartyPaths.group(source, plan.definition(), "/contracts/" + escape(role));
       suppliedChannel.forEach(
           (field, value) -> {
-            if (!field.equals("type") || !channel.containsKey("type")) channel.put(field, value);
+            if (!field.equals("type") || !channel.containsKey("type")) {
+              channel.put(field, value);
+            }
           });
       if (!participant.partyPath().isEmpty()) {
         Map<String, Object> party =
@@ -187,8 +220,9 @@ final class BootstrapPreparation {
         writer.put("myosAccountId", Objects.requireNonNull(accounts.get(role)));
         var actor = RuntimeConfiguration.object(connection.get("channel"), "channel").get("actor");
         var identity = RuntimeConfiguration.object(actor, "actor");
-        if (identity.containsKey("representativeId"))
+        if (identity.containsKey("representativeId")) {
           writer.put("representativeId", identity.get("representativeId"));
+        }
         writer.putIfAbsent("readerKeys", readers);
       }
       Map<String, Object> readAccess =
@@ -243,22 +277,25 @@ final class BootstrapPreparation {
   }
 
   private static void absent(LanguageDocument definition, String path) {
-    if (definition.at(path).exists())
+    if (definition.at(path).exists()) {
       throw invalid(
           "Bootstrap supplies " + path + "; use direct creation when it is already bound");
+    }
   }
 
   private static void channel(String name) {
     if (!name.matches("[A-Za-z][A-Za-z0-9_]{0,63}")
-        || Set.of("initialized", "terminated", "embedded").contains(name))
+        || Set.of("initialized", "terminated", "embedded").contains(name)) {
       throw invalid("Use an ordinary participant channel name: " + name);
+    }
   }
 
   private static void role(String role) {
     if (!role.matches("[A-Za-z][A-Za-z0-9_]{0,47}")
         || role.contains("__")
-        || Set.of("initialized", "terminated", "embedded").contains(role))
+        || Set.of("initialized", "terminated", "embedded").contains(role)) {
       throw invalid("Use an ordinary participant channel name: " + role);
+    }
   }
 
   private static String escape(String value) {

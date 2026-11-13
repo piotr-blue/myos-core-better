@@ -1,9 +1,12 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import blue.Contracts;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +54,9 @@ class OwnerIdleCutTest {
       var attempts = new AtomicInteger();
       TimelineWork.Receiver receiver =
           (account, owner) -> {
-            if (attempts.incrementAndGet() == 1) return engine.step(account, owner);
+            if (attempts.incrementAndGet() == 1) {
+              return engine.step(account, owner);
+            }
             return new TimelineIngress.Outcome(TimelineIngress.Status.IDLE, "Observed ready input");
           };
       assertEquals(1, work.drain(receiver, 1));
@@ -67,7 +72,9 @@ class OwnerIdleCutTest {
       TimelineWork.acquired(store, writes, "alice", "blocker", 1, false);
       assertTrue(store.commit(writes, List.of()));
       work.signal(TimelineWork.source("alice", "blocker"));
-      for (int i = 0; i < 4 && attempts.get() < 2; i++) work.drain(receiver, 4);
+      for (int i = 0; i < 4 && attempts.get() < 2; i++) {
+        work.drain(receiver, 4);
+      }
       assertEquals(2, attempts.get());
       assertEquals("IDLE", work.status("alice", OWNER).get("status"));
     }
@@ -78,6 +85,7 @@ class OwnerIdleCutTest {
     Runnable afterRead;
     int interleavings;
 
+    @Override
     public Row get(Key key) {
       Row result = delegate.get(key);
       if (afterRead != null
@@ -91,26 +99,32 @@ class OwnerIdleCutTest {
       return result;
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public void close() {
       delegate.close();
     }

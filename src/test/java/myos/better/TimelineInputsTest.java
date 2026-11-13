@@ -1,9 +1,17 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.LanguageContent;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -113,8 +121,9 @@ class TimelineInputsTest {
     @Test
     void coverageCanAdvancePastEmptyBatchesWithoutConsumingAWaitingEntry() {
       Fixture f = new Fixture();
-      for (int i = 1; i <= 5; i++)
+      for (int i = 1; i <= 5; i++) {
         f.first.acquire(f.a.range(null, null, i, List.of()).toJson(), Map.of());
+      }
       f.publish(f.a, f.first, 5, 6, "later");
       TimelineInputs.Plan waiting = f.inputs().next(1);
       assertEquals(TimelineInputs.Status.WAITING, waiting.status());
@@ -266,7 +275,9 @@ class TimelineInputsTest {
         TimelineInputs.Plan plan, TimelineInputs.Disposition disposition, boolean change) {
       List<AtomicStore.Write> writes = new ArrayList<>();
       List<AtomicStore.Check> checks = new ArrayList<>();
-      if (change) writes.add(AtomicStore.Write.put(receiver, 1, Map.of("value", "after")));
+      if (change) {
+        writes.add(AtomicStore.Write.put(receiver, 1, Map.of("value", "after")));
+      }
       plan.appendTo(writes, checks, disposition);
       return store.commit(writes, checks);
     }

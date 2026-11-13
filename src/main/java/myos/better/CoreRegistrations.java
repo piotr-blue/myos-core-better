@@ -1,6 +1,12 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Account-visible registrations are independent of shared native document execution. */
 final class CoreRegistrations {
@@ -33,7 +39,9 @@ final class CoreRegistrations {
                     : List.of(identity, Objects.toString(name, ""), requestedEdition)));
     var receipt = key(account, "COMMAND#" + Json.hash(Json.bytes(command)));
     var completed = store.get(receipt);
-    if (completed != null) return replay(completed, fingerprint);
+    if (completed != null) {
+      return replay(completed, fingerprint);
+    }
     var identityKey = identityKey(account, identity);
     var selected = store.get(identityKey);
     String creation = "core-definition-" + identity;
@@ -45,21 +53,25 @@ final class CoreRegistrations {
                   identityKey, 0, Map.of("instance", instance, "creation", creation))),
           List.of());
       selected = store.get(identityKey);
-      if (selected == null)
+      if (selected == null) {
         throw new IllegalStateException("Registration identity was not retained");
+      }
     }
     String instance = (String) selected.value().get("instance");
     Map<String, Object> head;
     try {
       head = documents.head(account, instance);
     } catch (MissingDocument absent) {
-      if (!(selected.value().get("creation") instanceof String pendingCreation)) throw absent;
-      if (!instance.equals(documents.creationId(pendingCreation)))
+      if (!(selected.value().get("creation") instanceof String pendingCreation)) {
+        throw absent;
+      }
+      if (!instance.equals(documents.creationId(pendingCreation))) {
         throw new ConsoleProblem(
             409,
             "execution_selection_conflict",
             "The pending registration belongs to a different execution mode. Resume it with that"
                 + " mode.");
+      }
       // The deterministic command recovers an interrupted initialization. Existing instances
       // are inspected first: changing the default mode must never initialize a second graph.
       try {
@@ -71,25 +83,33 @@ final class CoreRegistrations {
                 "initialization_resources",
                 "initialization_failed",
                 "initialization_paused")
-            .contains(waiting.code)) throw waiting;
+            .contains(waiting.code)) {
+          throw waiting;
+        }
         var pending = new CoreInitializations(store).pending(account, instance);
-        if (pending == null) head = documents.head(account, instance);
-        else {
-          if (!identity.equals(pending.intent().document())) throw waiting;
+        if (pending == null) {
+          head = documents.head(account, instance);
+        } else {
+          if (!identity.equals(pending.intent().document())) {
+            throw waiting;
+          }
           head = Map.of("edition", OwnerRecords.EDITION);
         }
       }
     }
-    if (requestedEdition != null && !requestedEdition.equals(head.get("edition")))
+    if (requestedEdition != null && !requestedEdition.equals(head.get("edition"))) {
       throw new ConsoleProblem(
           409,
           "execution_selection_conflict",
           "This definition is already registered with a different execution selection.");
+    }
     var linkedKey = key(account, "ACTIVE#" + instance);
     String candidate = "registration-" + Json.hash(Json.bytes(List.of(account, command)));
     for (int attempt = 0; attempt < 8; attempt++) {
       var before = store.getAll(List.of(receipt, linkedKey));
-      if (before.containsKey(receipt)) return replay(before.get(receipt), fingerprint);
+      if (before.containsKey(receipt)) {
+        return replay(before.get(receipt), fingerprint);
+      }
       var linked = before.get(linkedKey);
       String handle = linked == null ? instance : (String) linked.value().get("handle");
       var root = store.get(RootDocuments.root(account, handle));
@@ -110,16 +130,22 @@ final class CoreRegistrations {
                     instance,
                     "name",
                     name == null ? instance : RuntimeConfiguration.text(name, "name"))));
-        if (root != null) checks.add(new AtomicStore.Check(root.key(), root.version()));
+        if (root != null) {
+          checks.add(new AtomicStore.Check(root.key(), root.version()));
+        }
       }
       writes.add(
           AtomicStore.Write.put(receipt, 0, Map.of("handle", handle, "fingerprint", fingerprint)));
-      if (linked == null || !handle.equals(linked.value().get("handle")))
+      if (linked == null || !handle.equals(linked.value().get("handle"))) {
         writes.add(
             AtomicStore.Write.put(
                 linkedKey, linked == null ? 0 : linked.version(), Map.of("handle", handle)));
-      else checks.add(new AtomicStore.Check(linkedKey, linked.version()));
-      if (store.commit(writes, checks)) return handle;
+      } else {
+        checks.add(new AtomicStore.Check(linkedKey, linked.version()));
+      }
+      if (store.commit(writes, checks)) {
+        return handle;
+      }
     }
     throw new ConsoleProblem(503, "storage_conflict", "Retry with the same Idempotency-Key");
   }
@@ -128,22 +154,28 @@ final class CoreRegistrations {
     String instance = documents.nativeId(account, handle);
     var key = identityKey(account, identity);
     synchronized (remembered) {
-      if (remembered.contains(key)) return;
+      if (remembered.contains(key)) {
+        return;
+      }
     }
     if (store.get(key) == null
         && !store.commit(
-            List.of(AtomicStore.Write.put(key, 0, Map.of("instance", instance))), List.of()))
+            List.of(AtomicStore.Write.put(key, 0, Map.of("instance", instance))), List.of())) {
       return;
+    }
     synchronized (remembered) {
       remembered.add(key);
-      while (remembered.size() > 2048) remembered.remove(remembered.iterator().next());
+      while (remembered.size() > 2048) {
+        remembered.remove(remembered.iterator().next());
+      }
     }
   }
 
   private static String replay(AtomicStore.Row receipt, String fingerprint) {
-    if (!fingerprint.equals(receipt.value().get("fingerprint")))
+    if (!fingerprint.equals(receipt.value().get("fingerprint"))) {
       throw new ConsoleProblem(
           409, "IDEMPOTENCY_CONFLICT", "The registration has different parameters");
+    }
     return (String) receipt.value().get("handle");
   }
 
@@ -153,7 +185,9 @@ final class CoreRegistrations {
 
   String find(String account, String identity) {
     var pinned = store.get(identityKey(account, identity));
-    if (pinned == null) throw new MissingDocument();
+    if (pinned == null) {
+      throw new MissingDocument();
+    }
     String instance = (String) pinned.value().get("instance");
     var active = store.get(key(account, "ACTIVE#" + instance));
     String handle = active == null ? instance : (String) active.value().get("handle");
@@ -171,7 +205,9 @@ final class CoreRegistrations {
   }
 
   void requireVisible(String account, String document) {
-    if (!visible(account, document)) throw new MissingDocument();
+    if (!visible(account, document)) {
+      throw new MissingDocument();
+    }
   }
 
   boolean canUnlink(String account, String document) {
@@ -183,10 +219,13 @@ final class CoreRegistrations {
       documents.head(account, document);
     } catch (MissingDocument missing) {
       if (new CoreInitializations(store).pending(account, documents.nativeId(account, document))
-          == null) throw missing;
+          == null) {
+        throw missing;
+      }
     }
-    if (!canUnlink(account, document))
+    if (!canUnlink(account, document)) {
       throw new ConsoleProblem(409, "root_required", "Only root registrations can be removed");
+    }
   }
 
   Map<String, Object> unlink(String account, String document) {
@@ -194,11 +233,14 @@ final class CoreRegistrations {
     var key = RootDocuments.root(account, document);
     for (int attempt = 0; attempt < 4; attempt++) {
       var root = store.get(key);
-      if (Boolean.TRUE.equals(root.value().get("deleted"))) return result(document);
+      if (Boolean.TRUE.equals(root.value().get("deleted"))) {
+        return result(document);
+      }
       var removed = new LinkedHashMap<>(root.value());
       removed.put("deleted", true);
-      if (store.commit(List.of(AtomicStore.Write.put(key, root.version(), removed)), List.of()))
+      if (store.commit(List.of(AtomicStore.Write.put(key, root.version(), removed)), List.of())) {
         return result(document);
+      }
     }
     throw new ConsoleProblem(503, "storage_conflict", "Retry with the same Idempotency-Key");
   }

@@ -1,11 +1,20 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.net.*;
-import java.net.http.*;
-import java.nio.file.*;
-import java.util.*;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -275,16 +284,20 @@ class ConsoleHttpTest {
 
     private static ConsoleLogin testLogin() {
       return new ConsoleLogin() {
+        @Override
         public User verify(String token) {
-          if (!Set.of("alice", "bob").contains(Objects.toString(token, "")))
+          if (!Set.of("alice", "bob").contains(Objects.toString(token, ""))) {
             throw new ConsoleProblem(401, "INVALID", "Sign in");
+          }
           return new User(token, token + "@example.invalid");
         }
 
+        @Override
         public Map<String, Object> action(String action, Map<String, Object> input) {
           return Map.of("token", "alice", "expiresIn", 3600);
         }
 
+        @Override
         public void close() {}
       };
     }
@@ -332,13 +345,19 @@ class ConsoleHttpTest {
 
     HttpResponse<String> send(String path, String user, String key, Object data) throws Exception {
       HttpRequest.Builder b = HttpRequest.newBuilder(URI.create(url + "/api/" + path));
-      if (user != null) b.header("Authorization", "Bearer " + user);
-      if (key != null) b.header("Idempotency-Key", key);
-      if (data == null) b.GET();
-      else
+      if (user != null) {
+        b.header("Authorization", "Bearer " + user);
+      }
+      if (key != null) {
+        b.header("Idempotency-Key", key);
+      }
+      if (data == null) {
+        b.GET();
+      } else {
         b.header("Origin", ORIGIN)
             .header("Content-Type", "application/json")
             .POST(HttpRequest.BodyPublishers.ofString(JsonText.of(data)));
+      }
       return http.send(b.build(), HttpResponse.BodyHandlers.ofString());
     }
 
@@ -347,6 +366,7 @@ class ConsoleHttpTest {
       return Json.object(response.body().getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
 
+    @Override
     public void close() {
       server.close();
       http.close();

@@ -1,10 +1,17 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 /** Original OperationTargets cases, including actual native execution through the Timeline form. */
@@ -34,7 +41,9 @@ class CoreTimelineEntriesTest {
       assertTrue(JsonText.of(message).contains(f.initial));
       f.fixture.runner.start();
       long until = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(8);
-      while (f.value() == 0 && System.nanoTime() < until) Thread.sleep(10);
+      while (f.value() == 0 && System.nanoTime() < until) {
+        Thread.sleep(10);
+      }
       assertEquals(1, f.value());
       assertEquals(first, f.entries.append("owner", f.timeline, "one", input));
       assertEquals(1, f.fixture.timelines.hosted().head("owner", f.timeline).count());

@@ -1,10 +1,17 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -103,12 +110,13 @@ class CoreAdministratorsTest {
             CoreAdministrators.NONE.session(
                 session("operator@example.test", true, Long.MAX_VALUE)));
     for (String arn :
-        List.of("plain-name", "arn:aws:secretsmanager:us-east-1:123456789012:secret:admins"))
+        List.of("plain-name", "arn:aws:secretsmanager:us-east-1:123456789012:secret:admins")) {
       assertThrows(
           IllegalArgumentException.class,
           () ->
               CoreAdministrators.configured(
                   Map.of("AWS_REGION", "eu-west-1", "CORE_ADMIN_ALLOWLIST_SECRET_ARN", arn)));
+    }
   }
 
   @Test

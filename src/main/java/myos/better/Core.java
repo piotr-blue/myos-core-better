@@ -174,8 +174,9 @@ final class Core implements AutoCloseable {
     this.projectionPolicy = java.util.Objects.requireNonNull(projectionPolicy);
     this.workflowReads = java.util.Objects.requireNonNull(workflowReads);
     sessions = new SessionCache(sessionPolicy);
-    if (timelines != null && timelines.graphs() != null)
+    if (timelines != null && timelines.graphs() != null) {
       timelines.graphs().sessionHistoryLimit(sessionPolicy.maximumUses());
+    }
     repository = new Repository(store);
     this.runtimes = java.util.Objects.requireNonNull(runtimes);
     this.combineAcknowledgements = combineAcknowledgements;
@@ -229,7 +230,9 @@ final class Core implements AutoCloseable {
       result.put("gas", gas);
       result.put("executionNanos", executionNanos);
       result.put("children", children);
-      if (diagnostic != null) result.put("diagnostic", diagnostic);
+      if (diagnostic != null) {
+        result.put("diagnostic", diagnostic);
+      }
       return result;
     }
   }
@@ -291,20 +294,23 @@ final class Core implements AutoCloseable {
   }
 
   String nativeCommand(String account, String document, String command) {
-    if (!acceptsNativeEvidence())
+    if (!acceptsNativeEvidence()) {
       throw new IllegalStateException("Native admission is not configured");
+    }
     return NativeInput.scopedCommand(admissionNamespace, account, document, command);
   }
 
   void requireNativeStore(AtomicStore store) {
-    if (repository.store != store)
+    if (repository.store != store) {
       throw new IllegalArgumentException("Native receiving history belongs to a different store");
+    }
   }
 
   void requireNativeEnvironment(AtomicStore store, String namespace) {
     requireNativeStore(store);
-    if (!java.util.Objects.equals(admissionNamespace, namespace))
+    if (!java.util.Objects.equals(admissionNamespace, namespace)) {
       throw new IllegalArgumentException("Native execution namespace differs from adopted sources");
+    }
   }
 
   /** Immutable receiving inspection under the same local lock and session version as execution. */
@@ -312,8 +318,9 @@ final class Core implements AutoCloseable {
       String account,
       String id,
       java.util.function.BiFunction<Repository.Document, CanonicalRuntime.Session, T> inspect) {
-    if (!acceptsNativeEvidence())
+    if (!acceptsNativeEvidence()) {
       throw new IllegalStateException("Native admission is not configured");
+    }
     return inspectSession(account, id, inspect);
   }
 
@@ -325,7 +332,9 @@ final class Core implements AutoCloseable {
     DocumentLocks.Lease lock = locks.acquire(partition);
     try {
       Repository.Document stored = repository.load(account, id);
-      if (stored == null) throw new MissingDocument();
+      if (stored == null) {
+        throw new MissingDocument();
+      }
       SessionCache.Lease cached = sessions.readIfPresent(partition, stored.version());
       try (SessionCache.Lease lease =
           cached != null
@@ -370,8 +379,9 @@ final class Core implements AutoCloseable {
                       () ->
                           new IllegalArgumentException(
                               "Operation Request requires its explicit document target"));
-          if (lineage.find(account, id, stored.version(), target).isEmpty())
+          if (lineage.find(account, id, stored.version(), target).isEmpty()) {
             throw new IllegalArgumentException("Operation target does not belong to this document");
+          }
           return null;
         });
   }
@@ -385,11 +395,13 @@ final class Core implements AutoCloseable {
   blue.LanguageContent operationMessage(
       String account, String id, String requested, Map<String, Object> message) {
     Repository.Document document = requireDocument(account, id);
-    if (lineage == null)
+    if (lineage == null) {
       throw new IllegalStateException("Native operation routing is not configured");
+    }
     Repository.Document selected;
-    if (requested == null) selected = repository.load(account, id, 1);
-    else {
+    if (requested == null) {
+      selected = repository.load(account, id, 1);
+    } else {
       var membership =
           lineage
               .find(account, id, document.version(), new blue.BlueId(requested))
@@ -398,9 +410,10 @@ final class Core implements AutoCloseable {
                       new IllegalArgumentException(
                           "Operation target does not belong to this document"));
       selected = repository.load(account, id, membership.introducedAt());
-      if (!selected.localBlueId().equals(requested))
+      if (!selected.localBlueId().equals(requested)) {
         throw new IllegalArgumentException(
             "Select an initialized document version as the operation target");
+      }
     }
     // A target is content under the current Operation Request grammar, not an opaque string.
     // Carry its established local closure; publishing a bare unresolved reference is invalid.
@@ -438,8 +451,9 @@ final class Core implements AutoCloseable {
 
   private blue.LanguageContent addressed(
       Repository.Document selected, blue.LanguageDocument body, Map<String, Object> message) {
-    if (!body.blueId().value().equals(selected.localBlueId()))
+    if (!body.blueId().value().equals(selected.localBlueId())) {
       throw new IllegalStateException("Operation target differs from its selected version");
+    }
     Map<String, Object> addressed = new LinkedHashMap<>(message);
     addressed.put("document", Map.of("blueId", selected.localBlueId()));
     var prepared =
@@ -497,7 +511,9 @@ final class Core implements AutoCloseable {
   }
 
   Result create(String account, String id, String commandId, Object source) {
-    if (source == null) throw new IllegalArgumentException("Document source is required");
+    if (source == null) {
+      throw new IllegalArgumentException("Document source is required");
+    }
     Command command = command(commandId, source, 0);
     return execute(account, id, command, new Create(command.input()));
   }
@@ -509,10 +525,13 @@ final class Core implements AutoCloseable {
 
   blue.LanguageDocument content(String account, String id, long version) {
     Repository.Document stored = requireDocument(account, id);
-    if (version == stored.version())
+    if (version == stored.version()) {
       return inspectSession(account, id, (document, session) -> session.document());
+    }
     stored = repository.findVersion(account, id, version);
-    if (stored == null) throw new MissingDocument();
+    if (stored == null) {
+      throw new MissingDocument();
+    }
     try (CanonicalRuntime.Session session = runtimes.restore(stored.checkpoint())) {
       return session.document();
     }
@@ -523,7 +542,9 @@ final class Core implements AutoCloseable {
     Repository.Document current = requireDocument(account, id);
     Repository.Document stored =
         version == current.version() ? current : repository.findVersion(account, id, version);
-    if (stored == null) throw new MissingDocument();
+    if (stored == null) {
+      throw new MissingDocument();
+    }
     var records =
         RuntimeConfiguration.object(stored.checkpoint().get("content"), "checkpoint content");
     return language().toBuilder()
@@ -542,7 +563,9 @@ final class Core implements AutoCloseable {
   Map<String, Object> publication(String account, String id, long version) {
     requireDocument(account, id);
     Repository.Document stored = repository.findVersion(account, id, version);
-    if (stored == null) throw new MissingDocument();
+    if (stored == null) {
+      throw new MissingDocument();
+    }
     return head(stored);
   }
 
@@ -554,7 +577,9 @@ final class Core implements AutoCloseable {
       String operation,
       Object request,
       long timestamp) {
-    if (request == null) throw new IllegalArgumentException("Operation request cannot be null");
+    if (request == null) {
+      throw new IllegalArgumentException("Operation request cannot be null");
+    }
     Map<String, Object> input =
         Map.of(
             "channel", channel, "operation", operation, "request", request, "timestamp", timestamp);
@@ -564,7 +589,9 @@ final class Core implements AutoCloseable {
   }
 
   Result process(String account, String id, String commandId, Object event, long timestamp) {
-    if (event == null) throw new IllegalArgumentException("Event is required");
+    if (event == null) {
+      throw new IllegalArgumentException("Event is required");
+    }
     Command command = command(commandId, Map.of("event", event, "timestamp", timestamp), timestamp);
     return execute(account, id, command, new Event(object(command.input()).get("event")));
   }
@@ -584,13 +611,18 @@ final class Core implements AutoCloseable {
       long timestamp,
       Object evidence,
       TimelineInputs.Plan selection) {
-    if (!acceptsNativeEvidence())
+    if (!acceptsNativeEvidence()) {
       throw new IllegalArgumentException("Native admission is not configured");
-    if (selection != null) selection.bind(event, timestamp);
+    }
+    if (selection != null) {
+      selection.bind(event, timestamp);
+    }
     NativeInput input =
         NativeInput.capture(admissionNamespace, account, id, commandId, event, timestamp, evidence);
     Map<String, Object> audit = new LinkedHashMap<>(object(input.audit()));
-    if (selection != null) audit.put("sourceSelection", selection.audit());
+    if (selection != null) {
+      audit.put("sourceSelection", selection.audit());
+    }
     Command command =
         new Command(
             Repository.identifier(commandId),
@@ -625,8 +657,9 @@ final class Core implements AutoCloseable {
               java.util.concurrent.TimeUnit.MILLISECONDS.toNanos(1L << Math.min(attempt, 8));
           java.util.concurrent.locks.LockSupport.parkNanos(
               java.util.concurrent.ThreadLocalRandom.current().nextLong(bound / 2, bound));
-          if (Thread.currentThread().isInterrupted())
+          if (Thread.currentThread().isInterrupted()) {
             throw new IllegalStateException("Interrupted while retrying document contention");
+          }
         }
         long observedVersion = -1;
         try {
@@ -636,22 +669,31 @@ final class Core implements AutoCloseable {
           Map<AtomicStore.Key, AtomicStore.Row> inputs =
               repository.store.getAll(List.of(receiptKey, wakeKey, controlKey));
           Result previous = completed(inputs.get(receiptKey), command);
-          if (previous != null) return previous;
+          if (previous != null) {
+            return previous;
+          }
           var control = DocumentControls.permit(controlKey, inputs.get(controlKey));
           AtomicStore.Row wake = inputs.get(wakeKey);
           Repository.Document before =
               source == null ? repository.candidate(account, id) : repository.load(account, id);
           observedVersion = before == null ? 0 : before.version();
-          if (source != null && before != null)
+          if (source != null && before != null) {
             throw new IllegalArgumentException("Document already exists");
-          if (source == null && before == null) throw new MissingDocument();
-          if (sourceSelection != null) sourceSelection.bind(account, id, before.version());
+          }
+          if (source == null && before == null) {
+            throw new MissingDocument();
+          }
+          if (sourceSelection != null) {
+            sourceSelection.bind(account, id, before.version());
+          }
           if (action instanceof Migrate migration
               && migration.edition().equals(before.checkpoint().get("edition"))) {
             // A peer may publish this same migration after our first receipt lookup but before
             // STATE is read. Resolve that successful transition before rejecting its old edition.
             Result raced = completed(account, id, command);
-            if (raced != null) return raced;
+            if (raced != null) {
+              return raced;
+            }
           }
           Repository.Blobs blobs = repository.blobs(account);
           LinkIndex links = new LinkIndex(blobs);
@@ -668,7 +710,9 @@ final class Core implements AutoCloseable {
                   List.of(commandWrite(account, id, command, ignored)),
                   List.of(
                       new AtomicStore.Check(Repository.key(account, id, "STATE"), before.version()),
-                      control))) return ignored;
+                      control))) {
+                return ignored;
+              }
               repository.invalidate(account, id);
               continue;
             }
@@ -677,7 +721,9 @@ final class Core implements AutoCloseable {
               // declaring an ordering gap; otherwise the same cached link could block it forever.
               repository.invalidate(account, id);
               Repository.Document current = repository.candidate(account, id);
-              if (current != null && current.version() != before.version()) continue;
+              if (current != null && current.version() != before.version()) {
+                continue;
+              }
               return null;
             }
             root =
@@ -696,7 +742,9 @@ final class Core implements AutoCloseable {
               new CanonicalRuntime.Reader() {
                 @Override
                 public boolean appliesTo(String pointer) {
-                  if (!exactEmbeddingReads) return true;
+                  if (!exactEmbeddingReads) {
+                    return true;
+                  }
                   String path = pointer.equals("/") ? "" : pointer;
                   return selected != null
                       && !selectedRoot.isEmpty()
@@ -706,13 +754,17 @@ final class Core implements AutoCloseable {
 
                 @Override
                 public java.util.Optional<CanonicalRuntime.ContentRead> select(String pointer) {
-                  if (!exactEmbeddingReads) return java.util.Optional.empty();
+                  if (!exactEmbeddingReads) {
+                    return java.util.Optional.empty();
+                  }
                   return exactRead(account, selected, selectedRoot, pointer, links, 0, readScope);
                 }
 
                 @Override
                 public java.util.Optional<List<String>> overlayKeys(String pointer) {
-                  if (!exactEmbeddingReads) return java.util.Optional.empty();
+                  if (!exactEmbeddingReads) {
+                    return java.util.Optional.empty();
+                  }
                   return java.util.Optional.of(
                       embeddingKeys(account, selected, selectedRoot, pointer, links, 0, readScope));
                 }
@@ -741,10 +793,12 @@ final class Core implements AutoCloseable {
                       : sourceSelection.find(id);
                 }
 
+                @Override
                 public Object read(String pointer, Object local) {
                   return read(pointer, local, List.of());
                 }
 
+                @Override
                 public Object read(String pointer, Object local, List<String> replaced) {
                   return virtualRead(
                       account,
@@ -762,7 +816,9 @@ final class Core implements AutoCloseable {
               action instanceof Migrate migration
                   ? runtimes.select(migration.edition())
                   : before == null ? runtimes.creation() : runtimes.select(before.checkpoint());
-          if (action instanceof Migrate) sessions.invalidate(partition);
+          if (action instanceof Migrate) {
+            sessions.invalidate(partition);
+          }
           try (SessionCache.Lease lease =
               sessions.acquire(
                   partition,
@@ -780,19 +836,22 @@ final class Core implements AutoCloseable {
             blue.BlueId initialBlueId =
                 lineage != null && before == null ? session.document().blueId() : null;
             if ((action instanceof Event || action instanceof Call)
-                && session.requiresNativeAdmission())
+                && session.requiresNativeAdmission()) {
               throw new IllegalArgumentException(
                   "Document requires native admission; use /documents/admit");
+            }
             blue.Contracts.Reception previousReception =
                 lineage != null && before != null ? session.reception() : null;
             long start = System.nanoTime();
             CanonicalRuntime.Update update;
             boolean verified = true;
-            if (before == null) update = session.initialize();
-            else if (action instanceof Migrate || incoming != null && incoming.events().isEmpty())
+            if (before == null) {
+              update = session.initialize();
+            } else if (action instanceof Migrate
+                || incoming != null && incoming.events().isEmpty()) {
               update =
                   new CanonicalRuntime.Update("APPLIED", 0, List.of(), List.of(), List.of(), null);
-            else if (incoming != null)
+            } else if (incoming != null) {
               update =
                   session.receive(
                       command.id(),
@@ -801,7 +860,7 @@ final class Core implements AutoCloseable {
                           .toList(),
                       command.timestamp(),
                       reader);
-            else if (action instanceof Admitted admitted) {
+            } else if (action instanceof Admitted admitted) {
               blue.TimelineVerifier.Entry original =
                   sourceSelection == null ? null : sourceSelection.verifiedEntry().orElse(null);
               CanonicalRuntime.AdmissionResult admission =
@@ -819,9 +878,9 @@ final class Core implements AutoCloseable {
                           admitted.input().evidence());
               update = admission.update();
               verified = admission.verified();
-            } else if (action instanceof Event event)
+            } else if (action instanceof Event event) {
               update = session.process(command.id(), event.value(), command.timestamp(), reader);
-            else if (action instanceof Call call)
+            } else if (action instanceof Call call) {
               update =
                   session.call(
                       command.id(),
@@ -830,7 +889,9 @@ final class Core implements AutoCloseable {
                       call.request(),
                       command.timestamp(),
                       reader);
-            else throw new AssertionError("Unrecognized document action");
+            } else {
+              throw new AssertionError("Unrecognized document action");
+            }
             long execution = System.nanoTime() - start;
             if (!update.applied()) {
               Result rejected =
@@ -850,7 +911,9 @@ final class Core implements AutoCloseable {
                       Repository.key(account, id, "STATE"), before == null ? 0 : before.version()));
               List<AtomicStore.Write> rejectionWrites = new ArrayList<>();
               boolean completed = verified && !update.status().equals("NEEDS_RESOURCES");
-              if (completed) rejectionWrites.add(commandWrite(account, id, command, rejected));
+              if (completed) {
+                rejectionWrites.add(commandWrite(account, id, command, rejected));
+              }
               if (sourceSelection != null) {
                 if (completed) {
                   sourceSelection.appendTo(
@@ -859,18 +922,24 @@ final class Core implements AutoCloseable {
                       TimelineInputs.Disposition.REJECTED,
                       null,
                       Map.of("status", update.status()));
-                } else sourceSelection.fence(rejectionChecks);
+                } else {
+                  sourceSelection.fence(rejectionChecks);
+                }
               }
               // Only a verified semantic outcome consumes an occurrence. Missing resources and
               // unverified attempts remain retryable and cannot reserve a command identifier.
               if (repository.store.commit(rejectionWrites, rejectionChecks)) {
-                if (before != null) lease.unchanged();
+                if (before != null) {
+                  lease.unchanged();
+                }
                 return rejected;
               }
               repository.invalidate(account, id);
               if (sourceSelection != null) {
                 Result committed = completed(account, id, command);
-                if (committed != null) return committed;
+                if (committed != null) {
+                  return committed;
+                }
                 throw new TimelineInputs.Reselect();
               }
               continue;
@@ -882,21 +951,26 @@ final class Core implements AutoCloseable {
               // Clearing an embedding prefix is structural work proportional to the affected links.
               for (String prefix : update.replacedPaths()) {
                 Map<String, Link> removed = new HashMap<>();
-                if (links.get(root, prefix) != null) removed.put(prefix, links.get(root, prefix));
-                else if (update.attachments().stream()
-                    .noneMatch(attachment -> attachment.path().equals(prefix)))
+                if (links.get(root, prefix) != null) {
+                  removed.put(prefix, links.get(root, prefix));
+                } else if (update.attachments().stream()
+                    .noneMatch(attachment -> attachment.path().equals(prefix))) {
                   links.forEach(
                       root,
                       (path, link) -> {
-                        if (Pointer.parse(prefix).contains(Pointer.parse(path)))
+                        if (Pointer.parse(prefix).contains(Pointer.parse(path))) {
                           removed.put(path, link);
+                        }
                       });
+                }
                 for (var entry : removed.entrySet()) {
                   root = links.remove(root, entry.getKey());
                   AtomicStore.Row reverse =
                       repository.store.get(
                           parentKey(account, entry.getValue().document(), id, entry.getKey()));
-                  if (reverse != null) writes.add(AtomicStore.Write.delete(reverse));
+                  if (reverse != null) {
+                    writes.add(AtomicStore.Write.delete(reverse));
+                  }
                 }
               }
               for (CanonicalRuntime.Attachment attachment : update.attachments()) {
@@ -960,7 +1034,9 @@ final class Core implements AutoCloseable {
                       execution,
                       childIds,
                       null);
-              if (before == null) RootDocuments.register(writes, after, session.read("/name"));
+              if (before == null) {
+                RootDocuments.register(writes, after, session.read("/name"));
+              }
               addDocument(
                   writes,
                   after,
@@ -977,7 +1053,9 @@ final class Core implements AutoCloseable {
                           : action instanceof Admitted
                               ? "TIMELINE"
                               : incoming != null ? "EMBEDDED" : "PROCESS");
-              if (timelines != null) timelines.subscribe(writes, after, session.reception());
+              if (timelines != null) {
+                timelines.subscribe(writes, after, session.reception());
+              }
               writes.add(commandWrite(account, id, command, result));
               List<AtomicStore.Check> checks = new ArrayList<>();
               checks.add(control);
@@ -994,16 +1072,18 @@ final class Core implements AutoCloseable {
                     .publish(writes, after, previousReception, session.reception());
                 List<DocumentLineage.Publication> publications = new ArrayList<>();
                 publications.add(new DocumentLineage.Publication(after, initialBlueId));
-                for (Created child : created)
+                for (Created child : created) {
                   publications.add(
                       new DocumentLineage.Publication(child.document(), child.initialBlueId()));
+                }
                 if (!lineage.appendTo(writes, publications)) {
                   repository.invalidate(account, id);
                   continue;
                 }
               }
-              if (writes.size() > 100)
+              if (writes.size() > 100) {
                 throw new IllegalArgumentException("Command exceeds the atomic attachment limit");
+              }
               // A conflict may concern the source rather than this parent. Retry the parent
               // normally
               // and let propagation refresh/complete its source independently, never replay stale
@@ -1018,37 +1098,49 @@ final class Core implements AutoCloseable {
                 // historical child versions are immutable; their current heads are not
                 // dependencies.
                 if (blobs.commit(writes, checks)) {
-                  if (combined) incoming.acknowledgement().committed();
+                  if (combined) {
+                    incoming.acknowledgement().committed();
+                  }
                   lease.published(next);
                   repository.remember(after);
                   pending.published();
                   if (timelines != null) {
                     timelines.published(account, id);
-                    for (Created child : created)
+                    for (Created child : created) {
                       timelines.published(account, child.document().id());
+                    }
                   }
-                  if (after.mayHaveParents() && (before != null || !update.events().isEmpty()))
+                  if (after.mayHaveParents() && (before != null || !update.events().isEmpty())) {
                     propagation.hint(account, id);
-                  for (Created child : created)
-                    if (!child.initialEventsConsumed() && !child.events().isEmpty())
+                  }
+                  for (Created child : created) {
+                    if (!child.initialEventsConsumed() && !child.events().isEmpty()) {
                       propagation.hint(account, child.document().id());
+                    }
+                  }
                   return result;
                 }
               } catch (RuntimeException uncertain) {
                 repository.invalidate(account, id);
                 Result committed = completed(account, id, command);
-                if (committed != null) return committed;
+                if (committed != null) {
+                  return committed;
+                }
                 throw uncertain;
               }
               repository.invalidate(account, id);
               if (sourceSelection != null) {
                 Result committed = completed(account, id, command);
-                if (committed != null) return committed;
+                if (committed != null) {
+                  return committed;
+                }
                 throw new TimelineInputs.Reselect();
               }
             }
           } catch (blue.BlueException error) {
-            if (!error.code().equals("PROJECTION_LIMIT_EXCEEDED")) throw error;
+            if (!error.code().equals("PROJECTION_LIMIT_EXCEEDED")) {
+              throw error;
+            }
             throw readScope.budget.exceededProjection(error);
           }
         } catch (RuntimeException failure) {
@@ -1057,7 +1149,9 @@ final class Core implements AutoCloseable {
           if (incoming != null && observedVersion >= 0) {
             repository.invalidate(account, id);
             Repository.Document current = repository.candidate(account, id);
-            if (current != null && current.version() != observedVersion) continue;
+            if (current != null && current.version() != observedVersion) {
+              continue;
+            }
           }
           throw failure;
         }
@@ -1079,8 +1173,9 @@ final class Core implements AutoCloseable {
       Repository.Blobs blobs,
       EmbeddingReads readScope,
       SessionCache.Pending pending) {
-    if (created.size() >= MAX_NEW_DOCUMENTS)
+    if (created.size() >= MAX_NEW_DOCUMENTS) {
       throw new IllegalArgumentException("At most 16 new documents per atomic command");
+    }
     CanonicalRuntime.Prepared prepared = requested.prepared().orElse(null);
     CanonicalRuntime.Session child =
         prepared == null ? runtime.open(requested.document()) : runtime.restore(prepared);
@@ -1159,22 +1254,29 @@ final class Core implements AutoCloseable {
           prepared != null,
           null,
           "INITIALIZE");
-      if (timelines != null) timelines.subscribe(writes, document, child.reception());
+      if (timelines != null) {
+        timelines.subscribe(writes, document, child.reception());
+      }
       pending.retain(
           Repository.partition(account, id), 1, child, Json.bytes(document.checkpoint()).length);
       retained = true;
       return result;
     } finally {
-      if (!retained) child.close();
+      if (!retained) {
+        child.close();
+      }
     }
   }
 
   private Map<String, Object> data(CanonicalRuntime.Session session, Repository.Document before) {
     // A projection is a read optimization, not execution state. Large inherited clause definitions
     // must not be expanded, copied and rewritten after every small business operation.
-    if (projectionPolicy == ProjectionPolicy.BOUNDED && before != null && before.data() == null)
+    if (projectionPolicy == ProjectionPolicy.BOUNDED && before != null && before.data() == null) {
       return null;
-    if (projectionPolicy == ProjectionPolicy.EAGER) return object(session.read(""));
+    }
+    if (projectionPolicy == ProjectionPolicy.EAGER) {
+      return object(session.read(""));
+    }
     Map<String, Object> result;
     try {
       // A candidate that exceeds these structural bounds cannot justify constructing a large
@@ -1186,7 +1288,9 @@ final class Core implements AutoCloseable {
     } catch (blue.BlueException error) {
       if (!error.code().equals("PROJECTION_LIMIT_EXCEEDED")
           && !error.code().equals("HOST_INCOMPLETE")
-          && !error.code().equals("OperationLimitExceeded")) throw error;
+          && !error.code().equals("OperationLimitExceeded")) {
+        throw error;
+      }
       // Exhausting optional inspection work must not veto an already-valid execution. Mandatory
       // execution/checkpoint construction is outside this block and still must succeed.
       return null;
@@ -1212,8 +1316,9 @@ final class Core implements AutoCloseable {
     historical.put("events", events);
     historical.put("timestamp", timestamp);
     historical.put("inputKind", kind);
-    if (command != null)
+    if (command != null) {
       historical.put("inputCommand", commandKey(account, id, command.id()).sort());
+    }
     writes.add(
         AtomicStore.Write.put(
             Repository.key(account, id, "V#" + Repository.version(document.version())),
@@ -1270,9 +1375,12 @@ final class Core implements AutoCloseable {
   }
 
   private static Result completed(AtomicStore.Row row, Command command) {
-    if (row == null) return null;
-    if (!row.value().get("hash").equals(command.hash()))
+    if (row == null) {
+      return null;
+    }
+    if (!row.value().get("hash").equals(command.hash())) {
       throw new IllegalArgumentException("Idempotency key reused with a different request");
+    }
     Map<String, Object> value = object(row.value().get("result"));
     return new Result(
         (String) value.get("status"),
@@ -1302,7 +1410,9 @@ final class Core implements AutoCloseable {
     requireDocument(account, id);
     AtomicStore.Row row =
         repository.store.get(commandKey(account, id, Repository.identifier(commandId)));
-    if (row == null) throw new IllegalArgumentException("Unknown command identifier");
+    if (row == null) {
+      throw new IllegalArgumentException("Unknown command identifier");
+    }
     var value = new LinkedHashMap<>(row.value());
     value.put("inputAvailable", value.containsKey("input"));
     return value;
@@ -1328,14 +1438,17 @@ final class Core implements AutoCloseable {
 
   private Repository.Document requireDocument(String account, String id) {
     Repository.Document document = repository.load(account, id);
-    if (document == null) throw new MissingDocument();
+    if (document == null) {
+      throw new MissingDocument();
+    }
     return document;
   }
 
   Map<String, Object> events(String account, String id, long after, int limit) {
     requireDocument(account, id);
-    if (after < 0 || limit < 1 || limit > 100)
+    if (after < 0 || limit < 1 || limit > 100) {
       throw new IllegalArgumentException("Invalid event page bounds");
+    }
     AtomicStore.Page page =
         repository.store.query(
             Repository.partition(account, id), "V#", "V#" + Repository.version(after), limit);
@@ -1367,10 +1480,14 @@ final class Core implements AutoCloseable {
   /** Authored input is linked from immutable history; older records explicitly report absence. */
   Map<String, Object> history(String account, String id, long version) {
     requireDocument(account, id);
-    if (version < 1) throw new IllegalArgumentException("Positive document version required");
+    if (version < 1) {
+      throw new IllegalArgumentException("Positive document version required");
+    }
     AtomicStore.Row row =
         repository.store.get(Repository.key(account, id, "V#" + Repository.version(version)));
-    if (row == null) throw new MissingDocument();
+    if (row == null) {
+      throw new MissingDocument();
+    }
     Map<String, Object> result = new LinkedHashMap<>();
     result.put("version", version);
     result.put("timestamp", row.value().getOrDefault("timestamp", 0));
@@ -1426,10 +1543,16 @@ final class Core implements AutoCloseable {
 
   /** Exact stored local content keeps type references and does not expand inherited programs. */
   Map<String, Object> inspectContent(String account, String id, Long version) {
-    if (version == null) return inspectSession(account, id, this::contentView);
-    if (version < 1) throw new IllegalArgumentException("Positive document version required");
+    if (version == null) {
+      return inspectSession(account, id, this::contentView);
+    }
+    if (version < 1) {
+      throw new IllegalArgumentException("Positive document version required");
+    }
     Repository.Document stored = repository.findVersion(account, id, version);
-    if (stored == null) throw new MissingDocument();
+    if (stored == null) {
+      throw new MissingDocument();
+    }
     try (CanonicalRuntime.Session session = runtimes.restore(stored.checkpoint())) {
       return contentView(stored, session);
     }
@@ -1456,9 +1579,13 @@ final class Core implements AutoCloseable {
   }
 
   Map<String, Object> inspect(String account, String id, long version, boolean expanded) {
-    if (version < 1) throw new IllegalArgumentException("Positive document version required");
+    if (version < 1) {
+      throw new IllegalArgumentException("Positive document version required");
+    }
     Repository.Document document = repository.findVersion(account, id, version);
-    if (document == null) throw new MissingDocument();
+    if (document == null) {
+      throw new MissingDocument();
+    }
     return inspect(document, expanded);
   }
 
@@ -1476,8 +1603,9 @@ final class Core implements AutoCloseable {
     ReadBudget budget = new ReadBudget(limits);
     budget.document(0);
     Object value;
-    if (expanded) value = materialize(document, 0, budget);
-    else {
+    if (expanded) {
+      value = materialize(document, 0, budget);
+    } else {
       value = projection(document, budget);
     }
     ProjectedData data = ProjectedData.encode(value);
@@ -1493,12 +1621,17 @@ final class Core implements AutoCloseable {
    * Pages immutable direct links at a pinned parent version without opening the child documents.
    */
   Map<String, Object> children(String account, String id, String cursor, int limit) {
-    if (limit < 1 || limit > 100) throw new IllegalArgumentException("Page limit must be 1..100");
+    if (limit < 1 || limit > 100) {
+      throw new IllegalArgumentException("Page limit must be 1..100");
+    }
     Repository.Document document;
     String after = null;
-    if (cursor == null) document = requireDocument(account, id);
-    else {
-      if (cursor.length() > 16 * 1024) throw new IllegalArgumentException("Invalid child cursor");
+    if (cursor == null) {
+      document = requireDocument(account, id);
+    } else {
+      if (cursor.length() > 16 * 1024) {
+        throw new IllegalArgumentException("Invalid child cursor");
+      }
       ChildCursor decoded;
       try {
         decoded = Json.read(Base64.getUrlDecoder().decode(cursor), ChildCursor.class);
@@ -1510,10 +1643,13 @@ final class Core implements AutoCloseable {
           || !id.equals(decoded.document())
           || decoded.version() < 1
           || decoded.after() == null
-          || !decoded.after().startsWith("/"))
+          || !decoded.after().startsWith("/")) {
         throw new IllegalArgumentException("Cursor belongs to a different document or is invalid");
+      }
       document = repository.findVersion(account, id, decoded.version());
-      if (document == null) throw new MissingDocument();
+      if (document == null) {
+        throw new MissingDocument();
+      }
       after = decoded.after();
     }
     LinkIndex.Slice page =
@@ -1551,10 +1687,13 @@ final class Core implements AutoCloseable {
   Map<String, Object> embedding(String account, String id, String pointer) {
     Pointer.parse(pointer);
     Repository.Document parent = requireDocument(account, id);
-    if (!pointer.equals(parent.embeddings().childPath(pointer)))
+    if (!pointer.equals(parent.embeddings().childPath(pointer))) {
       throw new IllegalArgumentException("Select a direct embedded document path");
+    }
     Link link = new LinkIndex(repository.blobs(account)).get(parent.links(), pointer);
-    if (link == null) throw new IllegalArgumentException("Unknown embedding");
+    if (link == null) {
+      throw new IllegalArgumentException("Unknown embedding");
+    }
     return Map.of(
         "parent",
         id,
@@ -1575,12 +1714,18 @@ final class Core implements AutoCloseable {
     String remaining = pointer;
     for (int depth = 0; depth < 64; depth++) {
       String path = document.embeddings().childPath(remaining);
-      if (path == null) throw new IllegalArgumentException("Not an embedded document path");
+      if (path == null) {
+        throw new IllegalArgumentException("Not an embedded document path");
+      }
       Link link = new LinkIndex(repository.blobs(account)).get(document.links(), path);
-      if (link == null) throw new IllegalArgumentException("Unknown embedding");
+      if (link == null) {
+        throw new IllegalArgumentException("Unknown embedding");
+      }
       List<String> parts = Pointer.parse(remaining).segments();
       int consumed = Pointer.parse(path).segments().size();
-      if (consumed == parts.size()) return link.document();
+      if (consumed == parts.size()) {
+        return link.document();
+      }
       remaining = new Pointer(parts.subList(consumed, parts.size())).toString();
       document = repository.load(account, link.document(), Math.max(1, link.version()));
     }
@@ -1629,7 +1774,9 @@ final class Core implements AutoCloseable {
 
   private Object materialize(
       Repository.Document document, int depth, ReadBudget budget, EmbeddingReads readScope) {
-    if (readScope != null) readScope.remember(document);
+    if (readScope != null) {
+      readScope.remember(document);
+    }
     Map<String, Object> local = projection(document, budget);
     Map<String, Object> result = mutable(local);
     LinkIndex index = new LinkIndex(repository.blobs(document.account()));
@@ -1653,12 +1800,16 @@ final class Core implements AutoCloseable {
       LinkIndex links,
       int depth,
       EmbeddingReads reads) {
-    if (parent == null || root.isEmpty()) return List.of();
+    if (parent == null || root.isEmpty()) {
+      return List.of();
+    }
     String normalized = pointer.equals("/") ? "" : pointer;
     String boundary = parent.embeddings().childPath(normalized);
     if (boundary != null) {
       Link link = links.get(root, boundary);
-      if (link == null) return List.of();
+      if (link == null) {
+        return List.of();
+      }
       Repository.Document child = reads.load(repository, account, link, depth + 1);
       String rest =
           new Pointer(
@@ -1670,7 +1821,9 @@ final class Core implements AutoCloseable {
               .toString();
       return embeddingKeys(account, child, child.links(), rest, links, depth + 1, reads);
     }
-    if (!parent.embeddings().containsChildren(normalized)) return List.of();
+    if (!parent.embeddings().containsChildren(normalized)) {
+      return List.of();
+    }
     Pointer base = Pointer.parse(normalized);
     Set<String> keys = new TreeSet<>();
     links.forEach(
@@ -1678,8 +1831,9 @@ final class Core implements AutoCloseable {
         (path, link) -> {
           reads.budget.link();
           Pointer target = Pointer.parse(path);
-          if (base.contains(target) && target.segments().size() > base.segments().size())
+          if (base.contains(target) && target.segments().size() > base.segments().size()) {
             keys.add(target.segments().get(base.segments().size()));
+          }
         });
     return List.copyOf(keys);
   }
@@ -1693,12 +1847,18 @@ final class Core implements AutoCloseable {
       LinkIndex links,
       int depth,
       EmbeddingReads reads) {
-    if (parent == null || root.isEmpty()) return java.util.Optional.empty();
+    if (parent == null || root.isEmpty()) {
+      return java.util.Optional.empty();
+    }
     String normalized = pointer.equals("/") ? "" : pointer;
     String boundary = parent.embeddings().childPath(normalized);
-    if (boundary == null) return java.util.Optional.empty();
+    if (boundary == null) {
+      return java.util.Optional.empty();
+    }
     Link link = links.get(root, boundary);
-    if (link == null) return java.util.Optional.empty();
+    if (link == null) {
+      return java.util.Optional.empty();
+    }
     Repository.Document child = reads.load(repository, account, link, depth + 1);
     String rest =
         new Pointer(
@@ -1708,8 +1868,9 @@ final class Core implements AutoCloseable {
                         Pointer.parse(boundary).segments().size(),
                         Pointer.parse(normalized).segments().size()))
             .toString();
-    if (child.embeddings().childPath(rest) != null)
+    if (child.embeddings().childPath(rest) != null) {
       return exactRead(account, child, child.links(), rest, links, depth + 1, reads);
+    }
     return java.util.Optional.of(
         new CanonicalRuntime.ContentRead(new blue.BlueId(child.localBlueId()), rest));
   }
@@ -1724,16 +1885,22 @@ final class Core implements AutoCloseable {
       int depth,
       List<String> replaced,
       EmbeddingReads readScope) {
-    if (document == null || root.isEmpty()) return local;
+    if (document == null || root.isEmpty()) {
+      return local;
+    }
     ReadBudget budget = readScope.budget;
     String normalized = pointer.equals("/") ? "" : pointer;
     String childPath = document.embeddings().childPath(normalized);
     if (childPath != null) {
       // Compact state contains a child only while the current workflow is authoring its
       // replacement.
-      if (local != Bex.undefined()) return local;
+      if (local != Bex.undefined()) {
+        return local;
+      }
       Link link = index.get(root, childPath);
-      if (link == null) return local;
+      if (link == null) {
+        return local;
+      }
       budget.document(depth + 1);
       Repository.Document child =
           repository.load(account, link.document(), Math.max(1, link.version()));
@@ -1751,7 +1918,9 @@ final class Core implements AutoCloseable {
           account, child, child.links(), rest, selected, index, depth + 1, List.of(), readScope);
     }
     if (document.embeddings().containsChildren(normalized)) {
-      if (!(local instanceof Map<?, ?>)) return local;
+      if (!(local instanceof Map<?, ?>)) {
+        return local;
+      }
       budget.projection(local);
       Map<String, Object> result = mutable(object(local));
       Pointer base = Pointer.parse(normalized);
@@ -1762,7 +1931,9 @@ final class Core implements AutoCloseable {
             Pointer selectedPath = Pointer.parse(path);
             if (!base.contains(selectedPath)
                 || replaced.stream()
-                    .anyMatch(changed -> Pointer.parse(changed).contains(selectedPath))) return;
+                    .anyMatch(changed -> Pointer.parse(changed).contains(selectedPath))) {
+              return;
+            }
             String relative =
                 new Pointer(
                         selectedPath
@@ -1823,12 +1994,14 @@ final class Core implements AutoCloseable {
   private static Object select(Object value, String pointer) {
     Object current = value;
     for (String part : Pointer.parse(pointer).segments()) {
-      if (current instanceof Map<?, ?> map)
+      if (current instanceof Map<?, ?> map) {
         current = map.containsKey(part) ? map.get(part) : Bex.undefined();
-      else if (current instanceof List<?> list) {
+      } else if (current instanceof List<?> list) {
         int i = Integer.parseInt(part);
         current = i >= 0 && i < list.size() ? list.get(i) : Bex.undefined();
-      } else return Bex.undefined();
+      } else {
+        return Bex.undefined();
+      }
     }
     return current;
   }
@@ -1836,17 +2009,20 @@ final class Core implements AutoCloseable {
   private static void put(Map<String, Object> target, String pointer, Object value) {
     List<String> parts = Pointer.parse(pointer).segments();
     Map<String, Object> parent = target;
-    for (int i = 0; i < parts.size() - 1; i++)
+    for (int i = 0; i < parts.size() - 1; i++) {
       parent =
           object(
               parent.computeIfAbsent(parts.get(i), ignored -> new LinkedHashMap<String, Object>()));
+    }
     parent.put(parts.getLast(), value);
   }
 
   @Override
   public void close() {
     sessions.close();
-    if (timelines != null) timelines.close();
+    if (timelines != null) {
+      timelines.close();
+    }
     repository.store.close();
   }
 }

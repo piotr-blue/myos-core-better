@@ -1,10 +1,14 @@
 package myos.better;
 
 import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.util.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
+import java.security.GeneralSecurityException;
+import java.security.SecureRandom;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Objects;
+import javax.crypto.Cipher;
+import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
 
 /** JCA authenticated encryption with separate domains and resource-bound associated data. */
 final class SecretEnvelope {
@@ -13,7 +17,9 @@ final class SecretEnvelope {
   private final String domain;
 
   SecretEnvelope(byte[] master, String domain) {
-    if (master.length != 32) throw new IllegalArgumentException("A 256-bit master is required");
+    if (master.length != 32) {
+      throw new IllegalArgumentException("A 256-bit master is required");
+    }
     this.key = new SecretKeySpec(master, "AES");
     this.domain = Objects.requireNonNull(domain);
   }
@@ -40,7 +46,9 @@ final class SecretEnvelope {
   String open(String envelope, String context) {
     try {
       byte[] encoded = Base64.getDecoder().decode(envelope);
-      if (encoded.length < 28) throw new IllegalArgumentException();
+      if (encoded.length < 28) {
+        throw new IllegalArgumentException();
+      }
       var cipher = cipher(Cipher.DECRYPT_MODE, Arrays.copyOf(encoded, 12), context);
       return new String(cipher.doFinal(encoded, 12, encoded.length - 12), StandardCharsets.UTF_8);
     } catch (GeneralSecurityException | IllegalArgumentException failure) {

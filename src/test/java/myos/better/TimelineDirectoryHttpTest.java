@@ -1,14 +1,23 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import blue.*;
+import blue.LanguageContent;
 import java.math.BigInteger;
 import java.net.URI;
-import java.net.http.*;
-import java.nio.file.*;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -124,7 +133,9 @@ class TimelineDirectoryHttpTest {
             "active-provider.json",
             "active-timeline.json",
             "quiet-provider.json",
-            "quiet-timeline.json")) Files.delete(directory.resolve(name));
+            "quiet-timeline.json")) {
+      Files.delete(directory.resolve(name));
+    }
     try (Host host = new Host(fixture, store)) {
       assertEquals("IDLE", host.step(child));
       LanguageContent second = fixture.active.entry(first.blueId(), 2, "{amount: 5}");
@@ -247,11 +258,14 @@ class TimelineDirectoryHttpTest {
               ((Map<?, ?>)
                       ok("/documents/read", Map.of("account", "alice", "document", id)).get("data"))
                   .get("count"))) {
-        if (System.nanoTime() > deadline) fail("Parent did not receive the child event");
+        if (System.nanoTime() > deadline) {
+          fail("Parent did not receive the child event");
+        }
         Thread.sleep(10);
       }
     }
 
+    @Override
     public void close() {
       server.close();
       client.close();

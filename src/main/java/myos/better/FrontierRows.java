@@ -1,7 +1,9 @@
 package myos.better;
 
 import java.io.UncheckedIOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import myos.better.OwnerFrontiers.Head;
 import myos.better.OwnerFrontiers.Source;
 
@@ -23,7 +25,9 @@ final class FrontierRows {
 
   static Head required(OwnerMetadata.Transaction tx, String owner) {
     Head head = get(tx, key("head", owner), Head.class);
-    if (head == null) throw new IllegalArgumentException("Unknown owner: " + owner);
+    if (head == null) {
+      throw new IllegalArgumentException("Unknown owner: " + owner);
+    }
     return head;
   }
 
@@ -50,7 +54,9 @@ final class FrontierRows {
     while (true) {
       var page = tx.page(prefix, after, 128);
       page.forEach(entry -> result.add(decode(entry.value(), type)));
-      if (page.size() < 128) return result;
+      if (page.size() < 128) {
+        return result;
+      }
       after = page.getLast().key();
     }
   }
@@ -60,7 +66,9 @@ final class FrontierRows {
   }
 
   static String key(String... parts) {
-    for (String part : parts) component(part);
+    for (String part : parts) {
+      component(part);
+    }
     return String.join("\0", parts);
   }
 
@@ -69,7 +77,8 @@ final class FrontierRows {
   }
 
   static void component(String value) {
-    if (value == null || value.isEmpty() || value.indexOf('\0') >= 0)
+    if (value == null || value.isEmpty() || value.indexOf('\0') >= 0) {
       throw new IllegalArgumentException("Nonempty metadata key without NUL required");
+    }
   }
 }

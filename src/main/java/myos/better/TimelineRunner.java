@@ -1,7 +1,13 @@
 package myos.better;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ScheduledThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /** Bounded provider polling and receiver execution have independent workers and lifetimes. */
@@ -22,7 +28,9 @@ final class TimelineRunner implements AutoCloseable {
   void check() {
     health.check();
     service.checkWorkers();
-    if (directory != null) directory.check();
+    if (directory != null) {
+      directory.check();
+    }
   }
 
   TimelineRunner(Core core, TimelineService service, TimelineTransport transport) {
@@ -47,17 +55,23 @@ final class TimelineRunner implements AutoCloseable {
   }
 
   void start() {
-    if (closed || !started.compareAndSet(false, true))
+    if (closed || !started.compareAndSet(false, true)) {
       throw new IllegalStateException("Timeline runner already started or closed");
-    if (directory != null) directory.start();
+    }
+    if (directory != null) {
+      directory.start();
+    }
     service.startTime();
     sources.forEach(source -> acquisition.execute(health.guard(source)));
-    for (int i = 0; i < options.receiverWorkers(); i++)
+    for (int i = 0; i < options.receiverWorkers(); i++) {
       receivers.submit(health.guard(this::receive));
+    }
   }
 
   Map<String, Object> status(String account, String name) {
-    if (directory != null) return directory.status(account, name);
+    if (directory != null) {
+      return directory.status(account, name);
+    }
     return sources.stream()
         .filter(p -> p.source.account().equals(account) && p.source.name().equals(name))
         .findFirst()
@@ -68,7 +82,9 @@ final class TimelineRunner implements AutoCloseable {
   private void receive() {
     while (!closed) {
       try {
-        if (service.drain(core, 32) == 0) Thread.sleep(25);
+        if (service.drain(core, 32) == 0) {
+          Thread.sleep(25);
+        }
       } catch (InterruptedException interrupted) {
         Thread.currentThread().interrupt();
         return;
@@ -102,7 +118,9 @@ final class TimelineRunner implements AutoCloseable {
 
     @Override
     public void run() {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
       long delay = options.pollMillis();
       attempts++;
       try {
@@ -110,7 +128,9 @@ final class TimelineRunner implements AutoCloseable {
         TimelineArchive.Acquired result = pull.acquire();
         service.acquired(source, result);
         failures = 0;
-        if (!pull.caughtUp()) delay = 0;
+        if (!pull.caughtUp()) {
+          delay = 0;
+        }
         status =
             Map.of(
                 "automatic",
@@ -157,7 +177,9 @@ final class TimelineRunner implements AutoCloseable {
         try {
           acquisition.schedule(health.guard(this), delay, TimeUnit.MILLISECONDS);
         } catch (RejectedExecutionException shutdown) {
-          if (!closed) throw shutdown;
+          if (!closed) {
+            throw shutdown;
+          }
         }
       }
     }
@@ -165,9 +187,13 @@ final class TimelineRunner implements AutoCloseable {
 
   @Override
   public synchronized void close() {
-    if (closed) return;
+    if (closed) {
+      return;
+    }
     closed = true;
-    if (directory != null) directory.close();
+    if (directory != null) {
+      directory.close();
+    }
     service.stopTime();
     acquisition.shutdownNow();
     receivers.shutdownNow();

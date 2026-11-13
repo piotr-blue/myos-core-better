@@ -1,10 +1,17 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.junit.jupiter.api.Test;
 
@@ -15,8 +22,11 @@ class CoreEventProjectionTest {
     var store = new JsonBoundaryStore();
     var admissions = new CoreAdmissions(store);
     // Two accounts each cross the 24-fact batch limit by two facts.
-    for (String account : List.of("alice", "bob"))
-      for (int i = 0; i < 13; i++) submit(admissions, account, "request-" + i);
+    for (String account : List.of("alice", "bob")) {
+      for (int i = 0; i < 13; i++) {
+        submit(admissions, account, "request-" + i);
+      }
+    }
     var events = new CoreEvents(store, new CorePageTokens(store));
     try (var projector = new CoreEventProjection(store, events)) {
       assertEquals(4, projector.advance());
@@ -47,8 +57,9 @@ class CoreEventProjectionTest {
                         w.key().partition().equals("CORE_EVENTS#alice")
                             && w.key().sort().equals("SEQUENCE")
                             && w.next() != null
-                            && Repository.number(w.next().value().get("last")) == 2))
+                            && Repository.number(w.next().value().get("last")) == 2)) {
               projected.countDown();
+            }
           });
       var projector = new CoreEventProjection(store, events);
       try {
@@ -87,8 +98,9 @@ class CoreEventProjectionTest {
                 AtomicStore.class.getClassLoader(),
                 new Class<?>[] {AtomicStore.class},
                 (proxy, method, args) -> {
-                  if (method.getName().equals("commit") && fail.getAndSet(false))
+                  if (method.getName().equals("commit") && fail.getAndSet(false)) {
                     throw new IllegalStateException("Transient storage failure");
+                  }
                   try {
                     return method.invoke(delegate, args);
                   } catch (InvocationTargetException error) {
@@ -111,7 +123,9 @@ class CoreEventProjectionTest {
   @Test
   void pinnedHistoryDoesNotClaimCompletenessWhileSourceFactsRemainUnprojected() {
     var store = new JsonBoundaryStore();
-    for (int i = 0; i < 13; i++) submit(new CoreAdmissions(store), "alice", "request-" + i);
+    for (int i = 0; i < 13; i++) {
+      submit(new CoreAdmissions(store), "alice", "request-" + i);
+    }
     var events = new CoreEvents(store, new CorePageTokens(store));
     assertEquals(
         "read_model_not_ready",

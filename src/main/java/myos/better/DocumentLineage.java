@@ -1,7 +1,17 @@
 package myos.better;
 
 import blue.BlueId;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Protected, account-scoped identity membership. Publication shares the document transaction;
@@ -15,8 +25,9 @@ final class DocumentLineage {
   record Publication(Repository.Document document, BlueId initial) {
     Publication {
       Objects.requireNonNull(document);
-      if (document.version() == 1 != (initial != null))
+      if (document.version() == 1 != (initial != null)) {
         throw new IllegalArgumentException("Only a new document supplies its initial identity");
+      }
     }
   }
 
@@ -57,14 +68,18 @@ final class DocumentLineage {
                   && document.checkpoint().equals(write.next().value().get("checkpoint"));
         }
       }
-      if (!stateFound || !historyFound)
+      if (!stateFound || !historyFound) {
         throw new IllegalArgumentException(
             "Lineage requires the exact state and history publication");
+      }
       AtomicStore.Key root = rootKey(document.account(), document.id());
-      if (roots.putIfAbsent(root, publication) != null)
+      if (roots.putIfAbsent(root, publication) != null) {
         throw new IllegalArgumentException("Duplicate document publication");
+      }
       List<BlueId> identities = new ArrayList<>();
-      if (publication.initial() != null) identities.add(publication.initial());
+      if (publication.initial() != null) {
+        identities.add(publication.initial());
+      }
       identities.add(new BlueId(document.localBlueId()));
       for (BlueId identity : identities) {
         Membership member =
@@ -85,7 +100,9 @@ final class DocumentLineage {
       Repository.Document document = item.getValue().document();
       AtomicStore.Row found = existing.get(item.getKey());
       if (document.version() == 1) {
-        if (found != null) return false;
+        if (found != null) {
+          return false;
+        }
         additions.add(
             AtomicStore.Write.put(
                 item.getKey(),
@@ -100,27 +117,35 @@ final class DocumentLineage {
                     "edition",
                     document.checkpoint().get("edition"))));
       } else {
-        if (found == null)
+        if (found == null) {
           throw new IllegalStateException(
               "Document has no established lineage; explicit migration is required");
+        }
         validateRoot(found, item.getKey());
-        if (found.version() > document.version() - 1) return false;
-        if (found.version() != document.version() - 1)
+        if (found.version() > document.version() - 1) {
+          return false;
+        }
+        if (found.version() != document.version() - 1) {
           throw new IllegalStateException(
               "Lineage coverage has a history gap; explicit migration is required");
+        }
         additions.add(AtomicStore.Write.put(item.getKey(), found.version(), found.value()));
       }
     }
     for (var item : memberships.entrySet()) {
       AtomicStore.Row found = existing.get(item.getKey());
       Membership proposed = item.getValue();
-      if (found == null) additions.add(AtomicStore.Write.put(item.getKey(), 0, value(proposed)));
-      else {
+      if (found == null) {
+        additions.add(AtomicStore.Write.put(item.getKey(), 0, value(proposed)));
+      } else {
         Membership retained = read(found, item.getKey());
         if (!retained.document().equals(proposed.document())
-            || !retained.identity().equals(proposed.identity()))
+            || !retained.identity().equals(proposed.identity())) {
           throw new IllegalStateException("Conflicting lineage membership");
-        if (retained.introducedAt() > proposed.introducedAt()) return false;
+        }
+        if (retained.introducedAt() > proposed.introducedAt()) {
+          return false;
+        }
       }
     }
     writes.addAll(additions);
@@ -134,13 +159,16 @@ final class DocumentLineage {
 
   /** One receiving cut: coverage is read before membership, and later versions stay excluded. */
   View view(String account, String document, long version) {
-    if (version < 1) throw new IllegalArgumentException("Positive receiver version required");
+    if (version < 1) {
+      throw new IllegalArgumentException("Positive receiver version required");
+    }
     AtomicStore.Key key = rootKey(account, document);
     AtomicStore.Row root = store.get(key);
     if (root != null) {
       validateRoot(root, key);
-      if (root.version() < version)
+      if (root.version() < version) {
         throw new IllegalStateException("Requested receiver history is not fully indexed");
+      }
     }
     return new View(account, document, version, root);
   }
@@ -164,14 +192,20 @@ final class DocumentLineage {
     }
 
     private Optional<Membership> resolve(BlueId identity) {
-      if (root == null) return Optional.empty();
+      if (root == null) {
+        return Optional.empty();
+      }
       AtomicStore.Key key = memberKey(account, document, identity);
       // Coverage was read first. A later membership can only be accepted if it belongs to
       // this frozen version; absence cannot be combined with a newer coverage observation.
       AtomicStore.Row row = store.get(key);
-      if (row == null) return Optional.empty();
+      if (row == null) {
+        return Optional.empty();
+      }
       Membership member = read(row, key);
-      if (member.introducedAt() > version) return Optional.empty();
+      if (member.introducedAt() > version) {
+        return Optional.empty();
+      }
       Repository.Document published =
           publications.computeIfAbsent(
               member.introducedAt(), v -> repository.load(account, document, v));
@@ -183,15 +217,20 @@ final class DocumentLineage {
   /** Identity discovery is scoped to the managed account, not the content store. */
   boolean known(String account, BlueId identity) {
     AtomicStore.Page page = store.query(partition(account, identity), "D#", null, 1);
-    if (page.rows().isEmpty()) return false;
+    if (page.rows().isEmpty()) {
+      return false;
+    }
     AtomicStore.Row row = page.rows().getFirst();
     Membership member = read(row, memberKey(account, row.key().sort().substring(2), identity));
     AtomicStore.Key rootKey = rootKey(account, member.document());
     AtomicStore.Row root = store.get(rootKey);
-    if (root == null) throw new IllegalStateException("Membership has no document lineage");
+    if (root == null) {
+      throw new IllegalStateException("Membership has no document lineage");
+    }
     validateRoot(root, rootKey);
-    if (root.version() < member.introducedAt())
+    if (root.version() < member.introducedAt()) {
       throw new IllegalStateException("Membership exceeds indexed document history");
+    }
     verifyPublication(account, member, root);
     return member.identity().equals(identity);
   }
@@ -208,7 +247,9 @@ final class DocumentLineage {
           Membership member =
               read(row, memberKey(account, row.key().sort().substring(2), identity));
           documents.add(member.document());
-          if (documents.size() > maximum) return Optional.empty();
+          if (documents.size() > maximum) {
+            return Optional.empty();
+          }
         }
         after = page.after();
       } while (after != null);
@@ -219,13 +260,16 @@ final class DocumentLineage {
   BlueId initial(String account, String document) {
     AtomicStore.Key key = rootKey(account, document);
     AtomicStore.Row root = store.get(key);
-    if (root == null) throw new IllegalStateException("Missing established document lineage");
+    if (root == null) {
+      throw new IllegalStateException("Missing established document lineage");
+    }
     validateRoot(root, key);
     Repository.Document first = repository.load(account, document, 1);
     if (first.version() != 1
         || !first.checkpoint().get("identity").equals(root.value().get("snapshot"))
-        || !first.checkpoint().get("edition").equals(root.value().get("edition")))
+        || !first.checkpoint().get("edition").equals(root.value().get("edition"))) {
       throw new IllegalStateException("Lineage root disagrees with its publication");
+    }
     return new BlueId((String) root.value().get("initial"));
   }
 
@@ -239,14 +283,18 @@ final class DocumentLineage {
       Membership member, AtomicStore.Row root, Repository.Document published) {
     if (published.version() != member.introducedAt()
         || !published.checkpoint().get("identity").equals(member.snapshot())
-        || !published.checkpoint().get("edition").equals(member.edition()))
+        || !published.checkpoint().get("edition").equals(member.edition())) {
       throw new IllegalStateException("Lineage membership disagrees with its history/runtime");
-    if (published.localBlueId().equals(member.identity().value())) return;
+    }
+    if (published.localBlueId().equals(member.identity().value())) {
+      return;
+    }
     if (member.introducedAt() != 1
         || !root.value().get("initial").equals(member.identity().value())
         || !root.value().get("snapshot").equals(member.snapshot())
-        || !root.value().get("edition").equals(member.edition()))
+        || !root.value().get("edition").equals(member.edition())) {
       throw new IllegalStateException("Identity did not belong to the recorded publication");
+    }
   }
 
   private static void validateRoot(AtomicStore.Row row, AtomicStore.Key key) {
@@ -257,7 +305,9 @@ final class DocumentLineage {
         || !(value.get("snapshot") instanceof String snapshot)
         || snapshot.isEmpty()
         || !(value.get("edition") instanceof String edition)
-        || edition.isEmpty()) throw new IllegalStateException("Corrupt document lineage");
+        || edition.isEmpty()) {
+      throw new IllegalStateException("Corrupt document lineage");
+    }
     new BlueId((String) value.get("initial"));
   }
 
@@ -269,8 +319,9 @@ final class DocumentLineage {
         || !value
             .keySet()
             .equals(
-                Set.of("format", "document", "identity", "introducedAt", "snapshot", "edition")))
+                Set.of("format", "document", "identity", "introducedAt", "snapshot", "edition"))) {
       throw new IllegalStateException("Corrupt lineage membership");
+    }
     Membership result =
         new Membership(
             Repository.identifier((String) value.get("document")),
@@ -284,8 +335,9 @@ final class DocumentLineage {
         || result.edition() == null
         || result.edition().isEmpty()
         || !expected.sort().equals("D#" + result.document())
-        || !expected.partition().endsWith("#L#" + result.identity()))
+        || !expected.partition().endsWith("#L#" + result.identity())) {
       throw new IllegalStateException("Misbound lineage membership");
+    }
     return result;
   }
 

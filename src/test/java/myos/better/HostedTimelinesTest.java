@@ -1,12 +1,31 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.security.*;
-import java.security.spec.*;
-import java.util.*;
-import java.util.concurrent.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.LanguageException;
+import blue.ProviderSignatures;
+import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -279,7 +298,9 @@ class HostedTimelinesTest {
     void freshPublishersNeedNoEarlierEntryBodiesForAppendOrCheckpoint() {
       HostedTimelineFixture f = new HostedTimelineFixture();
       HostedTimelines.Created created = f.create();
-      for (int i = 0; i < 64; i++) f.host.append("alice", created.id(), "old" + i, f.message(i));
+      for (int i = 0; i < 64; i++) {
+        f.host.append("alice", created.id(), "old" + i, f.message(i));
+      }
       // Content-index pages are required lookup metadata. Remove every old entry body while
       // keeping those pages, so an accidental history traversal still fails at its first body.
       AtomicStore.Page oldEntries = f.host.entries("alice", created.id(), null, 100);
@@ -335,20 +356,24 @@ class HostedTimelinesTest {
         Future<?> a =
             executor.submit(
                 () -> {
-                  for (int i = 0; i < 12; i++)
+                  for (int i = 0; i < 12; i++) {
                     f.host.append("alice", created.id(), "a" + i, f.message(i));
+                  }
                 });
         Future<?> b =
             executor.submit(
                 () -> {
-                  for (int i = 0; i < 12; i++)
+                  for (int i = 0; i < 12; i++) {
                     peer.append("alice", created.id(), "b" + i, f.message(i));
+                  }
                 });
         a.get(10, TimeUnit.SECONDS);
         b.get(10, TimeUnit.SECONDS);
       }
       List<HostedTimelines.Published> entries = new ArrayList<>();
-      for (int i = 1; i <= 24; i++) entries.add(peer.entry("alice", created.id(), i));
+      for (int i = 1; i <= 24; i++) {
+        entries.add(peer.entry("alice", created.id(), i));
+      }
       assertEquals(
           24, f.verify(created, peer.seal("alice", created.id(), null), entries).entries().size());
       assertEquals(24, peer.head("alice", created.id()).count());

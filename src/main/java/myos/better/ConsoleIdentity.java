@@ -56,23 +56,30 @@ final class ConsoleIdentity implements AutoCloseable {
   }
 
   ConsoleLogin.User verify(String token) {
-    if (token == null || token.isBlank() || token.length() > 16384) throw invalid();
+    if (token == null || token.isBlank() || token.length() > 16384) {
+      throw invalid();
+    }
     try {
       SignedJWT parsed = SignedJWT.parse(token);
       String kid = parsed.getHeader().getKeyID();
       if (!JWSAlgorithm.RS256.equals(parsed.getHeader().getAlgorithm())
           || kid == null
           || kid.isBlank()
-          || kid.length() > 256) throw invalid();
+          || kid.length() > 256) {
+        throw invalid();
+      }
       claims.verify(parsed.getJWTClaimsSet(), null);
       JWTClaimsSet verified = processor.process(parsed, null);
-      if (!Boolean.TRUE.equals(verified.getBooleanClaim("email_verified")))
+      if (!Boolean.TRUE.equals(verified.getBooleanClaim("email_verified"))) {
         throw new ConsoleProblem(
             403, "EMAIL_NOT_VERIFIED", "Confirm your email before signing in.");
+      }
       if (verified.getSubject() == null
           || verified.getSubject().isBlank()
           || verified.getStringClaim("email") == null
-          || verified.getStringClaim("email").isBlank()) throw invalid();
+          || verified.getStringClaim("email").isBlank()) {
+        throw invalid();
+      }
       return new ConsoleLogin.User(
           verified.getSubject(),
           verified.getStringClaim("email"),

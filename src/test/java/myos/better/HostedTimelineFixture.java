@@ -1,10 +1,18 @@
 package myos.better;
 
-import blue.*;
-import java.security.*;
-import java.security.spec.*;
-import java.util.*;
-import java.util.concurrent.*;
+import blue.Language;
+import blue.LanguageContent;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
+import java.security.spec.EdECPrivateKeySpec;
+import java.security.spec.NamedParameterSpec;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 /** Public RFC test key, JSON persistence boundary and controlled publication/read faults. */
@@ -82,6 +90,7 @@ final class HostedTimelineFixture {
     long getCalls, contentCalls;
     boolean legacyMetadata;
 
+    @Override
     public Row get(Key key) {
       getCalls++;
       Row row = delegate.get(key);
@@ -93,30 +102,38 @@ final class HostedTimelineFixture {
       return row;
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String id) {
       contentCalls++;
-      if (unavailable.contains(id))
+      if (unavailable.contains(id)) {
         throw new IllegalStateException("Earlier entry body unavailable");
+      }
       return delegate.content(account, id);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       published.addAll(pages.keySet());
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       Runnable race = beforeCommit;
       beforeCommit = null;
-      if (race != null) race.run();
+      if (race != null) {
+        race.run();
+      }
       boolean result = delegate.commit(writes, checks);
       if (result && loseResponse) {
         loseResponse = false;

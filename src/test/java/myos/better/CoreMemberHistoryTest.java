@@ -1,10 +1,20 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.AdmissionEvidence;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class CoreMemberHistoryTest {
@@ -86,7 +96,9 @@ class CoreMemberHistoryTest {
       f.runner.start();
       long deadline = System.nanoTime() + java.util.concurrent.TimeUnit.SECONDS.toNanos(8);
       while (Repository.number(documents.head("owner", parent).get("version")) == 1
-          && System.nanoTime() < deadline) Thread.sleep(10);
+          && System.nanoTime() < deadline) {
+        Thread.sleep(10);
+      }
       assertEquals(2, Repository.number(documents.head("owner", parent).get("version")));
       String child =
           (String)

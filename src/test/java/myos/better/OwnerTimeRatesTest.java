@@ -1,9 +1,12 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 
 class OwnerTimeRatesTest {
@@ -15,7 +18,9 @@ class OwnerTimeRatesTest {
   void memberBurstRefillsWithoutGainingTokensWhenTheClockMovesBackwards() {
     var store = new MemoryStore();
     var f = new OwnerFrontiers(store, "account");
-    for (int i = 0; i < 16; i++) assertEquals(0, reserve(f, "member", 1000));
+    for (int i = 0; i < 16; i++) {
+      assertEquals(0, reserve(f, "member", 1000));
+    }
     assertEquals(1100, reserve(f, "member", 1000));
     assertEquals(1100, reserve(new OwnerFrontiers(store, "account"), "member", 900));
     assertEquals(1100, reserve(f, "member", 1099));
@@ -26,7 +31,9 @@ class OwnerTimeRatesTest {
   @Test
   void independentMembersShareTheAccountBudgetAndDeniedAttemptsConsumeNothing() {
     var f = new OwnerFrontiers(new MemoryStore(), "account");
-    for (int i = 0; i < 100; i++) assertEquals(0, reserve(f, "member-" + (i % 10), 1000));
+    for (int i = 0; i < 100; i++) {
+      assertEquals(0, reserve(f, "member-" + (i % 10), 1000));
+    }
     assertEquals(1010, reserve(f, "fresh-member", 1000));
     assertEquals(0, reserve(f, "fresh-member", 1010));
     assertEquals(1020, reserve(f, "fresh-member", 1010));
@@ -46,13 +53,17 @@ class OwnerTimeRatesTest {
                   int granted = 0;
                   for (int i = 0; i < 50; i++) {
                     var f = new OwnerFrontiers(store, "shared");
-                    if (reserve(f, "member-" + selected + "-" + (i % 4), 1000) == 0) granted++;
+                    if (reserve(f, "member-" + selected + "-" + (i % 4), 1000) == 0) {
+                      granted++;
+                    }
                   }
                   return granted;
                 }));
       }
       int granted = 0;
-      for (var task : tasks) granted += task.get(30, TimeUnit.SECONDS);
+      for (var task : tasks) {
+        granted += task.get(30, TimeUnit.SECONDS);
+      }
       assertEquals(100, granted);
     }
   }

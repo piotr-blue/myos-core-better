@@ -110,16 +110,19 @@ class CoreImpersonationsTest {
         var workers = Executors.newFixedThreadPool(8)) {
       var start = new CountDownLatch(1);
       var futures = new ArrayList<Future<Map<String, Object>>>();
-      for (int n = 0; n < 8; n++)
+      for (int n = 0; n < 8; n++) {
         futures.add(
             workers.submit(
                 () -> {
                   assertTrue(start.await(5, TimeUnit.SECONDS));
                   return f.issue("concurrent");
                 }));
+      }
       start.countDown();
       var expected = futures.getFirst().get(5, TimeUnit.SECONDS);
-      for (var future : futures) assertEquals(expected, future.get(5, TimeUnit.SECONDS));
+      for (var future : futures) {
+        assertEquals(expected, future.get(5, TimeUnit.SECONDS));
+      }
       assertEquals(
           1,
           f.store
@@ -152,8 +155,9 @@ class CoreImpersonationsTest {
 
     public boolean commit(List<Write> writes, List<Check> checks) {
       boolean committed = delegate.commit(writes, checks);
-      if (committed && loseNext.compareAndSet(true, false))
+      if (committed && loseNext.compareAndSet(true, false)) {
         throw new IllegalStateException("Lost committed response");
+      }
       return committed;
     }
 
@@ -211,9 +215,13 @@ class CoreImpersonationsTest {
       assertNotNull(f.service.verify(token, true));
       for (String invalid :
           List.of(
-              "", token + "x", token.substring(0, token.length() - 1), "core_i_" + "a".repeat(43)))
+              "",
+              token + "x",
+              token.substring(0, token.length() - 1),
+              "core_i_" + "a".repeat(43))) {
         assertEquals(
             401, assertThrows(ConsoleProblem.class, () -> f.service.verify(invalid, true)).status);
+      }
     }
   }
 

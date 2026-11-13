@@ -1,7 +1,15 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * Measures explicit legacy recovery separately from subsequent selected-member checkpoint reads.
@@ -22,9 +30,10 @@ public final class PublishedRecoveryProbe {
     var results = new ArrayList<Object>();
     for (int count : List.of(1, 128, 1024)) {
       var children = new TreeMap<String, Object>();
-      for (int i = 0; i < count; i++)
+      for (int i = 0; i < count; i++) {
         children.put(
             "child-" + i, Map.of("count", i, "history", ProviderSigning.ref(history.blueId())));
+      }
       var source =
           Map.of(
               "children",
@@ -66,8 +75,9 @@ public final class PublishedRecoveryProbe {
                         "probe", page, session.identity(), member, Language.create())
                     : pages.reviewedMember("probe", page, member, Language.create());
             double millis = (System.nanoTime() - started) / 1e6;
-            if (value == null || !expected.equals(value.blueId()))
+            if (value == null || !expected.equals(value.blueId())) {
               throw new AssertionError("Member changed");
+            }
             pair.put(
                 mode,
                 Map.of(
@@ -80,8 +90,9 @@ public final class PublishedRecoveryProbe {
           samples.add(pair);
         }
         if (!Arrays.equals(
-            Json.bytes(snapshot), Json.bytes(new CanonicalSnapshots(store).load("probe", page))))
+            Json.bytes(snapshot), Json.bytes(new CanonicalSnapshots(store).load("probe", page)))) {
           throw new AssertionError("Portable snapshot changed");
+        }
         results.add(Map.of("members", count + 1, "privateHistory", 128, "samples", samples));
       }
     }

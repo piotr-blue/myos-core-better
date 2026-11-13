@@ -1,6 +1,8 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import blue.BlueException;
 import blue.BluePackage;
@@ -48,18 +50,20 @@ class RuntimeConfigurationTest {
       var fixture = new TimelineServiceFixture(directory);
       var ids = List.of(blue.TimeBindings.PUBLICATION, blue.TimeBindings.CONTEXT_PUBLICATION);
       var names = List.of("time", "context");
-      for (String name : names)
+      for (String name : names) {
         try (var input = getClass().getResourceAsStream("/time/" + name + ".bluepkg")) {
           Files.copy(input, directory.resolve(name + ".bluepkg"));
         }
+      }
       for (List<Integer> selection :
           List.of(List.<Integer>of(), List.of(0), List.of(1), List.of(0, 1))) {
         var config = new java.util.LinkedHashMap<>(fixture.config());
         var packages = new java.util.ArrayList<Object>((List<?>) config.get("packages"));
-        for (int index : selection)
+        for (int index : selection) {
           packages.add(
               declaration(
                   names.get(index), ids.get(index).value(), Map.of("Time" + index, List.of())));
+        }
         config.put("packages", packages);
         config.put("features", List.of("canonical-graphs", "document-dispatch", "time"));
         fixture.write(config);
@@ -78,8 +82,11 @@ class RuntimeConfigurationTest {
         }
       }
     } finally {
-      if (previous == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", previous);
+      if (previous == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", previous);
+      }
     }
   }
 

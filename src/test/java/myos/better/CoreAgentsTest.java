@@ -1,10 +1,19 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.Clock;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
@@ -110,8 +119,9 @@ class CoreAgentsTest {
             Map.<String, Object>of("name", " "),
             Map.<String, Object>of("name", "x".repeat(161)),
             Map.<String, Object>of("name", "Dot", "role", "ADMIN"),
-            Map.<String, Object>of("name", "Dot", "unexpected", true)))
+            Map.<String, Object>of("name", "Dot", "unexpected", true))) {
       problem("invalid_account_input", () -> agents.create(owner, "invalid", input));
+    }
     String id = (String) agents.create(owner, "create", Map.of("name", "Dot")).get("agentId");
     for (var input :
         List.of(
@@ -119,8 +129,9 @@ class CoreAgentsTest {
             Map.<String, Object>of("expectedRevision", 0, "name", "Dot"),
             Map.<String, Object>of("expectedRevision", 1.5, "name", "Dot"),
             Map.<String, Object>of("expectedRevision", 1L, "inclusion", "true"),
-            Map.<String, Object>of("expectedRevision", 1L, "status", "DELETED")))
+            Map.<String, Object>of("expectedRevision", 1L, "status", "DELETED"))) {
       problem("invalid_account_input", () -> agents.change(owner, id, "invalid", input));
+    }
     put(
         store,
         CoreWorkspaces.accountKey("alice", "MEMBER#bob"),
@@ -145,17 +156,20 @@ class CoreAgentsTest {
     var store = new FaultStore();
     var agents = new CoreAgents(store);
     var user = session("alice", "alice");
-    for (int i = 0; i < 15; i++) agents.create(user, "create-" + i, Map.of("name", "Agent " + i));
+    for (int i = 0; i < 15; i++) {
+      agents.create(user, "create-" + i, Map.of("name", "Agent " + i));
+    }
     var barrier = new CyclicBarrier(2);
     var attempts = new AtomicInteger();
     store.before =
         () -> {
-          if (attempts.incrementAndGet() <= 2)
+          if (attempts.incrementAndGet() <= 2) {
             try {
               barrier.await(5, TimeUnit.SECONDS);
             } catch (Exception failed) {
               throw new AssertionError(failed);
             }
+          }
         };
     try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
       List<Future<String>> requests = new ArrayList<>();
@@ -173,7 +187,9 @@ class CoreAgentsTest {
                 }));
       }
       var outcomes = new ArrayList<String>();
-      for (var request : requests) outcomes.add(request.get(5, TimeUnit.SECONDS));
+      for (var request : requests) {
+        outcomes.add(request.get(5, TimeUnit.SECONDS));
+      }
       assertEquals(1, Collections.frequency(outcomes, "created"));
       assertEquals(1, Collections.frequency(outcomes, "agent_limit"));
     }
@@ -237,26 +253,32 @@ class CoreAgentsTest {
     volatile Runnable before = () -> {};
     boolean loseReply;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String p, String prefix, String after, int limit) {
       return delegate.query(p, prefix, after, limit);
     }
 
+    @Override
     public Page work(String s, String after, int limit) {
       return delegate.work(s, after, limit);
     }
 
+    @Override
     public byte[] content(String a, String id) {
       return delegate.content(a, id);
     }
 
+    @Override
     public void publishContent(String a, Map<String, byte[]> p) {
       delegate.publishContent(a, p);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       before.run();
       boolean result = delegate.commit(writes, checks);

@@ -1,6 +1,13 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Direct native occurrences. A relationship is not a claim that a proof position was applied. */
 final class CoreRelationships {
@@ -32,13 +39,15 @@ final class CoreRelationships {
     RuntimeConfiguration.fields(
         new HashMap<>(query), Set.of("direction", "limit", "pageToken", "positionBlueId"));
     String direction = query.getOrDefault("direction", "both");
-    if (!Set.of("incoming", "outgoing", "both").contains(direction))
+    if (!Set.of("incoming", "outgoing", "both").contains(direction)) {
       throw new IllegalArgumentException("direction must be incoming, outgoing or both");
-    if (query.containsKey("positionBlueId"))
+    }
+    if (query.containsKey("positionBlueId")) {
       throw new ConsoleProblem(
           400,
           "unsupported_relationship_position",
           "Historical relationship selection is not supported; omit positionBlueId.");
+    }
     int limit = CoreListFilter.limit(query);
     String resource = "documents/" + id + "/relationships";
     var cursor = pages.decode(account, resource, query);
@@ -52,8 +61,9 @@ final class CoreRelationships {
     for (Edge edge : view.edges()) {
       boolean outgoing = edge.target().sessionId().equals(instance);
       boolean incoming = edge.source().sessionId().equals(instance);
-      if (direction.equals("incoming") && !incoming || direction.equals("outgoing") && !outgoing)
+      if (direction.equals("incoming") && !incoming || direction.equals("outgoing") && !outgoing) {
         continue;
+      }
       String occurrence =
           Json.hash(
               Json.bytes(
@@ -84,9 +94,10 @@ final class CoreRelationships {
     String revision = Json.hash(Json.bytes(observed));
     if (direction.equals("outgoing")
         && !cursor.isEmpty()
-        && !revision.equals(cursor.get("revision")))
+        && !revision.equals(cursor.get("revision"))) {
       throw new ConsoleProblem(
           400, "page_token_expired", "Relationship view changed; restart the outgoing traversal.");
+    }
     var remaining =
         rows.tailMap(Objects.toString(cursor.get("after"), ""), false).entrySet().iterator();
     List<Object> selected = new ArrayList<>();
@@ -123,12 +134,15 @@ final class CoreRelationships {
       for (var row : parents.rows()) {
         String parent = (String) row.value().get("parent"), path = (String) row.value().get("path");
         var receiver = repository.load(account, parent);
-        if (receiver == null) continue;
+        if (receiver == null) {
+          continue;
+        }
         var link = links.get(receiver.links(), path);
         if (link != null
             && link.document().equals(id)
-            && link.generation().equals(row.value().get("generation")))
+            && link.generation().equals(row.value().get("generation"))) {
           addLocal(core, account, receiver, path, link, edges);
+        }
       }
       after = parents.after();
     } while (after != null);

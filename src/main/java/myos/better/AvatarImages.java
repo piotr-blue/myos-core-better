@@ -57,6 +57,8 @@ final class AvatarImages {
   }
 
   private static void check(boolean condition, int status, String code, String message) {
-    if (!condition) throw new ConsoleProblem(status, code, message);
+    if (!condition) {
+      throw new ConsoleProblem(status, code, message);
+    }
   }
 }

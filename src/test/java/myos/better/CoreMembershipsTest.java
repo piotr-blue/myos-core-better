@@ -1,10 +1,22 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.lang.reflect.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Proxy;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -262,7 +274,7 @@ class CoreMembershipsTest {
     var members = new CoreMemberships(racing, accounts);
     try (var threads = Executors.newVirtualThreadPerTaskExecutor()) {
       var tasks = new ArrayList<Future<String>>();
-      for (String user : List.of("alice", "bob"))
+      for (String user : List.of("alice", "bob")) {
         tasks.add(
             threads.submit(
                 () -> {
@@ -280,8 +292,11 @@ class CoreMembershipsTest {
                     return failure.code;
                   }
                 }));
+      }
       var outcomes = new ArrayList<String>();
-      for (var task : tasks) outcomes.add(task.get(5, TimeUnit.SECONDS));
+      for (var task : tasks) {
+        outcomes.add(task.get(5, TimeUnit.SECONDS));
+      }
       assertEquals(1, Collections.frequency(outcomes, "changed"));
       assertEquals(1, Collections.frequency(outcomes, "last_admin_required"));
       assertEquals(

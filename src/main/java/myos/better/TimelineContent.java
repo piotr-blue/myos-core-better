@@ -1,8 +1,15 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageProvider;
+import blue.LanguageRecord;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /** One bounded immutable publication, independent of the number of earlier Timeline entries. */
@@ -35,7 +42,9 @@ final class TimelineContent {
     for (var record : value.records(retained).entrySet()) {
       String text = record.getValue().toJson();
       bytes = Math.addExact(bytes, text.getBytes(StandardCharsets.UTF_8).length);
-      if (bytes > MAXIMUM) throw new IllegalArgumentException("Timeline content exceeds 2 MiB");
+      if (bytes > MAXIMUM) {
+        throw new IllegalArgumentException("Timeline content exceeds 2 MiB");
+      }
       records.put(record.getKey().value(), Json.object(text.getBytes(StandardCharsets.UTF_8)));
     }
     byte[] encoded =
@@ -49,8 +58,9 @@ final class TimelineContent {
                 value.toJson(),
                 "records",
                 records));
-    if (encoded.length > MAXIMUM)
+    if (encoded.length > MAXIMUM) {
       throw new IllegalArgumentException("Timeline content exceeds 2 MiB");
+    }
     String address = blocks.put(encoded);
     blobs.flush();
     return address;
@@ -68,7 +78,9 @@ final class TimelineContent {
                 value.toJson(),
                 "recordsRoot",
                 recordsRoot));
-    if (packet.length > MAXIMUM) throw new IllegalArgumentException("Timeline body exceeds 2 MiB");
+    if (packet.length > MAXIMUM) {
+      throw new IllegalArgumentException("Timeline body exceeds 2 MiB");
+    }
     String address = blocks.put(packet);
     blobs.flush();
     return address;
@@ -77,19 +89,24 @@ final class TimelineContent {
   record Loaded(Language language, LanguageContent value) {
     LanguageContent member(String name) {
       Object selected = Json.object(value.toJson().getBytes(StandardCharsets.UTF_8)).get(name);
-      if (selected == null) throw new IllegalStateException("Missing Timeline content member");
+      if (selected == null) {
+        throw new IllegalStateException("Missing Timeline content member");
+      }
       return language.prepare(Language.Input.exactJson(JsonText.of(selected)));
     }
   }
 
   Loaded get(String address) {
     byte[] bytes = blocks.get(address);
-    if (bytes.length > MAXIMUM) throw new IllegalStateException("Oversized Timeline content");
+    if (bytes.length > MAXIMUM) {
+      throw new IllegalStateException("Oversized Timeline content");
+    }
     Map<String, Object> packet = Json.object(bytes);
     LanguageProvider provider;
     if ("myos.timeline-content/2".equals(packet.get("format"))) {
-      if (!(packet.get("recordsRoot") instanceof String root))
+      if (!(packet.get("recordsRoot") instanceof String root)) {
         throw new IllegalStateException("Missing Timeline content index root");
+      }
       provider = new TimelineRecords(repository, account, root);
     } else if ("myos.timeline-content/1".equals(packet.get("format"))) {
       Map<BlueId, LanguageRecord> records = new HashMap<>();
@@ -98,7 +115,9 @@ final class TimelineContent {
               (id, value) ->
                   records.put(new BlueId(id), LanguageRecord.fromJson(JsonText.of(value))));
       provider = id -> Optional.ofNullable(records.get(id));
-    } else throw new IllegalStateException("Unsupported Timeline content");
+    } else {
+      throw new IllegalStateException("Unsupported Timeline content");
+    }
     Language language =
         Language.newBuilder()
             .mount("Coordination", signing.coordination())
@@ -107,8 +126,9 @@ final class TimelineContent {
             .build();
     LanguageContent content =
         language.prepare(Language.Input.exactJson((String) packet.get("body")));
-    if (!content.blueId().value().equals(packet.get("blueId")))
+    if (!content.blueId().value().equals(packet.get("blueId"))) {
       throw new IllegalStateException("Timeline content identity mismatch");
+    }
     return new Loaded(language, content);
   }
 }

@@ -12,8 +12,9 @@ public final class HostedAccessProbe {
   private HostedAccessProbe() {}
 
   public static void main(String[] args) throws Exception {
-    if (args.length != 1 || !args[0].matches("native-access-bench-[A-Za-z0-9._-]{1,60}"))
+    if (args.length != 1 || !args[0].matches("native-access-bench-[A-Za-z0-9._-]{1,60}")) {
       throw new IllegalArgumentException("Expected a fresh native-access-bench-* namespace");
+    }
     String table = System.getenv("MYOS_TABLE");
     try (MeasuredStore store =
         new MeasuredStore(
@@ -25,8 +26,12 @@ public final class HostedAccessProbe {
       Fixture warm = new Fixture(store, args[0] + "-warm"),
           small = new Fixture(store, args[0] + "-small"),
           large = new Fixture(store, args[0] + "-large");
-      for (int i = 0; i < 8; i++) warm.update("warm-" + i);
-      for (int i = 0; i < 31; i++) large.update("initial-" + i);
+      for (int i = 0; i < 8; i++) {
+        warm.update("warm-" + i);
+      }
+      for (int i = 0; i < 31; i++) {
+        large.update("initial-" + i);
+      }
       List<Sample> shortUpdates = new ArrayList<>(), longUpdates = new ArrayList<>();
       for (int i = 0; i < 8; i++) {
         for (Fixture fixture : i % 2 == 0 ? List.of(small, large) : List.of(large, small)) {
@@ -47,7 +52,9 @@ public final class HostedAccessProbe {
       for (int i = 0; i < 16; i++) {
         for (Fixture fixture : i % 2 == 0 ? List.of(small, large) : List.of(large, small)) {
           Sample sample = measure(store, fixture::read);
-          if (i >= 8) (fixture == small ? shortReads : longReads).add(sample);
+          if (i >= 8) {
+            (fixture == small ? shortReads : longReads).add(sample);
+          }
         }
       }
       results.put(
@@ -78,7 +85,9 @@ public final class HostedAccessProbe {
     Map<String, Long> after = store.statistics(), calls = new TreeMap<>();
     before.forEach(
         (name, count) -> {
-          if (name.endsWith(".calls")) calls.put(name, after.get(name) - count);
+          if (name.endsWith(".calls")) {
+            calls.put(name, after.get(name) - count);
+          }
         });
     return new Sample(millis, Map.copyOf(calls));
   }
@@ -170,6 +179,8 @@ public final class HostedAccessProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new IllegalStateException(message);
+    if (!condition) {
+      throw new IllegalStateException(message);
+    }
   }
 }

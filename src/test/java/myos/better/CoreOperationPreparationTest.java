@@ -1,10 +1,19 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.math.*;
-import java.util.*;
+import blue.Bex;
+import blue.Contracts;
+import blue.Language;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import org.junit.jupiter.api.Test;
 
 /** Core's canonical operation-input cases, executed with the Better Language/BEX runtime. */
@@ -22,10 +31,12 @@ class CoreOperationPreparationTest {
 
   @Test
   void publicationEpochRemainsAnExactNonnegativeInt64() {
-    for (String token : List.of("0", "0.0", "0e400", "-0.0"))
+    for (String token : List.of("0", "0.0", "0e400", "-0.0")) {
       assertEquals(0, CoreOperationPreparation.epoch(new BigDecimal(token)));
-    for (String token : List.of("1", "1.0", "1e0"))
+    }
+    for (String token : List.of("1", "1.0", "1e0")) {
       assertEquals(1, CoreOperationPreparation.epoch(new BigDecimal(token)));
+    }
     for (String token : List.of("9007199254740993", "9223372036854775807")) {
       assertEquals(Long.parseLong(token), CoreOperationPreparation.epoch(new BigInteger(token)));
       assertEquals(Long.parseLong(token), CoreOperationPreparation.epoch(token));
@@ -36,10 +47,11 @@ class CoreOperationPreparationTest {
             "1e3",
             new BigDecimal("-1"),
             new BigDecimal("1.00000000000000001"),
-            new BigInteger("9223372036854775808")))
+            new BigInteger("9223372036854775808"))) {
       assertEquals(
           400,
           assertThrows(ConsoleProblem.class, () -> CoreOperationPreparation.epoch(invalid)).status);
+    }
   }
 
   @Test
@@ -199,7 +211,7 @@ class CoreOperationPreparationTest {
             Map.<String, Object>of("descriptorPath", "/fields/missing"),
             Map.<String, Object>of("descriptorOffset", -1),
             Map.<String, Object>of(
-                "definitionView", Map.of("doNotExpandPaths", List.of("/missing")))))
+                "definitionView", Map.of("doNotExpandPaths", List.of("/missing"))))) {
       assertEquals(
           400,
           assertThrows(
@@ -211,6 +223,7 @@ class CoreOperationPreparationTest {
                           "{\"text\":\"hello\"}",
                           options))
               .status);
+    }
   }
 
   @Test
@@ -275,8 +288,9 @@ class CoreOperationPreparationTest {
         List.of(
             request.replace("constant", "changed"),
             request.replace("\"required\":9007199254740993123456789,", ""),
-            request.replace("\"amount\":7", "\"amount\":\"seven\"")))
+            request.replace("\"amount\":7", "\"amount\":\"seven\""))) {
       assertEquals("invalid", status(evaluate(scoped, matcher, invalid, Map.of())));
+    }
   }
 
   @Test
@@ -322,8 +336,9 @@ class CoreOperationPreparationTest {
     var result = evaluate(scoped, pattern, null, Map.of());
     var choices = (List<?>) descriptor(result).get("enumJson");
     assertEquals(1, choices.size(), JsonText.of(result));
-    for (Object choice : choices)
+    for (Object choice : choices) {
       assertEquals("valid", status(evaluate(scoped, pattern, (String) choice, Map.of())));
+    }
   }
 
   @Test
@@ -358,9 +373,13 @@ class CoreOperationPreparationTest {
             "title: Preparation fixture\nrevision: 7\noperationPreparation: {version: 1}");
     var declaration = new LinkedHashMap<String, Object>();
     declaration.put("channel", "buyer");
-    if (pattern != null) declaration.put("request", pattern);
+    if (pattern != null) {
+      declaration.put("request", pattern);
+    }
     var input = new LinkedHashMap<>(options);
-    if (supplied != null) input.put("requestJson", supplied);
+    if (supplied != null) {
+      input.put("requestJson", supplied);
+    }
     return CoreOperationPreparation.evaluate(
         language.toBuilder().content(document).build(),
         document.blueId().value(),

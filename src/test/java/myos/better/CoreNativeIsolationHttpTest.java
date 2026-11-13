@@ -1,12 +1,20 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 
-import blue.*;
-import java.net.*;
-import java.net.http.*;
-import java.nio.file.*;
-import java.util.*;
+import blue.Contracts;
+import blue.Language;
+import java.net.InetSocketAddress;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
@@ -26,16 +34,20 @@ class CoreNativeIsolationHttpTest {
     var alice = new ConsoleLogin.User("alice", "alice@example.invalid");
     ConsoleLogin login =
         new ConsoleLogin() {
+          @Override
           public User verify(String token) {
-            if (!Set.of("alice", "bob").contains(Objects.toString(token, "")))
+            if (!Set.of("alice", "bob").contains(Objects.toString(token, ""))) {
               throw new ConsoleProblem(401, "SIGN_IN", "Sign in");
+            }
             return new User(token, token + "@example.invalid");
           }
 
+          @Override
           public Map<String, Object> action(String action, Map<String, Object> input) {
             throw new UnsupportedOperationException();
           }
 
+          @Override
           public void close() {}
         };
     try (var f = new ConsoleInputFixture(language, PublicPackages.EMPTY, 60_000, true, false);
@@ -70,7 +82,9 @@ class CoreNativeIsolationHttpTest {
               token.equals("alice") ? 200 : 404,
               response.statusCode(),
               suffix + ": " + response.body());
-          if (token.equals("bob")) assertFalse(response.body().contains("Private document"));
+          if (token.equals("bob")) {
+            assertFalse(response.body().contains("Private document"));
+          }
         }
         var missing =
             http.send(

@@ -1,8 +1,15 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.LanguageContent;
+import blue.LanguageProvider;
+import blue.LanguageRecord;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 /** An immutable source-scoped content index. Only a committed root makes records reachable. */
 final class TimelineRecords implements LanguageProvider {
@@ -53,7 +60,9 @@ final class TimelineRecords implements LanguageProvider {
     int bytes = 0;
     Map<String, String> changes = new LinkedHashMap<>();
     for (var item : records.entrySet()) {
-      if (contains(item.getKey())) continue;
+      if (contains(item.getKey())) {
+        continue;
+      }
       StoredLanguageRecords.Location known = stored.find().apply(item.getKey());
       if (known != null) {
         String address = known.link(blocks);
@@ -62,8 +71,9 @@ final class TimelineRecords implements LanguageProvider {
       }
       byte[] encoded = item.getValue().toJson().getBytes(StandardCharsets.UTF_8);
       bytes = Math.addExact(bytes, encoded.length);
-      if (bytes > MAXIMUM)
+      if (bytes > MAXIMUM) {
         throw new IllegalArgumentException("Source content exceeds 8 MiB per change");
+      }
       changes.put(item.getKey().value(), blocks.put(encoded));
     }
     root = index.update(root, changes, Set.of());

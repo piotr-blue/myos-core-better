@@ -1,11 +1,22 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import blue.*;
-import java.nio.file.*;
+import blue.BlueId;
+import blue.Language;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
@@ -18,12 +29,15 @@ class ClauseGrowthTest {
   void incrementalChildrenAndCyclicEventRoundsMatchWholeExecution(boolean cyclic) throws Exception {
     int count = Integer.getInteger("blue.growth.count", 3);
     int historyRepeats = Integer.getInteger("blue.growth.historyRepeats", 0);
-    if (historyRepeats < 0 || historyRepeats > 1000)
+    if (historyRepeats < 0 || historyRepeats > 1000) {
       throw new IllegalArgumentException("Use 0..1000 history repeats");
+    }
     org.junit.jupiter.api.Assumptions.assumeFalse(
         cyclic && (count > 3 || historyRepeats > 0),
         "Large cycles are a separate workload from sparse fan-out");
-    if (count < 1 || count > 1000) throw new IllegalArgumentException("Use 1..1000 children");
+    if (count < 1 || count > 1000) {
+      throw new IllegalArgumentException("Use 1..1000 children");
+    }
     String output = System.getProperty("blue.growth.output", "build/clause-growth") + "-" + cyclic;
     Files.createDirectories(Path.of(output).toAbsolutePath().getParent());
     System.setProperty("myos.owners.fast", "true");
@@ -142,7 +156,9 @@ class ClauseGrowthTest {
             }
           }
           assertEquals(0L, f.service.graphs().statistics().get("graphSessions.entries"));
-          if (count <= 10) OwnerReplay.verify(f.store, "alice", root, language, f.service);
+          if (count <= 10) {
+            OwnerReplay.verify(f.store, "alice", root, language, f.service);
+          }
         } finally {
           if (profile != null) {
             profile.stop();
@@ -192,8 +208,9 @@ class ClauseGrowthTest {
     String timeline = null;
     for (Object raw : (List<?>) documents.operations("alice", document).get("channels")) {
       Map<String, Object> row = RuntimeConfiguration.object(raw, "channel");
-      if (((Collection<?>) row.get("selectors")).contains(channel))
+      if (((Collection<?>) row.get("selectors")).contains(channel)) {
         timeline = (String) row.get("timeline");
+      }
     }
     assertNotNull(timeline);
     long version = ((Number) f.service.graphs().head("alice", root).get("version")).longValue() + 1;
@@ -220,7 +237,9 @@ class ClauseGrowthTest {
       for (; version <= latest; version++) {
         var publication = f.service.graphs().history("alice", root, version);
         var input = RuntimeConfiguration.object(publication.get("input"), "input");
-        if (!Objects.equals(input.get("entry"), submitted.get("entry"))) continue;
+        if (!Objects.equals(input.get("entry"), submitted.get("entry"))) {
+          continue;
+        }
         var outcome = RuntimeConfiguration.object(publication.get("outcome"), "outcome");
         assertEquals("APPLIED", outcome.get("status"));
         return Map.of(

@@ -1,8 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -96,14 +104,16 @@ class TimelinePollingTest {
       TimelinePolling ours = new TimelinePolling(store, binding("ours")),
           other = new TimelinePolling(store, binding("other"));
       TimelineDirectory foreign = directory(store, "other", other);
-      for (int i = 0; i < 128; i++)
+      for (int i = 0; i < 128; i++) {
         foreign.adopt("foreign" + i, "input", TimelineServiceFixture.definitions(source));
+      }
       TimelineDirectory selected = directory(store, "ours", ours);
       selected.adopt("alice", "input", TimelineServiceFixture.definitions(source));
       long before = store.statistics().get("work.calls");
       List<AtomicStore.Row> rows = new ArrayList<>();
-      for (int shard = 0; shard < TimelinePolling.SHARDS; shard++)
+      for (int shard = 0; shard < TimelinePolling.SHARDS; shard++) {
         rows.addAll(ours.page(shard, null, 16).rows());
+      }
       assertEquals(1, rows.size());
       assertEquals(4, store.statistics().get("work.calls") - before);
       assertEquals("alice", rows.getFirst().value().get("account"));
@@ -296,26 +306,32 @@ class TimelinePollingTest {
     int commits;
     List<Write> lastWrites;
 
+    @Override
     public Row get(Key key) {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       commits++;
       lastWrites = List.copyOf(writes);

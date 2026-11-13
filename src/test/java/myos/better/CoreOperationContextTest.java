@@ -1,10 +1,23 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
+import blue.ProjectionLimits;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.Test;
 
 /** Core canonical context cases, adapted to the Better public inspection API. */
@@ -56,7 +69,9 @@ class CoreOperationContextTest {
     {
       var values = new Values();
       var data = map();
-      for (int i = 0; i < 205; i++) data.put("field/~" + i, "x".repeat(1300));
+      for (int i = 0; i < 205; i++) {
+        data.put("field/~" + i, "x".repeat(1300));
+      }
       var root = values.source(data);
       var failure = assertThrows(ConsoleProblem.class, () -> project(root, "", null));
       assertEquals(413, failure.status);
@@ -299,7 +314,9 @@ class CoreOperationContextTest {
 
   private static Map<String, Object> map(Object... entries) {
     var result = new LinkedHashMap<String, Object>();
-    for (int i = 0; i < entries.length; i += 2) result.put((String) entries[i], entries[i + 1]);
+    for (int i = 0; i < entries.length; i += 2) {
+      result.put((String) entries[i], entries[i + 1]);
+    }
     return result;
   }
 

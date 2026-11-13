@@ -1,8 +1,16 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
 import java.math.BigDecimal;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 /** Retry-stable provider selections over an already established native completeness fence. */
 final class CoreTimelineGuarantees {
@@ -41,9 +49,10 @@ final class CoreTimelineGuarantees {
                     ? Long.parseLong(query.get("beforeUs"))
                     : head.completeBefore()
                 : Repository.number(state.get("before"));
-        if (before > head.completeBefore())
+        if (before > head.completeBefore()) {
           throw new ConsoleProblem(
               409, "unestablished_completeness", "The provider has not established this boundary.");
+        }
         long through = hosted.before(account, timeline, head.count(), before);
         String afterId =
             state.isEmpty() ? query.get("afterEntryBlueId") : (String) state.get("afterId");
@@ -54,31 +63,37 @@ final class CoreTimelineGuarantees {
           } catch (HostedTimelines.Missing missing) {
             throw new ConsoleProblem(400, "invalid_range_anchor", "Unknown range anchor.");
           }
-          if (after > through)
+          if (after > through) {
             throw new ConsoleProblem(
                 400, "invalid_range_anchor", "Anchor is outside the selected boundary.");
+          }
         }
         var selection = new LinkedHashMap<String, Object>();
         selection.put("fingerprint", fingerprint);
         selection.put("before", before);
         selection.put("through", through);
         selection.put("after", after);
-        if (afterId != null) selection.put("afterId", afterId);
+        if (afterId != null) {
+          selection.put("afterId", afterId);
+        }
         store.commit(List.of(AtomicStore.Write.put(key, 0, selection)), List.of());
         continue;
       }
-      if (!fingerprint.equals(row.value().get("fingerprint")))
+      if (!fingerprint.equals(row.value().get("fingerprint"))) {
         throw new ConsoleProblem(
             409,
             "idempotency_conflict",
             "Idempotency-Key was already used with different selectors.");
-      if (row.value().containsKey("response"))
+      }
+      if (row.value().containsKey("response")) {
         return RuntimeConfiguration.object(row.value().get("response"), "response");
+      }
       var response = project(account, timeline, resource, query, row.value());
       var completed = new LinkedHashMap<>(row.value());
       completed.put("response", response);
-      if (store.commit(List.of(AtomicStore.Write.put(key, row.version(), completed)), List.of()))
+      if (store.commit(List.of(AtomicStore.Write.put(key, row.version(), completed)), List.of())) {
         return response;
+      }
     }
     throw new ConsoleProblem(503, "storage_conflict", "Retry with the same Idempotency-Key.");
   }
@@ -138,21 +153,25 @@ final class CoreTimelineGuarantees {
     for (var field : input.entrySet()) {
       String name = field.getKey();
       if (Set.of("limit", "beforeUs").contains(name)) {
-        if (!(field.getValue() instanceof Number number))
+        if (!(field.getValue() instanceof Number number)) {
           throw new IllegalArgumentException(name + " must be an integer");
+        }
         try {
           result.put(name, new BigDecimal(number.toString()).toBigIntegerExact().toString());
         } catch (ArithmeticException invalid) {
           throw new IllegalArgumentException(name + " must be an integer");
         }
-      } else result.put(name, RuntimeConfiguration.text(field.getValue(), name));
+      } else {
+        result.put(name, RuntimeConfiguration.text(field.getValue(), name));
+      }
     }
     result.putIfAbsent("limit", "50");
     CoreListFilter.limit(result);
     if (result.containsKey("beforeUs")) {
       long before = Long.parseLong(result.get("beforeUs"));
-      if (before < 0 || before > HostedTimelines.MAX_TIME + 2)
+      if (before < 0 || before > HostedTimelines.MAX_TIME + 2) {
         throw new IllegalArgumentException("beforeUs is outside the native safe integer range");
+      }
     }
     return result;
   }
@@ -169,8 +188,9 @@ final class CoreTimelineGuarantees {
         String left =
             selectors(Map.of(field.getKey(), body.get(field.getKey()))).get(field.getKey());
         String right = selectors(Map.of(field.getKey(), value)).get(field.getKey());
-        if (!left.equals(right))
+        if (!left.equals(right)) {
           throw new IllegalArgumentException("Conflicting provider selectors");
+        }
       }
       merged.put(field.getKey(), value);
     }

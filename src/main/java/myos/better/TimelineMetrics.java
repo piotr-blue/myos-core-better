@@ -1,6 +1,8 @@
 package myos.better;
 
-import java.util.*;
+import java.util.EnumMap;
+import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.atomic.LongAdder;
 
 /** Process-local inclusive phase totals. No account, source, document or payload is retained. */
@@ -42,7 +44,9 @@ final class TimelineMetrics {
   private final Map<Phase, Counter> counters = new EnumMap<>(Phase.class);
 
   TimelineMetrics() {
-    for (Phase phase : Phase.values()) counters.put(phase, new Counter());
+    for (Phase phase : Phase.values()) {
+      counters.put(phase, new Counter());
+    }
   }
 
   Scope time(Phase phase) {
@@ -73,8 +77,11 @@ final class TimelineMetrics {
       counter.active().increment();
     }
 
+    @Override
     public void close() {
-      if (closed) return;
+      if (closed) {
+        return;
+      }
       closed = true;
       counter.active().decrement();
       counter.nanos().add(System.nanoTime() - started);

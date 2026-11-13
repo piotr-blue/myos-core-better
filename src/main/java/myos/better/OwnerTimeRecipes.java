@@ -1,7 +1,18 @@
 package myos.better;
 
-import blue.*;
-import java.util.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.TimeBindings;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Converts exact committed native occurrences into detached Time publication intent. */
 final class OwnerTimeRecipes {
@@ -11,8 +22,9 @@ final class OwnerTimeRecipes {
   private final BlueId requestType, cancelType;
 
   OwnerTimeRecipes(Language language, BluePackage publication) {
-    if (!TimeBindings.supports(publication.blueId()))
+    if (!TimeBindings.supports(publication.blueId())) {
       throw new IllegalArgumentException("Unsupported Time publication");
+    }
     this.language = language;
     this.publication = publication;
     channelType = publication.export("Timer Channel");
@@ -28,7 +40,9 @@ final class OwnerTimeRecipes {
       OwnerFrontiers.Order cause) {
     Map<String, Map<String, Long>> channels = new HashMap<>();
     for (var channel : outcome.after().reception().channels()) {
-      if (!channel.typeId().equals(channelType)) continue;
+      if (!channel.typeId().equals(channelType)) {
+        continue;
+      }
       var receiver = channel.receiver();
       channels
           .computeIfAbsent(receiver.member(), ignored -> new LinkedHashMap<>())
@@ -40,11 +54,12 @@ final class OwnerTimeRecipes {
       String unit = Objects.requireNonNull(units.get(member.getKey()));
       var prior = records.frontiers.find(records.read, unit);
       Long floor = cause == null ? null : cause.timestamp();
-      if (prior != null && prior.through() != null)
+      if (prior != null && prior.through() != null) {
         floor =
             floor == null
                 ? prior.through().timestamp()
                 : Math.max(floor, prior.through().timestamp());
+      }
       var selected =
           new OwnerTimers.Member(
               member.getValue(),
@@ -53,29 +68,38 @@ final class OwnerTimeRecipes {
               outcome.after().rooted(member.getKey()).terminated(),
               floor);
       live.add(selected);
-      if (byManaged.putIfAbsent(member.getValue(), selected) != null)
+      if (byManaged.putIfAbsent(member.getValue(), selected) != null) {
         throw new IllegalStateException("Duplicate managed Time member");
+      }
     }
     var disposition = disposition(records, outcome, cause);
-    if (!outcome.applied())
+    if (!outcome.applied()) {
       return new OwnerTimers.Turn(
           live, List.of(), cause == null ? null : cause.entry(), disposition);
+    }
 
     Map<String, Contracts.Emission> requests = new HashMap<>();
     for (var emission : outcome.transition().emissions()) {
-      if (!members.containsKey(emission.member())) continue;
+      if (!members.containsKey(emission.member())) {
+        continue;
+      }
       var type = emission.event().resolve().type().orElse(null);
-      if (requestType.equals(type) || cancelType.equals(type))
+      if (requestType.equals(type) || cancelType.equals(type)) {
         requests.put(emission.event().blueId().value(), emission);
+      }
     }
     List<OwnerTimers.Effect> effects = new ArrayList<>();
     for (Object raw : (List<?>) outcome.transition().observations().get("events")) {
       var occurrence = RuntimeConfiguration.object(raw, "native event occurrence");
       String nativeMember = (String) occurrence.get("document");
-      if (!members.containsKey(nativeMember)) continue;
+      if (!members.containsKey(nativeMember)) {
+        continue;
+      }
       String eventId = (String) occurrence.get("event");
       var emission = requests.get(eventId);
-      if (emission == null) continue;
+      if (emission == null) {
+        continue;
+      }
       var event = emission.event();
       boolean cancel = event.resolve().type().orElseThrow().equals(cancelType);
       var value = RuntimeConfiguration.object(emission.value(), "Time request");
@@ -83,22 +107,27 @@ final class OwnerTimeRecipes {
           cancel
               ? Set.of("type", "channel", "key")
               : Set.of("type", "channel", "key", "timestamp", "context");
-      if (!allowed.containsAll(value.keySet()))
+      if (!allowed.containsAll(value.keySet())) {
         throw new OwnerRejections.Failure("TIME_INVALID_REQUEST_FIELDS");
+      }
       String channel = text(value.get("channel"), "TIME_INVALID_CHANNEL");
       String key = value.containsKey("key") ? text(value.get("key"), "TIME_INVALID_NAME") : null;
-      if (cancel && key == null) throw new OwnerRejections.Failure("TIME_INVALID_NAME");
+      if (cancel && key == null) {
+        throw new OwnerRejections.Failure("TIME_INVALID_NAME");
+      }
       Long generation = channels.getOrDefault(nativeMember, Map.of()).get(channel);
-      if (generation == null || outcome.after().rooted(nativeMember).terminated())
+      if (generation == null || outcome.after().rooted(nativeMember).terminated()) {
         throw new OwnerRejections.Failure("TIME_INVALID_CHANNEL");
+      }
       String managed = members.get(nativeMember), owner = units.get(nativeMember);
       String identity = text(occurrence.get("identity"), "TIME_MISSING_OCCURRENCE");
       OwnerTimers.Registration registration = null;
       if (!cancel) {
         long timestamp = exactTimestamp(value.get("timestamp"));
         var receiver = Objects.requireNonNull(byManaged.get(managed));
-        if (receiver.floor() != null && timestamp <= receiver.floor())
+        if (receiver.floor() != null && timestamp <= receiver.floor()) {
           throw new OwnerRejections.Failure("TIME_DEADLINE_BEFORE_POSITION");
+        }
         Language scoped = language.toBuilder().content(event).build();
         var descriptor =
             scoped.readJson(
@@ -172,10 +201,16 @@ final class OwnerTimeRecipes {
 
   private OwnerTimers.Status disposition(
       OwnerRecords records, Contracts.Execution.Outcome outcome, OwnerFrontiers.Order cause) {
-    if (cause == null) return OwnerTimers.Status.FIRED;
+    if (cause == null) {
+      return OwnerTimers.Status.FIRED;
+    }
     var timer = OwnerTimers.input(records.read, cause);
-    if (timer == null) return OwnerTimers.Status.FIRED;
-    if (!outcome.applied()) return OwnerTimers.Status.FAILED;
+    if (timer == null) {
+      return OwnerTimers.Status.FIRED;
+    }
+    if (!outcome.applied()) {
+      return OwnerTimers.Status.FAILED;
+    }
     boolean observed =
         outcome.before().reception().channels().stream()
             .anyMatch(
@@ -200,7 +235,9 @@ final class OwnerTimeRecipes {
 
   private static String text(Object value, String code) {
     if (!(value instanceof String text) || text.isEmpty()) {
-      if (code.equals("TIME_MISSING_OCCURRENCE")) throw new IllegalStateException(code);
+      if (code.equals("TIME_MISSING_OCCURRENCE")) {
+        throw new IllegalStateException(code);
+      }
       throw new OwnerRejections.Failure(code);
     }
     return text;
@@ -211,15 +248,17 @@ final class OwnerTimeRecipes {
         || value instanceof Short
         || value instanceof Integer
         || value instanceof Long
-        || value instanceof java.math.BigInteger))
+        || value instanceof java.math.BigInteger)) {
       throw new OwnerRejections.Failure("TIME_INVALID_TIMESTAMP");
+    }
     try {
       long timestamp =
           value instanceof java.math.BigInteger integer
               ? integer.longValueExact()
               : ((Number) value).longValue();
-      if (timestamp < 0 || timestamp > 9_007_199_254_740_991L)
+      if (timestamp < 0 || timestamp > 9_007_199_254_740_991L) {
         throw new OwnerRejections.Failure("TIME_INVALID_TIMESTAMP");
+      }
       return timestamp;
     } catch (ArithmeticException failure) {
       throw new OwnerRejections.Failure("TIME_INVALID_TIMESTAMP");

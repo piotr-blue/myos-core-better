@@ -21,21 +21,27 @@ public final class CheckpointRestoreProbe {
   public static void main(String[] args) throws Exception {
     if (args.length != 2
         || !List.of("seed", "run").contains(args[0])
-        || System.getenv("MYOS_TABLE") != null)
+        || System.getenv("MYOS_TABLE") != null) {
       throw new IllegalArgumentException(
           "Expected local seed/run <fixture path>, without MYOS_TABLE");
+    }
     Path path = Path.of(args[1]);
     RuntimeCatalog runtimes =
         RuntimeConfiguration.loadCatalog(
             Path.of(
                 java.util.Objects.requireNonNull(
                     System.getenv("MYOS_RUNTIME"), "MYOS_RUNTIME required")));
-    if (args[0].equals("seed")) seed(path, runtimes);
-    else run(path, runtimes);
+    if (args[0].equals("seed")) {
+      seed(path, runtimes);
+    } else {
+      run(path, runtimes);
+    }
   }
 
   private static void seed(Path path, RuntimeCatalog runtimes) throws Exception {
-    if (Files.exists(path)) throw new IllegalArgumentException("Fixture must be new");
+    if (Files.exists(path)) {
+      throw new IllegalArgumentException("Fixture must be new");
+    }
     List<Sample> samples = new ArrayList<>();
     try (MemoryStore store = new MemoryStore();
         Core core = new Core(store, runtimes.creation())) {
@@ -51,8 +57,12 @@ public final class CheckpointRestoreProbe {
         for (int pass = 0; pass < 20; pass++) {
           core.drain(512);
           Map<?, ?> data = (Map<?, ?>) core.inspect(account, "agreement", false).get("data");
-          if (Repository.number(data.get("paidTotal")) == version * 42L) break;
-          if (pass == 19) throw new AssertionError("Seed propagation incomplete");
+          if (Repository.number(data.get("paidTotal")) == version * 42L) {
+            break;
+          }
+          if (pass == 19) {
+            throw new AssertionError("Seed propagation incomplete");
+          }
         }
         for (var pair :
             List.of(
@@ -87,8 +97,9 @@ public final class CheckpointRestoreProbe {
   }
 
   private static void run(Path path, RuntimeCatalog runtimes) throws Exception {
-    if (Files.size(path) > 32L * 1024 * 1024)
+    if (Files.size(path) > 32L * 1024 * 1024) {
       throw new IllegalArgumentException("Fixture exceeds 32 MiB");
+    }
     Fixture fixture = Json.read(Files.readAllBytes(path), Fixture.class);
     require(
         fixture.format().equals(FORMAT) && fixture.samples().size() == 96, "Unexpected fixture");
@@ -169,8 +180,9 @@ public final class CheckpointRestoreProbe {
   }
 
   private static CanonicalRuntime.Update transition(CanonicalRuntime.Session session, String role) {
-    if (role.equals("payment"))
+    if (role.equals("payment")) {
       return session.call("probe", "input", "record", Map.of(), 1000, null);
+    }
     String path = role.equals("order") ? "/payments/p0" : "/orders/o0";
     String kind = role.equals("order") ? "Payment Settled" : "Order Paid";
     return session.receive(
@@ -192,6 +204,8 @@ public final class CheckpointRestoreProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new AssertionError(message);
+    if (!condition) {
+      throw new AssertionError(message);
+    }
   }
 }

@@ -1,6 +1,8 @@
 package myos.better;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Account-local root discovery, registered atomically at creation; children use embedding links.
@@ -30,7 +32,9 @@ final class RootDocuments {
   }
 
   Map<String, Object> list(String account, String after) {
-    if (after != null) Repository.identifier(after);
+    if (after != null) {
+      Repository.identifier(after);
+    }
     AtomicStore.Page page =
         store.query("A#" + Repository.identifier(account) + "#ROOTS", "", after, 50);
     Map<String, Object> result = new LinkedHashMap<>();

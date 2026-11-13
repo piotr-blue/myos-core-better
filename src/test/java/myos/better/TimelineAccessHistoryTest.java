@@ -1,12 +1,21 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
 
 /** Cache residency, bounded catch-up and concurrency cannot alter canonical historical answers. */
 class TimelineAccessHistoryTest {
@@ -18,10 +27,14 @@ class TimelineAccessHistoryTest {
           PrivateTimelineFixture f = new PrivateTimelineFixture(store);
           TimelineAccessHistory history = new TimelineAccessHistory()) {
         f.pullControl(150);
-        for (int i = 1; i < 32; i++) f.pullControl(150 + i);
+        for (int i = 1; i < 32; i++) {
+          f.pullControl(150 + i);
+        }
         f.permissions(200, List.of());
         f.pullControl(250);
-        for (int i = 1; i < 32; i++) f.pullControl(250 + i);
+        for (int i = 1; i < 32; i++) {
+          f.pullControl(250 + i);
+        }
         f.permissions(300, List.of(f.key));
         f.pullControl(350);
         f.pullPrivate(400);
@@ -132,9 +145,10 @@ class TimelineAccessHistoryTest {
         long through = f.control.view().version();
         var discovery = f.privateSource.discovery().orElseThrow();
         Map<String, Long> before = store.statistics();
-        for (int i = 0; i < 100; i++)
+        for (int i = 0; i < 100; i++) {
           assertTrue(
               history.at(f.control, discovery, f.grant.initial(), through, selected).caughtUp());
+        }
         assertEquals(before.get("get.calls"), store.statistics().get("get.calls"));
         assertEquals(before.get("content.calls"), store.statistics().get("content.calls"));
       }
@@ -260,12 +274,14 @@ class TimelineAccessHistoryTest {
     final AtomicBoolean block = new AtomicBoolean();
     final CountDownLatch entered = new CountDownLatch(1), release = new CountDownLatch(1);
 
+    @Override
     public Row get(Key key) {
       if (block.compareAndSet(true, false)) {
         entered.countDown();
         try {
-          if (!release.await(10, TimeUnit.SECONDS))
+          if (!release.await(10, TimeUnit.SECONDS)) {
             throw new IllegalStateException("Test release timed out");
+          }
         } catch (InterruptedException failure) {
           Thread.currentThread().interrupt();
           throw new IllegalStateException(failure);
@@ -274,22 +290,27 @@ class TimelineAccessHistoryTest {
       return delegate.get(key);
     }
 
+    @Override
     public Page query(String partition, String prefix, String after, int limit) {
       return delegate.query(partition, prefix, after, limit);
     }
 
+    @Override
     public Page work(String shard, String after, int limit) {
       return delegate.work(shard, after, limit);
     }
 
+    @Override
     public boolean commit(List<Write> writes, List<Check> checks) {
       return delegate.commit(writes, checks);
     }
 
+    @Override
     public byte[] content(String account, String identity) {
       return delegate.content(account, identity);
     }
 
+    @Override
     public void publishContent(String account, Map<String, byte[]> pages) {
       delegate.publishContent(account, pages);
     }

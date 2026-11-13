@@ -1,6 +1,11 @@
 package myos.better;
 
-import java.util.concurrent.*;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 
 /** Bounded offload of potentially blocking closes; the admitted owner remains responsible. */
@@ -30,7 +35,9 @@ final class HttpCancellation implements AutoCloseable {
 
   void submit(Job job) {
     synchronized (job) {
-      if (job.claimed) return;
+      if (job.claimed) {
+        return;
+      }
       try {
         executor.execute(job);
       } catch (RejectedExecutionException fullOrStopping) {
@@ -41,8 +48,9 @@ final class HttpCancellation implements AutoCloseable {
 
   void checkHealth() {
     var cause = failure.get();
-    if (cause != null)
+    if (cause != null) {
       throw new IllegalStateException("HTTP cleanup failed; worker replacement required", cause);
+    }
   }
 
   final class Job implements Runnable {
@@ -57,7 +65,9 @@ final class HttpCancellation implements AutoCloseable {
     @Override
     public void run() {
       synchronized (this) {
-        if (claimed) return;
+        if (claimed) {
+          return;
+        }
         claimed = true;
       }
       executor.remove(this);
@@ -72,7 +82,9 @@ final class HttpCancellation implements AutoCloseable {
         failure.compareAndSet(null, error);
         finished.completeExceptionally(error);
       } finally {
-        if (!interrupted) Thread.interrupted();
+        if (!interrupted) {
+          Thread.interrupted();
+        }
       }
     }
 

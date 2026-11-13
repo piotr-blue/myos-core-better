@@ -1,9 +1,14 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import blue.*;
-import java.util.*;
+import blue.BluePackage;
+import blue.Contracts;
+import blue.Language;
+import blue.PackageLoader;
+import blue.TimeBindings;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 
 /** Native Time effects, independent owners and durable publications in one real host. */
@@ -75,7 +80,9 @@ class OwnerTimeIntegrationTest {
       int applied = 0;
       for (int n = 0; n < expected + 2; n++) {
         var result = engine.step(ACCOUNT, ROOT);
-        if (result.status() == TimelineIngress.Status.IDLE) break;
+        if (result.status() == TimelineIngress.Status.IDLE) {
+          break;
+        }
         assertEquals(TimelineIngress.Status.APPLIED, result.status(), result::reason);
         applied++;
       }
@@ -90,6 +97,7 @@ class OwnerTimeIntegrationTest {
       }
     }
 
+    @Override
     public void close() {
       service.close();
     }

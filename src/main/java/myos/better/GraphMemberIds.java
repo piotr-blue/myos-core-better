@@ -9,7 +9,9 @@ final class GraphMemberIds {
   }
 
   static String address(String graph, String root, String member) {
-    if (OwnerGraphs.handles(graph)) return OwnerGraphs.address(member);
+    if (OwnerGraphs.handles(graph)) {
+      return OwnerGraphs.address(member);
+    }
     return member.equals(root) ? graph : graph + "." + suffix(member);
   }
 }

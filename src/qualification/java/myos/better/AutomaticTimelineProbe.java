@@ -1,9 +1,15 @@
 package myos.better;
 
-import blue.*;
-import java.nio.file.*;
+import blue.Language;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 import myos.better.TimelineServiceProbe.Running;
 
 /**
@@ -14,16 +20,19 @@ public final class AutomaticTimelineProbe {
 
   public static void main(String[] args) throws Exception {
     if ((args.length != 3 && args.length != 4)
-        || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}"))
+        || !args[0].matches("native-bench-[A-Za-z0-9._-]{1,80}")) {
       throw new IllegalArgumentException(
           "Expected fresh native-bench-* account, warmups, samples and optional directory profile");
+    }
     boolean directoryProfile = args.length == 4;
-    if (directoryProfile && !args[3].equals("directory"))
+    if (directoryProfile && !args[3].equals("directory")) {
       throw new IllegalArgumentException("Unknown source profile");
+    }
     String account = args[0];
     int warmups = Integer.parseInt(args[1]), samples = Integer.parseInt(args[2]);
-    if (warmups < 0 || warmups > 16 || samples < 1 || samples > 32)
+    if (warmups < 0 || warmups > 16 || samples < 1 || samples > 32) {
       throw new IllegalArgumentException("Invalid qualification bounds");
+    }
     boolean durable = System.getenv("MYOS_TABLE") != null;
     Path directory = Files.createTempDirectory("myos-automatic-timeline-");
     List<Double> timings = new ArrayList<>();
@@ -32,7 +41,9 @@ public final class AutomaticTimelineProbe {
     int count = 5 + warmups + samples;
     String child;
     try (QualificationProvider provider = new QualificationProvider(directory)) {
-      for (int i = 0; i < 5; i++) provider.active.append();
+      for (int i = 0; i < 5; i++) {
+        provider.active.append();
+      }
       provider.active.corrupt(true);
       TimelineServiceProbe.configure(
           directory,
@@ -42,10 +53,11 @@ public final class AutomaticTimelineProbe {
           Map.of("pollMillis", 100, "workers", 2));
       String agreement =
           TimelineWorkload.agreement(provider.active.timeline, provider.quiet.timeline);
-      if (directoryProfile)
+      if (directoryProfile) {
         agreement =
             TimelineServiceProbe.directory(
                 directory, agreement, provider.active.timeline, provider.quiet.timeline);
+      }
       try (Running service = new Running(directory, provider.javaOptions())) {
         if (directoryProfile) {
           service.post(
@@ -194,8 +206,9 @@ public final class AutomaticTimelineProbe {
       System.out.println(JsonText.of(report));
     } finally {
       try (var paths = Files.walk(directory)) {
-        for (Path path : paths.sorted(Comparator.reverseOrder()).toList())
+        for (Path path : paths.sorted(Comparator.reverseOrder()).toList()) {
           Files.deleteIfExists(path);
+        }
       }
     }
   }
@@ -252,7 +265,9 @@ public final class AutomaticTimelineProbe {
   }
 
   private static void require(boolean condition, String message) {
-    if (!condition) throw new AssertionError(message);
+    if (!condition) {
+      throw new AssertionError(message);
+    }
   }
 
   private static String artifact(Class<?> type) throws Exception {

@@ -1,15 +1,24 @@
 package myos.better;
 
-import static myos.better.ProviderSigning.*;
+import static myos.better.ProviderSigning.wire;
 
-import blue.*;
+import blue.Language;
+import blue.LanguageDocument;
 import com.sun.net.httpserver.HttpExchange;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.security.*;
-import java.util.*;
-import java.util.concurrent.atomic.*;
+import java.security.KeyPair;
+import java.security.KeyPairGenerator;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.HexFormat;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.LongAdder;
 
 /** Actual private provider and executable access history behind a loopback HTTPS fixture. */
 final class PrivateTimelineProvider implements AutoCloseable {
@@ -153,13 +162,17 @@ final class PrivateTimelineProvider implements AutoCloseable {
     TimelineTransport.Reply reply;
     try {
       if (exchange.getRequestHeaders().containsKey("Cookie")
-          || exchange.getRequestHeaders().containsKey("Authorization"))
+          || exchange.getRequestHeaders().containsKey("Authorization")) {
         throw new IllegalArgumentException("Qualification requests must use reader signatures");
+      }
       String method = exchange.getRequestMethod();
-      if (!method.equals("GET") && !method.equals("POST"))
+      if (!method.equals("GET") && !method.equals("POST")) {
         throw new IllegalArgumentException("Unexpected method");
+      }
       byte[] body = exchange.getRequestBody().readNBytes(1024 * 1024 + 1);
-      if (body.length > 1024 * 1024) throw new IllegalArgumentException("Request too large");
+      if (body.length > 1024 * 1024) {
+        throw new IllegalArgumentException("Request too large");
+      }
       reply =
           response(
               exchange.getRequestURI().getPath(),
@@ -180,6 +193,7 @@ final class PrivateTimelineProvider implements AutoCloseable {
     return Map.of("requests", requests.sum(), "deniedReads", denied.sum());
   }
 
+  @Override
   public void close() {
     https.close();
   }

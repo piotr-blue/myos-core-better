@@ -50,15 +50,20 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
 
   static CoreAdminNotificationDelivery configured(
       AtomicStore store, Map<String, String> environment) {
-    if (environment.getOrDefault("CORE_ADMIN_ALLOWLIST_SECRET_ARN", "").isBlank()) return null;
+    if (environment.getOrDefault("CORE_ADMIN_ALLOWLIST_SECRET_ARN", "").isBlank()) {
+      return null;
+    }
     String from = environment.getOrDefault("CORE_INVITATION_FROM", "");
     String configuration = environment.getOrDefault("CORE_INVITATION_CONFIGURATION_SET", "");
-    if (from.isBlank() && configuration.isBlank()) return null;
+    if (from.isBlank() && configuration.isBlank()) {
+      return null;
+    }
     if (from.isBlank()
         || configuration.isBlank()
         || from.indexOf('\r') >= 0
-        || from.indexOf('\n') >= 0)
+        || from.indexOf('\n') >= 0) {
       throw new IllegalArgumentException("Complete administrator mail configuration is required");
+    }
     var client =
         SesV2Client.builder()
             .region(Region.of(environment.get("AWS_REGION")))
@@ -116,8 +121,9 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
   }
 
   synchronized void start() {
-    if (closed || started)
+    if (closed || started) {
       throw new IllegalStateException("Notification worker already started or closed");
+    }
     started = true;
     worker.scheduleWithFixedDelay(
         health.guard(
@@ -134,20 +140,30 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
   }
 
   void turn() {
-    if (closed || Thread.currentThread().isInterrupted()) return;
+    if (closed || Thread.currentThread().isInterrupted()) {
+      return;
+    }
     for (var event : store.work(CoreAdminNotifications.WORK, 5)) {
-      if (closed || Thread.currentThread().isInterrupted()) return;
+      if (closed || Thread.currentThread().isInterrupted()) {
+        return;
+      }
       fanout(event.key());
     }
     for (var hint : store.work(DELIVERY, 25)) {
-      if (closed || Thread.currentThread().isInterrupted()) return;
+      if (closed || Thread.currentThread().isInterrupted()) {
+        return;
+      }
       var claim = claim(hint.key());
-      if (claim == null) continue;
+      if (claim == null) {
+        continue;
+      }
       boolean delivered = false;
       try {
         var event =
             store.get(CoreAdminNotifications.eventKey((String) claim.value().get("eventId")));
-        if (event == null) throw new IllegalStateException("Notification event is missing");
+        if (event == null) {
+          throw new IllegalStateException("Notification event is missing");
+        }
         var data = event.value();
         sender.send(
             new Message(
@@ -169,7 +185,9 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
   void fanout(AtomicStore.Key key) {
     for (int attempt = 0; attempt < 4; attempt++) {
       var row = store.get(key);
-      if (row == null || !"PENDING".equals(row.value().get("status"))) return;
+      if (row == null || !"PENDING".equals(row.value().get("status"))) {
+        return;
+      }
       var recipients = (List<?>) row.value().get("recipients");
       int from = ((Number) row.value().getOrDefault("cursor", 0)).intValue();
       int until = Math.min(recipients.size(), from + 25);
@@ -196,9 +214,13 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
         next.put("status", "FANOUT_COMPLETE");
         next.remove("work");
         next.remove("position");
-      } else next.put("position", position(clock.millis()));
+      } else {
+        next.put("position", position(clock.millis()));
+      }
       writes.add(AtomicStore.Write.put(key, row.version(), next));
-      if (store.commit(writes, List.of())) return;
+      if (store.commit(writes, List.of())) {
+        return;
+      }
     }
   }
 
@@ -209,14 +231,17 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
       if (row == null
           || !"PENDING".equals(row.value().get("status"))
           || Repository.number(row.value().get("availableAt")) > now
-          || Repository.number(row.value().getOrDefault("leaseUntil", 0)) > now) return null;
+          || Repository.number(row.value().getOrDefault("leaseUntil", 0)) > now) {
+        return null;
+      }
       var next = new LinkedHashMap<>(row.value());
       next.put("lease", UUID.randomUUID().toString());
       next.put("leaseUntil", Math.addExact(now, 60_000));
       next.put("attempts", Math.addExact(Repository.number(next.get("attempts")), 1));
       next.put("position", position(now + 60_000));
-      if (store.commit(List.of(AtomicStore.Write.put(key, row.version(), next)), List.of()))
+      if (store.commit(List.of(AtomicStore.Write.put(key, row.version(), next)), List.of())) {
         return new AtomicStore.Row(key, row.version() + 1, next);
+      }
     }
     return null;
   }
@@ -224,7 +249,9 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
   private void finish(AtomicStore.Row claim, boolean delivered) {
     var current = store.get(claim.key());
     if (current == null
-        || !Objects.equals(current.value().get("lease"), claim.value().get("lease"))) return;
+        || !Objects.equals(current.value().get("lease"), claim.value().get("lease"))) {
+      return;
+    }
     var next = new LinkedHashMap<>(current.value());
     next.remove("lease");
     next.remove("leaseUntil");
@@ -248,12 +275,15 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
   }
 
   public synchronized void close() {
-    if (closed) return;
+    if (closed) {
+      return;
+    }
     closed = true;
     worker.shutdownNow();
     try {
-      if (!worker.awaitTermination(25, TimeUnit.SECONDS))
+      if (!worker.awaitTermination(25, TimeUnit.SECONDS)) {
         throw new IllegalStateException("Notification worker did not stop");
+      }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
     } finally {

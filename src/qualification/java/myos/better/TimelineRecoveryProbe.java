@@ -18,8 +18,9 @@ public final class TimelineRecoveryProbe {
   record Fixture(String format, List<Source> sources) {}
 
   public static void main(String[] args) throws Exception {
-    if (args.length < 2)
+    if (args.length < 2) {
       throw new IllegalArgumentException("Expected seed/replay and fixture path");
+    }
     Path fixture = Path.of(args[1]);
     String table = System.getenv("MYOS_TABLE");
     if (args[0].equals("local") && args.length == 3 && table == null) {
@@ -29,29 +30,34 @@ public final class TimelineRecoveryProbe {
       }
       return;
     }
-    if (table == null)
+    if (table == null) {
       throw new IllegalArgumentException("MYOS_TABLE is required for durable replay");
+    }
     try (MeasuredStore store = new MeasuredStore(new DynamoStore(table, "eu-west-1"))) {
-      if (args[0].equals("seed") && args.length == 3) seed(store, fixture, args[2]);
-      else if (args[0].equals("replay") && args.length == 3)
+      if (args[0].equals("seed") && args.length == 3) {
+        seed(store, fixture, args[2]);
+      } else if (args[0].equals("replay") && args.length == 3) {
         replay(store, fixture, Integer.parseInt(args[2]));
-      else
+      } else {
         throw new IllegalArgumentException(
             "Expected seed <file> <new account> or replay <file> <samples>");
+      }
     }
   }
 
   private static void seed(AtomicStore store, Path output, String account) throws Exception {
-    if (!account.matches("recovery-bench-[A-Za-z0-9._-]{1,80}") || Files.exists(output))
+    if (!account.matches("recovery-bench-[A-Za-z0-9._-]{1,80}") || Files.exists(output)) {
       throw new IllegalArgumentException(
           "A fresh recovery-bench-* account and new fixture file are required");
+    }
     List<Source> sources = new ArrayList<>();
     for (int count : List.of(49, 128)) {
       String selected = account + "-" + count;
       QualificationTimeline fixture = new QualificationTimeline("recovery-" + count);
       TimelineArchive archive = fixture.archive(new Repository(store), selected);
-      if (archive.view().version() != 0)
+      if (archive.view().version() != 0) {
         throw new IllegalArgumentException("Source already exists");
+      }
       BlueId previous = null;
       for (int i = 1; i <= count; i++) {
         LanguageContent entry = fixture.entry(previous, i);
@@ -82,16 +88,19 @@ public final class TimelineRecoveryProbe {
   }
 
   private static void replay(MeasuredStore store, Path path, int samples) throws Exception {
-    if (samples < 1 || samples > 5 || Files.size(path) > 256 * 1024)
+    if (samples < 1 || samples > 5 || Files.size(path) > 256 * 1024) {
       throw new IllegalArgumentException("Samples must be1..5 and fixture at most256KiB");
+    }
     Fixture fixture = Json.read(Files.readAllBytes(path), Fixture.class);
-    if (!fixture.format().equals(FORMAT) || fixture.sources().size() != 2)
+    if (!fixture.format().equals(FORMAT) || fixture.sources().size() != 2) {
       throw new IllegalArgumentException("Unexpected recovery fixture");
+    }
     List<Map<String, Object>> results = new ArrayList<>();
     for (Source source : fixture.sources()) {
       if (!source.account().matches("recovery-bench-[A-Za-z0-9._-]{1,90}")
-          || !Set.of(49, 128).contains(source.entries()))
+          || !Set.of(49, 128).contains(source.entries())) {
         throw new IllegalArgumentException("Unexpected recovery source");
+      }
       BluePackage publication = QualificationTimeline.COORDINATION;
       Language base = Language.newBuilder().mount("Coordination", publication).build();
       LanguageDocument provider =
@@ -115,12 +124,15 @@ public final class TimelineRecoveryProbe {
         Map<String, Long> work = difference(store.statistics(), before);
         if (!prefix.headId().orElseThrow().value().equals(source.head())
             || prefix.completeBefore() != source.entries() + 1L
-            || prefix.successorId().isPresent())
+            || prefix.successorId().isPresent()) {
           throw new AssertionError("Restored prefix disagrees with the original source");
-        for (var entry : work.entrySet())
-          if (entry.getKey().endsWith("failures") && entry.getValue() != 0)
+        }
+        for (var entry : work.entrySet()) {
+          if (entry.getKey().endsWith("failures") && entry.getValue() != 0) {
             throw new AssertionError("Storage failure during recovery");
-        if (sample >= 0)
+          }
+        }
+        if (sample >= 0) {
           results.add(
               Map.of(
                   "entries",
@@ -137,6 +149,7 @@ public final class TimelineRecoveryProbe {
                   source.head(),
                   "completeBefore",
                   prefix.completeBefore()));
+        }
       }
     }
     System.out.println(

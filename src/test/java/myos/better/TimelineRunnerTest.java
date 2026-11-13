@@ -1,13 +1,16 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import blue.*;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.nio.file.Path;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BooleanSupplier;
 import org.junit.jupiter.api.Test;
@@ -100,7 +103,9 @@ class TimelineRunnerTest {
   @Test
   void automaticCatchupClosesSeveralChunksWithoutExplicitAcquisitionOrStepCalls() throws Exception {
     Fixture f = new Fixture(directory);
-    for (int i = 1; i <= 40; i++) f.append(1);
+    for (int i = 1; i <= 40; i++) {
+      f.append(1);
+    }
     f.closeQuiet(41);
     try (Running running = f.start()) {
       running.core.create("alice", "agreement", "create", f.config.parent());
@@ -172,8 +177,9 @@ class TimelineRunnerTest {
   private static void await(BooleanSupplier condition) throws InterruptedException {
     long until = System.nanoTime() + TimeUnit.SECONDS.toNanos(15);
     while (!condition.getAsBoolean()) {
-      if (System.nanoTime() - until >= 0)
+      if (System.nanoTime() - until >= 0) {
         fail("Automatic Timeline processing did not reach expected state");
+      }
       Thread.sleep(10);
     }
   }
@@ -216,18 +222,21 @@ class TimelineRunnerTest {
       TimelineService service = loaded.timelines().orElseThrow();
       TimelineTransport transport =
           new TimelineTransport() {
+            @Override
             public Reply exchange(
                 java.net.URI uri, String request, int maximum, java.time.Duration timeout)
                 throws IOException {
               TimelineReadFixture selected =
                   uri.getHost().equals("active.example") ? active : quiet;
-              if (selected == active && failActive.get())
+              if (selected == active && failActive.get()) {
                 throw new IOException("Provider unavailable");
+              }
               synchronized (selected) {
                 return selected.exchange(uri, request, maximum, timeout);
               }
             }
 
+            @Override
             public void close() {
               transportClosed.set(true);
             }
@@ -240,6 +249,7 @@ class TimelineRunnerTest {
 
   private record Running(Core core, TimelineService service, TimelineRunner runner)
       implements AutoCloseable {
+    @Override
     public void close() {
       runner.close();
       core.close();

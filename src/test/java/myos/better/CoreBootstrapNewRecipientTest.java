@@ -1,8 +1,12 @@
 package myos.better;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 
 class CoreBootstrapNewRecipientTest {
@@ -62,8 +66,11 @@ class CoreBootstrapNewRecipientTest {
           1, ((List<?>) f.nativeFixture.timelines.list(recipient, Map.of()).get("items")).size());
       assertEquals(1, store.work("CORE_SIGNUP_DELIVERY", null, 10).rows().size());
     } finally {
-      if (previous == null) System.clearProperty("myos.owners.fast");
-      else System.setProperty("myos.owners.fast", previous);
+      if (previous == null) {
+        System.clearProperty("myos.owners.fast");
+      } else {
+        System.setProperty("myos.owners.fast", previous);
+      }
     }
   }
 }

@@ -21,8 +21,9 @@ class DynamoContentBatchTest {
       assertEquals(4, transport.maximum.get());
       assertEquals(7, transport.calls.get());
       assertEquals(pages.keySet(), transport.acknowledged);
-      for (var page : pages.entrySet())
+      for (var page : pages.entrySet()) {
         assertArrayEquals(page.getValue(), store.content("alice", page.getKey()));
+      }
     }
   }
 
@@ -30,8 +31,9 @@ class DynamoContentBatchTest {
   void failedPageBatchPreventsMutablePublication() {
     Transport transport = new Transport(true);
     List<AtomicStore.Check> checks = new ArrayList<>();
-    for (int n = 0; n < 100; n++)
+    for (int n = 0; n < 100; n++) {
       checks.add(new AtomicStore.Check(Repository.key("alice", "doc-" + n, "STATE"), 1));
+    }
     try (DynamoStore store = new DynamoStore("table", transport.client())) {
       assertSame(
           transport.failure,
@@ -72,16 +74,21 @@ class DynamoContentBatchTest {
               DynamoDbClient.class.getClassLoader(),
               new Class<?>[] {DynamoDbClient.class},
               (proxy, method, args) -> {
-                if (method.getName().equals("close")) return null;
-                if (!method.getName().equals("batchWriteItem"))
+                if (method.getName().equals("close")) {
+                  return null;
+                }
+                if (!method.getName().equals("batchWriteItem")) {
                   throw new AssertionError("Unexpected SDK call: " + method.getName());
+                }
                 int call = calls.incrementAndGet();
                 maximum.accumulateAndGet(active.incrementAndGet(), Math::max);
                 try {
                   firstWave.countDown();
                   assertTrue(
                       firstWave.await(5, TimeUnit.SECONDS), "Independent batches did not overlap");
-                  if (fail && call == 1) throw failure;
+                  if (fail && call == 1) {
+                    throw failure;
+                  }
                   var request = (BatchWriteItemRequest) args[0];
                   for (var write : request.requestItems().get("table")) {
                     String key = write.putRequest().item().get("pk").s();

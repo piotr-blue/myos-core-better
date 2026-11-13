@@ -170,8 +170,9 @@ class CoreAccessBarrierHttpTest {
         revoker.complete(Thread.currentThread());
         token = "alice";
       }
-      if (!Set.of("alice", "bob").contains(Objects.toString(token, "")))
+      if (!Set.of("alice", "bob").contains(Objects.toString(token, ""))) {
         throw new ConsoleProblem(401, "invalid", "Sign in");
+      }
       return new User(token, token + "@example.invalid");
     }
 
@@ -189,8 +190,9 @@ class CoreAccessBarrierHttpTest {
     final CompletableFuture<Thread> keyReader = new CompletableFuture<>();
 
     public Row get(Key key) {
-      if (observeKey.get() && key.partition().startsWith("API_KEY#"))
+      if (observeKey.get() && key.partition().startsWith("API_KEY#")) {
         keyReader.complete(Thread.currentThread());
+      }
       return delegate.get(key);
     }
 

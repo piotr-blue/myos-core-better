@@ -1,6 +1,14 @@
 package myos.better;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Committed Time registrations share the native owner's conditional publication. */
 final class OwnerTimers {
@@ -53,8 +61,9 @@ final class OwnerTimers {
       Objects.requireNonNull(channel);
       Objects.requireNonNull(payload);
       Objects.requireNonNull(status);
-      if (generation < 0 || timestamp < 0 || timestamp > 9_007_199_254_740_991L)
+      if (generation < 0 || timestamp < 0 || timestamp > 9_007_199_254_740_991L) {
         throw new IllegalArgumentException("Invalid Time lifetime or timestamp");
+      }
     }
 
     OwnerFrontiers.Order order() {
@@ -62,7 +71,9 @@ final class OwnerTimers {
     }
 
     Registration terminal(Status next) {
-      if (next == Status.PENDING) throw new IllegalArgumentException("Terminal status required");
+      if (next == Status.PENDING) {
+        throw new IllegalArgumentException("Terminal status required");
+      }
       return new Registration(
           id, owner, member, channel, generation, key, timestamp, payload, next);
     }
@@ -93,8 +104,9 @@ final class OwnerTimers {
     Turn {
       members = List.copyOf(members);
       effects = List.copyOf(effects);
-      if (!Set.of(Status.FIRED, Status.NO_MATCH, Status.FAILED).contains(consumedStatus))
+      if (!Set.of(Status.FIRED, Status.NO_MATCH, Status.FAILED).contains(consumedStatus)) {
         throw new IllegalArgumentException("Invalid Time processing disposition");
+      }
     }
 
     Turn(List<Member> members, List<Effect> effects, String consumedEntry) {
@@ -129,10 +141,13 @@ final class OwnerTimers {
 
   static Registration input(OwnerMetadata.Transaction tx, OwnerFrontiers.Order order) {
     String id = tx.get(key("entry", order.entry()));
-    if (id == null) return null;
+    if (id == null) {
+      return null;
+    }
     Registration result = registration(tx, id);
-    if (result == null || !result.order().equals(order))
+    if (result == null || !result.order().equals(order)) {
       throw new IllegalStateException("Conflicting Time input");
+    }
     return result;
   }
 
@@ -140,10 +155,13 @@ final class OwnerTimers {
 
   static PendingPage pendingPage(
       OwnerMetadata.Transaction tx, String member, String after, int limit) {
-    if (limit < 1 || limit > 100) throw new IllegalArgumentException("Timer page must be 1..100");
+    if (limit < 1 || limit > 100) {
+      throw new IllegalArgumentException("Timer page must be 1..100");
+    }
     String prefix = key("pending", member) + "\0";
-    if (after != null && !after.startsWith(prefix))
+    if (after != null && !after.startsWith(prefix)) {
       throw new IllegalArgumentException("Foreign timer cursor");
+    }
     var rows = tx.page(prefix, after, limit + 1);
     boolean more = rows.size() > limit;
     var selected = rows.subList(0, Math.min(limit, rows.size()));
@@ -153,8 +171,9 @@ final class OwnerTimers {
             .map(
                 row -> {
                   var r = registration(tx, row.value());
-                  if (r == null || r.status() != Status.PENDING || !r.member().equals(member))
+                  if (r == null || r.status() != Status.PENDING || !r.member().equals(member)) {
                     throw new IllegalStateException("Invalid pending Time index");
+                  }
                   return r;
                 })
             .toList();
@@ -171,13 +190,17 @@ final class OwnerTimers {
       var page = tx.page(prefix, after, 128);
       for (var row : page) {
         Registration registration = registration(tx, row.value());
-        if (registration == null || registration.status() != Status.PENDING)
+        if (registration == null || registration.status() != Status.PENDING) {
           throw new IllegalStateException("Invalid pending Time index");
+        }
         result.add(registration);
       }
-      if (result.size() > MAX_PER_MEMBER)
+      if (result.size() > MAX_PER_MEMBER) {
         throw new IllegalStateException("Time index exceeds quota");
-      if (page.size() < 128) break;
+      }
+      if (page.size() < 128) {
+        break;
+      }
       after = page.getLast().key();
     } while (true);
     return List.copyOf(result);
@@ -191,18 +214,25 @@ final class OwnerTimers {
     boolean touched = false;
     Set<String> seen = new HashSet<>();
     for (Member member : turn.members()) {
-      if (!seen.add(member.id())) throw new IllegalArgumentException("Duplicate Time member");
+      if (!seen.add(member.id())) {
+        throw new IllegalArgumentException("Duplicate Time member");
+      }
       List<Effect> changes = effects.remove(member.id());
       String countKey = key("count", member.id());
       long before = number(tx.get(countKey));
-      if (before == 0 && (changes == null || changes.isEmpty())) continue;
+      if (before == 0 && (changes == null || changes.isEmpty())) {
+        continue;
+      }
       touched = true;
       Map<String, Registration> active = new LinkedHashMap<>();
       pending(tx, member.id()).forEach(r -> active.put(r.id(), r));
-      if (active.size() != before) throw new IllegalStateException("Inconsistent Time count");
+      if (active.size() != before) {
+        throw new IllegalStateException("Inconsistent Time count");
+      }
       for (Registration r : List.copyOf(active.values())) {
-        if (!r.owner().equals(member.owner()))
+        if (!r.owner().equals(member.owner())) {
           throw new IllegalStateException("Time ownership changed");
+        }
         Status terminal =
             r.payload().entry().equals(turn.consumedEntry())
                 ? turn.consumedStatus()
@@ -219,16 +249,19 @@ final class OwnerTimers {
         String effectKey = key("effect", member.id()) + "\0" + effect.occurrence();
         String prior = tx.get(effectKey);
         if (prior != null) {
-          if (!prior.equals(effect.event()))
+          if (!prior.equals(effect.event())) {
             throw new IllegalStateException("Conflicting Time effect identity");
+          }
           continue;
         }
         if (member.terminated()
-            || !Objects.equals(member.channels().get(effect.channel()), effect.generation()))
+            || !Objects.equals(member.channels().get(effect.channel()), effect.generation())) {
           throw new OwnerRejections.Failure("TIME_INVALID_CHANNEL");
-        if (effect.cancel() && effect.key() == null)
+        }
+        if (effect.cancel() && effect.key() == null) {
           throw new OwnerRejections.Failure("TIME_INVALID_NAME");
-        if (effect.key() != null)
+        }
+        if (effect.key() != null) {
           for (Registration r : List.copyOf(active.values())) {
             if (r.channel().equals(effect.channel())
                 && r.generation() == effect.generation()
@@ -237,6 +270,7 @@ final class OwnerTimers {
               active.remove(r.id());
             }
           }
+        }
         if (!effect.cancel()) {
           Registration r = effect.registration();
           if (!r.member().equals(member.id())
@@ -246,15 +280,19 @@ final class OwnerTimers {
               || !Objects.equals(r.key(), effect.key())
               || !r.payload().occurrence().equals(effect.occurrence())
               || !r.payload().request().equals(effect.event())
-              || r.status() != Status.PENDING)
+              || r.status() != Status.PENDING) {
             throw new IllegalArgumentException("Inconsistent Time registration");
-          if (member.floor() != null && r.timestamp() <= member.floor())
+          }
+          if (member.floor() != null && r.timestamp() <= member.floor()) {
             throw new OwnerRejections.Failure("TIME_DEADLINE_BEFORE_POSITION");
-          if (registration(tx, r.id()) != null)
+          }
+          if (registration(tx, r.id()) != null) {
             throw new IllegalStateException("Time registration identity reused");
+          }
           String entryKey = key("entry", r.payload().entry());
-          if (tx.get(entryKey) != null)
+          if (tx.get(entryKey) != null) {
             throw new IllegalStateException("Time entry identity reused");
+          }
           frontiers.timer(
               tx, r.id(), new OwnerFrontiers.Original(r.order(), r.payload().content()));
           frontiers.configureTimerSources(
@@ -272,29 +310,42 @@ final class OwnerTimers {
         }
         tx.put(effectKey, effect.event());
       }
-      if (active.size() > MAX_PER_MEMBER) throw new OwnerRejections.Failure("TIME_PENDING_LIMIT");
+      if (active.size() > MAX_PER_MEMBER) {
+        throw new OwnerRejections.Failure("TIME_PENDING_LIMIT");
+      }
       delta += active.size() - before;
       tx.put(countKey, Integer.toString(active.size()));
     }
-    if (!effects.isEmpty())
+    if (!effects.isEmpty()) {
       throw new IllegalArgumentException("Time effect belongs to an unscheduled member");
+    }
     long count = Math.addExact(number(tx.get(key("total", "pending"))), delta);
-    if (count < 0) throw new IllegalStateException("Negative Time pending count");
-    if (count > MAX_PER_ACCOUNT) throw new OwnerRejections.Failure("TIME_PENDING_LIMIT");
-    if (delta != 0) tx.put(key("total", "pending"), Long.toString(count));
+    if (count < 0) {
+      throw new IllegalStateException("Negative Time pending count");
+    }
+    if (count > MAX_PER_ACCOUNT) {
+      throw new OwnerRejections.Failure("TIME_PENDING_LIMIT");
+    }
+    if (delta != 0) {
+      tx.put(key("total", "pending"), Long.toString(count));
+    }
     return touched;
   }
 
   static List<String> activateDue(
       OwnerFrontiers frontiers, OwnerMetadata.Transaction tx, long nowMicros, int limit) {
-    if (limit < 1 || limit > 128)
+    if (limit < 1 || limit > 128) {
       throw new IllegalArgumentException("Time activation batch must be 1..128");
+    }
     Set<String> owners = new LinkedHashSet<>();
     for (var row : tx.page(key("alarm", ""), null, limit)) {
       Registration r = registration(tx, row.value());
-      if (r == null || r.status() != Status.PENDING)
+      if (r == null || r.status() != Status.PENDING) {
         throw new IllegalStateException("Invalid Time alarm");
-      if (r.timestamp() > nowMicros) break;
+      }
+      if (r.timestamp() > nowMicros) {
+        break;
+      }
       frontiers.activateTimer(tx, r.id(), nowMicros);
       tx.remove(row.key());
       tx.put(key("active", r.id()), r.owner());
@@ -319,12 +370,17 @@ final class OwnerTimers {
       String owner,
       OwnerFrontiers.Order order) {
     var registration = input(tx, order);
-    if (registration == null || !registration.owner().equals(owner)) return;
-    if (registration.status() != Status.PENDING)
+    if (registration == null || !registration.owner().equals(owner)) {
+      return;
+    }
+    if (registration.status() != Status.PENDING) {
       throw new IllegalStateException("Rejected Time input is not pending");
+    }
     long member = number(tx.get(key("count", registration.member())));
     long total = number(tx.get(key("total", "pending")));
-    if (member < 1 || total < 1) throw new IllegalStateException("Inconsistent Time counts");
+    if (member < 1 || total < 1) {
+      throw new IllegalStateException("Inconsistent Time counts");
+    }
     terminal(frontiers, tx, registration, Status.REJECTED);
     tx.put(key("count", registration.member()), Long.toString(member - 1));
     tx.put(key("total", "pending"), Long.toString(total - 1));

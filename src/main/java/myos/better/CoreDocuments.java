@@ -1,8 +1,18 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.Language;
+import blue.LanguageContent;
+import blue.LanguageDocument;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * Core document resources over the existing execution service, with lazy immutable content reads.
@@ -41,19 +51,22 @@ final class CoreDocuments {
         input, Set.of("document", "inputMode", "name", "executionSelection"));
     String requestedEdition = null;
     if (input.containsKey("executionSelection")) {
-      if (runtime == null)
+      if (runtime == null) {
         throw new ConsoleProblem(503, "runtime_unavailable", "Runtime selection is unavailable.");
+      }
       runtime.validate(input);
       requestedEdition = (String) runtime.selection().get("hostExecution");
     }
-    if (!input.containsKey("document")) throw new IllegalArgumentException("document is required");
+    if (!input.containsKey("document")) {
+      throw new IllegalArgumentException("document is required");
+    }
     Object authored = CoreSourceInputs.parsed(input.get("document"));
     LanguageDocument[] evidence = new LanguageDocument[0];
     if (authored instanceof Map<?, ?> reference && reference.keySet().equals(Set.of("blueId"))) {
       String identity =
           new BlueId(RuntimeConfiguration.text(reference.get("blueId"), "blueId")).value();
       var location = store.get(contentKey(account, identity));
-      if (location != null)
+      if (location != null) {
         evidence =
             new LanguageDocument[] {
               documents.content(
@@ -61,6 +74,7 @@ final class CoreDocuments {
                   (String) location.value().get("document"),
                   Repository.number(location.value().get("version")))
             };
+      }
     }
     LanguageDocument source =
         (LanguageDocument)
@@ -76,8 +90,10 @@ final class CoreDocuments {
     try {
       initial = documents.initial(account, id);
     } catch (MissingDocument missing) {
-      if (new CoreInitializations(store).pending(account, documents.nativeId(account, id)) == null)
+      if (new CoreInitializations(store).pending(account, documents.nativeId(account, id))
+          == null) {
         throw missing;
+      }
       initial = source;
     }
     metadata(account, id, initial, Instant.now().toString(), input.get("name"));
@@ -85,8 +101,9 @@ final class CoreDocuments {
   }
 
   void checkSelection(String account, BlueId identity, Map<String, Object> selection) {
-    if (runtime == null)
+    if (runtime == null) {
       throw new ConsoleProblem(503, "runtime_unavailable", "Runtime selection is unavailable.");
+    }
     runtime.validate(Map.of("executionSelection", selection));
     String handle;
     try {
@@ -94,11 +111,12 @@ final class CoreDocuments {
     } catch (MissingDocument absent) {
       return;
     }
-    if (!selection.get("hostExecution").equals(documents.head(account, handle).get("edition")))
+    if (!selection.get("hostExecution").equals(documents.head(account, handle).get("edition"))) {
       throw new ConsoleProblem(
           409,
           "execution_selection_conflict",
           "This access follower uses a different execution selection.");
+    }
   }
 
   Map<String, Object> timers(String account, String id, Map<String, String> query) {
@@ -116,7 +134,9 @@ final class CoreDocuments {
     } catch (MissingDocument missing) {
       var initializations = new CoreInitializations(store);
       var pending = initializations.pending(account, documents.nativeId(account, id));
-      if (pending == null) throw missing;
+      if (pending == null) {
+        throw missing;
+      }
       return initializations.describe(account, id, pending, metadata(account, id));
     }
     var metadata = metadata(account, id);
@@ -124,8 +144,9 @@ final class CoreDocuments {
     remember(account, (String) head.get("localBlueId"), id, version);
     var position = history.position(account, id, version);
     var stable = new LinkedHashMap<String, Object>();
-    for (String key : List.of("epoch", "documentRef", "positionRef", "receiptRef"))
+    for (String key : List.of("epoch", "documentRef", "positionRef", "receiptRef")) {
       stable.put(key, position.get(key));
+    }
     var result = new LinkedHashMap<String, Object>();
     result.put("sessionId", id);
     result.put("instanceId", documents.nativeId(account, id));
@@ -183,17 +204,23 @@ final class CoreDocuments {
         try {
           value = read(account, id);
         } catch (MissingDocument missing) {
-          if (registrations.visible(account, id)) throw missing;
+          if (registrations.visible(account, id)) {
+            throw missing;
+          }
         }
         if (value != null
             && filter.matches(value.get("name"), value.get("sessionId"), value.get("createdAt"))
             && (!query.containsKey("documentId")
                 || query.get("documentId").equals(value.get("documentId")))
             && (!query.containsKey("status") || query.get("status").equals(value.get("lifecycle")))
-            && matchesTypes(account, id, value, selectedTypes)) items.add(value);
+            && matchesTypes(account, id, value, selectedTypes)) {
+          items.add(value);
+        }
       }
       after = page.after();
-      if (after == null) break;
+      if (after == null) {
+        break;
+      }
     }
     return page(
         items,
@@ -202,13 +229,16 @@ final class CoreDocuments {
 
   private boolean matchesTypes(
       String account, String id, Map<String, Object> value, List<BlueId> selected) {
-    if (selected.isEmpty()) return true;
+    if (selected.isEmpty()) {
+      return true;
+    }
     if (value.get("lastStable") == null) {
       var initializations = new CoreInitializations(store);
       var pending = initializations.pending(account, documents.nativeId(account, id));
-      if (pending != null)
+      if (pending != null) {
         return CoreDocumentTypes.matches(
             contents.language(account), initializations.input(account, pending), selected);
+      }
       // Initialization completed after the list row was read; use its current publication.
       return matchesTypes(account, id, read(account, id), selected);
     }
@@ -232,39 +262,45 @@ final class CoreDocuments {
     }
     if (query.containsKey("childrenOffset")
         || query.containsKey("inlineContracts")
-        || query.containsKey("path"))
+        || query.containsKey("path")) {
       throw new ConsoleProblem(
           400, "unsupported_selector", "Partial content selectors require view=operation_context.");
+    }
     long version =
         query.containsKey("epoch")
             ? CoreDocumentHistory.version(Long.parseLong(query.get("epoch")))
             : Repository.number(documents.head(account, id).get("version"));
     LanguageContent value = documents.presentation(account, id, version);
     if (query.containsKey("documentBlueId")
-        && !query.get("documentBlueId").equals(value.blueId().value()))
+        && !query.get("documentBlueId").equals(value.blueId().value())) {
       throw new ConsoleProblem(
           409, "PUBLICATION_CHANGED", "Select the retained epoch matching this BlueId.");
+    }
     String view = query.getOrDefault("view", "exact");
-    if (!Set.of("exact", "resolved").contains(view))
+    if (!Set.of("exact", "resolved").contains(view)) {
       throw new IllegalArgumentException("Unknown content view");
-    if (view.equals("resolved"))
+    }
+    if (view.equals("resolved")) {
       return documents
           .read(
               account, id, Map.of("version", Long.toString(version), "representation", "resolved"))
           .get("data");
+    }
     contents.retain(account, value, false);
     return ProviderSigning.wire(value);
   }
 
   Object content(String account, BlueId id) {
     var location = store.get(contentKey(account, id.value()));
-    if (location == null)
+    if (location == null) {
       throw new ConsoleProblem(404, "CONTENT_NOT_FOUND", "Content not retained in this account.");
+    }
     String document = (String) location.value().get("document");
     long version = Repository.number(location.value().get("version"));
     LanguageContent value = documents.presentation(account, document, version);
-    if (!value.blueId().equals(id))
+    if (!value.blueId().equals(id)) {
       throw new IllegalStateException("Content address differs from its retained publication");
+    }
     contents.retain(account, value, false);
     return ProviderSigning.wire(value);
   }
@@ -326,9 +362,9 @@ final class CoreDocuments {
         var outcome =
             RuntimeConfiguration.object(facts.getOrDefault("outcome", Map.of()), "outcome");
         String status = Objects.toString(outcome.get("status"), "APPLIED");
-        if ("APPLIED".equals(status))
+        if ("APPLIED".equals(status)) {
           result.put("localHistory", List.of(history.position(account, id, version)));
-        else
+        } else {
           result.put(
               "disposition",
               Map.of(
@@ -336,7 +372,8 @@ final class CoreDocuments {
                   status,
                   "reason",
                   "The native transaction was rejected; inspect the epoch receipt."));
-      } else
+        }
+      } else {
         result.put(
             "disposition",
             Map.of(
@@ -344,6 +381,7 @@ final class CoreDocuments {
                 "INAPPLICABLE",
                 "reason",
                 "No receiving channel was eligible for this input."));
+      }
     }
     result.put("processing", processing(account, id));
     return result;
@@ -365,7 +403,9 @@ final class CoreDocuments {
     } catch (MissingDocument missing) {
       var initializations = new CoreInitializations(store);
       var pending = initializations.pending(account, documents.nativeId(account, id));
-      if (pending == null) throw missing;
+      if (pending == null) {
+        throw missing;
+      }
       return initializations.processing(account, id, pending);
     }
     var source = RuntimeConfiguration.object(observed.get("timelines"), "timelines");
@@ -388,8 +428,9 @@ final class CoreDocuments {
     }
     var result = CoreProcessing.describe(id, source, paused, boundary);
     if (observed.get("propagation") instanceof Map<?, ?> propagation
-        && propagation.get("lastRejectedInput") != null)
+        && propagation.get("lastRejectedInput") != null) {
       result.put("lastRejectedInput", propagation.get("lastRejectedInput"));
+    }
     return result;
   }
 
@@ -400,9 +441,10 @@ final class CoreDocuments {
       Map<String, Object> input,
       CoreTimelines timelines) {
     var metadata = metadata(account, id);
-    if (timelines == null)
+    if (timelines == null) {
       throw new ConsoleProblem(
           503, "TIMELINES_NOT_CONFIGURED", "Timeline publication is not configured.");
+    }
     String instance = documents.nativeId(account, id);
     String scopedCommand =
         id.equals(instance)
@@ -421,7 +463,9 @@ final class CoreDocuments {
   String target(String account, String initial) {
     try {
       String id = registrations.find(account, initial);
-      if (initial.equals(metadata(account, id).get("source"))) return id;
+      if (initial.equals(metadata(account, id).get("source"))) {
+        return id;
+      }
     } catch (MissingDocument missing) {
       // Do not disclose another account's registrations or a removed handle.
     }
@@ -455,8 +499,9 @@ final class CoreDocuments {
                     && selectors.contains(operation.get("channel"))))
             && Boolean.TRUE.equals(channel.get("writable"))
             && channel.get("timeline") instanceof String timeline
-            && channel.get("actor") instanceof String actor)
+            && channel.get("actor") instanceof String actor) {
           routes.add(Map.of("channel", channel.get("name"), "timeline", timeline, "actor", actor));
+        }
       }
       operation.put("routes", routes);
       operations.add(operation);
@@ -494,26 +539,35 @@ final class CoreDocuments {
     long epoch = CoreOperationPreparation.epoch(reviewed.get("epoch"));
     var selected = RuntimeConfiguration.object(input.get("route"), "route");
     RuntimeConfiguration.fields(selected, Set.of("channel", "timeline", "actor"));
-    for (String field : List.of("channel", "timeline", "actor"))
+    for (String field : List.of("channel", "timeline", "actor")) {
       RuntimeConfiguration.text(selected.get(field), field);
+    }
     var discovered = documents.operations(account, id, session);
     long version = Repository.number(discovered.get("version"));
-    if (epoch != version - 1 || !Objects.equals(discovered.get("target"), reference.get("blueId")))
+    if (epoch != version - 1
+        || !Objects.equals(discovered.get("target"), reference.get("blueId"))) {
       throw new ConsoleProblem(409, "document_changed", "Review the current document publication");
+    }
     Map<String, Object> declaration = null;
     for (Object raw : operationRows(discovered)) {
       var candidate = RuntimeConfiguration.object(raw, "operation");
-      if (!operation.equals(candidate.get("name"))) continue;
-      if (((List<?>) candidate.get("routes")).contains(selected)) declaration = candidate;
+      if (!operation.equals(candidate.get("name"))) {
+        continue;
+      }
+      if (((List<?>) candidate.get("routes")).contains(selected)) {
+        declaration = candidate;
+      }
     }
-    if (declaration == null)
+    if (declaration == null) {
       throw new ConsoleProblem(
           403, "route_required", "Select a currently authorized operation route");
+    }
     declaration = new LinkedHashMap<>(declaration);
     declaration.remove("routes");
     var document = documents.content(account, id, version);
-    if (!document.blueId().value().equals(discovered.get("target")))
+    if (!document.blueId().value().equals(discovered.get("target"))) {
       throw new ConsoleProblem(409, "document_changed", "Review the current document publication");
+    }
     Language language = contents.language(account).toBuilder().content(document).build();
     var result = new LinkedHashMap<String, Object>();
     result.put("accountId", account);
@@ -534,7 +588,7 @@ final class CoreDocuments {
     for (Object raw : (List<?>) discovered.get("channels")) {
       var channel = RuntimeConfiguration.object(raw, "channel");
       if (channel.get("timeline") instanceof String timeline
-          && channel.get("actor") instanceof String actor)
+          && channel.get("actor") instanceof String actor) {
         result.add(
             Map.of(
                 "member",
@@ -547,6 +601,7 @@ final class CoreDocuments {
                 timeline,
                 "actor",
                 actor));
+      }
     }
     return page(result, null);
   }
@@ -558,12 +613,15 @@ final class CoreDocuments {
       documents.head(account, id);
     } catch (MissingDocument missing) {
       pending = new CoreInitializations(store).pending(account, documents.nativeId(account, id));
-      if (pending == null) throw missing;
+      if (pending == null) {
+        throw missing;
+      }
     }
     var row = store.get(metadataKey(account, id));
     if (row != null) {
-      if (row.value().get("source") instanceof String source)
+      if (row.value().get("source") instanceof String source) {
         registrations.remember(account, source, id);
+      }
       return row.value();
     }
     if (pending != null) {
@@ -581,7 +639,9 @@ final class CoreDocuments {
     try {
       return metadata(account, id, documents.initial(account, id), created, null);
     } catch (ConsoleProblem unavailable) {
-      if (!unavailable.code.equals("SOURCE_UNAVAILABLE")) throw unavailable;
+      if (!unavailable.code.equals("SOURCE_UNAVAILABLE")) {
+        throw unavailable;
+      }
       // Early host editions retained publications without their admission source. Listing them
       // must not require restoring a now-unavailable runtime or inventing an initial identity.
       var root = store.get(RootDocuments.root(account, id));
@@ -590,7 +650,9 @@ final class CoreDocuments {
       value.put("name", root == null ? id : root.value().getOrDefault("name", id));
       value.put("source", lineage == null ? null : lineage.value().get("initial"));
       value.put("sourceAvailable", false);
-      if (created != null) value.put("createdAt", created);
+      if (created != null) {
+        value.put("createdAt", created);
+      }
       return value;
     }
   }
@@ -607,21 +669,26 @@ final class CoreDocuments {
             ? initial.resolve().name().orElse(id)
             : RuntimeConfiguration.text(name, "name"));
     initial.resolve().description().ifPresent(description -> value.put("description", description));
-    if (createdAt != null) value.put("createdAt", createdAt);
+    if (createdAt != null) {
+      value.put("createdAt", createdAt);
+    }
     var key = metadataKey(account, id);
     store.commit(List.of(AtomicStore.Write.put(key, 0, value)), List.of());
     var retained = store.get(key);
-    if (retained == null) throw new IllegalStateException("Document metadata not retained");
+    if (retained == null) {
+      throw new IllegalStateException("Document metadata not retained");
+    }
     return retained.value();
   }
 
   private void remember(String account, String blueId, String document, long version) {
     registrations.remember(account, blueId, document);
     var key = contentKey(account, blueId);
-    if (store.get(key) == null)
+    if (store.get(key) == null) {
       store.commit(
           List.of(AtomicStore.Write.put(key, 0, Map.of("document", document, "version", version))),
           List.of());
+    }
   }
 
   private static AtomicStore.Key metadataKey(String account, String id) {

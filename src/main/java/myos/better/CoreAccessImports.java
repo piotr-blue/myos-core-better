@@ -1,9 +1,14 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueException;
+import blue.BlueId;
+import blue.LanguageException;
 import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
 
 /** Imports an access follower only after replay authenticates the provider's current claim. */
 final class CoreAccessImports implements AutoCloseable {
@@ -38,8 +43,9 @@ final class CoreAccessImports implements AutoCloseable {
     CoreTimelineDiscovery.endpoint(endpoint);
     var access = new BlueId(RuntimeConfiguration.text(input.get("accessId"), "accessId"));
     if (input.containsKey("executionSelection")) {
-      if (runtime == null)
+      if (runtime == null) {
         throw new ConsoleProblem(503, "runtime_unavailable", "Runtime selection is unavailable.");
+      }
       runtime.validate(input);
       documents.checkSelection(
           account,
@@ -57,7 +63,9 @@ final class CoreAccessImports implements AutoCloseable {
           new BlueId(description.publication().at("/object").observation("exactId").text());
       BlueId latest =
           new BlueId(description.lastEntry().at("/object").observation("exactId").text());
-      if (view.find(publication).isEmpty()) throw pending();
+      if (view.find(publication).isEmpty()) {
+        throw pending();
+      }
       var occurrence = view.find(latest).orElseThrow(CoreAccessImports::pending);
       var order =
           new TimelineInputs.Order(
@@ -69,17 +77,20 @@ final class CoreAccessImports implements AutoCloseable {
               selected.initial(),
               view.version(),
               order);
-      if (!verified.caughtUp()) throw pending();
+      if (!verified.caughtUp()) {
+        throw pending();
+      }
       if (verified.state().isEmpty()
           || !verified
               .state()
               .orElseThrow()
               .document()
-              .equals(description.claimedCurrent().blueId()))
+              .equals(description.claimedCurrent().blueId())) {
         throw new ConsoleProblem(
             422,
             "invalid_access_history",
             "The access state differs from verified control-history replay.");
+      }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
       throw pending();
@@ -97,11 +108,13 @@ final class CoreAccessImports implements AutoCloseable {
     var creation = new LinkedHashMap<String, Object>();
     creation.put("document", Map.of("blueId", access.value()));
     creation.put("inputMode", "exact");
-    if (input.containsKey("executionSelection"))
+    if (input.containsKey("executionSelection")) {
       creation.put("executionSelection", input.get("executionSelection"));
+    }
     String command = "access-" + access.value();
-    if (input.containsKey("executionSelection"))
+    if (input.containsKey("executionSelection")) {
       command += "-" + Json.hash(Json.bytes(input.get("executionSelection")));
+    }
     var result = new LinkedHashMap<>(documents.create(account, command, creation));
     result.put("documentId", access.value());
     return result;
@@ -114,6 +127,7 @@ final class CoreAccessImports implements AutoCloseable {
         "Verified control history is not complete yet. Retry the same access import.");
   }
 
+  @Override
   public void close() {
     histories.close();
   }
