@@ -46,6 +46,25 @@ class DynamoContentBatchTest {
     // The transport rejects every non-batch SDK call, including a head transaction.
   }
 
+  @Test
+  void collisionsAndInvalidPagesFailBeforeAnySdkWrite() {
+    var transport = new Transport(false);
+    byte[] value = Json.bytes(Map.of("body", "retained"));
+    String id = Json.hash(value);
+    var conflicting = new AtomicStore.Check(new AtomicStore.Key("A#alice#C#" + id, "CONTENT"), 0);
+    try (var store = new DynamoStore("table", transport.client())) {
+      assertThrows(
+          IllegalArgumentException.class,
+          () ->
+              store.commitWithContent(List.of(), List.of(conflicting), "alice", Map.of(id, value)));
+      var mixed = new LinkedHashMap<String, byte[]>();
+      mixed.put(id, value);
+      mixed.put("wrong-identity", new byte[] {1, 2});
+      assertThrows(IllegalArgumentException.class, () -> store.publishContent("alice", mixed));
+      assertEquals(0, transport.calls.get());
+    }
+  }
+
   private static Map<String, byte[]> pages(int count) {
     Map<String, byte[]> pages = new LinkedHashMap<>();
     for (int n = 0; n < count; n++) {

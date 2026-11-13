@@ -23,6 +23,7 @@ import software.amazon.awssdk.services.dynamodb.model.Put;
 import software.amazon.awssdk.services.dynamodb.model.QueryRequest;
 import software.amazon.awssdk.services.dynamodb.model.TransactWriteItem;
 import software.amazon.awssdk.services.dynamodb.model.TransactionCanceledException;
+import software.amazon.awssdk.services.dynamodb.model.WriteRequest;
 
 /** Official SDK transport; the transaction response is the sole publication decision. */
 final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
@@ -281,7 +282,7 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
                 .build());
       } else {
         Map<String, AttributeValue> encoded = item(write.next());
-        bytes += encoded.get("body").b().asByteArray().length + 1024L;
+        bytes += encoded.get("body").b().asByteBuffer().remaining() + 1024L;
         if (bytes > 3_500_000) {
           throw new IllegalArgumentException("Transaction payload exceeds host bound");
         }
@@ -316,13 +317,14 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
     // in-flight multi-item transaction those reads are not one atomic snapshot. A manifest
     // must therefore never become visible in the same request that first creates its pages.
     // Publish immutable pages to completion before making any new reference visible.
-    for (var page : pages.entrySet()) {
-      Map<String, AttributeValue> encoded = contentItem(account, page.getKey(), page.getValue());
-      if (!keys.add(new Key(encoded.get("pk").s(), encoded.get("sk").s()))) {
+    var encodedPages = contentWrites(account, pages);
+    for (var write : encodedPages) {
+      var item = write.putRequest().item();
+      if (!keys.add(new Key(item.get("pk").s(), item.get("sk").s()))) {
         throw new IllegalArgumentException("Duplicate transaction key");
       }
     }
-    publishContent(account, pages);
+    publishContent(encodedPages);
     try {
       StorageRequestEvent.call(
           "TransactWriteItems",
@@ -515,28 +517,31 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
     contentCache.put(item.get("pk").s(), item.get("body").b().asByteArray());
   }
 
-  private static Map<String, AttributeValue> contentItem(
-      String account, String identity, byte[] bytes) {
-    if (!Json.hash(bytes).equals(identity) || bytes.length > 128 * 1024) {
-      throw new IllegalArgumentException("Invalid immutable page");
-    }
-    Map<String, AttributeValue> item =
-        new HashMap<>(key(new Key(contentKey(account, identity), "CONTENT")));
-    item.put("body", AttributeValue.fromB(SdkBytes.fromByteArray(bytes)));
-    return item;
+  private static List<WriteRequest> contentWrites(String account, Map<String, byte[]> pages) {
+    var writes = new ArrayList<WriteRequest>(pages.size());
+    pages.forEach(
+        (identity, bytes) -> {
+          if (bytes.length > 128 * 1024) {
+            throw new IllegalArgumentException("Invalid immutable page");
+          }
+          // Validate the owned SDK snapshot that will be sent and cached.
+          SdkBytes body = SdkBytes.fromByteArray(bytes);
+          if (!Json.hash(body.asByteArrayUnsafe()).equals(identity)) {
+            throw new IllegalArgumentException("Invalid immutable page");
+          }
+          var item = new HashMap<>(key(new Key(contentKey(account, identity), "CONTENT")));
+          item.put("body", AttributeValue.fromB(body));
+          writes.add(WriteRequest.builder().putRequest(request -> request.item(item)).build());
+        });
+    return writes;
   }
 
   @Override
   public void publishContent(String account, Map<String, byte[]> pages) {
-    var writes = new ArrayList<software.amazon.awssdk.services.dynamodb.model.WriteRequest>();
-    pages.forEach(
-        (identity, bytes) -> {
-          Map<String, AttributeValue> item = contentItem(account, identity, bytes);
-          writes.add(
-              software.amazon.awssdk.services.dynamodb.model.WriteRequest.builder()
-                  .putRequest(request -> request.item(item))
-                  .build());
-        });
+    publishContent(contentWrites(account, pages));
+  }
+
+  private void publishContent(List<WriteRequest> writes) {
     if (writes.size() <= 25) {
       if (!writes.isEmpty()) {
         writeContentBatch(writes);
@@ -574,8 +579,7 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
     writes.forEach(write -> rememberContent(write.putRequest().item()));
   }
 
-  private void writeContentBatch(
-      List<software.amazon.awssdk.services.dynamodb.model.WriteRequest> writes) {
+  private void writeContentBatch(List<WriteRequest> writes) {
     var pending = Map.of(table, writes);
     for (int attempt = 0; !pending.isEmpty(); attempt++) {
       if (attempt == 8) {
