@@ -16215,7 +16215,10 @@
           "localHistory": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/NativeHistoryEventPayload"
+              "oneOf": [
+                { "$ref": "#/components/schemas/NativeHistoryEventPayload" },
+                { "$ref": "#/components/schemas/HistoryPosition" }
+              ]
             }
           },
           "disposition": {

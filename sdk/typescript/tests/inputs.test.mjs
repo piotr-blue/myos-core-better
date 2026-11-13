@@ -39,6 +39,23 @@ test('terminal owner dispositions complete polling after a prior accepted assess
   }
 });
 
+test('stable owner history requires the three exact references from the same position', async () => {
+  const position = { stable: true, epoch: 8, kind: 'PROCESS',
+    positionRef: { blueId: 'position' }, documentRef: { blueId: 'document' },
+    receiptRef: { blueId: 'receipt' }, predecessorRef: { blueId: 'earlier' } };
+  const observed = p => ({ ...pending(), localHistory: [p] });
+  const done = observed(position);
+  const states = [
+    observed({ ...position, stable: false }),
+    observed({ ...position, receiptRef: null }),
+    observed({ ...position, documentRef: {} }),
+    observed({ ...position, positionRef: { blueId: '' } }),
+    done,
+  ];
+  assert.equal(await waitForNativeInput(api(states), 's', 'e', fast), done);
+  assert.equal(states.length, 0);
+});
+
 test('unrelated session/input and incomplete evidence cannot count as success', async () => {
   for (const change of [{ entryBlueId: 'other' }, { sessionId: 'other' }]) {
     await assert.rejects(waitForNativeInput(api([{ ...pending(), ...change, localHistory: [row] }]),

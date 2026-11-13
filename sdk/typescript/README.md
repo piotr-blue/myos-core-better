@@ -319,10 +319,12 @@ credentials. `npm pack --dry-run` can inspect the package contents without publi
 
 After `waitForAdmission` returns the stored timeline entry, use
 `waitForNativeInput(documents, sessionId, entryBlueId)` to wait for that input’s
-retained stable history or native rejection/no-match evidence. Inspect its
-`assessment` and `disposition`; a stable transition still does not prove a domain
-outcome such as captured funds. Read the resulting PI/Shipment state separately.
-The helper never retries a write or cancels an accepted command.
+retained stable history or a terminal native decision. Hosted owner receipts expose
+`positionRef`, `documentRef` and `receiptRef`. Original Core event payloads carry the
+three identifiers in `position`, `document` and `receipt`. The helper accepts either
+complete record for the requested session and entry. For a failed input, inspect
+`disposition.code` and `disposition.epoch` when present. Before confirming that a
+payment completed, read the Payment Instruction’s published business fields.
 
 `projectBlueData` produces a lossy display projection of native scalar/list envelopes. It preserves structured type references and does not resolve types or establish authority. Keep the original content for exact identity, signatures, source editing and native requests. When reading large integers, parse the raw response losslessly before projection; ordinary JavaScript JSON numbers cannot represent every Blue Integer.
 

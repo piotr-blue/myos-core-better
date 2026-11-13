@@ -110,6 +110,22 @@ final class Repository {
       throw new IllegalStateException("Checkpoint has no root document");
     }
 
+    Map<String, Object> head() {
+      return Map.of(
+          "account",
+          account(),
+          "document",
+          id(),
+          "version",
+          version(),
+          "edition",
+          checkpoint().get("edition"),
+          "localBlueId",
+          localBlueId(),
+          "linksRoot",
+          links());
+    }
+
     Map<String, Object> value() {
       Map<String, Object> value = new LinkedHashMap<>();
       value.put("documentVersion", version);
@@ -190,6 +206,14 @@ final class Repository {
 
   void invalidate(String account, String id) {
     heads.remove(partition(account, id));
+  }
+
+  Document requireDocument(String account, String id) {
+    Document document = load(account, id);
+    if (document == null) {
+      throw new MissingDocument();
+    }
+    return document;
   }
 
   Document load(String account, String id) {

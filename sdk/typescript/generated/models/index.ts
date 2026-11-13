@@ -4854,7 +4854,7 @@ export interface NativeInputObservation {
     /**
      *
      */
-    localHistory: Array<NativeHistoryEventPayload>;
+    localHistory: Array<NativeInputObservationLocalHistoryInner>;
     /**
      *
      */
@@ -4888,6 +4888,12 @@ export interface NativeInputObservationDisposition {
      */
     epoch?: number;
 }
+/**
+ * @type NativeInputObservationLocalHistoryInner
+ *
+ * @export
+ */
+export type NativeInputObservationLocalHistoryInner = HistoryPosition | NativeHistoryEventPayload;
 /**
  * Original Core processing observation, with the direct pause flag, native/effective state and current reason or issue. A missing blocker does not prove completion.
  * @export

@@ -58,7 +58,15 @@ class CoreTimelineApiTest {
       assertEquals(accepted.get("admissionId"), repeated.get("admissionId"));
       assertEquals(1, ((List<?>) body(fixture.get(entryRoute, "alice"), 200).get("items")).size());
       assertEquals(404, fixture.get(entryRoute + "/" + entry, "bob").statusCode());
-      assertEquals(200, fixture.get(route + "/access", "alice").statusCode());
+      var access = route + "/access";
+      assertEquals(List.of(), body(fixture.get(access, "alice"), 200).get("items"));
+      var keys = List.of("ab".repeat(32));
+      var grant =
+          body(fixture.post(access, "alice", "allow-reader", Map.of("allowedKeys", keys)), 200);
+      assertEquals(keys, grant.get("allowedKeys"));
+      assertEquals(List.of(grant), body(fixture.get(access, "alice"), 200).get("items"));
+      var refreshed = body(fixture.post(route + "/retry", "alice", "refresh", Map.of()), 200);
+      assertEquals(entry, refreshed.get("head"));
       assertEquals(404, fixture.get(route, "bob").statusCode());
       assertEquals(404, fixture.get(route + "/entries", "bob").statusCode());
       assertEquals(404, fixture.get(route + "/access", "bob").statusCode());

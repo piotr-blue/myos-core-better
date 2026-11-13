@@ -8,6 +8,14 @@ const terminalOutcomes = new Set([
   'IGNORED', 'GAS_LIMIT_EXCEEDED', 'TERMINATED',
 ]);
 
+function stablePublication(row: NativeInputObservation['localHistory'][number]): boolean {
+  if (row.stable !== true) return false;
+  const ids = 'positionRef' in row
+    ? [row.positionRef?.blueId, row.receiptRef?.blueId, row.documentRef?.blueId]
+    : [row.position, row.receipt, row.document];
+  return ids.every(id => typeof id === 'string' && id.length > 0);
+}
+
 /**
  * Wait for evidence about this exact submitted timeline entry. A stable transition
  * proves processing, not a domain outcome such as payment completion. Inspect the
@@ -34,10 +42,7 @@ export async function waitForNativeInput(
         value !== null && typeof value === 'object' && 'outcome' in value &&
         terminalOutcomes.has(String(value.outcome)));
       if (terminal) return true;
-      if (observation.localHistory.some(row => row.stable === true &&
-        typeof row.document === 'string' && row.document.length > 0 &&
-        typeof row.position === 'string' && row.position.length > 0 &&
-        typeof row.receipt === 'string' && row.receipt.length > 0)) return true;
+      if (observation.localHistory.some(stablePublication)) return true;
       if (['ERROR', 'HOST_INCOMPLETE', 'PAUSED'].includes(observation.processing.state)) {
         throw new Error(`Input ${entryBlueId} is waiting while document ${sessionId} is ${observation.processing.state}`);
       }

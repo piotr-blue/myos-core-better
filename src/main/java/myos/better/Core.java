@@ -29,6 +29,7 @@ final class Core implements AutoCloseable {
   private final ProjectionPolicy projectionPolicy;
   private final ReadBudget.Limits workflowReads;
   private final Repository repository;
+  private final EmbeddingLinks embeddingLinks;
   private final RuntimeCatalog runtimes;
   private final SessionCache sessions;
   private final Propagation propagation;
@@ -178,6 +179,7 @@ final class Core implements AutoCloseable {
       timelines.graphs().sessionHistoryLimit(sessionPolicy.maximumUses());
     }
     repository = new Repository(store);
+    embeddingLinks = new EmbeddingLinks(repository);
     this.runtimes = java.util.Objects.requireNonNull(runtimes);
     this.combineAcknowledgements = combineAcknowledgements;
     this.admissionNamespace =
@@ -394,7 +396,7 @@ final class Core implements AutoCloseable {
   @SuppressWarnings("try")
   blue.LanguageContent operationMessage(
       String account, String id, String requested, Map<String, Object> message) {
-    Repository.Document document = requireDocument(account, id);
+    Repository.Document document = repository.requireDocument(account, id);
     if (lineage == null) {
       throw new IllegalStateException("Native operation routing is not configured");
     }
@@ -524,7 +526,7 @@ final class Core implements AutoCloseable {
   }
 
   blue.LanguageDocument content(String account, String id, long version) {
-    Repository.Document stored = requireDocument(account, id);
+    Repository.Document stored = repository.requireDocument(account, id);
     if (version == stored.version()) {
       return inspectSession(account, id, (document, session) -> session.document());
     }
@@ -539,7 +541,7 @@ final class Core implements AutoCloseable {
 
   /** Inspect one committed value without restoring its execution session or unrelated members. */
   blue.LanguageContent reference(String account, String id, long version) {
-    Repository.Document current = requireDocument(account, id);
+    Repository.Document current = repository.requireDocument(account, id);
     Repository.Document stored =
         version == current.version() ? current : repository.findVersion(account, id, version);
     if (stored == null) {
@@ -561,12 +563,12 @@ final class Core implements AutoCloseable {
   }
 
   Map<String, Object> publication(String account, String id, long version) {
-    requireDocument(account, id);
+    repository.requireDocument(account, id);
     Repository.Document stored = repository.findVersion(account, id, version);
     if (stored == null) {
       throw new MissingDocument();
     }
-    return head(stored);
+    return stored.head();
   }
 
   Result call(
@@ -1407,7 +1409,7 @@ final class Core implements AutoCloseable {
   }
 
   Map<String, Object> command(String account, String id, String commandId) {
-    requireDocument(account, id);
+    repository.requireDocument(account, id);
     AtomicStore.Row row =
         repository.store.get(commandKey(account, id, Repository.identifier(commandId)));
     if (row == null) {
@@ -1427,25 +1429,17 @@ final class Core implements AutoCloseable {
   }
 
   Map<String, Object> propagation(String account, String id) {
-    requireDocument(account, id);
+    repository.requireDocument(account, id);
     return propagation.inspect(account, id);
   }
 
   Map<String, Object> retryPropagation(String account, String id, String command) {
-    requireDocument(account, id);
+    repository.requireDocument(account, id);
     return propagation.retry(account, id, Repository.identifier(command));
   }
 
-  private Repository.Document requireDocument(String account, String id) {
-    Repository.Document document = repository.load(account, id);
-    if (document == null) {
-      throw new MissingDocument();
-    }
-    return document;
-  }
-
   Map<String, Object> events(String account, String id, long after, int limit) {
-    requireDocument(account, id);
+    repository.requireDocument(account, id);
     if (after < 0 || limit < 1 || limit > 100) {
       throw new IllegalArgumentException("Invalid event page bounds");
     }
@@ -1474,12 +1468,12 @@ final class Core implements AutoCloseable {
   }
 
   Map<String, Object> head(String account, String id) {
-    return head(requireDocument(account, id));
+    return repository.requireDocument(account, id).head();
   }
 
   /** Authored input is linked from immutable history; older records explicitly report absence. */
   Map<String, Object> history(String account, String id, long version) {
-    requireDocument(account, id);
+    repository.requireDocument(account, id);
     if (version < 1) {
       throw new IllegalArgumentException("Positive document version required");
     }
@@ -1525,22 +1519,6 @@ final class Core implements AutoCloseable {
     return result;
   }
 
-  private static Map<String, Object> head(Repository.Document document) {
-    return Map.of(
-        "account",
-        document.account(),
-        "document",
-        document.id(),
-        "version",
-        document.version(),
-        "edition",
-        document.checkpoint().get("edition"),
-        "localBlueId",
-        document.localBlueId(),
-        "linksRoot",
-        document.links());
-  }
-
   /** Exact stored local content keeps type references and does not expand inherited programs. */
   Map<String, Object> inspectContent(String account, String id, Long version) {
     if (version == null) {
@@ -1560,7 +1538,7 @@ final class Core implements AutoCloseable {
 
   private Map<String, Object> contentView(
       Repository.Document stored, CanonicalRuntime.Session session) {
-    Map<String, Object> result = new LinkedHashMap<>(head(stored));
+    Map<String, Object> result = new LinkedHashMap<>(stored.head());
     result.put("representation", "exact");
     result.put(
         "data",
@@ -1575,7 +1553,7 @@ final class Core implements AutoCloseable {
   }
 
   Map<String, Object> inspect(String account, String id, boolean expanded) {
-    return inspect(requireDocument(account, id), expanded);
+    return inspect(repository.requireDocument(account, id), expanded);
   }
 
   Map<String, Object> inspect(String account, String id, long version, boolean expanded) {
@@ -1595,7 +1573,7 @@ final class Core implements AutoCloseable {
 
   Map<String, Object> inspect(
       String account, String id, boolean expanded, ReadBudget.Limits limits) {
-    return inspect(requireDocument(account, id), expanded, limits);
+    return inspect(repository.requireDocument(account, id), expanded, limits);
   }
 
   private Map<String, Object> inspect(
@@ -1609,127 +1587,22 @@ final class Core implements AutoCloseable {
       value = projection(document, budget);
     }
     ProjectedData data = ProjectedData.encode(value);
-    Map<String, Object> result = new LinkedHashMap<>(head(document));
+    Map<String, Object> result = new LinkedHashMap<>(document.head());
     result.put("data", data.data());
     result.put("undefinedPaths", data.undefinedPaths());
     return result;
   }
 
-  private record ChildCursor(String account, String document, long version, String after) {}
-
-  /**
-   * Pages immutable direct links at a pinned parent version without opening the child documents.
-   */
   Map<String, Object> children(String account, String id, String cursor, int limit) {
-    if (limit < 1 || limit > 100) {
-      throw new IllegalArgumentException("Page limit must be 1..100");
-    }
-    Repository.Document document;
-    String after = null;
-    if (cursor == null) {
-      document = requireDocument(account, id);
-    } else {
-      if (cursor.length() > 16 * 1024) {
-        throw new IllegalArgumentException("Invalid child cursor");
-      }
-      ChildCursor decoded;
-      try {
-        decoded = Json.read(Base64.getUrlDecoder().decode(cursor), ChildCursor.class);
-      } catch (IllegalArgumentException | java.io.UncheckedIOException invalid) {
-        throw new IllegalArgumentException("Invalid child cursor", invalid);
-      }
-      if (decoded == null
-          || !account.equals(decoded.account())
-          || !id.equals(decoded.document())
-          || decoded.version() < 1
-          || decoded.after() == null
-          || !decoded.after().startsWith("/")) {
-        throw new IllegalArgumentException("Cursor belongs to a different document or is invalid");
-      }
-      document = repository.findVersion(account, id, decoded.version());
-      if (document == null) {
-        throw new MissingDocument();
-      }
-      after = decoded.after();
-    }
-    LinkIndex.Slice page =
-        new LinkIndex(repository.blobs(account)).page(document.links(), after, limit);
-    List<Object> items = new ArrayList<>();
-    for (LinkIndex.Entry entry : page.entries()) {
-      Link link = entry.link();
-      items.add(
-          Map.of(
-              "path",
-              entry.path(),
-              "document",
-              link.document(),
-              "version",
-              Math.max(1, link.version()),
-              "observedVersion",
-              link.version(),
-              "generation",
-              link.generation()));
-    }
-    Map<String, Object> result = new LinkedHashMap<>(head(document));
-    result.put("items", items);
-    result.put(
-        "nextCursor",
-        page.after() == null
-            ? null
-            : Base64.getUrlEncoder()
-                .withoutPadding()
-                .encodeToString(
-                    Json.bytes(new ChildCursor(account, id, document.version(), page.after()))));
-    return result;
+    return embeddingLinks.children(account, id, cursor, limit);
   }
 
-  /** Read one direct embedding from a pinned parent version without enumerating its siblings. */
   Map<String, Object> embedding(String account, String id, String pointer) {
-    Pointer.parse(pointer);
-    Repository.Document parent = requireDocument(account, id);
-    if (!pointer.equals(parent.embeddings().childPath(pointer))) {
-      throw new IllegalArgumentException("Select a direct embedded document path");
-    }
-    Link link = new LinkIndex(repository.blobs(account)).get(parent.links(), pointer);
-    if (link == null) {
-      throw new IllegalArgumentException("Unknown embedding");
-    }
-    return Map.of(
-        "parent",
-        id,
-        "parentVersion",
-        parent.version(),
-        "path",
-        pointer,
-        "document",
-        link.document(),
-        "observedVersion",
-        link.version(),
-        "generation",
-        link.generation());
+    return embeddingLinks.embedding(account, id, pointer);
   }
 
   String embedded(String account, String id, String pointer) {
-    Repository.Document document = requireDocument(account, id);
-    String remaining = pointer;
-    for (int depth = 0; depth < 64; depth++) {
-      String path = document.embeddings().childPath(remaining);
-      if (path == null) {
-        throw new IllegalArgumentException("Not an embedded document path");
-      }
-      Link link = new LinkIndex(repository.blobs(account)).get(document.links(), path);
-      if (link == null) {
-        throw new IllegalArgumentException("Unknown embedding");
-      }
-      List<String> parts = Pointer.parse(remaining).segments();
-      int consumed = Pointer.parse(path).segments().size();
-      if (consumed == parts.size()) {
-        return link.document();
-      }
-      remaining = new Pointer(parts.subList(consumed, parts.size())).toString();
-      document = repository.load(account, link.document(), Math.max(1, link.version()));
-    }
-    throw new IllegalStateException("Embedding depth exceeds host bound");
+    return embeddingLinks.embedded(account, id, pointer);
   }
 
   private Map<String, Object> projection(Repository.Document document, ReadBudget budget) {

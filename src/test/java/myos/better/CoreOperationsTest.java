@@ -102,8 +102,16 @@ class CoreOperationsTest {
           7,
           ((Number) f.service.graphs().readValue(account, id, "/count")).intValue(),
           () -> JsonText.of(originals.processing(account, id)));
-      assertEquals(
-          1, ((List<?>) documents.input(account, id, entry.value()).get("localHistory")).size());
+      var observation = documents.input(account, id, entry.value());
+      assertEquals(entry.value(), observation.get("entryBlueId"));
+      var localHistory = (List<?>) observation.get("localHistory");
+      assertEquals(1, localHistory.size());
+      var position = object(localHistory.getFirst());
+      var epoch = documents.epoch(account, id, 1);
+      assertEquals(true, position.get("stable"));
+      for (String field : List.of("epoch", "positionRef", "documentRef", "receiptRef")) {
+        assertEquals(epoch.get(field), position.get(field), field);
+      }
       var selectedEvidence = documents.evidence(account, id, Map.of("entryBlueId", entry.value()));
       assertEquals(1L, object(selectedEvidence.get("target")).get("epoch"));
       assertEquals(
