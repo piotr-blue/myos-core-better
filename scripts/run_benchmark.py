@@ -61,7 +61,7 @@ restore=restore.replace('curl --fail --silent http://127.0.0.1:8080/health', dep
 summary='''import json
 value=json.loads(open(FILE).read().strip().splitlines()[-1])
 print(json.dumps({key:value[key] for key in ['phase','orders','documents','documentEdition','setupMillis','activeOrders','operations',
-    'localPaymentMedianMillis','leafCommitMedianMillis','endToEndMedianMillis','paidTotal'] if key in value}))
+    'executionScope','graphExecutionMedianMillis','graphCommitMedianMillis','localPaymentMedianMillis','leafCommitMedianMillis','endToEndMedianMillis','paidTotal'] if key in value}))
 '''.replace('FILE',repr(log))
 commands=['set -euo pipefail','exec 9>/var/lock/myos-better-deploy.lock; flock -n 9',
     'test "$(readlink -f /opt/myos-better/current)" = '+shlex.quote(release), restore,

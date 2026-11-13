@@ -525,6 +525,13 @@ final class Core implements AutoCloseable {
     return execute(account, id, command, new Create(source));
   }
 
+  /**
+   * Read a single field from the current canonical session without projecting sibling documents.
+   */
+  Object readValue(String account, String id, String path) {
+    return inspectSession(account, id, (document, session) -> session.read(path));
+  }
+
   blue.LanguageDocument content(String account, String id, long version) {
     Repository.Document stored = repository.requireDocument(account, id);
     if (version == stored.version()) {

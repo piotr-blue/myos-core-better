@@ -68,12 +68,21 @@ final class Scenario {
   }
 
   static Map<String, Object> order(String key, int payments) {
+    return order(key, payments, false);
+  }
+
+  // The canonical graph delivers a channel name to every eligible member. Give each measured
+  // Payment its own name so a record operation reaches exactly the selected Payment.
+  private static Map<String, Object> order(String key, int payments, boolean targeted) {
     Map<String, Object> paymentMap = new TreeMap<>();
     for (int i = 0; i < payments; i++) {
-      paymentMap.put("p" + i, payment(key + "-p" + i));
+      String payment = key + "-p" + i;
+      paymentMap.put("p" + i, payment(payment, targeted ? "payment-" + payment : "input"));
     }
     Map<String, Object> contracts = new TreeMap<>();
-    contracts.put("input", Map.of("type", "Contracts/External Channel"));
+    if (!targeted) {
+      contracts.put("input", Map.of("type", "Contracts/External Channel"));
+    }
     contracts.put(
         "embedded",
         Map.of("type", "Contracts/Process Embedded", "collectionPaths", List.of("/payments")));
@@ -127,7 +136,7 @@ final class Scenario {
         contracts);
   }
 
-  private static Map<String, Object> payment(String key) {
+  private static Map<String, Object> payment(String key, String channel) {
     return Map.of(
         "name",
         "Payment",
@@ -141,66 +150,66 @@ final class Scenario {
         42,
         "contracts",
         Map.of(
-            "input", Map.of("type", "Contracts/External Channel"),
+            channel,
+            channel.equals("input")
+                ? Map.of("type", "Contracts/External Channel")
+                : Map.of("type", "Contracts/External Channel", "event", Map.of("channel", channel)),
             "record",
-                Map.of(
-                    "type",
-                    "Contracts/Sequential Workflow Operation",
-                    "channel",
-                    "input",
-                    "steps",
-                    List.of(
-                        Map.of(
-                            "type",
-                            "Contracts/Update Document",
-                            "changeset",
-                            List.of(
-                                Map.of(
-                                    "op",
-                                    "replace",
-                                    "path",
-                                    "/recordedAmount",
-                                    "val",
-                                    Map.of(
-                                        "$add",
-                                        List.of(
-                                            Map.of("$document", "/recordedAmount"),
-                                            Map.of("$document", "/amount")))))),
-                        emit(
+            Map.of(
+                "type",
+                "Contracts/Sequential Workflow Operation",
+                "channel",
+                channel,
+                "steps",
+                List.of(
+                    Map.of(
+                        "type",
+                        "Contracts/Update Document",
+                        "changeset",
+                        List.of(
                             Map.of(
-                                "kind",
-                                "Payment Settled",
-                                "amount",
-                                Map.of("$document", "/amount"))))),
+                                "op",
+                                "replace",
+                                "path",
+                                "/recordedAmount",
+                                "val",
+                                Map.of(
+                                    "$add",
+                                    List.of(
+                                        Map.of("$document", "/recordedAmount"),
+                                        Map.of("$document", "/amount")))))),
+                    emit(
+                        Map.of(
+                            "kind", "Payment Settled", "amount", Map.of("$document", "/amount"))))),
             "settle",
-                Map.of(
-                    "type",
-                    "Contracts/Sequential Workflow Operation",
-                    "channel",
-                    "input",
-                    "steps",
-                    List.of(
-                        Map.of(
-                            "type",
-                            "Contracts/Compute",
-                            "do",
-                            List.of(
-                                Map.of(
-                                    "$failIf",
-                                    Map.of(
-                                        "cond",
-                                        Map.of("$document", "/paid"),
-                                        "message",
-                                        "Already settled")),
-                                Map.of(
-                                    "$appendChange",
-                                    Map.of("op", "replace", "path", "/paid", "val", true)))),
-                        emit(
+            Map.of(
+                "type",
+                "Contracts/Sequential Workflow Operation",
+                "channel",
+                channel,
+                "steps",
+                List.of(
+                    Map.of(
+                        "type",
+                        "Contracts/Compute",
+                        "do",
+                        List.of(
                             Map.of(
-                                "kind",
-                                "Payment Settled",
-                                "amount",
-                                Map.of("$document", "/amount")))))));
+                                "$failIf",
+                                Map.of(
+                                    "cond",
+                                    Map.of("$document", "/paid"),
+                                    "message",
+                                    "Already settled")),
+                            Map.of(
+                                "$appendChange",
+                                Map.of("op", "replace", "path", "/paid", "val", true)))),
+                    emit(
+                        Map.of(
+                            "kind",
+                            "Payment Settled",
+                            "amount",
+                            Map.of("$document", "/amount")))))));
   }
 
   private static Map<String, Object> emit(Object event) {
@@ -240,7 +249,7 @@ final class Scenario {
               "add-" + i,
               "input",
               "addOrder",
-              Map.of("key", "o" + i, "order", order("o" + i, payments)),
+              Map.of("key", "o" + i, "order", order("o" + i, payments, true)),
               i + 1L);
       if (!result.status().equals("APPLIED")) {
         throw new IllegalStateException(result.toString());
@@ -260,9 +269,7 @@ final class Scenario {
                     (System.nanoTime() - setup) / 1e9)));
       }
     }
-    Object initialized =
-        ((Map<?, ?>) core.inspect(account, "agreement", false).get("data"))
-            .get("initializedOrders");
+    Object initialized = core.readValue(account, "agreement", "/initializedOrders");
     if (!BigInteger.valueOf(orders).equals(initialized)) {
       throw new IllegalStateException("Wrong initialized order count: " + initialized);
     }
@@ -311,6 +318,14 @@ final class Scenario {
 
   /** Enumerates a pinned root version without assuming that authored order keys are sequential. */
   static List<String> storedOrderPaths(Core core, String account) {
+    if (canonical(core, account)) {
+      long version = Repository.number(core.head(account, "agreement").get("version"));
+      var base = blue.Pointer.parse("/orders");
+      return core.content(account, "agreement", version).at("/orders").keys().stream()
+          .sorted()
+          .map(key -> base.child(key).toString())
+          .toList();
+    }
     var paths = new ArrayList<String>();
     String cursor = null;
     do {
@@ -327,6 +342,10 @@ final class Scenario {
     return List.copyOf(paths);
   }
 
+  private static boolean canonical(Core core, String account) {
+    return CanonicalRuntime.EDITION.equals(core.head(account, "agreement").get("edition"));
+  }
+
   private static Map<String, Object> probe(
       Core core,
       String account,
@@ -335,6 +354,11 @@ final class Scenario {
       int operations,
       int activeOrders,
       List<String> orderPaths) {
+    if (payments < 1 || payments > 8 || operations < 1) {
+      throw new IllegalArgumentException(
+          "Choose 1..8 Payments per Order and at least one operation");
+    }
+    boolean wholeGraph = canonical(core, account);
     if (activeOrders < 1 || activeOrders > orders) {
       throw new IllegalArgumentException("Active orders must be within the stored order count");
     }
@@ -343,13 +367,9 @@ final class Scenario {
         commit = new ArrayList<>();
     java.util.Random random = new java.util.Random(1729);
     String run = java.util.UUID.randomUUID().toString();
-    BigInteger base =
-        (BigInteger)
-            ((Map<?, ?>) core.inspect(account, "agreement", false).get("data")).get("paidTotal");
+    BigInteger base = (BigInteger) core.readValue(account, "agreement", "/paidTotal");
     long storedOrders =
-        Repository.number(
-            ((Map<?, ?>) core.inspect(account, "agreement", false).get("data"))
-                .get("initializedOrders"));
+        Repository.number(core.readValue(account, "agreement", "/initializedOrders"));
     if (storedOrders < orders) {
       throw new IllegalArgumentException("Requested order population exceeds the stored graph");
     }
@@ -361,16 +381,19 @@ final class Scenario {
     for (int i = 0; i < warmup + operations; i++) {
       int order = random.nextInt(activeOrders), payment = random.nextInt(payments);
       String orderPath = orderPaths == null ? "/orders/o" + order : orderPaths.get(order);
-      String paymentId = core.embedded(account, "agreement", orderPath + "/payments/p" + payment);
+      String orderKey = blue.Pointer.parse(orderPath).segments().getLast();
+      String paymentPath = orderPath + "/payments/p" + payment;
+      String target = wholeGraph ? "agreement" : core.embedded(account, "agreement", paymentPath);
+      String channel = wholeGraph ? "payment-" + orderKey + "-p" + payment : "input";
       Map<String, Long> beforeStorage = i >= warmup ? core.statistics() : Map.of();
       Map<String, Long> beforeSessions = i >= warmup ? core.sessionStatistics() : Map.of();
       long started = System.nanoTime();
       Core.Result result =
           core.call(
               account,
-              paymentId,
+              target,
               "record-" + run + "-" + i,
-              "input",
+              channel,
               "record",
               Map.of("requestId", i),
               orders + i + 1L);
@@ -378,13 +401,22 @@ final class Scenario {
       if (!result.status().equals("APPLIED")) {
         throw new IllegalStateException(result.toString());
       }
-      await(core, account, "paidTotal", base.add(BigInteger.valueOf(42L * (i + 1))));
+      BigInteger expected = base.add(BigInteger.valueOf(42L * (i + 1)));
+      if (wholeGraph) {
+        Object total = core.readValue(account, "agreement", "/paidTotal");
+        if (!expected.equals(total)) {
+          throw new IllegalStateException(
+              "Wrong Agreement paidTotal: " + total + ", expected " + expected);
+        }
+      } else {
+        await(core, account, "paidTotal", expected);
+      }
       if (i >= warmup) {
         local.add(result.executionNanos() / 1e6);
         commit.add(committed);
         endToEnd.add((System.nanoTime() - started) / 1e6);
         selectedOrders.add(orderPath);
-        selectedPayments.add(paymentId);
+        selectedPayments.add(paymentPath);
         core.statistics()
             .forEach(
                 (key, value) ->
@@ -409,7 +441,8 @@ final class Scenario {
     result.put("operations", operations);
     result.put("activeOrders", activeOrders);
     result.put("selection", activeOrders == storedOrders ? "uniform" : "bounded-working-set");
-    result.put("targetSelection", orderPaths == null ? "sequential-keys" : "stored-links");
+    String storedSelection = wholeGraph ? "stored-paths" : "stored-links";
+    result.put("targetSelection", orderPaths == null ? "sequential-keys" : storedSelection);
     result.put("documentEdition", core.head(account, "agreement").get("edition"));
     result.put("warmup", warmup);
     result.put("storageTotals", storage);
@@ -427,15 +460,16 @@ final class Scenario {
     result.put("uniqueMeasuredOrders", selectedOrders.size());
     result.put("uniqueMeasuredPayments", selectedPayments.size());
     result.put("combinedAcknowledgements", core.combinesAcknowledgements());
-    result.put("localPaymentMillis", local);
-    result.put("leafCommitMillis", commit);
+    result.put("executionScope", wholeGraph ? "canonical-whole-graph" : "detached-payment");
+    String executionMetric = wholeGraph ? "graphExecution" : "localPayment";
+    String commitMetric = wholeGraph ? "graphCommit" : "leafCommit";
+    result.put(executionMetric + "Millis", local);
+    result.put(commitMetric + "Millis", commit);
     result.put("endToEndMillis", endToEnd);
-    result.put("localPaymentMedianMillis", median(local));
-    result.put("leafCommitMedianMillis", median(commit));
+    result.put(executionMetric + "MedianMillis", median(local));
+    result.put(commitMetric + "MedianMillis", median(commit));
     result.put("endToEndMedianMillis", median(endToEnd));
-    result.put(
-        "paidTotal",
-        ((Map<?, ?>) core.inspect(account, "agreement", false).get("data")).get("paidTotal"));
+    result.put("paidTotal", core.readValue(account, "agreement", "/paidTotal"));
     return result;
   }
 
@@ -443,8 +477,7 @@ final class Scenario {
     long deadline = System.nanoTime() + java.time.Duration.ofMinutes(10).toNanos();
     while (System.nanoTime() < deadline) {
       int progress = core.drain(512);
-      Object actual =
-          ((Map<?, ?>) core.inspect(account, "agreement", false).get("data")).get(field);
+      Object actual = core.readValue(account, "agreement", "/" + field);
       if (expected.equals(actual)
           || field.equals("initializedOrders")
               && actual instanceof BigInteger count
@@ -464,6 +497,10 @@ final class Scenario {
   }
 
   private static double median(List<Double> values) {
-    return values.stream().sorted().toList().get(values.size() / 2);
+    var sorted = values.stream().sorted().toList();
+    int upper = sorted.size() / 2;
+    return sorted.size() % 2 == 1
+        ? sorted.get(upper)
+        : (sorted.get(upper - 1) + sorted.get(upper)) / 2;
   }
 }

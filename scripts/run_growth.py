@@ -106,7 +106,7 @@ for file in FILES:
                         for label, rows in result['samples'].items()}}))
     else:
         print(json.dumps({key: result[key] for key in [
-            'orders', 'documents', 'documentEdition', 'localPaymentMedianMillis', 'leafCommitMedianMillis', 'endToEndMedianMillis']}))
+            'orders', 'documents', 'documentEdition', 'executionScope','graphExecutionMedianMillis','graphCommitMedianMillis','localPaymentMedianMillis', 'leafCommitMedianMillis', 'endToEndMedianMillis'] if key in result}))
 '''.replace('FILES', repr([large, growth]))
     commands.append("python3 - <<'SUMMARY'\n" + summary + '\nSUMMARY')
     request = {'DocumentName': 'AWS-RunShellScript', 'InstanceIds': [deployment['instance']],
