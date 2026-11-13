@@ -7,6 +7,9 @@ import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.math.BigInteger;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
@@ -152,6 +155,60 @@ class SessionCacheTest {
         assertEquals(BigInteger.valueOf(5), active.session().read("/counter"));
         active.unchanged();
       }
+    }
+  }
+
+  @Test
+  void loadingOutsideTheLockPreventsShutdownUntilTheLeaseReturns() throws Exception {
+    var sizing = new CountDownLatch(1);
+    var finish = new CountDownLatch(1);
+    var cache = new SessionCache();
+    try (var pool = Executors.newVirtualThreadPerTaskExecutor()) {
+      var acquired =
+          pool.submit(
+              () ->
+                  cache.acquire(
+                      "a",
+                      1,
+                      () -> {
+                        sizing.countDown();
+                        try {
+                          if (!finish.await(10, TimeUnit.SECONDS)) {
+                            throw new AssertionError("Sizing timed out");
+                          }
+                        } catch (InterruptedException e) {
+                          throw new AssertionError(e);
+                        }
+                        return 0;
+                      },
+                      () -> runtime.openYaml("counter: 7")));
+      try {
+        org.junit.jupiter.api.Assertions.assertTrue(sizing.await(10, TimeUnit.SECONDS));
+        assertThrows(IllegalStateException.class, cache::close);
+      } finally {
+        finish.countDown();
+        try (var lease = acquired.get(10, TimeUnit.SECONDS)) {
+          assertEquals(BigInteger.valueOf(7), lease.session().read("/counter"));
+          lease.unchanged();
+        }
+      }
+      cache.close();
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              cache.acquire(
+                  "b",
+                  1,
+                  () -> {
+                    throw new AssertionError("A closed cache sized a checkpoint");
+                  },
+                  () -> {
+                    throw new AssertionError("A closed cache opened a session");
+                  }));
+      assertNull(cache.readIfPresent("a", 1));
+      assertEquals(0L, cache.statistics().get("residentEntries"));
+    } finally {
+      cache.close();
     }
   }
 

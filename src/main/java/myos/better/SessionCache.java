@@ -35,6 +35,8 @@ final class SessionCache implements AutoCloseable {
   }
 
   private final Map<String, Entry> entries = new LinkedHashMap<>(64, .75f, true);
+  private int loading;
+  private boolean closed;
   private long bytes;
   private long hits, loads, loadNanos, versionMisses, capacityEvictions, historyRenewals, abandoned;
 
@@ -117,7 +119,7 @@ final class SessionCache implements AutoCloseable {
         for (Entry entry : prepared.values()) {
           // A peer or a receiver can load the committed version before this local handoff.
           // Never replace its engine, including an actively leased one.
-          if (entries.containsKey(entry.key)) {
+          if (closed || entries.containsKey(entry.key)) {
             entry.session.close();
           } else {
             entries.put(entry.key, entry);
@@ -160,6 +162,9 @@ final class SessionCache implements AutoCloseable {
       java.util.function.LongSupplier checkpointBytes,
       Supplier<CanonicalRuntime.Session> loader) {
     synchronized (this) {
+      if (closed) {
+        throw new IllegalStateException("Document session cache is closed");
+      }
       Entry entry = entries.get(key);
       if (entry != null) {
         if (entry.pinned) {
@@ -174,7 +179,22 @@ final class SessionCache implements AutoCloseable {
         discard(entry);
       }
       loads++;
+      loading++;
     }
+    try {
+      return load(key, version, checkpointBytes, loader);
+    } finally {
+      synchronized (this) {
+        loading--;
+      }
+    }
+  }
+
+  private Lease load(
+      String key,
+      long version,
+      java.util.function.LongSupplier checkpointBytes,
+      Supplier<CanonicalRuntime.Session> loader) {
     // Sizing may fail during checkpoint serialization. Finish it before taking ownership
     // of a newly opened engine. Cache hits never pay for sizing.
     long weight = weight(checkpointBytes.getAsLong());
@@ -255,6 +275,9 @@ final class SessionCache implements AutoCloseable {
 
   @Override
   public synchronized void close() {
+    if (loading != 0) {
+      throw new IllegalStateException("Cannot close while loading document sessions");
+    }
     for (Entry entry : entries.values()) {
       if (entry.pinned) {
         throw new IllegalStateException("Cannot close pinned document sessions");
@@ -265,5 +288,6 @@ final class SessionCache implements AutoCloseable {
     }
     entries.clear();
     bytes = 0;
+    closed = true;
   }
 }
