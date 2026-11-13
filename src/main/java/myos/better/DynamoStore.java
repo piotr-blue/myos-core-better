@@ -26,6 +26,8 @@ import software.amazon.awssdk.services.dynamodb.model.TransactionCanceledExcepti
 
 /** Official SDK transport; the transaction response is the sole publication decision. */
 final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
+  private static final int MAX_RECORD_BYTES = 16 * 1024 * 1024;
+  private static final int MAX_COMPRESSED_RECORD_BYTES = 350_000;
   private final DynamoDbClient client;
   private final String table;
   private final PageCache contentCache =
@@ -380,8 +382,12 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
   private static Map<String, AttributeValue> item(Row row) {
     Map<String, AttributeValue> item = new HashMap<>(key(row.key()));
     item.put("revision", AttributeValue.fromN(Long.toString(row.version())));
-    byte[] bytes = compress(Json.bytes(row.value()));
-    if (bytes.length > 350_000) {
+    byte[] json = Json.bytes(row.value());
+    if (json.length > MAX_RECORD_BYTES) {
+      throw new IllegalArgumentException("Record exceeds inflated host bound");
+    }
+    byte[] bytes = compress(json);
+    if (bytes.length > MAX_COMPRESSED_RECORD_BYTES) {
       throw new IllegalArgumentException("Record exceeds DynamoDB host bound");
     }
     item.put("body", AttributeValue.fromB(SdkBytes.fromByteArray(bytes)));
@@ -430,8 +436,8 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
 
   private static byte[] decompress(byte[] value) {
     try (GZIPInputStream input = new GZIPInputStream(new ByteArrayInputStream(value))) {
-      byte[] result = input.readNBytes(16 * 1024 * 1024 + 1);
-      if (result.length > 16 * 1024 * 1024) {
+      byte[] result = input.readNBytes(MAX_RECORD_BYTES + 1);
+      if (result.length > MAX_RECORD_BYTES) {
         throw new IllegalStateException("Inflated record exceeds host bound");
       }
       return result;
