@@ -45,6 +45,10 @@ A native receiver is identified by its member, channel and generation. Owner pre
 
 Building the groups visits each declaration once. New sources can look up their indexed checkpoint and verify its timestamp against the retained original. An existing source keeps its established frontier and does not reopen that original. A full plan still has to enumerate the graph and its declarations. [Source grouping](../src/main/java/myos/better/OwnerTimelineSources.java) · [Owner and checkpoint regression](../src/test/java/myos/better/OwnerTimelineSourcesTest.java)
 
+## How verified input narrows delivery
+
+A signed occurrence can arrive before the host knows whether it carries an operation or which document it addresses. Unknown inputs wake every subscriber to the source. A verified ordinary event wakes raw observers. An addressed operation also wakes subscribed owners with the historical target identity. Coverage-only bindings maintain the ordering bound while suppressing direct delivery. The per-owner relevance check and the reverse lookup share the classification and subscription records. Learning a target later refreshes pending candidates in the same transaction. A conflicting verified target fails that transaction. [Routing index](../src/main/java/myos/better/OwnerRouting.java) · [Late evidence and 1,000 subscribers](../src/test/java/myos/better/OwnerRoutingTest.java)
+
 ## Following a rejected signed operation
 
 The account's operation admission records whether its signed entry was published. The input resource identifies how a particular document processed that entry. A native rejection has its own history position and can advance the epoch while leaving business fields unchanged. Read the disposition’s epoch and code when present. Older retained history may supply only terminal status. The immutable processing receipt commits to the outcome digest. The signed-in document history retains the diagnostic behind that digest.

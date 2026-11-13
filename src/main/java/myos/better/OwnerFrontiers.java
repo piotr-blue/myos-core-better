@@ -29,6 +29,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.Function;
 import myos.better.FrontierRows.Binding;
+import myos.better.OwnerRouting.Reverse;
 
 /**
  * Durable independent-owner merge scheduling over a coherent conditional metadata cut. Native
@@ -65,8 +66,6 @@ final class OwnerFrontiers {
 
   record Original(Order order, String content) {}
 
-  private record Input(boolean operation, String target) {}
-
   record Deferred(long until, String diagnostic) {}
 
   void classify(
@@ -75,25 +74,9 @@ final class OwnerFrontiers {
       String entry,
       boolean operation,
       String target) {
-    String key = key("classification", timeline, entry);
-    Input prior = get(tx, key, Input.class);
-    if (prior != null
-        && prior.target() != null
-        && target != null
-        && !prior.target().equals(target)) {
-      throw new IllegalStateException("Contradicting verified operation target");
-    }
-    Input value =
-        new Input(
-            prior == null ? operation : prior.operation() && operation,
-            prior != null && prior.target() != null ? prior.target() : target);
-    if (!value.operation() && value.target() != null) {
-      throw new IllegalStateException("Contradicting verified classification");
-    }
-    if (value.equals(prior)) {
+    if (!OwnerRouting.classify(tx, timeline, entry, operation, target)) {
       return;
     }
-    put(tx, key, value);
     // Locally accepted entries can precede signed archive acquisition. Remove only candidates
     // now proven inapplicable; an unknown classification always follows ordinary admission.
     if (get(tx, key("original", timeline, entry), Accepted.class) != null) {
@@ -107,48 +90,19 @@ final class OwnerFrontiers {
   }
 
   void interest(OwnerMetadata.Transaction tx, String owner, String binding, boolean observed) {
-    String interest = Boolean.toString(observed);
-    if (!interest.equals(tx.get(key("interest", owner, binding)))) {
-      tx.put(
-          key("interest-sequence", owner, binding),
-          Long.toString(sequence(tx, "accepted-sequence")));
-    }
-    tx.put(key("interest", owner, binding), interest);
-    indexInterest(tx, owner, binding);
+    OwnerRouting.interest(
+        tx,
+        owner,
+        binding,
+        observed ? OwnerRouting.Interest.RAW_EVENTS : OwnerRouting.Interest.OPERATIONS);
   }
 
   void coverageOnly(OwnerMetadata.Transaction tx, String owner, String binding) {
-    if (!"coverage".equals(tx.get(key("interest", owner, binding)))) {
-      tx.put(
-          key("interest-sequence", owner, binding),
-          Long.toString(sequence(tx, "accepted-sequence")));
-    }
-    tx.put(key("interest", owner, binding), "coverage");
-    indexInterest(tx, owner, binding);
+    OwnerRouting.interest(tx, owner, binding, OwnerRouting.Interest.COVERAGE);
   }
 
   void target(OwnerMetadata.Transaction tx, String owner, String identity) {
-    if (tx.get(key("target", owner, identity)) == null) {
-      tx.put(key("target-sequence", owner), Long.toString(sequence(tx, "accepted-sequence")));
-    }
-    tx.put(key("target", owner, identity), "1");
-    tx.put(key("target-owner", identity, owner), owner);
-  }
-
-  private static boolean relevant(
-      OwnerMetadata.Transaction tx, String owner, String binding, Order order) {
-    String interest = tx.get(key("interest", owner, binding));
-    if (interest == null || Boolean.parseBoolean(interest)) {
-      return true;
-    }
-    Input input = get(tx, key("classification", order.timeline(), order.entry()), Input.class);
-    if (input == null) {
-      return true;
-    }
-    if (!input.operation()) {
-      return false;
-    }
-    return input.target() == null || tx.get(key("target", owner, input.target())) != null;
+    OwnerRouting.target(tx, owner, identity);
   }
 
   enum Kind {
@@ -259,8 +213,6 @@ final class OwnerFrontiers {
 
   private record Frontier(Order order, boolean ready) {}
 
-  private record Reverse(String owner, String binding) {}
-
   record Coverage(long before, boolean local) {}
 
   final OwnerMetadata metadata;
@@ -331,7 +283,8 @@ final class OwnerFrontiers {
     put(tx, occurrence, new Accepted(position, original));
     put(tx, key("entry", order.timeline(), number(position)), original);
     Set<String> changed = new LinkedHashSet<>();
-    for (Reverse consumer : consumers(tx, order)) {
+    ensureRouting(tx, order.timeline());
+    for (Reverse consumer : OwnerRouting.consumers(tx, order)) {
       refresh(tx, consumer.owner(), consumer.binding(), new Accepted(position, original));
       changed.add(consumer.owner());
     }
@@ -789,7 +742,7 @@ final class OwnerFrontiers {
                 tx.remove(binding.candidate());
               }
               tx.remove(reverse(binding.source(), claim.owner()));
-              unindexInterest(tx, claim.owner(), binding.source());
+              OwnerRouting.unindexInterest(tx, claim.owner(), binding.source());
               OwnerCoverage.removeBinding(tx, claim.owner(), binding.source().id());
             }
           }
@@ -1083,7 +1036,7 @@ final class OwnerFrontiers {
       tx.remove(key("source", owner, id));
       tx.remove(key("routing-idle", owner, id));
       tx.remove(reverse(old.source(), owner));
-      unindexInterest(tx, owner, old.source());
+      OwnerRouting.unindexInterest(tx, owner, old.source());
       if (!additions.contains(id)) {
         OwnerCoverage.removeBinding(tx, owner, id);
       }
@@ -1143,7 +1096,7 @@ final class OwnerFrontiers {
       if (source.kind() != Kind.OWNER || !source.source().equals(owner)) {
         put(tx, reverse(source, owner), new Reverse(owner, source.id()));
       }
-      indexInterest(tx, owner, source.id());
+      OwnerRouting.indexInterest(tx, owner, source.id());
       refresh(tx, owner, source.id());
       OwnerCoverage.refreshBinding(tx, owner, source.id());
     }
@@ -1223,7 +1176,8 @@ final class OwnerFrontiers {
     if (!required(tx, owner).closed()) {
       if (source.kind() == Kind.TIMELINE) {
         long position = source.position();
-        if ("coverage".equals(tx.get(key("interest", owner, bindingId)))) {
+        if (OwnerRouting.Interest.COVERAGE.stored.equals(
+            tx.get(key("interest", owner, bindingId)))) {
           Timeline timeline = get(tx, key("timeline", source.source()), Timeline.class);
           if (timeline != null) {
             position = timeline.position();
@@ -1241,8 +1195,9 @@ final class OwnerFrontiers {
                     <= Long.parseLong(idleCut)
                 && arrival.position() > position
                 && source.source().equals(arrival.original().order().timeline())
-                && !"coverage".equals(tx.get(key("interest", owner, bindingId)))
-                && relevant(tx, owner, source.id(), arrival.original().order());
+                && !OwnerRouting.Interest.COVERAGE.stored.equals(
+                    tx.get(key("interest", owner, bindingId)))
+                && OwnerRouting.relevant(tx, owner, source.id(), arrival.original().order());
         if (unchangedIdle) {
           position = arrival.position() - 1;
           original = arrival.original();
@@ -1253,7 +1208,7 @@ final class OwnerFrontiers {
                           key("entry", source.source(), number(Math.addExact(position, 1))),
                           Original.class))
                   != null
-              && !relevant(tx, owner, source.id(), original.order())) {
+              && !OwnerRouting.relevant(tx, owner, source.id(), original.order())) {
             position++;
           }
         }
@@ -1310,7 +1265,8 @@ final class OwnerFrontiers {
       put(tx, selected, candidate);
     } else if (source.kind() == Kind.TIMELINE
         && !required(tx, owner).closed()
-        && !"coverage".equals(tx.get(key("interest", owner, bindingId)))) {
+        && !OwnerRouting.Interest.COVERAGE.stored.equals(
+            tx.get(key("interest", owner, bindingId)))) {
       tx.put(idleKey, Long.toString(sequence(tx, "accepted-sequence")));
     }
     put(tx, key("source", owner, source.id()), new Binding(source, selected));
@@ -1384,26 +1340,6 @@ final class OwnerFrontiers {
     propagate(tx, changed, Set.of());
   }
 
-  private static void unindexInterest(OwnerMetadata.Transaction tx, String owner, Source source) {
-    if (source.kind() == Kind.TIMELINE) {
-      tx.remove(key("timeline-observer", source.source(), owner, source.id()));
-    }
-  }
-
-  private static void indexInterest(OwnerMetadata.Transaction tx, String owner, String binding) {
-    Binding selected = get(tx, key("source", owner, binding), Binding.class);
-    if (selected == null || selected.source().kind() != Kind.TIMELINE) {
-      return;
-    }
-    String interest = tx.get(key("interest", owner, binding));
-    String key = key("timeline-observer", selected.source().source(), owner, binding);
-    if (interest == null || Boolean.parseBoolean(interest)) {
-      put(tx, key, new Reverse(owner, binding));
-    } else {
-      tx.remove(key);
-    }
-  }
-
   private static void ensureRouting(OwnerMetadata.Transaction tx, String timeline) {
     String marker = key("timeline-routing", timeline);
     if (tx.get(marker) != null) {
@@ -1411,7 +1347,7 @@ final class OwnerFrontiers {
     }
     Set<String> changed = new LinkedHashSet<>();
     for (Reverse consumer : scan(tx, prefix("timeline-consumer", timeline), Reverse.class)) {
-      indexInterest(tx, consumer.owner(), consumer.binding());
+      OwnerRouting.indexInterest(tx, consumer.owner(), consumer.binding());
       String prefix = prefix("target", consumer.owner()), after = null;
       while (true) {
         var page = tx.page(prefix, after, 128);
@@ -1430,31 +1366,6 @@ final class OwnerFrontiers {
     }
     propagate(tx, changed, Set.of());
     tx.put(marker, "1");
-  }
-
-  private static List<Reverse> consumers(OwnerMetadata.Transaction tx, Order order) {
-    ensureRouting(tx, order.timeline());
-    Input input = get(tx, key("classification", order.timeline(), order.entry()), Input.class);
-    if (input == null || input.operation() && input.target() == null) {
-      return scan(tx, prefix("timeline-consumer", order.timeline()), Reverse.class);
-    }
-    Set<Reverse> selected =
-        new LinkedHashSet<>(scan(tx, prefix("timeline-observer", order.timeline()), Reverse.class));
-    if (input.operation()) {
-      String after = null;
-      while (true) {
-        var page = tx.page(prefix("target-owner", input.target()), after, 128);
-        for (var row : page) {
-          selected.addAll(
-              scan(tx, prefix("timeline-consumer", order.timeline(), row.value()), Reverse.class));
-        }
-        if (page.size() < 128) {
-          break;
-        }
-        after = page.getLast().key();
-      }
-    }
-    return List.copyOf(selected);
   }
 
   <T> T change(Function<OwnerMetadata.Transaction, T> edit) {

@@ -32,6 +32,52 @@ class OwnerRoutingTest {
     f.complete(claim, 0, owner + "1", owner + "-receipt", false, List.of(), Set.of());
   }
 
+  @Test
+  void anAcceptedEntryCanGainAProvenTargetButConflictingUpdatesCannotChangeIt() {
+    var store = new JsonBoundaryStore();
+    var scheduler = new OwnerFrontiers(store, "tenant");
+    scheduler.acquire("external", List.of(), 0, "start");
+    scheduler.change(
+        tx -> {
+          for (String owner : List.of("alice", "bob")) {
+            scheduler.interest(tx, owner, "external", false);
+            scheduler.target(tx, owner, owner + "-target");
+            scheduler.register(tx, owner, owner + "0", List.of(timeline("external")));
+          }
+          scheduler.acquire(
+              tx, "external", List.of(entry(1, "external", "original")), 2, "verified");
+          return null;
+        });
+    assertEquals(Set.of("alice", "bob"), Set.copyOf(scheduler.ready(0, 4)));
+    scheduler.change(
+        tx -> {
+          scheduler.classify(tx, "external", "original", true, "alice-target");
+          scheduler.classify(tx, "external", "original", true, null);
+          return null;
+        });
+    var reopened = new OwnerFrontiers(store, "tenant");
+    assertEquals(List.of("alice"), reopened.ready(0, 4));
+    org.junit.jupiter.api.Assertions.assertThrows(
+        IllegalStateException.class,
+        () ->
+            reopened.change(
+                tx -> {
+                  reopened.classify(tx, "external", "original", true, "bob-target");
+                  return null;
+                }));
+    org.junit.jupiter.api.Assertions.assertThrows(
+        IllegalStateException.class,
+        () ->
+            reopened.change(
+                tx -> {
+                  reopened.classify(tx, "external", "original", false, null);
+                  return null;
+                }));
+    assertEquals(List.of("alice"), new OwnerFrontiers(store, "tenant").ready(0, 4));
+    complete(reopened, "alice");
+    assertTrue(reopened.ready(0, 4).isEmpty());
+  }
+
   @ParameterizedTest
   @ValueSource(ints = {10, 1000})
   void targetedImportLeavesUnrelatedSubscribersUntouchedAcrossReopen(int count) {
