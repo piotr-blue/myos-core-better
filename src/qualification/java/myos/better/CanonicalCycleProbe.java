@@ -1,8 +1,15 @@
 package myos.better;
 
-import blue.*;
+import blue.AdmissionEvidence;
+import blue.Contracts;
+import blue.Language;
+import blue.LanguageDocument;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 /** Explicit operator qualification of canonical cyclic publication against the selected store. */
 public final class CanonicalCycleProbe {

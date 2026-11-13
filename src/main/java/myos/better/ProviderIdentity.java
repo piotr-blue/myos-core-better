@@ -1,10 +1,20 @@
 package myos.better;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageDocument;
+import blue.PackageLoader;
+import blue.ProviderSignatures;
 import java.nio.charset.StandardCharsets;
-import java.security.*;
+import java.security.GeneralSecurityException;
+import java.security.KeyFactory;
+import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.Map;
+import java.util.Set;
 
 /** One pinned secret version is read at startup, never per request or from caller input. */
 final class ProviderIdentity {

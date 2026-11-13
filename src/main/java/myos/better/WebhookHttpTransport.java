@@ -2,8 +2,11 @@ package myos.better;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.*;
-import org.apache.hc.client5.http.*;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Set;
+import org.apache.hc.client5.http.DnsResolver;
+import org.apache.hc.client5.http.SchemePortResolver;
 import org.apache.hc.client5.http.ssl.TlsSocketStrategy;
 
 /** Callback header/body policy over the shared public-destination HTTP client. */

@@ -1,10 +1,19 @@
 package myos.better;
 
 import com.sun.net.httpserver.HttpExchange;
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import org.apache.commons.fileupload2.core.*;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import org.apache.commons.fileupload2.core.AbstractFileUpload;
+import org.apache.commons.fileupload2.core.DiskFileItem;
+import org.apache.commons.fileupload2.core.DiskFileItemFactory;
+import org.apache.commons.fileupload2.core.FileItemInputIterator;
+import org.apache.commons.fileupload2.core.FileUploadException;
+import org.apache.commons.fileupload2.core.FileUploadSizeException;
+import org.apache.commons.fileupload2.core.RequestContext;
 
 /** HTTP exchange adapter only; Commons FileUpload owns multipart framing and limits. */
 final class AvatarUpload {

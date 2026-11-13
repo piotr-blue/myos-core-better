@@ -1,10 +1,15 @@
 package myos.better;
 
 import java.nio.charset.StandardCharsets;
-import java.security.*;
-import java.util.*;
-import javax.crypto.*;
-import javax.crypto.spec.*;
+import java.security.GeneralSecurityException;
+import java.security.MessageDigest;
+import java.security.SecureRandom;
+import java.util.Base64;
+import java.util.HexFormat;
+import java.util.Map;
+import java.util.Set;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
 
 /**
  * Native-v1 HMAC and authenticated envelopes; JCA owns cryptography, deployment owns the master.

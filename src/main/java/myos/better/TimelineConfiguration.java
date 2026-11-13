@@ -1,13 +1,24 @@
 package myos.better;
 
-import static myos.better.RuntimeConfiguration.*;
+import static myos.better.RuntimeConfiguration.confined;
+import static myos.better.RuntimeConfiguration.fields;
+import static myos.better.RuntimeConfiguration.list;
+import static myos.better.RuntimeConfiguration.object;
+import static myos.better.RuntimeConfiguration.text;
 
-import blue.*;
+import blue.BlueId;
+import blue.BluePackage;
+import blue.Language;
+import blue.LanguageDocument;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /** Explicit startup pins and opt-in operator source-directory configuration. */
 final class TimelineConfiguration {

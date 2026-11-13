@@ -1,11 +1,17 @@
 package myos.better;
 
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.jwk.source.*;
-import com.nimbusds.jose.proc.*;
+import com.nimbusds.jose.JOSEException;
+import com.nimbusds.jose.JWSAlgorithm;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.jwk.source.JWKSourceBuilder;
+import com.nimbusds.jose.proc.BadJOSEException;
+import com.nimbusds.jose.proc.JWSVerificationKeySelector;
+import com.nimbusds.jose.proc.SecurityContext;
 import com.nimbusds.jose.util.DefaultResourceRetriever;
-import com.nimbusds.jwt.*;
-import com.nimbusds.jwt.proc.*;
+import com.nimbusds.jwt.JWTClaimsSet;
+import com.nimbusds.jwt.SignedJWT;
+import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
+import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import java.io.Closeable;
 import java.net.URI;
 import java.util.Set;

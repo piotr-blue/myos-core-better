@@ -1,12 +1,18 @@
 package myos.better;
 
-import com.sun.net.httpserver.*;
-import java.net.*;
+import com.sun.net.httpserver.HttpsConfigurator;
+import com.sun.net.httpserver.HttpsServer;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.security.KeyStore;
 import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.*;
-import javax.net.ssl.*;
+import java.util.Objects;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 import org.apache.hc.client5.http.DnsResolver;
 import org.apache.hc.client5.http.ssl.DefaultClientTlsStrategy;
 

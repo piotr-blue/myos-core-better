@@ -1,9 +1,16 @@
 package myos.better;
 
-import java.net.*;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.time.Duration;
-import java.util.*;
-import java.util.concurrent.*;
+import java.util.Arrays;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.RejectedExecutionException;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import org.apache.hc.client5.http.DnsResolver;
 
 /** The resolver returned to Apache is the validation boundary, avoiding a second DNS lookup. */

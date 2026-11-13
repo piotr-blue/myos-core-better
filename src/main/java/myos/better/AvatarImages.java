@@ -1,7 +1,10 @@
 package myos.better;
 
-import java.io.*;
-import java.util.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Set;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.MemoryCacheImageInputStream;
 import net.coobird.thumbnailator.Thumbnails;
