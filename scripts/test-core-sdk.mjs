@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { randomUUID } from 'node:crypto';
-import { PackagesAndTypesApi, AdminApi, AccountApi, APIKeysApi, ContentsApi, AdmissionsApi, TimelinesApi, DocumentsApi, EventsApi, WebhooksApi, Configuration, ResponseError } from '../sdk/typescript/dist/index.js';
+import { PackagesAndTypesApi, AdminApi, AccountApi, APIKeysApi, ContentsApi, AdmissionsApi, TimelinesApi, DocumentsApi, EventsApi, WebhooksApi, Configuration, ResponseError, waitForAdmission, waitForNativeInput } from '../sdk/typescript/dist/index.js';
 const basePath = process.argv[2];
 assert.match(basePath, /^http:\/\/127\.0\.0\.1:\d+$/);
 const configuration = (headers = {}) => new Configuration({basePath, headers: {
@@ -181,7 +181,7 @@ console.log('Generated Core SDK passed: stored private type inheritance, typed n
 
 
 // The original form-preparation API is a read-only proposal, followed by real native execution.
-const preparedBootstrap = await documents.bootstrapDocument({idempotencyKey:randomUUID(),bootstrapDocument:{
+const bootstrapReceipt = await documents.bootstrapDocument({idempotencyKey:randomUUID(),bootstrapDocument:{
   document:`name: SDK prepared input
 count: 0
 contracts:
@@ -197,7 +197,7 @@ contracts:
             path: /count
             val: {$binding: call/request/amount}
 `, participantMappings:[{channelName:'buyer',accountId:workspace.accountId}]}});
-assert.equal(preparedBootstrap.status,'SUCCEEDED',JSON.stringify(preparedBootstrap));
+const preparedBootstrap = await waitForAdmission(admissions, bootstrapReceipt, { timeoutMs: 10000, pollIntervalMs: 50 });
 const preparedSession = preparedBootstrap.details.sessionId;
 const reviewed = await documents.getDocument({sessionId:preparedSession});
 const discovered = await documents.getDocumentOperations({sessionId:preparedSession});
@@ -242,12 +242,12 @@ const accepted = await documents.invokeOperation(invokeCommand).catch(async erro
 });
 assert.equal(accepted.status,'SUCCEEDED');
 assert.deepEqual(await documents.invokeOperation(invokeCommand),accepted);
-const start = Date.now();let processed;
-do {
-  processed=await documents.getDocument({sessionId:preparedSession});
-  if(processed.lastStable.epoch===1)break;
-  await new Promise(resolve=>setTimeout(resolve,25));
-} while(Date.now()-start<8000);
+const observedInput = await waitForNativeInput(documents, preparedSession, accepted.details.entryRef.blueId,
+  { timeoutMs: 8000, pollIntervalMs: 25 });
+assert.equal(observedInput.processing.paused, false);
+assert.equal(observedInput.processing.issue, null);
+assert.equal(observedInput.localHistory[0].epoch, 1);
+const processed = await documents.getDocument({sessionId:preparedSession});
 assert.equal(processed.lastStable.epoch,1);
 const processedContent = await contents.getContent({blueId:processed.lastStable.documentRef.blueId});
 assert.equal(processedContent.count.value,'9007199254740993123456789');

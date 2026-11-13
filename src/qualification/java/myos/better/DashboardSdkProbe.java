@@ -125,7 +125,6 @@ public final class DashboardSdkProbe {
               original.entry().blueId().value());
       var runtime =
           CanonicalRuntime.newBuilder()
-              .edition(CanonicalRuntime.HOST_LINKS_EDITION)
               .language(language)
               .enableDocumentDispatch()
               .timelineChannels(service.channels())

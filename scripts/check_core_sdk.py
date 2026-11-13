@@ -24,6 +24,8 @@ def main():
             raise RuntimeError('SDK fixture did not start within 20 seconds')
         url = server.stdout.readline().strip()
         fixture = server.stdout.readline().strip()
+        if not url or not fixture:
+            raise RuntimeError(f'SDK fixture exited before publishing its loopback address and import data (exit {server.poll()})')
         subprocess.run(['node', 'scripts/test-core-sdk.mjs', url, fixture], cwd=ROOT, env=environment, check=True, timeout=30)
     finally:
         server.stdin.close()
