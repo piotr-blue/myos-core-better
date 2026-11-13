@@ -28,19 +28,8 @@ final class CoreRuntime {
 
   CoreRuntime(
       PublicPackages configured, BluePackage coordination, String execution, BluePackage time) {
-    var configuredNames = new TreeMap<String, String>();
-    configured
-        .types()
-        .values()
-        .forEach(
-            raw -> {
-              var type = RuntimeConfiguration.object(raw, "type");
-              configuredNames.putIfAbsent(
-                  (String) type.get("packageId"), (String) type.get("package"));
-            });
-    var aliases = new HashMap<BlueId, String>();
-    configuredNames.forEach((id, name) -> aliases.put(new BlueId(id), name));
-    names = Map.copyOf(aliases);
+    // Different publications may export the same definitions. Preserve each configured name.
+    names = configured.mountNames();
     var roots = new LinkedHashMap<BlueId, BluePackage>();
     configured.publications().values().forEach(p -> add(roots, p));
     add(roots, Bex.publication());

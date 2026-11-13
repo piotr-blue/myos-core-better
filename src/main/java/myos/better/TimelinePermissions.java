@@ -27,8 +27,15 @@ final class TimelinePermissions implements AutoCloseable {
   static final class Unavailable extends IllegalStateException {
     private static final long serialVersionUID = 1L;
 
+    final TimelineIngress.Status status;
+
     Unavailable(String message) {
+      this(TimelineIngress.Status.WAITING, message);
+    }
+
+    Unavailable(TimelineIngress.Status status, String message) {
       super(message);
+      this.status = status;
     }
   }
 

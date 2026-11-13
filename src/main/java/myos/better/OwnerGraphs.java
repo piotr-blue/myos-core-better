@@ -373,11 +373,15 @@ final class OwnerGraphs {
         return OwnerRejections.publish(store, account, claim, rejected, time);
       } catch (TimelinePermissions.Unavailable waiting) {
         failureDiagnostic = waiting.getMessage();
+        // A bounded access replay has more verified history already on disk. There is
+        // no future source arrival to wake this receiver after the last input was read.
+        boolean replay = waiting.status == TimelineIngress.Status.RETRY;
         records.frontiers.awaitSources(
             claim,
-            System.currentTimeMillis() + 250,
+            replay ? 0 : System.currentTimeMillis() + 250,
             failureDiagnostic,
             tx -> new OwnerGasClaims(account).release(tx, claim));
+        if (replay) return new TimelineIngress.Outcome(TimelineIngress.Status.RETRY, failureDiagnostic);
         if (time != null && OwnerTimers.input(records.read, claim.order()) != null)
           records
               .frontiers

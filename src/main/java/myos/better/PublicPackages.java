@@ -13,12 +13,17 @@ final class PublicPackages implements LanguageProvider {
   private final Set<String> identities;
   private final Map<String, Object> types;
   private final Map<BlueId, BluePackage> publications;
+  private final Map<BlueId, String> mountNames;
 
   PublicPackages(Collection<BluePackage> publications) {
     this(publications, Map.of());
   }
 
   PublicPackages(Collection<BluePackage> publications, Map<String, BluePackage> mounts) {
+    Map<BlueId, String> selectedNames = new LinkedHashMap<>();
+    mounts.forEach(
+        (prefix, publication) -> selectedNames.putIfAbsent(publication.blueId(), prefix));
+    mountNames = Map.copyOf(selectedNames);
     Map<String, Object> names = new LinkedHashMap<>();
     mounts.forEach(
         (prefix, publication) ->
@@ -49,6 +54,10 @@ final class PublicPackages implements LanguageProvider {
         records.keySet().stream()
             .map(BlueId::value)
             .collect(java.util.stream.Collectors.toUnmodifiableSet());
+  }
+
+  Map<BlueId, String> mountNames() {
+    return mountNames;
   }
 
   Map<BlueId, BluePackage> publications() {

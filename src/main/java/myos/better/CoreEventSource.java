@@ -19,6 +19,10 @@ final class CoreEventSource {
     Map<AtomicStore.Key, AtomicStore.Row> gates = new HashMap<>();
     List<AtomicStore.Write> stamped = new ArrayList<>(writes.size());
     List<AtomicStore.Check> guarded = new ArrayList<>(checks);
+    // A public-directory projection can pass an already guarded outbox batch through here.
+    // Preserve the caller's snapshot if a subscription advanced between the two reads.
+    Map<AtomicStore.Key, Long> guardedVersions = new HashMap<>();
+    for (var check : checks) guardedVersions.put(check.key(), check.version());
     for (var write : writes) {
       if (write.next() == null || !write.key().partition().startsWith(OUTBOX)) {
         stamped.add(write);
@@ -30,7 +34,10 @@ final class CoreEventSource {
       if (!gates.containsKey(key)) {
         var gate = store.get(key);
         gates.put(key, gate);
-        guarded.add(new AtomicStore.Check(key, gate == null ? 0 : gate.version()));
+        long version = gate == null ? 0 : gate.version();
+        Long previous = guardedVersions.putIfAbsent(key, version);
+        if (previous == null) guarded.add(new AtomicStore.Check(key, version));
+        else if (previous != version) return false;
       }
       var gate = gates.get(key);
       var value = new LinkedHashMap<>(write.next().value());

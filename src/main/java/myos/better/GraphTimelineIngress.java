@@ -570,7 +570,8 @@ final class GraphTimelineIngress implements AutoCloseable {
                     plan,
                     new HashMap<>(),
                     waiting));
-    if (frame == null) throw new TimelinePermissions.Unavailable(waiting[0].reason());
+    if (frame == null)
+      throw new TimelinePermissions.Unavailable(waiting[0].status(), waiting[0].reason());
     return new OwnerScope(frame);
   }
 

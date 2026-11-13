@@ -320,6 +320,10 @@ final class HostedTimelines {
         pause(attempt);
         AtomicStore.Row prior = receipt(receipt, fingerprint);
         if (prior != null) return published(account, prior.value());
+        // Capture the owner cut before selecting a timestamp. If another publisher seals
+        // the account during signing, the same conditional commit retries the signed entry.
+        var frontiers = OwnerGraphs.enabled() ? new OwnerFrontiers(repository.store, account) : null;
+        var tx = frontiers == null ? null : frontiers.metadata.begin();
         AtomicStore.Row before = state(account, timeline);
         if (!policy.equals(writer(before)))
           throw new IllegalStateException("Timeline writer changed");
@@ -343,11 +347,9 @@ final class HostedTimelines {
         List<AtomicStore.Write> writes = new ArrayList<>(prepared.writes());
         writes.add(AtomicStore.Write.put(receipt, 0, prepared.metadata()));
         Map<String, Object> committed;
-        if (OwnerGraphs.enabled()) {
-          var frontiers = new OwnerFrontiers(repository.store, account);
-          var tx = frontiers.metadata.begin();
+        if (tx != null) {
           // Even an unenrolled append checks the manifest: enrollment cannot race past it.
-          if (frontiers.local(timeline.value())) {
+          if (frontiers.local(tx, timeline.value())) {
             // Authorship has already validated the native operation grammar. Publish routing
             // before acceptance, in the same transaction, so quiet subscribers are never
             // provisionally scheduled. Execution still performs ordinary native admission.

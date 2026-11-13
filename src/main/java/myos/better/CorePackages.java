@@ -187,6 +187,22 @@ final class CorePackages {
                       "ambiguous_package_selection", "Select one definition of " + alias + ".");
               });
     }
+    // Documents saved before an explicit mount used the publication name as their prefix.
+    // A historical name can safely select an export only when the selected edition is unique.
+    Map<String, Long> nameCounts =
+        selected.stream()
+            .map(publications::get)
+            .collect(
+                java.util.stream.Collectors.groupingBy(
+                    BluePackage::name, java.util.stream.Collectors.counting()));
+    for (String id : selected) {
+      var publication = publications.get(id);
+      if (nameCounts.get(publication.name()) == 1L)
+        publication
+            .exports()
+            .forEach(
+                (name, type) -> result.putIfAbsent(publication.name() + "/" + name, type.value()));
+    }
     Map<String, String> value = Map.copyOf(result);
     synchronized (aliases) {
       aliases.put(key, value);
