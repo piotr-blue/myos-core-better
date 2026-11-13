@@ -2,8 +2,11 @@ package myos.better;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReentrantLock;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /** Serializes one document locally without retaining locks for inactive documents. */
+@NullMarked
 final class DocumentLocks {
   private final ConcurrentHashMap<String, Entry> entries = new ConcurrentHashMap<>();
 
@@ -13,7 +16,7 @@ final class DocumentLocks {
     return new Lease(key, entry);
   }
 
-  Lease tryAcquire(String key) {
+  @Nullable Lease tryAcquire(String key) {
     Entry entry = retain(key);
     if (entry.lock.tryLock()) {
       return new Lease(key, entry);

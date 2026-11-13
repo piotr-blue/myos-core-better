@@ -2,10 +2,13 @@ package myos.better;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Bounded immutable page cache. It cannot issue authority or retain an unbounded document graph.
  */
+@NullMarked
 final class PageCache {
   private final Map<String, byte[]> pages = new LinkedHashMap<>(256, .75f, true);
   private final long maximumBytes;
@@ -23,7 +26,7 @@ final class PageCache {
     return pages.get(key) != null;
   }
 
-  synchronized byte[] get(String key) {
+  synchronized byte @Nullable [] get(String key) {
     byte[] value = pages.get(key);
     return value == null ? null : value.clone();
   }

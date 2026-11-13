@@ -7,6 +7,10 @@ val checker = configurations.create("errorProneCompiler") {
     isTransitive = false
 }
 dependencies {
+    add("compileOnly", "org.jspecify:jspecify:1.0.1")
+    add(checker.name, "com.uber.nullaway:nullaway:0.14.3")
+    add(checker.name, "org.checkerframework:dataflow-nullaway:4.3.1")
+    add(checker.name, "org.jspecify:jspecify:1.0.1")
     add(checker.name, "com.google.errorprone:error_prone_core:2.52.0:with-dependencies")
     add(checker.name, "io.github.eisop:dataflow-errorprone:3.41.0-eisop1")
 }
@@ -27,6 +31,7 @@ tasks.register<JavaCompile>("errorProne") {
         "--add-exports=jdk.compiler/com.sun.tools.javac.$it=ALL-UNNAMED"
     } + listOf("code", "comp").map { "--add-opens=jdk.compiler/com.sun.tools.javac.$it=ALL-UNNAMED" }
     options.compilerArgs.remove("-Werror")
+    val warnings = if (reportWarnings.get()) "" else " -XepDisableAllWarnings"
     options.compilerArgs.addAll(listOf("-XDcompilePolicy=simple", "--should-stop=ifError=FLOW",
-        if (reportWarnings.get()) "-Xplugin:ErrorProne" else "-Xplugin:ErrorProne -XepDisableAllWarnings"))
+        "-Xplugin:ErrorProne$warnings -Xep:NullAway:ERROR -XepOpt:NullAway:OnlyNullMarked=true"))
 }

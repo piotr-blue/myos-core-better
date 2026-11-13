@@ -3,11 +3,14 @@ package myos.better;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Supplier;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /**
  * Leased per-document sessions. A version mismatch or uncertain commit discards the mutable engine.
  * Pinned entries cannot be evicted while running. History is bounded by a maximum reuse count.
  */
+@NullMarked
 final class SessionCache implements AutoCloseable {
   record Policy(int maximumEntries, long maximumBytes, int maximumUses) {
     static final Policy STANDARD = new Policy(64, 128L * 1024 * 1024, 32);
@@ -57,7 +60,7 @@ final class SessionCache implements AutoCloseable {
   }
 
   final class Lease implements AutoCloseable {
-    private Entry entry;
+    private @Nullable Entry entry;
     private boolean keep;
     private final boolean readOnly;
 
@@ -155,7 +158,7 @@ final class SessionCache implements AutoCloseable {
   }
 
   /** Caller holds the document lock. Reads add no execution history and never load or wait. */
-  synchronized Lease readIfPresent(String key, long version) {
+  synchronized @Nullable Lease readIfPresent(String key, long version) {
     Entry entry = entries.get(key);
     if (entry == null || entry.pinned || entry.version != version) {
       return null;

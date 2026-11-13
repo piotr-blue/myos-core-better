@@ -2,8 +2,11 @@ package myos.better;
 
 import java.util.List;
 import java.util.Map;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 /** Durable demand for source completeness. A demand is a scheduling hint, never evidence. */
+@NullMarked
 final class TimelineCoverage {
   private static final String FORMAT = "myos.timeline-coverage-demand/1";
 
@@ -42,7 +45,7 @@ final class TimelineCoverage {
     }
   }
 
-  static long minimum(AtomicStore.Row row) {
+  static long minimum(AtomicStore.@Nullable Row row) {
     if (row == null) {
       return 0;
     }
