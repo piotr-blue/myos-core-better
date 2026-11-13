@@ -181,16 +181,9 @@ public final class CheckpointRestoreProbe {
 
   private static CanonicalRuntime.Update transition(CanonicalRuntime.Session session, String role) {
     if (role.equals("payment")) {
-      return session.call("probe", "input", "record", Map.of(), 1000, null);
+      return session.call("input", "record", Map.of(), 1000);
     }
-    String path = role.equals("order") ? "/payments/p0" : "/orders/o0";
-    String kind = role.equals("order") ? "Payment Settled" : "Order Paid";
-    return session.receive(
-        "probe",
-        List.of(
-            new CanonicalRuntime.Delivery(path, Map.of("kind", kind, "amount", 42, "key", "o0"))),
-        1000,
-        null);
+    throw CanonicalRuntime.detachedDelivery();
   }
 
   private static String field(String role) {

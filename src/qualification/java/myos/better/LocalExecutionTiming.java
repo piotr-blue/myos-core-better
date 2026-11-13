@@ -30,8 +30,7 @@ public final class LocalExecutionTiming {
         }
         long bytes = threads.getThreadAllocatedBytes(Thread.currentThread().threadId());
         long start = System.nanoTime();
-        CanonicalRuntime.Update update =
-            session.call("command-" + i, "input", "record", Map.of(), i + 1L, null);
+        CanonicalRuntime.Update update = session.call("input", "record", Map.of(), i + 1L);
         long elapsed = System.nanoTime() - start;
         update.requireApplied();
         if (i >= warmup) {

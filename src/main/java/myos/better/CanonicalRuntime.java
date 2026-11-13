@@ -10,7 +10,6 @@ import blue.Language;
 import blue.LanguageContent;
 import blue.LanguageDocument;
 import blue.LanguageProvider;
-import blue.LanguageRecord;
 import blue.NativeChannel;
 import blue.NativeStep;
 import blue.ProjectionLimits;
@@ -159,45 +158,11 @@ final class CanonicalRuntime {
             + " reinterpret it");
   }
 
-  // Kept at the old service storage boundary while its historical link records remain readable.
-  // Canonical execution never produces detached attachments or calls these read overlays.
-  record ContentRead(BlueId document, String pointer) {}
-
-  @FunctionalInterface
-  interface Reader extends LanguageProvider {
-    Object read(String pointer, Object localValue);
-
-    default Object read(String pointer, Object localValue, List<String> replaced) {
-      return read(pointer, localValue);
-    }
-
-    default boolean appliesTo(String pointer) {
-      return true;
-    }
-
-    default Optional<ContentRead> select(String pointer) {
-      return Optional.empty();
-    }
-
-    default Optional<List<String>> overlayKeys(String pointer) {
-      return Optional.empty();
-    }
-
-    default Optional<ProjectionLimits> projectionLimits(String pointer) {
-      return Optional.empty();
-    }
-
-    default Optional<Map<String, Object>> checkpoint(BlueId id) {
-      return Optional.empty();
-    }
-
-    @Override
-    default Optional<LanguageRecord> find(BlueId id) {
-      return Optional.empty();
-    }
+  static IllegalArgumentException detachedDelivery() {
+    return new IllegalArgumentException(
+        "Detached event injection is retired; select the original through canonical owner"
+            + " processing");
   }
-
-  record Delivery(String sourcePath, Object event) {}
 
   record Attachment(
       String path, LanguageDocument document, Optional<Prepared> prepared, BlueId initialBlueId) {}
@@ -263,43 +228,20 @@ final class CanonicalRuntime {
       return delegate.operationRequest(entry, message);
     }
 
-    Update process(Object event, long timestamp, Reader reader) {
-      return result(delegate.process(event, timestamp));
-    }
-
-    Update process(String command, Object event, long timestamp, Reader reader) {
-      return process(event, timestamp, reader);
-    }
-
     Update process(Object event, long timestamp) {
-      return process(event, timestamp, null);
-    }
-
-    Update process(
-        String command, Object event, long timestamp, Reader reader, AdmissionEvidence evidence) {
-      return result(delegate.process(event, timestamp, evidence));
+      return result(delegate.process(event, timestamp));
     }
 
     Update call(String channel, String operation, Object request, long timestamp) {
       return result(delegate.call(channel, operation, request, timestamp));
     }
 
-    Update call(String channel, String operation, Object request, long timestamp, Reader reader) {
-      return call(channel, operation, request, timestamp);
-    }
-
-    Update call(
-        String command,
-        String channel,
-        String operation,
-        Object request,
-        long timestamp,
-        Reader reader) {
-      return call(channel, operation, request, timestamp);
-    }
-
     AdmissionResult admit(
-        String command, Object event, long timestamp, Reader reader, AdmissionEvidence evidence) {
+        String command,
+        Object event,
+        long timestamp,
+        LanguageProvider reader,
+        AdmissionEvidence evidence) {
       if (!requiresNativeAdmission()) {
         return missingVerifier();
       }
@@ -309,7 +251,10 @@ final class CanonicalRuntime {
     }
 
     AdmissionResult admit(
-        String command, TimelineVerifier.Entry entry, Reader reader, AdmissionEvidence evidence) {
+        String command,
+        TimelineVerifier.Entry entry,
+        LanguageProvider reader,
+        AdmissionEvidence evidence) {
       if (!requiresNativeAdmission()) {
         return missingVerifier();
       }
@@ -319,7 +264,9 @@ final class CanonicalRuntime {
 
     @SuppressWarnings("try")
     private Contracts.Transition withAdmission(
-        String command, Reader reader, java.util.function.Supplier<Contracts.Transition> action) {
+        String command,
+        LanguageProvider reader,
+        java.util.function.Supplier<Contracts.Transition> action) {
       LanguageProvider previous = content.get();
       content.set(reader);
       try (var scope = NativeInput.admission(command)) {
@@ -343,12 +290,6 @@ final class CanonicalRuntime {
               List.of(),
               Map.of("code", "MISSING_ADMISSION_VERIFIER")),
           false);
-    }
-
-    Update receive(String command, List<Delivery> deliveries, long timestamp, Reader reader) {
-      throw new IllegalArgumentException(
-          "Detached event injection is retired; select the original through canonical owner"
-              + " processing");
     }
 
     Object read(String pointer) {

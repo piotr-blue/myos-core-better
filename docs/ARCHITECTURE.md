@@ -71,3 +71,7 @@ The canonical result reports `graphExecutionMillis`, `graphCommitMillis` and `en
 ## Session shutdown
 
 An acquiring document holds its document lock while the host measures and opens its checkpoint outside the cache lock. The cache records that load before releasing its metadata lock. Shutdown refuses while a load or a pinned execution is active, so a failed shutdown leaves the existing sessions usable. Once close succeeds, a new acquisition fails before it opens resources. Child sessions prepared before shutdown are disposed if their handoff arrives after close. [Session cache](../src/main/java/myos/better/SessionCache.java) · [Deterministic shutdown regression](../src/test/java/myos/better/SessionCacheTest.java)
+
+## Pinned embedded views and admission records
+
+A historical document view follows its retained link root and loads the stored child version. The view shares a read budget across descendants. Under contention, a read falls back to the immutable checkpoint without waiting for a second document lock. The active Contracts runtime handles workflow reads inside native execution. Verified native admission uses a content provider that looks up the attempt’s retained evidence before consulting the selected timeline. The host supplies neither a virtual-document callback nor a second interpreter for an ordinary operation. [Historical view implementation](../src/main/java/myos/better/EmbeddedDocumentViews.java) · [Canonical runtime](../src/main/java/myos/better/CanonicalRuntime.java)

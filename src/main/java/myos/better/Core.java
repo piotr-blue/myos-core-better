@@ -1,6 +1,5 @@
 package myos.better;
 
-import blue.Bex;
 import blue.Pointer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -10,8 +9,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * Per-document atomic execution and durable propagation. The store owns truth; no global journal or
@@ -30,6 +27,7 @@ final class Core implements AutoCloseable {
   private final ReadBudget.Limits workflowReads;
   private final Repository repository;
   private final EmbeddingLinks embeddingLinks;
+  private final EmbeddedDocumentViews embeddedViews;
   private final RuntimeCatalog runtimes;
   private final SessionCache sessions;
   private final Propagation propagation;
@@ -181,6 +179,7 @@ final class Core implements AutoCloseable {
     repository = new Repository(store);
     embeddingLinks = new EmbeddingLinks(repository);
     this.runtimes = java.util.Objects.requireNonNull(runtimes);
+    embeddedViews = new EmbeddedDocumentViews(repository, runtimes, locks, sessions);
     this.combineAcknowledgements = combineAcknowledgements;
     this.admissionNamespace =
         admissionNamespace == null ? null : NativeInput.namespace(admissionNamespace);
@@ -741,86 +740,7 @@ final class Core implements AutoCloseable {
                     incoming.path(),
                     new Link(link.document(), incoming.version(), link.generation()));
           }
-          final String selectedRoot = root;
-          final Repository.Document selected = before;
-          final boolean exactEmbeddingReads =
-              before != null
-                  && CanonicalRuntime.HOST_LINKS_EDITION.equals(before.checkpoint().get("edition"));
           EmbeddingReads readScope = new EmbeddingReads(workflowReads);
-          CanonicalRuntime.Reader reader =
-              new CanonicalRuntime.Reader() {
-                @Override
-                public boolean appliesTo(String pointer) {
-                  if (!exactEmbeddingReads) {
-                    return true;
-                  }
-                  String path = pointer.equals("/") ? "" : pointer;
-                  return selected != null
-                      && !selectedRoot.isEmpty()
-                      && (selected.embeddings().containsChildren(path)
-                          || selected.embeddings().childPath(path) != null);
-                }
-
-                @Override
-                public java.util.Optional<CanonicalRuntime.ContentRead> select(String pointer) {
-                  if (!exactEmbeddingReads) {
-                    return java.util.Optional.empty();
-                  }
-                  return exactRead(account, selected, selectedRoot, pointer, links, 0, readScope);
-                }
-
-                @Override
-                public java.util.Optional<List<String>> overlayKeys(String pointer) {
-                  if (!exactEmbeddingReads) {
-                    return java.util.Optional.empty();
-                  }
-                  return java.util.Optional.of(
-                      embeddingKeys(account, selected, selectedRoot, pointer, links, 0, readScope));
-                }
-
-                @Override
-                public java.util.Optional<blue.ProjectionLimits> projectionLimits(String pointer) {
-                  return selected != null
-                          && !selectedRoot.isEmpty()
-                          && selected
-                              .embeddings()
-                              .containsChildren(pointer.equals("/") ? "" : pointer)
-                      ? java.util.Optional.of(readScope.budget.remainingProjection())
-                      : java.util.Optional.empty();
-                }
-
-                @Override
-                public java.util.Optional<Map<String, Object>> checkpoint(blue.BlueId id) {
-                  return readScope.checkpoint(id);
-                }
-
-                @Override
-                public java.util.Optional<blue.LanguageRecord> find(blue.BlueId id) {
-                  java.util.Optional<blue.LanguageRecord> found = readScope.find(id);
-                  return found.isPresent() || sourceSelection == null
-                      ? found
-                      : sourceSelection.find(id);
-                }
-
-                @Override
-                public Object read(String pointer, Object local) {
-                  return read(pointer, local, List.of());
-                }
-
-                @Override
-                public Object read(String pointer, Object local, List<String> replaced) {
-                  return virtualRead(
-                      account,
-                      selected,
-                      selectedRoot,
-                      pointer,
-                      local,
-                      links,
-                      0,
-                      replaced,
-                      readScope);
-                }
-              };
           CanonicalRuntime runtime =
               action instanceof Migrate migration
                   ? runtimes.select(migration.edition())
@@ -861,15 +781,15 @@ final class Core implements AutoCloseable {
               update =
                   new CanonicalRuntime.Update("APPLIED", 0, List.of(), List.of(), List.of(), null);
             } else if (incoming != null) {
-              update =
-                  session.receive(
-                      command.id(),
-                      incoming.events().stream()
-                          .map(event -> new CanonicalRuntime.Delivery(incoming.path(), event))
-                          .toList(),
-                      command.timestamp(),
-                      reader);
+              throw CanonicalRuntime.detachedDelivery();
             } else if (action instanceof Admitted admitted) {
+              blue.LanguageProvider reader =
+                  identity -> {
+                    var local = readScope.find(identity);
+                    return local.isPresent() || sourceSelection == null
+                        ? local
+                        : sourceSelection.find(identity);
+                  };
               blue.TimelineVerifier.Entry original =
                   sourceSelection == null ? null : sourceSelection.verifiedEntry().orElse(null);
               CanonicalRuntime.AdmissionResult admission =
@@ -888,16 +808,11 @@ final class Core implements AutoCloseable {
               update = admission.update();
               verified = admission.verified();
             } else if (action instanceof Event event) {
-              update = session.process(command.id(), event.value(), command.timestamp(), reader);
+              update = session.process(event.value(), command.timestamp());
             } else if (action instanceof Call call) {
               update =
                   session.call(
-                      command.id(),
-                      call.channel(),
-                      call.operation(),
-                      call.request(),
-                      command.timestamp(),
-                      reader);
+                      call.channel(), call.operation(), call.request(), command.timestamp());
             } else {
               throw new AssertionError("Unrecognized document action");
             }
@@ -1589,9 +1504,9 @@ final class Core implements AutoCloseable {
     budget.document(0);
     Object value;
     if (expanded) {
-      value = materialize(document, 0, budget);
+      value = embeddedViews.materialize(document, 0, budget);
     } else {
-      value = projection(document, budget);
+      value = embeddedViews.projection(document, budget);
     }
     ProjectedData data = ProjectedData.encode(value);
     Map<String, Object> result = new LinkedHashMap<>(document.head());
@@ -1610,224 +1525,6 @@ final class Core implements AutoCloseable {
 
   String embedded(String account, String id, String pointer) {
     return embeddingLinks.embedded(account, id, pointer);
-  }
-
-  private Map<String, Object> projection(Repository.Document document, ReadBudget budget) {
-    return object(readLocal(document, "", budget));
-  }
-
-  private Object readLocal(Repository.Document document, String pointer, ReadBudget budget) {
-    Map<String, Object> cached = document.data();
-    if (cached != null
-        && (cached.containsKey("contracts")
-            || !pointer.isEmpty() && !pointer.startsWith("/contracts"))) {
-      Object value = select(cached, pointer);
-      budget.projection(value);
-      return value;
-    }
-    String key = Repository.partition(document.account(), document.id());
-    DocumentLocks.Lease lock = locks.tryAcquire(key);
-    // A parent may already hold its own lock. Never wait for a second document lock: a busy or
-    // mismatched session falls back to its immutable checkpoint and cannot deadlock another host
-    // read.
-    if (lock != null) {
-      try (SessionCache.Lease present = sessions.readIfPresent(key, document.version())) {
-        if (present != null) {
-          Object value = budget.read(present.session(), pointer);
-          present.unchanged();
-          return value;
-        }
-      } finally {
-        lock.close();
-      }
-    }
-    // The verified checkpoint owns meaning. Projection omission is safe across restart and lets a
-    // cross-document read select one field without materializing every inherited definition.
-    try (CanonicalRuntime.Session session = runtimes.restore(document.checkpoint())) {
-      return budget.read(session, pointer);
-    }
-  }
-
-  private Object materialize(Repository.Document document, int depth, ReadBudget budget) {
-    return materialize(document, depth, budget, null);
-  }
-
-  private Object materialize(
-      Repository.Document document, int depth, ReadBudget budget, EmbeddingReads readScope) {
-    if (readScope != null) {
-      readScope.remember(document);
-    }
-    Map<String, Object> local = projection(document, budget);
-    Map<String, Object> result = mutable(local);
-    LinkIndex index = new LinkIndex(repository.blobs(document.account()));
-    index.forEach(
-        document.links(),
-        (path, link) -> {
-          budget.document(depth + 1);
-          Repository.Document child =
-              repository.load(document.account(), link.document(), Math.max(1, link.version()));
-          put(result, path, materialize(child, depth + 1, budget, readScope));
-        });
-    return result;
-  }
-
-  /** Enumerate only immediate embedding keys; ordinary local fields require no link traversal. */
-  private List<String> embeddingKeys(
-      String account,
-      Repository.Document parent,
-      String root,
-      String pointer,
-      LinkIndex links,
-      int depth,
-      EmbeddingReads reads) {
-    if (parent == null || root.isEmpty()) {
-      return List.of();
-    }
-    String normalized = pointer.equals("/") ? "" : pointer;
-    String boundary = parent.embeddings().childPath(normalized);
-    if (boundary != null) {
-      Link link = links.get(root, boundary);
-      if (link == null) {
-        return List.of();
-      }
-      Repository.Document child = reads.load(repository, account, link, depth + 1);
-      String rest =
-          new Pointer(
-                  Pointer.parse(normalized)
-                      .segments()
-                      .subList(
-                          Pointer.parse(boundary).segments().size(),
-                          Pointer.parse(normalized).segments().size()))
-              .toString();
-      return embeddingKeys(account, child, child.links(), rest, links, depth + 1, reads);
-    }
-    if (!parent.embeddings().containsChildren(normalized)) {
-      return List.of();
-    }
-    Pointer base = Pointer.parse(normalized);
-    Set<String> keys = new TreeSet<>();
-    links.forEach(
-        root,
-        (path, link) -> {
-          reads.budget.link();
-          Pointer target = Pointer.parse(path);
-          if (base.contains(target) && target.segments().size() > base.segments().size()) {
-            keys.add(target.segments().get(base.segments().size()));
-          }
-        });
-    return List.copyOf(keys);
-  }
-
-  /** Keep a selected child's exact identity; only collection/composite reads need projection. */
-  private java.util.Optional<CanonicalRuntime.ContentRead> exactRead(
-      String account,
-      Repository.Document parent,
-      String root,
-      String pointer,
-      LinkIndex links,
-      int depth,
-      EmbeddingReads reads) {
-    if (parent == null || root.isEmpty()) {
-      return java.util.Optional.empty();
-    }
-    String normalized = pointer.equals("/") ? "" : pointer;
-    String boundary = parent.embeddings().childPath(normalized);
-    if (boundary == null) {
-      return java.util.Optional.empty();
-    }
-    Link link = links.get(root, boundary);
-    if (link == null) {
-      return java.util.Optional.empty();
-    }
-    Repository.Document child = reads.load(repository, account, link, depth + 1);
-    String rest =
-        new Pointer(
-                Pointer.parse(normalized)
-                    .segments()
-                    .subList(
-                        Pointer.parse(boundary).segments().size(),
-                        Pointer.parse(normalized).segments().size()))
-            .toString();
-    if (child.embeddings().childPath(rest) != null) {
-      return exactRead(account, child, child.links(), rest, links, depth + 1, reads);
-    }
-    return java.util.Optional.of(
-        new CanonicalRuntime.ContentRead(new blue.BlueId(child.localBlueId()), rest));
-  }
-
-  private Object virtualRead(
-      String account,
-      Repository.Document document,
-      String root,
-      String pointer,
-      Object local,
-      LinkIndex index,
-      int depth,
-      List<String> replaced,
-      EmbeddingReads readScope) {
-    if (document == null || root.isEmpty()) {
-      return local;
-    }
-    ReadBudget budget = readScope.budget;
-    String normalized = pointer.equals("/") ? "" : pointer;
-    String childPath = document.embeddings().childPath(normalized);
-    if (childPath != null) {
-      // Compact state contains a child only while the current workflow is authoring its
-      // replacement.
-      if (local != Bex.undefined()) {
-        return local;
-      }
-      Link link = index.get(root, childPath);
-      if (link == null) {
-        return local;
-      }
-      budget.document(depth + 1);
-      Repository.Document child =
-          repository.load(account, link.document(), Math.max(1, link.version()));
-      readScope.remember(child);
-      String rest =
-          new Pointer(
-                  Pointer.parse(normalized)
-                      .segments()
-                      .subList(
-                          Pointer.parse(childPath).segments().size(),
-                          Pointer.parse(normalized).segments().size()))
-              .toString();
-      Object selected = readLocal(child, rest, budget);
-      return virtualRead(
-          account, child, child.links(), rest, selected, index, depth + 1, List.of(), readScope);
-    }
-    if (document.embeddings().containsChildren(normalized)) {
-      if (!(local instanceof Map<?, ?>)) {
-        return local;
-      }
-      budget.projection(local);
-      Map<String, Object> result = mutable(object(local));
-      Pointer base = Pointer.parse(normalized);
-      index.forEach(
-          root,
-          (path, link) -> {
-            budget.link();
-            Pointer selectedPath = Pointer.parse(path);
-            if (!base.contains(selectedPath)
-                || replaced.stream()
-                    .anyMatch(changed -> Pointer.parse(changed).contains(selectedPath))) {
-              return;
-            }
-            String relative =
-                new Pointer(
-                        selectedPath
-                            .segments()
-                            .subList(base.segments().size(), selectedPath.segments().size()))
-                    .toString();
-            budget.document(depth + 1);
-            Repository.Document child =
-                repository.load(account, link.document(), Math.max(1, link.version()));
-            put(result, relative, materialize(child, depth + 1, budget, readScope));
-          });
-      return result;
-    }
-    return local;
   }
 
   private static AtomicStore.Key commandKey(String account, String id, String command) {
@@ -1865,36 +1562,6 @@ final class Core implements AutoCloseable {
   @SuppressWarnings("unchecked")
   private static Map<String, String> strings(Object value) {
     return (Map<String, String>) value;
-  }
-
-  private static Map<String, Object> mutable(Map<String, Object> value) {
-    return object(ProjectedData.detach(value));
-  }
-
-  private static Object select(Object value, String pointer) {
-    Object current = value;
-    for (String part : Pointer.parse(pointer).segments()) {
-      if (current instanceof Map<?, ?> map) {
-        current = map.containsKey(part) ? map.get(part) : Bex.undefined();
-      } else if (current instanceof List<?> list) {
-        int i = Integer.parseInt(part);
-        current = i >= 0 && i < list.size() ? list.get(i) : Bex.undefined();
-      } else {
-        return Bex.undefined();
-      }
-    }
-    return current;
-  }
-
-  private static void put(Map<String, Object> target, String pointer, Object value) {
-    List<String> parts = Pointer.parse(pointer).segments();
-    Map<String, Object> parent = target;
-    for (int i = 0; i < parts.size() - 1; i++) {
-      parent =
-          object(
-              parent.computeIfAbsent(parts.get(i), ignored -> new LinkedHashMap<String, Object>()));
-    }
-    parent.put(parts.getLast(), value);
   }
 
   @Override
