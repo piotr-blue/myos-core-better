@@ -21,6 +21,7 @@ import software.amazon.awssdk.services.dynamodb.model.WriteRequest;
 
 /** Official SDK transport; the transaction response is the sole publication decision. */
 final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
+  private static final int MAX_PAGE_BYTES = 128 * 1024;
   private final DynamoDbClient client;
   private final String table;
   private final PageCache contentCache =
@@ -418,20 +419,12 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
         client
             .getItem(
                 request ->
-                    request
-                        .tableName(table)
-                        .key(key(new Key(contentKey(account, identity), "CONTENT")))
-                        .consistentRead(true))
+                    request.tableName(table).key(key(new Key(key, "CONTENT"))).consistentRead(true))
             .item();
     if (item.isEmpty()) {
       throw new IllegalStateException("Missing content: " + identity);
     }
-    byte[] bytes = item.get("body").b().asByteArray();
-    if (bytes.length > 128 * 1024 || !Json.hash(bytes).equals(identity)) {
-      throw new IllegalStateException("Corrupt immutable content");
-    }
-    contentCache.put(key, bytes);
-    return bytes;
+    return verifiedContent(key, identity, item);
   }
 
   @Override
@@ -458,14 +451,18 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
           if (item == null) {
             throw new IllegalStateException("Missing content: " + id);
           }
-          byte[] bytes = item.get("body").b().asByteArray();
-          if (bytes.length > 128 * 1024 || !Json.hash(bytes).equals(id)) {
-            throw new IllegalStateException("Corrupt immutable content");
-          }
-          contentCache.put(contentKey(account, id), bytes);
-          pages.put(id, bytes);
+          pages.put(id, verifiedContent(key.partition(), id, item));
         });
     return Map.copyOf(pages);
+  }
+
+  private byte[] verifiedContent(String key, String identity, Map<String, AttributeValue> item) {
+    byte[] bytes = item.get("body").b().asByteArray();
+    if (bytes.length > MAX_PAGE_BYTES || !Json.hash(bytes).equals(identity)) {
+      throw new IllegalStateException("Corrupt immutable content");
+    }
+    contentCache.put(key, bytes);
+    return bytes;
   }
 
   private static String contentKey(String account, String identity) {
@@ -473,14 +470,15 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
   }
 
   private void rememberContent(Map<String, AttributeValue> item) {
-    contentCache.put(item.get("pk").s(), item.get("body").b().asByteArray());
+    // The cache makes the single owned copy before this SDK request goes out of scope.
+    contentCache.put(item.get("pk").s(), item.get("body").b().asByteArrayUnsafe());
   }
 
   private static List<WriteRequest> contentWrites(String account, Map<String, byte[]> pages) {
     var writes = new ArrayList<WriteRequest>(pages.size());
     pages.forEach(
         (identity, bytes) -> {
-          if (bytes.length > 128 * 1024) {
+          if (bytes.length > MAX_PAGE_BYTES) {
             throw new IllegalArgumentException("Invalid immutable page");
           }
           // Validate the owned SDK snapshot that will be sent and cached.
