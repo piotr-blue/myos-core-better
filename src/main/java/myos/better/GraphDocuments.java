@@ -516,8 +516,7 @@ final class GraphDocuments implements AutoCloseable {
         graphs.incident(account, page, member).stream()
             .filter(e -> member.equals(e.get("source")))
             .sorted(
-                (a, b) ->
-                    CanonicalSnapshots.compare((String) a.get("path"), (String) b.get("path")))
+                (a, b) -> StorageKeyOrder.compare((String) a.get("path"), (String) b.get("path")))
             .toList();
     var window = selected.stream().skip(offset).limit(50).toList();
     var targets = new HashSet<String>();

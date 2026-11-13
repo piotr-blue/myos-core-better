@@ -10,7 +10,7 @@ import java.util.TreeMap;
 /** Deterministic test store with the same conditional publication contract as DynamoDB. */
 final class MemoryStore implements AtomicStore, PublicDirectoryInventory {
   private final Map<Key, Row> records = new HashMap<>();
-  private final NavigableMap<String, Row> publicProfiles = new TreeMap<>();
+  private final NavigableMap<String, Row> publicProfiles = new TreeMap<>(StorageKeyOrder::compare);
   private final Map<String, NavigableMap<String, Row>> partitions = new HashMap<>();
   private final Map<String, NavigableMap<String, Row>> work = new HashMap<>();
 
@@ -81,7 +81,8 @@ final class MemoryStore implements AtomicStore, PublicDirectoryInventory {
       }
     }
     NavigableMap<String, Row> partition =
-        partitions.computeIfAbsent(row.key().partition(), ignored -> new TreeMap<>());
+        partitions.computeIfAbsent(
+            row.key().partition(), ignored -> new TreeMap<>(StorageKeyOrder::compare));
     if (add) {
       partition.put(row.key().sort(), row);
     } else {
@@ -90,19 +91,19 @@ final class MemoryStore implements AtomicStore, PublicDirectoryInventory {
     if (partition.isEmpty()) {
       partitions.remove(row.key().partition());
     }
-    Object shard = row.value().get("work");
-    if (shard != null) {
+    // The DynamoDB work GSI is sparse. Both of its string key attributes must be present.
+    if (row.value().get("work") instanceof String shard
+        && row.value().get("position") instanceof String position) {
       NavigableMap<String, Row> queue =
-          work.computeIfAbsent(shard.toString(), ignored -> new TreeMap<>());
-      String key =
-          row.value().get("position") + "\0" + row.key().partition() + "\0" + row.key().sort();
+          work.computeIfAbsent(shard, ignored -> new TreeMap<>(StorageKeyOrder::compare));
+      String key = position + "\0" + row.key().partition() + "\0" + row.key().sort();
       if (add) {
         queue.put(key, row);
       } else {
         queue.remove(key);
       }
       if (queue.isEmpty()) {
-        work.remove(shard.toString());
+        work.remove(shard);
       }
     }
   }

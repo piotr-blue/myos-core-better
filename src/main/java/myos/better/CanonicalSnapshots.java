@@ -821,13 +821,15 @@ final class CanonicalSnapshots {
     Map<String, Object> wire = new LinkedHashMap<>(object(manifest.get("header")));
     List<Map<String, Object>> documents = new ArrayList<>();
     rows.values(blobs, root(manifest, "documents")).values().forEach(v -> documents.add(object(v)));
-    documents.sort((a, b) -> compare((String) a.get("key"), (String) b.get("key")));
+    documents.sort((a, b) -> StorageKeyOrder.compare((String) a.get("key"), (String) b.get("key")));
     List<Map<String, Object>> edges = new ArrayList<>();
     rows.values(blobs, root(manifest, "edges")).values().forEach(v -> edges.add(object(v)));
     edges.sort(
         (a, b) -> {
-          int source = compare((String) a.get("source"), (String) b.get("source"));
-          return source == 0 ? compare((String) a.get("path"), (String) b.get("path")) : source;
+          int source = StorageKeyOrder.compare((String) a.get("source"), (String) b.get("source"));
+          return source == 0
+              ? StorageKeyOrder.compare((String) a.get("path"), (String) b.get("path"))
+              : source;
         });
     wire.put("documents", documents);
     wire.put("edges", edges);
@@ -1312,19 +1314,5 @@ final class CanonicalSnapshots {
   @SuppressWarnings("unchecked")
   private static Map<String, Object> object(Object value) {
     return (Map<String, Object>) value;
-  }
-
-  /** Canonical graph keys sort by Unicode scalar value, not UTF-16 code units. */
-  static int compare(String left, String right) {
-    for (int l = 0, r = 0; l < left.length() && r < right.length(); ) {
-      int a = left.codePointAt(l), b = right.codePointAt(r);
-      if (a != b) {
-        return Integer.compare(a, b);
-      }
-      l += Character.charCount(a);
-      r += Character.charCount(b);
-    }
-    return Integer.compare(
-        left.codePointCount(0, left.length()), right.codePointCount(0, right.length()));
   }
 }
