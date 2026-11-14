@@ -51,6 +51,7 @@ final class CoreInvitationDelivery implements AutoCloseable {
 
   private boolean started;
   private volatile boolean closed;
+  private boolean providerReleased;
 
   CoreInvitationDelivery(
       AtomicStore store,
@@ -316,20 +317,28 @@ final class CoreInvitationDelivery implements AutoCloseable {
 
   @Override
   public synchronized void close() {
-    if (closed) {
-      return;
-    }
     closed = true;
     worker.shutdownNow();
+    CloseActions.run(this::releaseProvider, this::joinWorker);
+  }
+
+  private void releaseProvider() {
+    if (!providerReleased) {
+      providerReleased = true;
+      release.run();
+    }
+  }
+
+  /** A repeated close must still join after an interrupted or timed-out earlier join. */
+  private void joinWorker() {
     try {
       if (!worker.awaitTermination(20, TimeUnit.SECONDS)) {
-        throw new IllegalStateException("Invitation delivery did not terminate");
+        throw new IllegalStateException("Invitation delivery did not stop");
       }
-    } catch (InterruptedException failure) {
+    } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
-      throw new IllegalStateException(failure);
-    } finally {
-      release.run();
+      throw new IllegalStateException(
+          "Interrupted while stopping invitation delivery", interrupted);
     }
   }
 }

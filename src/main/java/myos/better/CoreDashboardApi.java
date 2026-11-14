@@ -279,22 +279,23 @@ final class CoreDashboardApi {
   }
 
   void close() {
-    bootstrapJobs.close();
-    administrators.close();
-    if (invitationDelivery != null) {
-      invitationDelivery.close();
-    }
-    if (notificationDelivery != null) {
-      notificationDelivery.close();
-    }
-    if (accessImports != null) {
-      accessImports.close();
-    }
-    if (timelines != null) {
-      timelines.close();
-    }
-    webhooks.close();
-    eventProjection.close();
+    CloseActions.run(
+        bootstrapJobs::close,
+        administrators::close,
+        () -> {
+          if (invitationDelivery != null) invitationDelivery.close();
+        },
+        () -> {
+          if (notificationDelivery != null) notificationDelivery.close();
+        },
+        () -> {
+          if (accessImports != null) accessImports.close();
+        },
+        () -> {
+          if (timelines != null) timelines.close();
+        },
+        webhooks::close,
+        eventProjection::close);
   }
 
   String authorize(CoreAccounts.Session session, String selected, String guard) {

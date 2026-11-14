@@ -207,3 +207,16 @@ DynamoDB rows preserve the spelling the writer emitted. A floating-point token k
 The in-process partition and work indexes compare string keys by Unicode scalar value, matching DynamoDB's UTF-8 range order. A row appears in a work queue only when both work-index attributes are strings. Updating or removing either attribute changes its index membership without removing the row itself. [Sparse queue and pagination tests](../src/test/java/myos/better/MemoryPublicationTest.java)
 
 When a host supplies the same Java map or list at several positions in a stored row, the immutable copy shares one private result for that container. The copy walks distinct containers with an explicit stack. Its cache weight includes each parent reference and counts each copied container once. A recursive Java collection fails before any row or index publishes. A cyclic Blue document uses `blueId` member references and does not require a recursive Java collection. [Stored JSON copy](../src/main/java/myos/better/StoredJsonCopy.java) · [Ownership and atomicity tests](../src/test/java/myos/better/StoredJsonCopyTest.java)
+
+## Dashboard worker cancellation
+
+Notification and invitation delivery own their provider client and scheduled worker. Closing marks
+the worker closed, interrupts discovery, releases the provider to cancel pending I/O, and then
+joins the worker. Provider release is attempted once; joining is retried on a later close if a
+previous caller was interrupted or the worker timed out. Interruption preserves the interrupt
+flag and reports failure instead of returning as though the worker had stopped.
+
+Dashboard cleanup attempts every registered stage even after one stage fails. The first failure
+is retained and later failures are suppressed. This ensures cancellation is requested for the
+remaining workers; it does not make uncooperative storage I/O cancellable or permit storage to
+close before a successful worker join. [Blocked-work and failure regressions](../src/test/java/myos/better/DashboardWorkerShutdownTest.java)

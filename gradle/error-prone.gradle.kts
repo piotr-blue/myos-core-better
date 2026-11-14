@@ -31,6 +31,8 @@ tasks.register<JavaCompile>("errorProne") {
         "--add-exports=jdk.compiler/com.sun.tools.javac.$it=ALL-UNNAMED"
     } + listOf("code", "comp").map { "--add-opens=jdk.compiler/com.sun.tools.javac.$it=ALL-UNNAMED" }
     options.compilerArgs.remove("-Werror")
+    // An inventory must include the full source tree, not javac's first 100 warnings.
+    if (reportWarnings.get()) options.compilerArgs.addAll(listOf("-Xmaxwarns", "10000"))
     val warnings = if (reportWarnings.get()) "" else " -XepDisableAllWarnings"
     options.compilerArgs.addAll(listOf("-XDcompilePolicy=simple", "--should-stop=ifError=FLOW",
         "-Xplugin:ErrorProne$warnings -Xep:EqualsUnsafeCast:ERROR -Xep:MutablePublicArray:ERROR -Xep:MissingCasesInEnumSwitch:ERROR -Xep:LockNotBeforeTry:ERROR -Xep:NullAway:ERROR -XepOpt:NullAway:OnlyNullMarked=true"))

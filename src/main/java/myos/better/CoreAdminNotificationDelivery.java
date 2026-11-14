@@ -52,6 +52,7 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
 
   private boolean started;
   private volatile boolean closed;
+  private boolean providerReleased;
 
   CoreAdminNotificationDelivery(AtomicStore store, Clock clock, Sender sender, Runnable release) {
     this.store = Objects.requireNonNull(store);
@@ -286,20 +287,30 @@ final class CoreAdminNotificationDelivery implements AutoCloseable {
     return String.format(Locale.ROOT, "%019d", time);
   }
 
+  @Override
   public synchronized void close() {
-    if (closed) {
-      return;
-    }
     closed = true;
     worker.shutdownNow();
+    CloseActions.run(this::releaseProvider, this::joinWorker);
+  }
+
+  private void releaseProvider() {
+    if (!providerReleased) {
+      providerReleased = true;
+      release.run();
+    }
+  }
+
+  /** A repeated close must still join after an interrupted or timed-out earlier join. */
+  private void joinWorker() {
     try {
       if (!worker.awaitTermination(25, TimeUnit.SECONDS)) {
         throw new IllegalStateException("Notification worker did not stop");
       }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
-    } finally {
-      release.run();
+      throw new IllegalStateException(
+          "Interrupted while stopping notification worker", interrupted);
     }
   }
 }

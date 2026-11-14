@@ -157,3 +157,11 @@ Useful variants include `--cold`, `--rotate-targets`, `--observable-root`,
 `--separate-timelines` and `--direct-creation`. Separate timelines reserve quiet prefixes and
 cannot be combined with rotating targets. Initialization and signed acquisition are reported
 separately from owner processing through idle. This boundary excludes browser and HTTP latency.
+
+## Optional static-analysis inventory
+
+`./gradlew errorProne -PerrorProneWarnings=true` reports the optional Error Prone checks across
+production sources. The diagnostic limit is 10,000 rather than javac's default 100, so an inventory
+is not silently truncated at the first hundred warnings. This review mode does not change the
+selected errors enforced by the normal gate. Investigate warnings against ownership and lifetime
+contracts; a warning count alone is neither a defect count nor a reason to suppress a check.
