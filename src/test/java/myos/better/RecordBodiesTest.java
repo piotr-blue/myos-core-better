@@ -88,6 +88,21 @@ class RecordBodiesTest {
   }
 
   @Test
+  void aDecimalBudgetIncludesTheRenderingTheValueCanRetain() {
+    var decimal = new java.math.BigDecimal("1." + "2".repeat(20_000));
+    var source = Map.<String, Object>of("price", decimal);
+    long before = StoredJsonCopy.of(source).weight();
+    String rendering = decimal.toString();
+    long payload = (decimal.unscaledValue().bitLength() + 7L) / 8L + 2L * rendering.length();
+    assertTrue(before >= payload);
+    assertEquals(before, StoredJsonCopy.of(source).weight());
+    var cache = new RecordBodies(16 * 1024);
+    cache.remember("decimal-with-rendering", source);
+    assertNull(cache.known("decimal-with-rendering"));
+    assertEquals(0, cache.bytes());
+  }
+
+  @Test
   void replacementEvictionAndRemovalConserveRetainedWeightsAtExactCapacity() {
     var terms = Map.of("payment", List.of(Map.of("currency", "EUR", "amount", 20000)));
     var probe = new RecordBodies(100_000);

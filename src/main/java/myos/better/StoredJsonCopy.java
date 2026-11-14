@@ -64,7 +64,10 @@ record StoredJsonCopy(Map<String, Object> value, long weight) {
       } else if (value instanceof java.math.BigInteger integer) {
         weight += 64L + (integer.bitLength() + 7L) / 8L;
       } else if (value instanceof java.math.BigDecimal decimal) {
-        weight += 112L + (decimal.unscaledValue().bitLength() + 7L) / 8L;
+        // A decimal can retain its canonical rendering as well as its magnitude. Eight times
+        // the rounded magnitude allows for both, without allocating text while weighing.
+        long words = (decimal.unscaledValue().bitLength() + 32L) / 32L;
+        weight += 112L + words * Integer.BYTES * 8;
       } else {
         weight += 64;
         if (value instanceof java.util.concurrent.atomic.AtomicInteger n) {

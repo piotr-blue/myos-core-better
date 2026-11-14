@@ -35,6 +35,13 @@ A whole-snapshot write supplies the complete set of member or edge rows. Omittin
 
 The immutable row references support inline JSON, direct content addresses and block manifests for large values. The cache can evict a complete index or body at any time. A cold reader can reconstruct a committed version using its persisted manifest. The storage tests exercise exact historical addresses, prior-release pages, bounded cold lookups and content shared between owners. [Physical row encoding](../src/main/java/myos/better/SnapshotRows.java) · [Previous-release compatibility](../src/test/java/myos/better/PreparationCompatibilityTest.java) · [Snapshot tests](../src/test/java/myos/better/CanonicalSnapshotsTest.java)
 
+Record-cache weights include arbitrary-precision numeric payloads. A decimal's estimate allows
+for both its significand and the canonical text that the JDK may retain after rendering it.
+Weighing does not format the number. An oversized value remains readable but is not cached;
+these estimates are conservative budgets, not exact JVM retained-size measurements.
+[Immutable copy and weight](../src/main/java/myos/better/StoredJsonCopy.java) ·
+[Cache-boundary tests](../src/test/java/myos/better/RecordBodiesTest.java)
+
 An embedded Order's body has its own BlueId. The Agreement also commits to the keys and values in its authored Orders map. Adding a key can change that whole canonical record even when MyOS selects two channels and updates only a few physical index paths. Interpret receiver counts, native execution time, storage time and client observation time separately. [Operations and runtime profiles](OPERATIONS.md)
 
 The earlier document-local experiment has a separate [historical architecture record](HISTORICAL-DOCUMENT-LOCAL-ARCHITECTURE.md). Its outbox model and scale measurements belong to that protocol.
