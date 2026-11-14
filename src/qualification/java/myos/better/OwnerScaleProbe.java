@@ -155,6 +155,7 @@ public final class OwnerScaleProbe {
                       store.statistics())));
           List<Object> calls = new ArrayList<>();
           List<Replay> replays = new ArrayList<>();
+          var replayRecords = new QualificationReplayRecords();
           var inspection = new OwnerStorage(store);
           var prefix = new QualificationSourcePrefix();
           boolean seedSource = directAppend() && Boolean.getBoolean("blue.probe.seedSource");
@@ -335,7 +336,7 @@ public final class OwnerScaleProbe {
                       selectedIndex(n, count),
                       entry,
                       range,
-                      offered,
+                      replayRecords.share(offered),
                       (String) head.value().get("blueId"),
                       (String) actual.get("receipt"),
                       Repository.number(actual.get("gas")),
