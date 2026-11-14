@@ -68,7 +68,7 @@ The local `benchmark` command creates Orders by calling the root Agreement. Its 
 
 The canonical result reports `graphExecutionMillis`, `graphCommitMillis` and `endToEndMillis`. The first measures the interpreter, the second includes the durable call, and the third ends after verifying the root aggregate. The timings include different amounts of work and are all measured per operation. The owner scheduler has a separate oracle-checked `ownerScaleProbe`. [Benchmark source](../src/main/java/myos/better/Scenario.java) · [Multi-payment restart test](../src/test/java/myos/better/ScenarioTest.java)
 
-## Session shutdown
+## Account work discovery
 
 Account timer and gas-recovery discovery retains at most one 32-row index page. Its cursor and
 position belong to the single discovery worker. When both account-processing slots are occupied,
@@ -78,6 +78,8 @@ the end starts another sweep. An account that remains continuously ready therefo
 discovery to restart at the front of the index. Workers still re-read durable state and obtain the
 ordinary publication fences before processing. [Bounded account discovery](../src/main/java/myos/better/OwnerWorkRunner.java)
 · [Multi-page fairness and retry tests](../src/test/java/myos/better/OwnerWorkRunnerTest.java)
+
+## Session shutdown
 
 An acquiring document holds its document lock while the host measures and opens its checkpoint outside the cache lock. The cache records that load before releasing its metadata lock. Shutdown refuses while a load or a pinned execution is active, so a failed shutdown leaves the existing sessions usable. Once close succeeds, a new acquisition fails before it opens resources. Closing a lease drops its entry reference. The released lease can no longer hand out an execution or publish a version after another caller has acquired the entry. Child sessions prepared before shutdown are disposed if their handoff arrives after close. [Session cache](../src/main/java/myos/better/SessionCache.java) · [Deterministic shutdown regression](../src/test/java/myos/better/SessionCacheTest.java)
 

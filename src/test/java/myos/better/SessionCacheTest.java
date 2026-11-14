@@ -20,6 +20,7 @@ class SessionCacheTest {
   @Test
   void versionMismatchAndHistoryRenewalReloadWhileReadLeasesDoNotAgeTheSession() {
     AtomicInteger loads = new AtomicInteger();
+    var original = runtime.openYaml("counter: 1");
     try (SessionCache cache = new SessionCache(new SessionCache.Policy(2, 64L * 1024 * 1024, 2))) {
       try (var lease =
           cache.acquire(
@@ -28,7 +29,7 @@ class SessionCacheTest {
               () -> 0,
               () -> {
                 loads.incrementAndGet();
-                return runtime.openYaml("counter: 1");
+                return original;
               })) {
         lease.published(1);
       }
@@ -52,6 +53,8 @@ class SessionCacheTest {
         assertEquals(BigInteger.TWO, lease.session().read("/counter"));
         lease.published(2);
       }
+      assertThrows(IllegalStateException.class, () -> original.read("/counter"));
+      assertEquals(2L * 1024 * 1024, cache.statistics().get("estimatedBytes"));
       try (var lease =
           cache.acquire(
               "a",
@@ -64,6 +67,12 @@ class SessionCacheTest {
       }
       assertNull(cache.readIfPresent("a", 2), "Mutation history renews at its configured bound");
       assertEquals(2, loads.get());
+      assertEquals(0L, cache.statistics().get("estimatedBytes"));
+      assertEquals(0L, cache.statistics().get("residentEntries"));
+      assertEquals(2L, cache.statistics().get("loads"));
+      assertEquals(1L, cache.statistics().get("hits"));
+      assertEquals(1L, cache.statistics().get("versionMisses"));
+      assertEquals(1L, cache.statistics().get("historyRenewals"));
     }
   }
 
@@ -86,12 +95,14 @@ class SessionCacheTest {
 
   @Test
   void initializedChildrenEnterTheCacheOnlyAfterConfirmedPublication() {
-    try (SessionCache cache = new SessionCache();
-        SessionCache.Pending pending = cache.pending()) {
+    try (SessionCache cache = new SessionCache()) {
       CanonicalRuntime.Session child = runtime.openYaml("counter: 7");
-      pending.retain("alice/child", 1, child, 0);
-      assertNull(cache.readIfPresent("alice/child", 1));
-      pending.published();
+      try (SessionCache.Pending pending = cache.pending()) {
+        pending.retain("alice/child", 1, child, 0);
+        assertNull(cache.readIfPresent("alice/child", 1));
+        pending.published();
+      }
+      // Closing the completed handoff must not close the cache's newly owned session.
       try (var lease = cache.readIfPresent("alice/child", 1)) {
         assertNotNull(lease);
         assertSame(child, lease.session());
@@ -363,8 +374,83 @@ class SessionCacheTest {
 
   @Test
   void invalidBoundsAreRejectedBeforeOpeningAnySession() {
+    assertEquals(1, new SessionCache.Policy(1, 1, 1).maximumEntries());
+    var maximum = new SessionCache.Policy(10_000, 2L * 1024 * 1024 * 1024, 1024);
+    assertEquals(10_000, maximum.maximumEntries());
+    assertEquals(2L * 1024 * 1024 * 1024, maximum.maximumBytes());
+    assertEquals(1024, maximum.maximumUses());
     assertThrows(IllegalArgumentException.class, () -> new SessionCache.Policy(0, 1024, 32));
     assertThrows(IllegalArgumentException.class, () -> new SessionCache.Policy(1, 0, 32));
     assertThrows(IllegalArgumentException.class, () -> new SessionCache.Policy(1, 1024, 0));
+    assertThrows(IllegalArgumentException.class, () -> new SessionCache.Policy(10_001, 1024, 32));
+    assertThrows(
+        IllegalArgumentException.class,
+        () -> new SessionCache.Policy(1, 2L * 1024 * 1024 * 1024 + 1, 32));
+    assertThrows(IllegalArgumentException.class, () -> new SessionCache.Policy(1, 1024, 1025));
+  }
+
+  @Test
+  void uncertainPublicationDiscardsTheSessionAndReloadsTheDurableVersion() {
+    try (var cache = new SessionCache()) {
+      var uncertain = runtime.openYaml("counter: 13");
+      try (var lease = cache.acquire("order", 7, () -> 0, () -> uncertain)) {
+        assertEquals(BigInteger.valueOf(13), lease.session().read("/counter"));
+        // The storage reply was lost: neither published nor unchanged is safe to assert.
+      }
+      assertThrows(IllegalStateException.class, () -> uncertain.read("/counter"));
+      assertNull(cache.readIfPresent("order", 7));
+      assertEquals(1L, cache.statistics().get("abandoned"));
+      assertEquals(0L, cache.statistics().get("estimatedBytes"));
+      try (var recovered =
+          cache.acquire("order", 7, () -> 0, () -> runtime.openYaml("counter: 7"))) {
+        assertEquals(BigInteger.valueOf(7), recovered.session().read("/counter"));
+        recovered.unchanged();
+      }
+      assertEquals(2L, cache.statistics().get("loads"));
+      assertEquals(0L, cache.statistics().get("hits"));
+    }
+  }
+
+  @Test
+  void explicitInvalidationClosesOnlyAnIdleSessionAndIsIdempotent() {
+    try (var cache = new SessionCache()) {
+      var session = runtime.openYaml("counter: 7");
+      try (var lease = cache.acquire("order", 1, () -> 0, () -> session)) {
+        assertThrows(IllegalStateException.class, () -> cache.invalidate("order"));
+        assertEquals(BigInteger.valueOf(7), lease.session().read("/counter"));
+        lease.unchanged();
+      }
+      cache.invalidate("absent");
+      assertEquals(1L, cache.statistics().get("residentEntries"));
+      cache.invalidate("order");
+      cache.invalidate("order");
+      assertThrows(IllegalStateException.class, () -> session.read("/counter"));
+      assertNull(cache.readIfPresent("order", 1));
+      assertEquals(0L, cache.statistics().get("residentEntries"));
+      assertEquals(0L, cache.statistics().get("estimatedBytes"));
+    }
+  }
+
+  @Test
+  void exactlyOneEntryFitsAnEntryLimitedCache() {
+    try (var cache = new SessionCache(new SessionCache.Policy(1, 64L * 1024 * 1024, 32))) {
+      var first = runtime.openYaml("counter: 1");
+      try (var lease = cache.acquire("first", 1, () -> 0, () -> first)) {
+        lease.unchanged();
+      }
+      try (var lease = cache.readIfPresent("first", 1)) {
+        assertNotNull(lease);
+        assertSame(first, lease.session());
+        lease.unchanged();
+      }
+      assertEquals(0L, cache.statistics().get("capacityEvictions"));
+      try (var lease = cache.acquire("second", 1, () -> 0, () -> runtime.openYaml("counter: 2"))) {
+        assertThrows(IllegalStateException.class, () -> first.read("/counter"));
+        lease.unchanged();
+      }
+      assertNull(cache.readIfPresent("first", 1));
+      assertEquals(1L, cache.statistics().get("residentEntries"));
+      assertEquals(1L, cache.statistics().get("capacityEvictions"));
+    }
   }
 }
