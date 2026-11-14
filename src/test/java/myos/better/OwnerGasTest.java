@@ -130,6 +130,7 @@ class OwnerGasTest {
       assertEquals(100, f.amount("balance"));
       f.write(tx -> f.gas.settle(tx, first, 25, "APPLIED", "receipt-a", "publication-a"));
       assertEquals(25, f.amount("spent"));
+      assertEquals(75, f.amount("balance"));
       assertEquals(0, f.amount("reserved"));
       assertNull(f.authorize(request("b", "claim-2", 80, 1000)).permit());
       f.write(tx -> f.gas.credit(tx, "top-up", 5, "operator", "test"));
@@ -270,6 +271,9 @@ class OwnerGasTest {
       assertNull(f.authorize(request("large", "claim", 10, 1000)).permit());
       assertNull(f.authorize(request("small", "claim", 5, 1000)).permit());
       assertTrue(f.gas.runnableWaiters(f.frontiers.metadata.begin(), 64).isEmpty());
+      assertNull(
+          f.authorize(request("small", "claim", 5, 1000)).permit(),
+          "A smaller request cannot overtake an unfunded earlier waiter");
       f.write(tx -> f.gas.forgetWaiter(tx, "large"));
       assertEquals(List.of("small"), f.gas.runnableWaiters(f.frontiers.metadata.begin(), 64));
     }
@@ -330,6 +334,115 @@ class OwnerGasTest {
           IllegalStateException.class, () -> foreign.expired(f.frontiers.metadata.begin(), 0, 64));
       assertThrows(IllegalStateException.class, () -> f.write(tx -> foreign.forgetWaiter(tx, "a")));
       assertFalse(foreign.enabled(new OwnerMetadata(f.store, "bob").begin()));
+    }
+  }
+
+  @Test
+  void runnableHintsDeductEarlierBudgetsAndRejoiningAQueueLosesItsOldPosition() {
+    try (var f = new Fixture(0)) {
+      for (String owner : List.of("first", "second", "third")) {
+        assertNull(f.authorize(request(owner, "claim", 40, 1000)).permit());
+      }
+      f.write(tx -> f.gas.credit(tx, "fund", 80, "operator", "test"));
+      assertEquals(
+          List.of("first", "second"), f.gas.runnableWaiters(f.frontiers.metadata.begin(), 64));
+      f.write(tx -> f.gas.forgetWaiter(tx, "first"));
+      assertNull(f.authorize(request("first", "new-claim", 40, 1000)).permit());
+      assertEquals(
+          List.of("second", "third"), f.gas.runnableWaiters(f.frontiers.metadata.begin(), 64));
+    }
+  }
+
+  @ParameterizedTest
+  @ValueSource(longs = {0, 80})
+  void settlementAcceptsBothUsageEndpointsAndSignalsOnlyReleasedCapacity(long usage) {
+    try (var f = new Fixture(100)) {
+      var permit = f.authorize(request("owner", "claim", 80, 0)).permit();
+      long beforeGeneration = f.amount("generation");
+      f.write(tx -> f.gas.settle(tx, permit, usage, "APPLIED", "receipt", "application"));
+      assertEquals(usage, f.amount("spent"));
+      assertEquals(100 - usage, f.amount("balance"));
+      assertEquals(100 - usage, f.amount("available"));
+      assertEquals(0, f.amount("reserved"));
+      assertEquals(beforeGeneration + (usage < 80 ? 1 : 0), f.amount("generation"));
+    }
+  }
+
+  @Test
+  void overchargingAndForgedReleaseCannotChangeTheReservedLiability() {
+    try (var f = new Fixture(100)) {
+      var permit = f.authorize(request("owner", "claim", 80, 1000)).permit();
+      for (long invalidUsage : List.of(-1L, 81L)) {
+        assertThrows(
+            IllegalArgumentException.class,
+            () ->
+                f.write(
+                    tx ->
+                        f.gas.settle(
+                            tx, permit, invalidUsage, "APPLIED", "receipt", "application")));
+      }
+      var forged =
+          new OwnerGas.Permit(
+              permit.evaluation(), permit.reservation(), request("owner", "claim", 1, 1000));
+      assertEquals(
+          "gas_claim_superseded",
+          assertThrows(ConsoleProblem.class, () -> f.write(tx -> f.gas.release(tx, forged))).code);
+      assertEquals(80, f.amount("reserved"));
+      assertEquals(0, f.amount("spent"));
+      assertEquals(20, f.amount("available"));
+    }
+  }
+
+  @Test
+  void oneNativePublicationCannotSettleTwoDifferentObligations() {
+    try (var f = new Fixture(100)) {
+      var first = f.authorize(request("first", "claim", 40, 1000)).permit();
+      var second = f.authorize(request("second", "claim", 40, 1000)).permit();
+      f.write(tx -> f.gas.settle(tx, first, 10, "APPLIED", "receipt", "one-application"));
+      assertEquals(
+          "gas_application_conflict",
+          assertThrows(
+                  ConsoleProblem.class,
+                  () ->
+                      f.write(
+                          tx ->
+                              f.gas.settle(
+                                  tx, second, 10, "APPLIED", "receipt", "one-application")))
+              .code);
+      assertEquals(10, f.amount("spent"));
+      assertEquals(40, f.amount("reserved"));
+      assertEquals(50, f.amount("available"));
+    }
+  }
+
+  @Test
+  void invalidBoundsAndIdentifiersFailBeforeChangingLedgerState() {
+    try (var f = new Fixture(100)) {
+      for (long amount : List.of(0L, OwnerGas.MAX_INVOCATION + 1)) {
+        assertThrows(IllegalArgumentException.class, () -> request("owner", "claim", amount, 0));
+      }
+      assertThrows(IllegalArgumentException.class, () -> request("owner", "claim", 1, -1));
+      assertNotNull(request("owner", "claim", OwnerGas.MAX_INVOCATION, 0));
+      for (int limit : List.of(0, 65)) {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> f.gas.expired(f.frontiers.metadata.begin(), 0, limit));
+      }
+      assertTrue(f.gas.expired(f.frontiers.metadata.begin(), 0, 1).isEmpty());
+      assertThrows(
+          IllegalArgumentException.class,
+          () -> f.write(tx -> f.gas.credit(tx, "zero", 0, "operator", "test")));
+      for (String invalid : List.of("", "\0prefix", "embedded\0nul")) {
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> f.write(tx -> f.gas.credit(tx, invalid, 1, "operator", "test")));
+        assertThrows(
+            IllegalArgumentException.class,
+            () -> f.write(tx -> f.gas.credit(tx, "credit", 1, invalid, "test")));
+        assertThrows(IllegalArgumentException.class, () -> request(invalid, "claim", 1, 0));
+      }
+      assertEquals(100, f.amount("available"));
+      assertEquals(0, f.amount("generation"));
     }
   }
 
