@@ -37,6 +37,6 @@ python3 scripts/qualify_owners.py --orders 1,1000,10000 --samples 20 \
 
 If any selected size exceeds 1,024 Orders, every size in that invocation uses the same larger
 worker, 8 GiB JVM heap, 12 GiB process-memory limit and four-CPU quota. Smaller invocations use
-1 GiB heap and two CPUs. Compare within a recorded environment; do not combine these timings
+1 GiB heap and two CPUs. Both tiers select G1 explicitly and verify the actual usable heap. Compare within a recorded environment; do not combine these timings
 with a separate two-CPU run. The launcher records the catalogue mode and executable hashes.
 Initialization, signed source acquisition and durable owner processing remain separate metrics.

@@ -37,6 +37,7 @@ skipping an unproven predecessor.
 
 | Task | Guide |
 | --- | --- |
+| Review ownership, trust and failure contracts | [Invariant map](INVARIANTS.md) |
 | Build and review conventions | [Contributing](../CONTRIBUTING.md) |
 | Find the suite responsible for an invariant | [Testing](TESTING.md) |
 | Check API compatibility | [API baseline and checker](../api/README.md) |
