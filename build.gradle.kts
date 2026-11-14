@@ -91,7 +91,7 @@ tasks.register("resolveDependencies") {
     doLast { configurations.filter { it.isCanBeResolved }.forEach { it.resolve() } }
 }
 
-val javaSources = fileTree("src") { include("**/*.java") }
+val javaSources = files(fileTree("src") { include("**/*.java") }, fileTree("tools") { include("*.java") })
 for (taskName in listOf("format", "checkFormat")) {
     tasks.register<JavaExec>(taskName) {
         group = if (taskName == "format") "formatting" else "verification"
@@ -247,14 +247,32 @@ apply(from = "gradle/mutation.gradle.kts")
 apply(from = "gradle/error-prone.gradle.kts")
 
 // Fail when a public/protected declaration, JVM descriptor or constant changes.
+val compileApiTools = tasks.register<JavaCompile>("compileApiTools") {
+    source(fileTree("tools") { include("*.java") })
+    classpath = files()
+    destinationDirectory.set(layout.buildDirectory.dir("classes/apiTools"))
+    javaCompiler.set(javaToolchains.compilerFor { languageVersion.set(JavaLanguageVersion.of(25)) })
+}
 val checkApi = tasks.register<JavaExec>("checkApi") {
     group = "verification"
-    dependsOn(tasks.jar)
+    dependsOn(tasks.jar, compileApiTools)
     javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) })
-    mainClass.set(layout.projectDirectory.file("tools/CheckApi.java").asFile.absolutePath)
+    classpath = files(compileApiTools.flatMap { it.destinationDirectory })
+    mainClass.set("CheckApi")
     args(tasks.jar.flatMap { it.archiveFile }.get().asFile.absolutePath,
          layout.projectDirectory.file("api/public-api.txt").asFile.absolutePath)
     inputs.file("tools/CheckApi.java")
     inputs.file("api/public-api.txt")
 }
-tasks.check { dependsOn(checkApi) }
+val testApiChecker = tasks.register<JavaExec>("testApiChecker") {
+    group = "verification"
+    description = "Compile independent fixtures to check the compatibility guard itself."
+    javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) })
+    dependsOn(compileApiTools)
+    classpath = files(compileApiTools.flatMap { it.destinationDirectory })
+    mainClass.set("CheckApiTest")
+    args(layout.buildDirectory.dir("api-checker-test").get().asFile.absolutePath)
+    inputs.files("tools/CheckApi.java", "tools/CheckApiTest.java")
+    mustRunAfter("format")
+}
+tasks.check { dependsOn(checkApi, testApiChecker) }
