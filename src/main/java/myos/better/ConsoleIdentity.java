@@ -14,6 +14,9 @@ import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import java.io.Closeable;
 import java.net.URI;
+import java.time.Clock;
+import java.util.Date;
+import java.util.Objects;
 import java.util.Set;
 
 /** Cognito ID-token verification adapted from MyOS Core's Nimbus-based Identity implementation. */
@@ -36,12 +39,22 @@ final class ConsoleIdentity implements AutoCloseable {
   }
 
   ConsoleIdentity(String issuer, String client, JWKSource<SecurityContext> keys) {
+    this(issuer, client, keys, Clock.systemUTC());
+  }
+
+  ConsoleIdentity(String issuer, String client, JWKSource<SecurityContext> keys, Clock clock) {
+    Objects.requireNonNull(clock);
     this.keys = keys;
     claims =
         new DefaultJWTClaimsVerifier<>(
             client,
             new JWTClaimsSet.Builder().issuer(issuer).claim("token_use", "id").build(),
-            Set.of("sub", "exp", "email", "email_verified"));
+            Set.of("sub", "exp", "email", "email_verified")) {
+          @Override
+          protected Date currentTime() {
+            return Date.from(clock.instant());
+          }
+        };
     claims.setMaxClockSkew(0);
     processor.setJWSKeySelector(new JWSVerificationKeySelector<>(JWSAlgorithm.RS256, keys));
     processor.setJWTClaimsSetVerifier(claims);

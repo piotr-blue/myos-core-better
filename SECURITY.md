@@ -6,6 +6,12 @@ with authorization. Account membership, reader access and business-channel admis
 each pass their existing checks. Native handlers and operator-selected packages are trusted
 configuration; document-authored code does not become Java code.
 
+Identity verification checks claim shape and scope before contacting the signing-key provider,
+then rechecks validity after signature verification. A token can expire while key retrieval is
+in flight. Both checks use the same clock policy, with a controllable clock for deterministic
+tests. Secret-custody reads pin the exact ARN and version; malformed creation replies may be
+retried against the established immutable key but cannot authorize replacing it.
+
 Private rows and immutable pages remain account scoped. The shared public catalogue contains
 only validated operator-installed package definitions. Its reserved storage scope is not a
 valid tenant ID. Public byte availability never grants timeline access or permission to

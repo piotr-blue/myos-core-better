@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import org.junit.jupiter.api.Test;
 import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
 import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
@@ -87,10 +88,17 @@ class SigningSecretTest {
 
   @Test
   void anotherVersionNeverSuppliesSigningMaterial() {
-    Source source = new Source();
-    source.value = source.value.toBuilder().versionId("b".repeat(64)).build();
-    assertThrows(IllegalStateException.class, () -> SigningSecret.read(REFERENCE, source.client));
-    assertEquals(1, source.requests.size());
+    for (UnaryOperator<GetSecretValueResponse> corrupt :
+        List.<UnaryOperator<GetSecretValueResponse>>of(
+            value -> value.toBuilder().versionId("b".repeat(64)).build(),
+            value -> value.toBuilder().arn(REFERENCE.arn() + "-different").build(),
+            value -> value.toBuilder().arn((String) null).build(),
+            value -> value.toBuilder().versionId((String) null).build())) {
+      Source source = new Source();
+      source.value = corrupt.apply(source.value);
+      assertThrows(IllegalStateException.class, () -> SigningSecret.read(REFERENCE, source.client));
+      assertEquals(1, source.requests.size());
+    }
   }
 
   @Test
