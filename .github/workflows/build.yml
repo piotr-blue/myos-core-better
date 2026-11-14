@@ -41,6 +41,9 @@ jobs:
       - name: Verify line and branch coverage
         working-directory: myos-core-better
         run: ./gradlew jacocoTestCoverageVerification
+      - name: Bound allocation after unrelated JSON names
+        working-directory: myos-core-better
+        run: ./gradlew jsonReadAllocationProbe
       - name: Upload test report
         if: failure()
         uses: actions/upload-artifact@v4

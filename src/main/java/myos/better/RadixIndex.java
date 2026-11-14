@@ -338,16 +338,12 @@ final class RadixIndex<V> {
     if (!Json.hash(bytes).equals(root)) {
       throw new IllegalStateException("Corrupt index content");
     }
-    try {
-      Page<V> page = Json.MAPPER.readValue(bytes, pageType);
-      remember(root, page, bytes.length);
-      if (immutableValues && maximumCacheBytes > 0) {
-        store.indexPage(root, (Page<String>) page, bytes.length);
-      }
-      return page;
-    } catch (java.io.IOException failure) {
-      throw new java.io.UncheckedIOException(failure);
+    Page<V> page = Json.read(bytes, pageType);
+    remember(root, page, bytes.length);
+    if (immutableValues && maximumCacheBytes > 0) {
+      store.indexPage(root, (Page<String>) page, bytes.length);
     }
+    return page;
   }
 
   /**

@@ -72,15 +72,11 @@ final class DynamoRecordCodec {
   }
 
   static Map<String, Object> decode(byte[] encoded) {
-    try {
-      Map<String, Object> value = READER.readValue(decompress(encoded));
-      if (value == null) {
-        throw new IllegalArgumentException("JSON object required");
-      }
-      return value;
-    } catch (IOException error) {
-      throw new UncheckedIOException(error);
+    Map<String, Object> value = Json.read(decompress(encoded), READER);
+    if (value == null) {
+      throw new IllegalArgumentException("JSON object required");
     }
+    return value;
   }
 
   private static byte[] compress(byte[] value) {

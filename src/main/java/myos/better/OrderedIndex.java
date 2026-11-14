@@ -1,6 +1,5 @@
 package myos.better;
 
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -297,14 +296,10 @@ final class OrderedIndex {
     if (!Json.hash(bytes).equals(identity)) {
       throw new IllegalStateException("Corrupt ordered index");
     }
-    try {
-      Page page = Json.MAPPER.readValue(bytes, Page.class);
-      remember(identity, page, bytes.length);
-      store.orderedPage(identity, page, bytes.length);
-      return page;
-    } catch (java.io.IOException error) {
-      throw new UncheckedIOException(error);
-    }
+    Page page = Json.read(bytes, Page.class);
+    remember(identity, page, bytes.length);
+    store.orderedPage(identity, page, bytes.length);
+    return page;
   }
 
   private void remember(String identity, Page page, int bytes) {

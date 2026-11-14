@@ -144,6 +144,14 @@ tasks.register<Jar>("qualificationJar") {
 }
 tasks.named("check") { dependsOn(qualification.classesTaskName) }
 
+tasks.register<JavaExec>("jsonReadAllocationProbe") {
+    group = "verification"
+    description = "Bound small-read allocation after high-cardinality JSON field names in a fresh JVM."
+    classpath = qualification.runtimeClasspath
+    mainClass.set("myos.better.JsonReadAllocationProbe")
+    maxHeapSize = "128m"
+}
+
 tasks.register<JavaExec>("canonicalGraphProbe") {
     group = "verification"
     description = "Bounded inline-versus-durable canonical graph qualification."

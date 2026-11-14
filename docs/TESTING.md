@@ -70,6 +70,13 @@ regression checks that a child update still leaves preparation available for the
 
 ## Measurements
 
+`./gradlew jsonReadAllocationProbe` runs a dedicated 128 MiB JVM. It reads 4,000 unrelated
+content-addressed field names, then measures the thread allocation of 64 tiny reads. The 32 KiB
+per-read ceiling catches symbol-table copying that would make each read inherit the vocabulary of
+earlier documents. This is an allocation bound for that fixed input, not a wall-clock threshold or
+a global memory limit. CI runs it separately from the ordinary suite; `JsonReadTest` protects
+strict decoding, reader constraints, exact numbers and concurrent use of the shared deserializers.
+
 Qualification source is under `src/qualification`; it is compiled by `check`, packaged separately
 by `qualificationJar`, and never executed by a normal build. Live tools are explicit and require
 an isolated account, artifact pinning, a bounded run and the deployment coordinator's window.

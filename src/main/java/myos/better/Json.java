@@ -2,7 +2,9 @@ package myos.better;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JavaType;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.ObjectReader;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -34,8 +36,23 @@ final class Json {
   }
 
   static <T> T read(byte[] bytes, Class<T> type) {
-    try {
-      return MAPPER.readValue(bytes, type);
+    return read(bytes, MAPPER.readerFor(type));
+  }
+
+  static <T> T read(byte[] bytes, JavaType type) {
+    return read(bytes, MAPPER.readerFor(type));
+  }
+
+  /**
+   * Share deserializers and buffer recycling, but keep field-name symbols local to this read.
+   * Content-addressed page keys have high cardinality: sharing those symbols makes a small later
+   * read copy tables grown by unrelated documents. A factory copy preserves the strict byte parser
+   * and constraints; disabling canonicalization instead would select a different decoding path.
+   */
+  static <T> T read(byte[] bytes, ObjectReader reader) {
+    var factory = reader.getFactory();
+    try (var parser = factory.copy().setCodec(factory.getCodec()).createParser(bytes)) {
+      return reader.readValue(parser);
     } catch (IOException e) {
       throw new UncheckedIOException(e);
     }

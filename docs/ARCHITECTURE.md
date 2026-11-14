@@ -164,6 +164,15 @@ A subscription takes effect at a committed source generation. An event transacti
 
 ## In-process publication
 
+Each byte-backed JSON read owns its field-name symbol table. The immutable `ObjectReader`, typed
+deserializers and recyclable buffers remain shared. Storage pages contain many distinct content
+identities as field names; retaining them in one parser factory made later small reads copy a much
+larger table. `Json.read` copies the factory configuration for each parser, preserving the byte
+decoder, duplicate rejection and the caller's numeric and structural constraints. It does not turn
+off canonicalization globally, which would select Jackson's character-decoding fallback for byte
+input. Encoding and content identities are unchanged. [Parser contracts](../src/test/java/myos/better/JsonReadTest.java)
+· [Allocation regression](../src/qualification/java/myos/better/JsonReadAllocationProbe.java)
+
 A successful conditional publication establishes an immutable version, including nested lists and map values. The in-memory store takes ownership of each body before updating any row or index in the transaction. Mutating an authored collection after commit cannot change the published version, and an invalid later item cannot partially commit an earlier one. Embedding layout uses the same two persisted fields in local and DynamoDB records. [Publication regressions](../src/test/java/myos/better/MemoryPublicationTest.java)
 
 ## Decimal request recovery
