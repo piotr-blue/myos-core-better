@@ -1,6 +1,6 @@
 # MyOS Core Better
 
-[Architecture and design decisions](docs/ARCHITECTURE.md) · [10 November qualification report](docs/polish-2026-11-10/REPORT.md)
+[Architecture and design decisions](docs/ARCHITECTURE.md) · [Documentation map](docs/README.md) · [10 November qualification report](docs/polish-2026-11-10/REPORT.md)
 
 A MyOS-compatible console and API backed by `blue-java-better` and DynamoDB. Authored documents
 use the published Blue Language, BEX, Contracts and Coordination packages. The host adds durable
@@ -12,7 +12,8 @@ canonical preview is [available here](https://d2buikczdox1rt.cloudfront.net). It
 sign-in pool and uses isolated document storage. Existing accounts can sign in; documents from the
 older deployment have not been silently migrated. The older deployment and histories remain intact.
 
-The current implementation and measurement report is [here](docs/semantic-release-2026-11-10/REPORT.md).
+The [10 November implementation and measurement report](docs/semantic-release-2026-11-10/REPORT.md)
+is a dated snapshot. Use the [documentation map](docs/README.md) for maintained guides and known gaps.
 
 For release and runtime commands, use the [current operations guide](docs/OPERATIONS.md).
 

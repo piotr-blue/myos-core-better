@@ -1,4 +1,9 @@
-# MyOS Better console
+# Historical MyOS Better console
+
+This page records the earlier document-local preview and its separate identity pool. Its deployment
+URL and capability limits are historical. For the maintained canonical service, use the
+[preview walkthrough](canonical-preview.md), [operations guide](OPERATIONS.md) and
+[current functional coverage](FUNCTIONAL-PARITY.md).
 
 The isolated console uses the existing MyOS Core layout, document viewer, dialogs, data table,
 fonts and styling. `core-ui/REUSE.json` records the imported component hashes. Its document screens

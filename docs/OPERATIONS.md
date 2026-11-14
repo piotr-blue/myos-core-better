@@ -14,15 +14,18 @@ release artifacts and qualification outputs. CloudFront serves the preview origi
 sign-in. Existing provider, reader and webhook signing custody remains in Secrets Manager. The
 application uses the instance role. Developer credentials are never placed in a deployment bundle.
 
-Authored documents use the pinned Blue packages. `console-native` selects the supported capabilities
-needed by the console. `MYOS_OWNERS_FAST=true` independently schedules canonical owners; it is a
+Authored documents use pinned Blue packages. `console-deployed` preserves the 41 package entries
+and exact archive hashes installed on this preview; `infra/runtime-catalogue.lock.json` verifies
+them. The smaller `console-native` example profile selects a different package set and is not the
+profile for updating this deployment. `MYOS_OWNERS_FAST=true` independently schedules canonical owners; it is a
 host-storage choice, not another document language or gas policy. New histories use
 `contracts-semantic-gas`. Incompatible experimental histories need explicit replay.
 
 Static owner updates restore the causal members and consume historical child results. Structural
 changes still have a conservative graph-wide fallback. Established cyclic-unit migration and
-production high availability remain incomplete. See the [current qualification report](polish-2026-11-10/REPORT.md)
-for precise correctness, measurement and deployment boundaries.
+production high availability remain incomplete. See the [architecture](ARCHITECTURE.md), [readiness decisions](PRODUCTION-READINESS.md) and
+[measurement rules](TESTING.md#measurements) for current boundaries. The
+[10 November qualification report](polish-2026-11-10/REPORT.md) is a historical measurement.
 
 ## Credentials and local operator access
 
@@ -67,7 +70,8 @@ Build and tests use local fixtures; they do not deploy or modify AWS.
 Coordinate exclusive access with any active benchmark first. The compatible update command is:
 
 ```sh
-python3 scripts/deploy.py --console --runtime-profile console-native --independent-owners \
+python3 scripts/deploy.py --console --runtime-profile console-deployed --independent-owners \
+  --public-definitions \
   --stack myos-better-canonical-20261108 \
   --console-stack myos-better-canonical-console-20261108 \
   --provider-manifest infra/canonical-preview-provider.json \
@@ -76,6 +80,11 @@ python3 scripts/deploy.py --console --runtime-profile console-native --independe
   --projections bounded --workers 2 \
   --session-entries 64 --session-mib 128 --session-uses 32
 ```
+
+This preview already runs a compatible public-definition reader and has public catalogue roots.
+Keep `--public-definitions` enabled on routine updates. The [catalogue rollout guide](PUBLIC-DEFINITIONS.md#rollout-and-rollback)
+describes first installation and the compatible rollback boundary; a binary predating that reader
+cannot restore these roots.
 
 The distribution is content-addressed and verified on the instance. Deployment acquires the service
 lock, retains the previous healthy release, updates the service and checks health. Failure triggers

@@ -28,8 +28,8 @@ if not re.fullmatch(r'myos-better-(?:canonical-)?console-[0-9]{8}', args.console
     parser.error('Deployment must target an explicitly isolated Better console stack')
 if not re.fullmatch(r'myos-better-reader-[a-z0-9-]{1,64}-', args.reader_prefix):
     parser.error('Invalid reader custody prefix')
-if args.runtime_profile in ('console-native', 'console-deployed') and not args.console: parser.error('The console-native profile requires --console')
-if args.independent_owners and args.runtime_profile not in ('console-native', 'console-deployed'): parser.error('Independent owners require --runtime-profile console-native')
+if args.runtime_profile in ('console-native', 'console-deployed') and not args.console: parser.error('Console runtime profiles require --console')
+if args.independent_owners and args.runtime_profile not in ('console-native', 'console-deployed'): parser.error('Independent owners require a console-native or console-deployed runtime profile')
 if not 1 <= args.workers <= 32: parser.error('Worker count must be 1..32')
 if not (1 <= args.session_entries <= 10000 and 1 <= args.session_mib <= 1024 and 1 <= args.session_uses <= 1024):
     parser.error('Invalid session cache bounds for the 2 GiB deployment heap')
