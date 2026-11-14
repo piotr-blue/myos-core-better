@@ -245,3 +245,16 @@ tasks.register<Test>("idleGrowth") {
 apply(from = "gradle/mutation.gradle.kts")
 
 apply(from = "gradle/error-prone.gradle.kts")
+
+// Fail when a public/protected declaration, JVM descriptor or constant changes.
+val checkApi = tasks.register<JavaExec>("checkApi") {
+    group = "verification"
+    dependsOn(tasks.jar)
+    javaLauncher.set(javaToolchains.launcherFor { languageVersion.set(JavaLanguageVersion.of(25)) })
+    mainClass.set(layout.projectDirectory.file("tools/CheckApi.java").asFile.absolutePath)
+    args(tasks.jar.flatMap { it.archiveFile }.get().asFile.absolutePath,
+         layout.projectDirectory.file("api/public-api.txt").asFile.absolutePath)
+    inputs.file("tools/CheckApi.java")
+    inputs.file("api/public-api.txt")
+}
+tasks.check { dependsOn(checkApi) }

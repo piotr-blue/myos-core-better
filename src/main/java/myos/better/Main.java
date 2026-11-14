@@ -70,6 +70,9 @@ public final class Main {
               combineAcknowledgements,
               configured.admissionNamespace(),
               configured.timelines().orElse(null));
+      if (PublicDefinitions.enabled()) {
+        configured.timelines().ifPresent(TimelineService::preparePublicDefinitions);
+      }
     } catch (RuntimeException | Error failure) {
       try {
         store.close();

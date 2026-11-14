@@ -10,13 +10,10 @@ import blue.BlueId;
 import blue.LanguageRecord;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
-import java.util.List;
-import java.util.Map;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.junit.jupiter.api.Test;
 
 class SharedDefinitionsTest {
@@ -82,7 +79,7 @@ class SharedDefinitionsTest {
 
   @Test
   void failedContentPublicationDoesNotLeaveAVisibleReference() {
-    try (var store = new ControlledStore()) {
+    try (var store = new PublicationStoreFixture()) {
       store.failContent = true;
       assertThrows(
           IllegalStateException.class,
@@ -104,7 +101,7 @@ class SharedDefinitionsTest {
 
   @Test
   void concurrentFirstPublishersConvergeOnOneDurableCatalogue() throws Exception {
-    try (var store = new ControlledStore();
+    try (var store = new PublicationStoreFixture();
         var workers = Executors.newFixedThreadPool(2)) {
       store.barrier = new CyclicBarrier(2);
       Callable<String> create =
@@ -132,57 +129,5 @@ class SharedDefinitionsTest {
     assertEquals(
         expected.toJson(),
         new String(new ContentBlocks(blobs).get(address), StandardCharsets.UTF_8));
-  }
-
-  private static final class ControlledStore implements AtomicStore {
-    final JsonBoundaryStore delegate = new JsonBoundaryStore();
-    boolean failContent;
-    CyclicBarrier barrier;
-    final AtomicInteger commits = new AtomicInteger();
-
-    @Override
-    public Row get(Key key) {
-      return delegate.get(key);
-    }
-
-    @Override
-    public Page query(String partition, String prefix, String after, int limit) {
-      return delegate.query(partition, prefix, after, limit);
-    }
-
-    @Override
-    public Page work(String shard, String after, int limit) {
-      return delegate.work(shard, after, limit);
-    }
-
-    @Override
-    public boolean commit(List<Write> writes, List<Check> checks) {
-      if (barrier != null && commits.incrementAndGet() <= 2) {
-        try {
-          barrier.await(20, TimeUnit.SECONDS);
-        } catch (Exception failure) {
-          throw new IllegalStateException(failure);
-        }
-      }
-      return delegate.commit(writes, checks);
-    }
-
-    @Override
-    public byte[] content(String account, String identity) {
-      return delegate.content(account, identity);
-    }
-
-    @Override
-    public void publishContent(String account, Map<String, byte[]> pages) {
-      if (failContent) {
-        throw new IllegalStateException("Injected content failure");
-      }
-      delegate.publishContent(account, pages);
-    }
-
-    @Override
-    public void close() {
-      delegate.close();
-    }
   }
 }

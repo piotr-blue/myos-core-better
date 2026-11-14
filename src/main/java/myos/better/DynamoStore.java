@@ -466,6 +466,9 @@ final class DynamoStore implements AtomicStore, PublicDirectoryInventory {
   }
 
   private static String contentKey(String account, String identity) {
+    if (PublicDefinitions.SCOPE.equals(account)) {
+      return "SYS#PUBLIC_DEFINITIONS#C#" + identity;
+    }
     return "A#" + Repository.identifier(account) + "#C#" + identity;
   }
 

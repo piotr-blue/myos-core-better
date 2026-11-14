@@ -2,20 +2,20 @@
 import shlex
 
 EDITION = 'AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup'
-PROFILES = ('canonical', 'console-native')
+PROFILES = ('canonical', 'console-native', 'console-deployed')
 
 
 def settings(profile):
     if profile not in PROFILES:
         raise ValueError('Unsupported deployment profile; retired document-local histories require replay')
     return {'edition': EDITION, 'supportedEditions': [EDITION],
-            'manifest': ('examples/clause-tutorial/runtime-console.json' if profile == 'console-native'
+            'manifest': ('examples/clause-tutorial/runtime-console-deployed.json' if profile == 'console-deployed' else 'examples/clause-tutorial/runtime-console.json' if profile == 'console-native'
                          else 'examples/runtime/canonical.json')}
 
 
 def environment(profile, *, reader_prefix=None):
     manifest = settings(profile)['manifest']
-    if profile == 'console-native':
+    if profile in ('console-native', 'console-deployed'):
         from reader_infra import environment as reader_environment
         return 'Environment=MYOS_RUNTIME=/opt/myos-better/current/' + manifest + '\n' + reader_environment(reader_prefix)
     return '' if manifest is None else 'Environment=MYOS_RUNTIME=/opt/myos-better/current/' + manifest + '\n'
@@ -25,7 +25,7 @@ def health_script(profile, *, combined_acknowledgements=None):
     selected = settings(profile)
     policy_check = ('' if combined_acknowledgements is None else
                     ' and health.get("combinedAcknowledgements") is ' + str(combined_acknowledgements))
-    if profile == 'console-native':
+    if profile in ('console-native', 'console-deployed'):
         policy_check += ' and health.get("canonicalGraphs") is True and health.get("nativeAdmission") is True and health.get("timelineProcessing") is True and health.get("timelineAutomatic") is True'
     return ("import json,sys\n"
             "try: health=json.load(sys.stdin)\n"

@@ -157,13 +157,13 @@ class DeploymentRuntimeTest(unittest.TestCase):
         for profile in deployment_runtime.PROFILES:
             expected = deployment_runtime.settings(profile)
             problems = [None, 'edition', 'supportedEditions', 'durable']
-            if profile == 'console-native': problems += ['nativeAdmission', 'timelineProcessing', 'timelineAutomatic', 'canonicalGraphs']
+            if profile in ('console-native', 'console-deployed'): problems += ['nativeAdmission', 'timelineProcessing', 'timelineAutomatic', 'canonicalGraphs']
             for problem in problems:
                 with self.subTest(profile=profile, problem=problem):
                     health = {'status': 'ok', 'durable': True,
                               'edition': expected['edition'],
                               'supportedEditions': expected['supportedEditions']}
-                    if profile == 'console-native': health.update(nativeAdmission=True, timelineProcessing=True, timelineAutomatic=True, canonicalGraphs=True)
+                    if profile in ('console-native', 'console-deployed'): health.update(nativeAdmission=True, timelineProcessing=True, timelineAutomatic=True, canonicalGraphs=True)
                     if problem: health[problem] = 'wrong'
                     result = subprocess.run(['/usr/bin/python3', '-c', deployment_runtime.health_script(profile)],
                                             input=json.dumps(health), text=True, capture_output=True)

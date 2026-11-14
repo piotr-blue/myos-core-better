@@ -1,0 +1,353 @@
+{
+  "format": "myos.runtime/1",
+  "features": [
+    "document-dispatch",
+    "canonical-graphs",
+    "time"
+  ],
+  "editions": [
+    "AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup"
+  ],
+  "creationEdition": "AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup",
+  "packages": [
+    {
+      "archive": "migrated-packages/blue-language.bluepkg",
+      "blueId": "8XGYNufx24r7Dc5bGoeobcGNCn9roLzSfZCQyHBTaTx4",
+      "mounts": {
+        "Language": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/blue-bex.bluepkg",
+      "blueId": "6L2cQG3oSX4WPkXoTvGXeTEjn41WYnjdNKSo1F61xonc",
+      "mounts": {
+        "BEX": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/blue-contracts.bluepkg",
+      "blueId": "4Jmza3Z7eEDah9qtyYq5i2AqX5tKfUnLNKYAoAPoWzmF",
+      "mounts": {
+        "Contracts": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/blue-coordination.bluepkg",
+      "blueId": "GMzA1zqLaxpDhxefhcS3gWtPFQobAUB5rgWSj3jtvaJa",
+      "mounts": {
+        "Coordination": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/blue-time.bluepkg",
+      "blueId": "6QHd1RcXJnddfLyePbtHouNYEpis6CXe4mMu4pNBqZrU",
+      "mounts": {
+        "Time": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/blue-dispatch.bluepkg",
+      "blueId": "A5jPE2pMzyKk1dWNyW1jcNd5ZF1tpw1jSMWLNoMbdcQy",
+      "mounts": {
+        "Dispatch": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/blue-events.bluepkg",
+      "blueId": "AfEoe7ZarQrFXCKpD5siYpc7YiJbKNPSoHpkP4disaYy",
+      "mounts": {
+        "Events": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/blue-parties.bluepkg",
+      "blueId": "3REY1NvPSCHxPkQHTRMQJ6NiqLKCXLrBw6coL7desXbM",
+      "mounts": {
+        "Parties": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/blue-mandates.bluepkg",
+      "blueId": "7uwjXUN7yZvDbpiEcw1YhADNophUJzB85MHp1Vn6htPm",
+      "mounts": {
+        "Mandates": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/blue-clauses.bluepkg",
+      "blueId": "2Vv4qzjdT1AFXbss2pBosH4Qjq3cfhJCoK9GVbpJUCdc",
+      "mounts": {
+        "Clauses": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/blue-agreements.bluepkg",
+      "blueId": "5qBykS7uRhzUCLUbxKvtGfWwJfJtvRu95iULxNtPquWb",
+      "mounts": {
+        "Agreements": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/blue-orders.bluepkg",
+      "blueId": "jdYoDcS4q8oWs6Ma9NfysBX3mVg7moenTwLVTKzP428",
+      "mounts": {
+        "Orders": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/blue-documents.bluepkg",
+      "blueId": "e75Pp2yaaesybZp4E8q5uSd3NPB53CcpvK7rWXLEMzp",
+      "mounts": {
+        "DocumentsDomain": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-connections.bluepkg",
+      "blueId": "CT3bxHmCN2FnB6XVkqC87kiccqCBYGRSvQwLbJTVKqpu",
+      "mounts": {
+        "Connections": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-commerce.bluepkg",
+      "blueId": "4oeZS1TNgkpHEbWhhRk7oCZQZYzfwSsPxrC6ojyUpP1f",
+      "mounts": {
+        "Commerce": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-amendments.bluepkg",
+      "blueId": "CabukQBZ8roxvFScD5moCaf2oAXPtuoPUUVjeokGwNeF",
+      "mounts": {
+        "Amendments": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-activation.bluepkg",
+      "blueId": "4jsSnzpfSjT7MNhJkUaSjr6j1Pv7pzqFaMfBRgpW66Yk",
+      "mounts": {
+        "Activation": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/payment-instruction.bluepkg",
+      "blueId": "FatyrA88FeJNLaYUMZMkWpQieP1gfpS49pM68dWMDQCS",
+      "mounts": {
+        "PaymentInstruction": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-documents.bluepkg",
+      "blueId": "EFG9z8oYB2jhyb4Htb4apjiNur2gNN1b33CgpFCeqmdr",
+      "mounts": {
+        "Documents": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-documents-incremental.bluepkg",
+      "blueId": "67SMChJ95B6AJJZz3iKnsa6rxGJzGhvpbNTJv8U8s838",
+      "mounts": {
+        "IncrementalDocuments": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-payment.bluepkg",
+      "blueId": "ExF7K79zPRWFbnDVGdftMoT1s6XcwtdfaPRvyz2GT2jj",
+      "mounts": {
+        "Payment": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-state-machine.bluepkg",
+      "blueId": "FaVyTbhGMczP8EFD3k79gnh1Uuq7xpFTERQYGrjUJsby",
+      "mounts": {
+        "State": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-features.bluepkg",
+      "blueId": "GbjUmUBNjtw6jtAsSJ6ga13cw13AYwxe85yX2tu1bJKH",
+      "mounts": {
+        "Features": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/blue-money.bluepkg",
+      "blueId": "BwfKhgT94meNoRUHYuP6xj14ys1uEto9ZAKo2Vy2A8E8",
+      "mounts": {
+        "Money": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-balance.bluepkg",
+      "blueId": "4T7HH9PTAZqYFoP1qXrCVHX5YuueXZ9xNRav9AjbZ4Xr",
+      "mounts": {
+        "Ledger": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-termination.bluepkg",
+      "blueId": "7PBbUmpbV7nqD5Z8HknczJEqUm7DRvxYGMhFyjxwMnFx",
+      "mounts": {
+        "Termination": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-inspection.bluepkg",
+      "blueId": "FFLFGxhfgaipKtCjqJ6agtiPstVTESoAxfTEhdmJSk6f",
+      "mounts": {
+        "Inspection": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-schedule.bluepkg",
+      "blueId": "4EAriPuGvNNMXqPpr82mkrytRXg8jmBs3XkXqaK51tLA",
+      "mounts": {
+        "Schedule": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/myos.bluepkg",
+      "blueId": "EM4YeV29LcFK8R1QPmzm2ik9qcLhFQVYsR4787B5grs6",
+      "mounts": {
+        "MyOS": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/acme-bank.bluepkg",
+      "blueId": "BQiJSYgqx5K4XWN9FsQpd2ZtX6h4oBy7Qb58RAKyJ6dJ",
+      "mounts": {
+        "ACME": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/manual-payments.bluepkg",
+      "blueId": "BSQ4CjU2Qh4dw3bqxANzohXmY5b2cHSUdecKdoH5fvF6",
+      "mounts": {
+        "ManualPayments": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/shipping-instruction.bluepkg",
+      "blueId": "DJ2mdKKb1sxxRtzTerrFJWUdzk29aXrprjRpAzwYEca4",
+      "mounts": {
+        "Shipping": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-representation.bluepkg",
+      "blueId": "AdScYoa5q7ju2zcjkbFzVRNoHHjGghUt2ugbqfC3wEJk",
+      "mounts": {
+        "Representation": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/clause-attachments.bluepkg",
+      "blueId": "uRjwZFe1wKWPCB8hBqBPU7FfuQC1n1EXorJGATbRrfG",
+      "mounts": {
+        "Attachments": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/blue-tasks.bluepkg",
+      "blueId": "FcF8XBFm4oTSsw6NK7osqrDVup2cE43WPMh5Rhy1RpRX",
+      "mounts": {
+        "Tasks": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/blue-semantic-gas.bluepkg",
+      "blueId": "B647sau6E5nh984AUELvfPzuTGmYkBmjmEpoT8xf1Gi2",
+      "mounts": {
+        "SemanticGas": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-mandates.bluepkg",
+      "blueId": "AaRz5rdANv1azLNVphuCKpqpr2T764MrzDxDLry9HHUZ",
+      "mounts": {
+        "MandateClauses": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/previous-blue-semantic-gas.bluepkg",
+      "blueId": "J3c9vKiN7SJn7DuRPqVvN9AbvvFFPCdv8R5Jn4UEdnfk",
+      "mounts": {
+        "PreviousSemanticGas": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/previous-documents.bluepkg",
+      "blueId": "CtGNX2EA7RndTVJuDnT4HtrvxYmdR9uD6LZ3EsDr2jeq",
+      "mounts": {
+        "PreviousDocuments": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/previous-payment.bluepkg",
+      "blueId": "9R3k6v5r1NY5JJqGaFx3yqqosXXbyQHLj7BrfhrvMizZ",
+      "mounts": {
+        "PreviousPayment": []
+      },
+      "purpose": "definitions"
+    },
+    {
+      "archive": "migrated-packages/previous-manualpayments.bluepkg",
+      "blueId": "4jsxkYNn8LAHTaYVm9SyC6yaViQdNJkdxa6mnM24xc8o",
+      "mounts": {
+        "PreviousManualPayments": []
+      },
+      "purpose": "definitions"
+    }
+  ],
+  "timelines": {
+    "coordination": "GMzA1zqLaxpDhxefhcS3gWtPFQobAUB5rgWSj3jtvaJa",
+    "namespace": "console-native-1",
+    "sources": [],
+    "automatic": {
+      "pollMillis": 5000,
+      "workers": 2
+    },
+    "privateAccess": "myos.timeline-access-at-input/1",
+    "directory": "myos.timeline-directory/1"
+  }
+}

@@ -34,7 +34,7 @@ record RetainedTimeline(
     Objects.requireNonNull(content);
     definitions = Map.copyOf(definitions);
     Objects.requireNonNull(definitionContent);
-    if (!definitionContent.isEmpty() && !definitionContent.matches("[a-f0-9]{64}")) {
+    if (!definitionContent.isEmpty() && !PublicDefinitions.validRoot(definitionContent)) {
       throw new IllegalArgumentException("Invalid shared definition catalogue");
     }
   }

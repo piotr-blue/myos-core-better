@@ -26,6 +26,12 @@ final class Core implements AutoCloseable {
   private final ProjectionPolicy projectionPolicy;
   private final ReadBudget.Limits workflowReads;
   private final Repository repository;
+
+  /** Readiness probes storage access without creating a tenant, owner, or work item. */
+  void checkStorage() {
+    repository.store.get(new AtomicStore.Key("SYS#READINESS", "PROBE"));
+  }
+
   private final EmbeddingLinks embeddingLinks;
   private final EmbeddedDocumentViews embeddedViews;
   private final RuntimeCatalog runtimes;

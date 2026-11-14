@@ -33,5 +33,5 @@ tasks.register<JavaCompile>("errorProne") {
     options.compilerArgs.remove("-Werror")
     val warnings = if (reportWarnings.get()) "" else " -XepDisableAllWarnings"
     options.compilerArgs.addAll(listOf("-XDcompilePolicy=simple", "--should-stop=ifError=FLOW",
-        "-Xplugin:ErrorProne$warnings -Xep:NullAway:ERROR -XepOpt:NullAway:OnlyNullMarked=true"))
+        "-Xplugin:ErrorProne$warnings -Xep:EqualsUnsafeCast:ERROR -Xep:MutablePublicArray:ERROR -Xep:MissingCasesInEnumSwitch:ERROR -Xep:LockNotBeforeTry:ERROR -Xep:NullAway:ERROR -XepOpt:NullAway:OnlyNullMarked=true"))
 }

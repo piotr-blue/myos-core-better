@@ -15,6 +15,7 @@ final class SnapshotContent {
   private final RadixIndex<String> index;
   private final String local;
   private final List<String> catalogues;
+  private final PublicDefinitionContent publicContent;
 
   record Timeline(long position, String content) {
     Timeline {
@@ -27,7 +28,13 @@ final class SnapshotContent {
   SnapshotContent(Repository.Blobs blobs, Map<String, Object> manifest) {
     this.index = new RadixIndex<>(blobs, String.class);
     this.local = (String) manifest.getOrDefault("content", RadixIndex.EMPTY);
-    var roots = new ArrayList<>(definitions(manifest));
+    var definitions = definitions(manifest);
+    publicContent = new PublicDefinitionContent(blobs, definitions);
+    var roots =
+        new ArrayList<>(
+            definitions.stream()
+                .filter(root -> !root.startsWith(PublicDefinitions.PREFIX))
+                .toList());
     timelines(manifest).values().forEach(source -> roots.add(source.content()));
     this.catalogues = List.copyOf(roots);
   }
@@ -51,7 +58,7 @@ final class SnapshotContent {
     }
     var result = new java.util.TreeSet<String>();
     for (Object value : roots) {
-      if (!(value instanceof String root) || !root.matches("[a-f0-9]{64}")) {
+      if (!(value instanceof String root) || !PublicDefinitions.validRoot(root)) {
         throw new IllegalArgumentException("Invalid retained definition catalogue");
       }
       result.add(root);
@@ -70,7 +77,7 @@ final class SnapshotContent {
         return "blocks:" + found;
       }
     }
-    return null;
+    return publicContent.get(key);
   }
 
   Map<String, String> getAll(Collection<String> keys) {
@@ -82,6 +89,8 @@ final class SnapshotContent {
       }
       index.getAll(source, missing).forEach((key, value) -> found.put(key, "blocks:" + value));
     }
+    var missing = keys.stream().filter(key -> !found.containsKey(key)).toList();
+    found.putAll(publicContent.getAll(missing));
     return found;
   }
 
@@ -92,6 +101,7 @@ final class SnapshotContent {
     for (String source : catalogues) {
       index.forEach(source, (key, value) -> result.putIfAbsent(key, "blocks:" + value));
     }
+    publicContent.exportTo(result);
     return result;
   }
 }

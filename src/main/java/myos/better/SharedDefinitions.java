@@ -19,6 +19,9 @@ final class SharedDefinitions {
 
   static String retain(
       Repository repository, String account, BluePackage coordination, PublicPackages packages) {
+    if (PublicDefinitions.enabled()) {
+      return PublicDefinitions.require(repository, coordination, packages);
+    }
     var identities = new TreeSet<String>();
     identities.add(coordination.blueId().value());
     packages.publications().keySet().forEach(id -> identities.add(id.value()));

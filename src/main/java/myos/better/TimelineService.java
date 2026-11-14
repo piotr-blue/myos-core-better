@@ -88,6 +88,12 @@ final class TimelineService implements AutoCloseable {
   private final PublicPackages packages;
   private final TimelineWork work;
   private final BlueId coordination;
+  private final BluePackage coordinationPackage;
+
+  String preparePublicDefinitions() {
+    return PublicDefinitions.prepare(repository.store, coordinationPackage, packages);
+  }
+
   private final String namespace;
   private final TimelineIngress ingress;
   private final GraphTimelineIngress graphIngress;
@@ -363,6 +369,7 @@ final class TimelineService implements AutoCloseable {
     this.automatic = automatic;
     this.privateAccess = privateAccess;
     this.coordination = coordination.blueId();
+    this.coordinationPackage = coordination;
     this.namespace = NativeInput.namespace(namespace);
     binding =
         TimelineConfiguration.binding(

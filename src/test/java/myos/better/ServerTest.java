@@ -15,6 +15,41 @@ import org.junit.jupiter.api.Test;
 /** The private HTTP boundary uses the same durable core and stable command identifiers. */
 class ServerTest {
   @Test
+  void readinessReportsStorageFailureWithoutLeakingDiagnosticsOrFailingLiveness() throws Exception {
+    try (var store = new PublicationStoreFixture();
+        var core = new Core(store, CanonicalRuntime.create());
+        var server = new Server(core, 0, false);
+        var client = HttpClient.newHttpClient()) {
+      server.start();
+      store.failReadiness = true;
+      var ready =
+          client.send(
+              HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + server.port() + "/ready"))
+                  .GET()
+                  .build(),
+              HttpResponse.BodyHandlers.ofString());
+      assertEquals(503, ready.statusCode());
+      assertTrue(ready.body().contains("storage_unavailable"));
+      assertFalse(ready.body().contains("private"));
+      var live =
+          client.send(
+              HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + server.port() + "/live"))
+                  .GET()
+                  .build(),
+              HttpResponse.BodyHandlers.ofString());
+      assertEquals(200, live.statusCode());
+      store.failReadiness = false;
+      var recovered =
+          client.send(
+              HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + server.port() + "/ready"))
+                  .GET()
+                  .build(),
+              HttpResponse.BodyHandlers.ofString());
+      assertEquals(200, recovered.statusCode());
+    }
+  }
+
+  @Test
   void healthReportsCreationAndRestoreEditionsFromTheConfiguredCatalog() throws Exception {
     CanonicalRuntime fresh = CanonicalRuntime.create();
     RuntimeCatalog catalog = RuntimeCatalog.single(fresh);
@@ -39,6 +74,17 @@ class ServerTest {
           Json.object(response.body().getBytes(java.nio.charset.StandardCharsets.UTF_8));
       assertEquals(fresh.edition(), health.get("edition"));
       assertEquals(java.util.List.of(fresh.edition()), health.get("supportedEditions"));
+      assertTrue(
+          response.headers().firstValue("X-Request-Id").orElseThrow().matches("[a-f0-9-]{36}"));
+      for (String path : java.util.List.of("/live", "/ready")) {
+        var probe =
+            client.send(
+                HttpRequest.newBuilder(URI.create("http://127.0.0.1:" + server.port() + path))
+                    .GET()
+                    .build(),
+                HttpResponse.BodyHandlers.ofString());
+        assertEquals(200, probe.statusCode());
+      }
     }
   }
 

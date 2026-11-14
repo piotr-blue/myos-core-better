@@ -2,7 +2,7 @@ name: Build
 
 on:
   push:
-    branches: [main]
+    branches: [main, "codex/**"]
   pull_request:
 
 permissions:
@@ -24,6 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: piotr-blue/blue-java-better
+          ref: f6121d6be0eba696a2c85f963c15d25a16736946
           path: blue-java-better
       - uses: actions/setup-java@v4
         with:

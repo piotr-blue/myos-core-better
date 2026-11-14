@@ -1,0 +1,3 @@
+myos.better.Main :: public final class myos.better.Main {
+myos.better.Main :: public static void main(java.lang.String[]) throws java.lang.Exception;
+myos.better.Main :: public static void main(java.lang.String[]) throws java.lang.Exception; :: descriptor: ([Ljava/lang/String;)V

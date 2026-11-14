@@ -240,8 +240,17 @@ final class ConsoleServer implements AutoCloseable {
 
   private static final ThreadLocal<Long> REQUEST_STARTED = new ThreadLocal<>();
 
-  @SuppressWarnings("try")
   private void handle(HttpExchange exchange) throws IOException {
+    RequestTrace trace = RequestTrace.start(exchange);
+    try {
+      respond(exchange);
+    } finally {
+      trace.finish();
+    }
+  }
+
+  @SuppressWarnings("try")
+  private void respond(HttpExchange exchange) throws IOException {
     REQUEST_STARTED.set(System.nanoTime());
     try (var trace =
         HostPhaseEvent.start(

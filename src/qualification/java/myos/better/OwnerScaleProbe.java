@@ -121,6 +121,9 @@ public final class OwnerScaleProbe {
                 "owner-scale",
                 adopted(account, archives))) {
           service.bind();
+          if ("true".equals(System.getenv("MYOS_PUBLIC_DEFINITIONS"))) {
+            service.preparePublicDefinitions();
+          }
           var ingress = service.graphIngress();
           var contracts =
               Contracts.newBuilder()

@@ -15,6 +15,7 @@ parser.add_argument('--without-webhooks', action='store_true', help='Use only fo
 parser.add_argument('--reader-prefix', default='myos-better-reader-console-v1-')
 parser.add_argument('--runtime-profile', choices=deployment_runtime.PROFILES, default='canonical')
 parser.add_argument('--independent-owners', action='store_true', help='Use durable native owners for newly created console documents')
+parser.add_argument('--public-definitions', action='store_true', help='Enable shared public catalogue writes only after a reader-compatible release is healthy')
 parser.add_argument('--projections',choices=['eager','bounded'],default='bounded')
 parser.add_argument('--workers',type=int,default=2)
 parser.add_argument('--session-entries',type=int,default=64)
@@ -27,8 +28,8 @@ if not re.fullmatch(r'myos-better-(?:canonical-)?console-[0-9]{8}', args.console
     parser.error('Deployment must target an explicitly isolated Better console stack')
 if not re.fullmatch(r'myos-better-reader-[a-z0-9-]{1,64}-', args.reader_prefix):
     parser.error('Invalid reader custody prefix')
-if args.runtime_profile == 'console-native' and not args.console: parser.error('The console-native profile requires --console')
-if args.independent_owners and args.runtime_profile != 'console-native': parser.error('Independent owners require --runtime-profile console-native')
+if args.runtime_profile in ('console-native', 'console-deployed') and not args.console: parser.error('The console-native profile requires --console')
+if args.independent_owners and args.runtime_profile not in ('console-native', 'console-deployed'): parser.error('Independent owners require --runtime-profile console-native')
 if not 1 <= args.workers <= 32: parser.error('Worker count must be 1..32')
 if not (1 <= args.session_entries <= 10000 and 1 <= args.session_mib <= 1024 and 1 <= args.session_uses <= 1024):
     parser.error('Invalid session cache bounds for the 2 GiB deployment heap')
@@ -37,6 +38,9 @@ runtime_settings=deployment_runtime.settings(args.runtime_profile)
 manifest=runtime_settings['manifest']
 if manifest is not None and not (root/'build/install/myos-core-better'/manifest).is_file():
     raise RuntimeError('Selected runtime manifest is missing from the built distribution')
+if args.runtime_profile == 'console-deployed':
+    import runtime_catalogue
+    runtime_catalogue.verify(root/'build/install/myos-core-better', root/'infra/runtime-catalogue.lock.json')
 print(json.dumps(verify()))
 outputs={x['OutputKey']:x['OutputValue'] for x in aws('cloudformation','describe-stacks','--stack-name',args.stack)['Stacks'][0]['Outputs']}
 console_settings={}
@@ -98,6 +102,7 @@ Environment=AWS_REGION=eu-west-1
 Environment=MYOS_TABLE='''+outputs['Table']+'''
 '''+deployment_runtime.environment(args.runtime_profile, reader_prefix=args.reader_prefix)+console_environment+'''Environment=PORT=8080
 Environment=MYOS_COMBINE_ACKS=true
+Environment=MYOS_PUBLIC_DEFINITIONS='''+str(args.public_definitions).lower()+'''
 Environment=MYOS_OWNERS_FAST='''+str(args.independent_owners).lower()+'''
 Environment=MYOS_PROJECTIONS='''+args.projections+'''
 Environment=MYOS_WORKERS='''+str(args.workers)+'''
@@ -128,7 +133,7 @@ rollback = '''rollback() {
     if [ -f /tmp/myos-better-previous.service ]; then cp /tmp/myos-better-previous.service /etc/systemd/system/myos-better.service; fi
     systemctl daemon-reload
     systemctl restart myos-better.service
-    for i in $(seq 1 30); do if systemctl is-active --quiet myos-better.service && curl --fail --silent http://127.0.0.1:8080/health; then break; fi; sleep 1; done
+    for i in $(seq 1 180); do if systemctl is-active --quiet myos-better.service && curl --fail --silent http://127.0.0.1:8080/health; then break; fi; sleep 1; done
   fi
   exit "$result"
 }
@@ -159,7 +164,7 @@ commands=[
  "cat > /etc/systemd/system/myos-better.service <<'MYOS_SERVICE'\n"+unit+'MYOS_SERVICE',
  'systemctl daemon-reload',
  'systemctl enable --now myos-better.service',
- f'for i in $(seq 1 30); do if systemctl is-active --quiet myos-better.service && {deployment_runtime.health_check(args.runtime_profile)} && {console_check}; then ln -sfn /opt/myos-better/releases/{digest} /opt/myos-better/healthy; cp /etc/systemd/system/myos-better.service /opt/myos-better/healthy.service; exit 0; fi; sleep 1; done',
+ f'for i in $(seq 1 180); do if systemctl is-active --quiet myos-better.service && {deployment_runtime.health_check(args.runtime_profile)} && curl --fail --silent --max-time 20 http://127.0.0.1:8080/ready >/dev/null && {console_check}; then ln -sfn /opt/myos-better/releases/{digest} /opt/myos-better/healthy; cp /etc/systemd/system/myos-better.service /opt/myos-better/healthy.service; exit 0; fi; sleep 1; done',
  'journalctl -u myos-better.service -n 60 --no-pager',
  'exit 1'
 ]
@@ -170,6 +175,7 @@ command=aws('ssm','send-command','--cli-input-json','file://'+str(requestfile))[
 result={'account':verify()['account'],'region':'eu-west-1','stack':args.stack,'instance':outputs['Instance'],'table':outputs['Table'],
         'bucket':outputs['Artifacts'],'artifactSha256':digest,'commandId':command,'projections':args.projections,'workers':args.workers,'sessionEntries':args.session_entries,'sessionMiB':args.session_mib,'sessionUses':args.session_uses, 'combinedAcknowledgements':True, 'runtimeProfile':args.runtime_profile, 'edition':runtime_settings['edition'], 'supportedEditions':runtime_settings['supportedEditions'], 'console':console_settings, 'hostedProvider':provider_settings,'webhookCustody':webhook_settings}
 result['independentOwners'] = args.independent_owners
+result['publicDefinitions'] = args.public_definitions
 result['ownerGasSchedule'] = 'STANDARD'
 result['newDocumentEdition'] = 'myos.canonical-owners/2' if args.independent_owners else runtime_settings['edition']
 (reports/'deployment.json').write_text(json.dumps(result,indent=2)+'\n')

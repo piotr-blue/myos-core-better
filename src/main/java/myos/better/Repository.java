@@ -248,6 +248,10 @@ final class Repository {
     return new Blobs(identifier(account));
   }
 
+  Blobs publicDefinitions() {
+    return new Blobs(PublicDefinitions.SCOPE);
+  }
+
   final class Blobs implements BlobStore {
     private final String account;
     private final Map<String, byte[]> staged = new LinkedHashMap<>();
@@ -255,6 +259,10 @@ final class Repository {
 
     Blobs(String account) {
       this.account = account;
+    }
+
+    Blobs publicDefinitions() {
+      return Repository.this.publicDefinitions();
     }
 
     @Override

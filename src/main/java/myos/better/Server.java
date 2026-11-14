@@ -125,18 +125,40 @@ final class Server implements AutoCloseable {
   }
 
   private void handle(HttpExchange exchange) throws IOException {
+    RequestTrace trace = RequestTrace.start(exchange);
+    try {
+      respond(exchange);
+    } finally {
+      trace.finish();
+    }
+  }
+
+  private void respond(HttpExchange exchange) throws IOException {
     if (!admission.tryAcquire()) {
       send(exchange, 503, Map.of("error", "busy"));
       return;
     }
     try {
+      String path = exchange.getRequestURI().getPath();
+      if (path.equals("/live") && exchange.getRequestMethod().equals("GET")) {
+        send(exchange, 200, Map.of("status", "alive"));
+        return;
+      }
       try {
         check();
       } catch (IllegalStateException failed) {
         send(exchange, 503, Map.of("status", "failed", "error", "worker_restart_required"));
         return;
       }
-      String path = exchange.getRequestURI().getPath();
+      if (path.equals("/ready") && exchange.getRequestMethod().equals("GET")) {
+        try {
+          core.checkStorage();
+          send(exchange, 200, Map.of("status", "ready"));
+        } catch (RuntimeException unavailable) {
+          send(exchange, 503, Map.of("status", "unavailable", "error", "storage_unavailable"));
+        }
+        return;
+      }
       if (path.equals("/health") && exchange.getRequestMethod().equals("GET")) {
         Map<String, Object> health =
             new java.util.LinkedHashMap<>(
