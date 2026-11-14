@@ -78,6 +78,16 @@ membership checks to avoid resending retained content. Membership hints never pr
 content exists. `OwnerGraphs` keeps the claim, source bindings, completion and conditional
 publication together. Snapshot recovery, native parity and clause-growth tests protect this boundary.
 
+## Preparing source bindings
+
+`OwnerSourceBindings` groups the required sources, observed Timelines and operation targets for a
+single tentative publication. Existing sources retain their consumed positions. A fresh Timeline
+starts at the greater of its proven birth cut and checkpoint position; a fresh embedding starts
+from the exact child view already retained by the parent. An unchanged embedding generation must
+still name the same owner. Preparation does not register frontiers: `OwnerGraphs.publish` applies
+these bindings within the conditional publication. This keeps source selection reviewable without
+moving authorization or durable ordering into a cache.
+
 ## Account work discovery
 
 Account timer and gas-recovery discovery retains at most one 32-row index page. Its cursor and

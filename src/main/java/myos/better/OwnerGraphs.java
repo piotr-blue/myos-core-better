@@ -619,7 +619,7 @@ final class OwnerGraphs {
                 afterDeclarations);
         Published main = plan.publications().get(owner);
         var current = records.frontiers.sources(records.read, owner);
-        var desired = plan.bindings().get(owner);
+        var desired = plan.sources().required().get(owner);
         Map<String, OwnerFrontiers.Source> old = new HashMap<>();
         current.stream()
             .filter(s -> s.kind() != OwnerFrontiers.Kind.TIMER)
@@ -741,9 +741,7 @@ final class OwnerGraphs {
   record Plan(
       OwnerAliases.Bindings aliases,
       Map<String, Published> publications,
-      Map<String, List<OwnerFrontiers.Source>> bindings,
-      Map<String, Set<String>> observers,
-      Map<String, Set<String>> targets,
+      OwnerSourceBindings sources,
       Map<String, String> newUnits,
       Map<String, Object> completion,
       Map<String, Object> localCompletion,
@@ -885,8 +883,6 @@ final class OwnerGraphs {
     ownerValidation.finish();
     Map<String, Published> publications = new LinkedHashMap<>();
     Map<String, Map<String, Object>> preparations = new LinkedHashMap<>();
-    Map<String, List<OwnerFrontiers.Source>> bindings = new LinkedHashMap<>();
-    Map<String, Set<String>> observers = new LinkedHashMap<>(), targets = new LinkedHashMap<>();
     var rootPublication = records.get("publication", address(aliases.owner(after.root())));
     var savedEvidence =
         OwnerPreparationEvent.measure(
@@ -1031,67 +1027,13 @@ final class OwnerGraphs {
       value.put("emissions", memberOccurrences.getOrDefault(member, List.of()));
       publications.put(id, new Published(member, Map.copyOf(value), result));
     }
-    var bindingTiming = OwnerPreparationEvent.start(after.root(), "source-bindings");
-    var timelineSources = declarations.sourcesByOwner(units);
-    for (String representative : new TreeSet<>(owned.stream().map(units::get).toList())) {
-      Set<String> members = new TreeSet<>(partition.members().get(representative));
-      String owner = address(representative);
-      var group = timelineSources.group(representative);
-      observers.put(owner, group.observed());
-      Set<String> identities = new HashSet<>();
-      for (String member : members) {
-        identities.add(after.rooted(member).blueId());
-        var initial =
-            after.member(member).at("/contracts/initialized/document").observation("exactId");
-        if (!initial.isMissing()) {
-          identities.add(initial.text());
-        }
-      }
-      targets.put(owner, Set.copyOf(identities));
-      Map<String, OwnerFrontiers.Source> existing = new HashMap<>();
-      if (records.frontiers.find(records.read, owner) != null) {
-        records.frontiers.sources(records.read, owner).forEach(s -> existing.put(s.id(), s));
-      }
-      List<OwnerFrontiers.Source> required = new ArrayList<>();
-      for (var binding : group.sources().entrySet()) {
-        String timeline = binding.getValue().source().timeline().value();
-        String id = binding.getKey();
-        var priorSource = existing.get(id);
-        required.add(
-            priorSource != null
-                ? priorSource
-                : new OwnerFrontiers.Source(
-                    id,
-                    OwnerFrontiers.Kind.TIMELINE,
-                    timeline,
-                    0,
-                    Math.max(
-                        records.frontiers.positionAt(timeline, birth),
-                        group.checkpointPosition(id, records.frontiers))));
-      }
-      for (var edge : partition.outgoing().getOrDefault(representative, List.of())) {
-        String child = address(units.get(edge.target()));
-        String id = "embedding:" + edge.source() + ":" + edge.path() + ":" + edge.generation();
-        var unchanged = existing.get(id);
-        if (unchanged != null) {
-          if (!child.equals(unchanged.source())) {
-            throw new IllegalStateException("An unchanged embedding changed its owner");
-          }
-          required.add(unchanged);
-          continue;
-        }
-        long position = 0;
-        var view = records.view(aliases.owner(edge.target()), after.rooted(edge.target()).blueId());
-        if (view != null) {
-          position = Repository.number(view.getOrDefault("position", 0));
-        }
-        required.add(
-            new OwnerFrontiers.Source(
-                id, OwnerFrontiers.Kind.OWNER, child, edge.generation(), position));
-      }
-      bindings.put(owner, List.copyOf(required));
-    }
-    bindingTiming.finish();
+    var sources =
+        OwnerPreparationEvent.measure(
+            after.root(),
+            "source-bindings",
+            () ->
+                OwnerSourceBindings.prepare(
+                    records, after, partition, aliases, owned, birth, declarations));
     Map<String, Object> completion = new LinkedHashMap<>();
     Map<String, Object> localCompletion = Map.of();
     if (freshEdge == null) {
@@ -1153,9 +1095,7 @@ final class OwnerGraphs {
     return new Plan(
         aliases,
         Map.copyOf(publications),
-        Map.copyOf(bindings),
-        Map.copyOf(observers),
-        Map.copyOf(targets),
+        sources,
         Map.copyOf(newUnits),
         completion,
         localCompletion,
@@ -1167,9 +1107,11 @@ final class OwnerGraphs {
 
   void publish(OwnerRecords records, OwnerMetadata.Transaction tx, Plan plan) {
     plan.aliases().publish(tx);
-    plan.targets()
+    plan.sources()
+        .targets()
         .forEach((owner, ids) -> ids.forEach(id -> records.frontiers.target(tx, owner, id)));
-    plan.bindings()
+    plan.sources()
+        .required()
         .forEach(
             (owner, sources) ->
                 sources.stream()
@@ -1180,7 +1122,10 @@ final class OwnerGraphs {
                             records.frontiers.coverageOnly(tx, owner, s.id());
                           } else {
                             records.frontiers.interest(
-                                tx, owner, s.id(), plan.observers().get(owner).contains(s.id()));
+                                tx,
+                                owner,
+                                s.id(),
+                                plan.sources().observed().get(owner).contains(s.id()));
                           }
                         }));
     for (var entry : plan.newUnits().entrySet()) {
@@ -1189,7 +1134,7 @@ final class OwnerGraphs {
           tx, entry.getKey(), (String) publication.value().get("page"), List.of());
     }
     for (String owner : plan.newUnits().keySet()) {
-      records.frontiers.configureNew(tx, owner, plan.bindings().get(owner));
+      records.frontiers.configureNew(tx, owner, plan.sources().required().get(owner));
     }
     if (plan.timers() != null) {
       time.publish(records, tx, plan.timers());
