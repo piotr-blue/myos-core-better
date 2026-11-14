@@ -16,6 +16,8 @@ from qualification_host import worker, wait
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--orders', type=int, default=2)
+    parser.add_argument('--profile', action='store_true',
+                        help='Record per-operation JFR diagnostics; adds measurement overhead')
     parser.add_argument('--historical-clauses', action='store_true',
                         help='Use the retained historical catalogue and IncrementalDocuments fixture')
     parser.add_argument('--private-definitions', action='store_true',
@@ -24,12 +26,13 @@ def main():
     parser.add_argument('--audit', nargs=2, metavar=('ACCOUNT', 'ROOT'),
                         help='Only replay an existing isolated QA history; submit no operations')
     args = parser.parse_args()
-    if not 1 <= args.orders <= 20:
-        parser.error('Use 1..20 orders for this bounded real-clause journey')
+    if not 1 <= args.orders <= 100:
+        parser.error('Use 1..100 orders for this bounded real-clause journey')
     if args.audit and not args.audit[0].startswith('clause-qa-'):
         parser.error('Audit only isolated clause-qa accounts')
     if not re.fullmatch(r'myos-better-reader-[a-z0-9-]{1,64}-', args.reader_prefix):
         parser.error('Use a scoped myos-better reader prefix')
+    timeout = 900 if args.orders <= 20 else 2700
     root = Path(__file__).resolve().parents[1]
     reports = root / 'reports' / ('clauses-' + uuid.uuid4().hex[:12])
     reports.mkdir(parents=True)
@@ -84,6 +87,7 @@ def main():
                             '-Dblue.probe.clauseRuntime=' + runtime,
                             '-Dblue.probe.clauseSource=' + source,
                             '-Dblue.probe.clauseOrders=' + str(args.orders),
+                            '-Dblue.probe.clauseProfile=' + str(args.profile).lower(),
                             '-cp', remote + '/lib/*:' + remote + '/qualification.jar',
                             *(['myos.better.OwnerReplay', outputs['Table'], *args.audit]
                               if args.audit else ['myos.better.ClauseWorkflowProbe', outputs['Table'], account])])]
@@ -91,7 +95,7 @@ def main():
         output_prefix = 'reports/qualification/' + reports.name
         request = {'DocumentName': 'AWS-RunShellScript', 'InstanceIds': [identity],
                    'OutputS3BucketName': outputs['Artifacts'], 'OutputS3KeyPrefix': output_prefix,
-                   'Parameters': {'commands': commands, 'executionTimeout': ['900']},
+                   'Parameters': {'commands': commands, 'executionTimeout': [str(timeout)]},
                    'Comment': 'Isolated published-clause signed-input console API qualification'}
         path = reports / 'request.json'
         path.write_text(json.dumps(request))
@@ -101,12 +105,13 @@ def main():
                     'runtimeManifest': runtime, 'runtimeSha256': runtime_digest,
                     'agreementSource': source, 'sourceSha256': source_digest,
                     'publicDefinitions': not args.private_definitions,
-                    'profiled': not bool(args.audit), 'garbageCollector': 'G1',
+                    'profiled': args.profile and not bool(args.audit), 'garbageCollector': 'G1',
+                    'timeoutSeconds': timeout,
                     'heapGiB': 1, 'cpuQuotaPercent': 200, 'artifacts': artifacts}
         (reports / 'command.json').write_text(json.dumps(metadata, indent=2) + '\n')
         print(json.dumps(metadata), flush=True)
         result = wait(command, identity, reports / 'result.json',
-                      output=(outputs['Artifacts'], output_prefix))
+                      output=(outputs['Artifacts'], output_prefix), timeout=timeout + 45)
         for line in result.get('StandardOutputContent', '').splitlines():
             if line.startswith('{'):
                 print(line, flush=True)

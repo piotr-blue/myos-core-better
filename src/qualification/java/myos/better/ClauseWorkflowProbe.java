@@ -24,9 +24,10 @@ public final class ClauseWorkflowProbe {
       throw new IllegalArgumentException("Expected DynamoDB table and isolated clause-qa account");
     }
     int count = Integer.parseInt(System.getProperty("blue.probe.clauseOrders", "2"));
-    if (count < 1 || count > 20) {
-      throw new IllegalArgumentException("Use 1..20 clause orders");
+    if (count < 1 || count > 100) {
+      throw new IllegalArgumentException("Use 1..100 clause orders");
     }
+    boolean profiled = Boolean.getBoolean("blue.probe.clauseProfile");
     String runtimeManifest =
         System.getProperty(
             "blue.probe.clauseRuntime", "examples/clause-tutorial/runtime-current-clauses.json");
@@ -109,6 +110,19 @@ public final class ClauseWorkflowProbe {
               new CoreBootstrap(documents, contents, api).start(account, "tutorial", payload);
           String agreement = (String) initialized.get("sessionId");
           double bootstrapMillis = elapsed(start);
+          System.out.println(
+              JsonText.of(
+                  Map.of(
+                      "phase",
+                      "clause-bootstrap",
+                      "account",
+                      account,
+                      "agreement",
+                      agreement,
+                      "orders",
+                      count,
+                      "profiled",
+                      profiled)));
           runner.start();
           List<Map<String, Object>> measurements = new ArrayList<>();
           for (int n = 1; n <= count; n++) {
@@ -124,7 +138,8 @@ public final class ClauseWorkflowProbe {
                     "customer",
                     "placeOrder",
                     Map.of("orderId", key),
-                    () -> child(service, account, agreement, "/orders/" + key) != null));
+                    () -> child(service, account, agreement, "/orders/" + key) != null,
+                    profiled));
             String order = child(service, account, agreement, "/orders/" + key);
             measurements.add(
                 call(
@@ -137,7 +152,8 @@ public final class ClauseWorkflowProbe {
                     "buyer",
                     "preparePayment",
                     Map.of(),
-                    () -> child(service, account, order, "/payment") != null));
+                    () -> child(service, account, order, "/payment") != null,
+                    profiled));
             String payment = child(service, account, order, "/payment");
             measurements.add(
                 call(
@@ -151,8 +167,8 @@ public final class ClauseWorkflowProbe {
                     "acceptPaymentInstruction",
                     Map.of(),
                     () ->
-                        Boolean.TRUE.equals(
-                            value(service, account, payment, "/payment/accepted"))));
+                        Boolean.TRUE.equals(value(service, account, payment, "/payment/accepted")),
+                    profiled));
             Map<String, Object> transfer =
                 Map.of("requestId", "transfer-" + n, "reference", "bank-demo-" + n);
             measurements.add(
@@ -166,8 +182,8 @@ public final class ClauseWorkflowProbe {
                     "payer",
                     "reportTransfer",
                     transfer,
-                    () ->
-                        value(service, account, payment, "/reportedTransfer") != Bex.undefined()));
+                    () -> value(service, account, payment, "/reportedTransfer") != Bex.undefined(),
+                    profiled));
             long expected = n * 200L;
             measurements.add(
                 call(
@@ -180,10 +196,24 @@ public final class ClauseWorkflowProbe {
                     "guarantor",
                     "acknowledgeTransfer",
                     transfer,
-                    () -> number(value(service, account, agreement, "/paidTotal")) == expected));
+                    () -> number(value(service, account, agreement, "/paidTotal")) == expected,
+                    profiled));
             if (number(value(service, account, order, "/paidTotal")) != 200
                 || number(value(service, account, payment, "/payment/completed")) != 200) {
               throw new AssertionError("Payment did not propagate through Order to Agreement");
+            }
+            if (n == 1 || n % 10 == 0 || n == count) {
+              System.out.println(
+                  JsonText.of(
+                      Map.of(
+                          "phase",
+                          "clause-business-progress",
+                          "businessOrdersVerified",
+                          n,
+                          "paidTotal",
+                          expected,
+                          "wholeReplayPending",
+                          true)));
             }
           }
           if (((List<?>) timelines.list(account, Map.of()).get("items")).size() != 2) {
@@ -193,7 +223,7 @@ public final class ClauseWorkflowProbe {
           report.put("scenario", "published-clause-console-journey");
           report.put("runtimeManifest", runtimeManifest);
           report.put("agreementSource", agreementSource);
-          report.put("profiled", true);
+          report.put("profiled", profiled);
           report.put("publicDefinitions", "true".equals(System.getenv("MYOS_PUBLIC_DEFINITIONS")));
           report.put("account", account);
           report.put("agreement", agreement);
@@ -242,7 +272,8 @@ public final class ClauseWorkflowProbe {
       String channel,
       String operation,
       Object request,
-      BooleanSupplier complete)
+      BooleanSupplier complete,
+      boolean profiled)
       throws Exception {
     String timeline = null;
     for (Object raw : (List<?>) documents.operations(account, document).get("channels")) {
@@ -255,12 +286,14 @@ public final class ClauseWorkflowProbe {
       throw new AssertionError("Channel unavailable: " + channel);
     }
     long nextVersion = number(service.graphs().head(account, root).get("version")) + 1;
-    try (jdk.jfr.Recording recording = new jdk.jfr.Recording()) {
-      recording.enable("myos.OwnerExecution");
-      recording.enable("myos.HostPhase");
-      recording.enable("myos.OwnerPreparation");
-      recording.enable("jdk.ExecutionSample").withPeriod(Duration.ofMillis(10));
-      recording.start();
+    try (jdk.jfr.Recording recording = profiled ? new jdk.jfr.Recording() : null) {
+      if (recording != null) {
+        recording.enable("myos.OwnerExecution");
+        recording.enable("myos.HostPhase");
+        recording.enable("myos.OwnerPreparation");
+        recording.enable("jdk.ExecutionSample").withPeriod(Duration.ofMillis(10));
+        recording.start();
+      }
       Map<String, Long> before = store.statistics();
       long start = System.nanoTime();
       Map<String, Object> submitted =
@@ -316,68 +349,70 @@ public final class ClauseWorkflowProbe {
         Thread.sleep(75);
       }
       double completedMillis = elapsed(start);
-      recording.stop();
-      Path phases = Files.createTempFile("owner-phases-", ".jfr");
       List<Map<String, Object>> attempts = new ArrayList<>();
       List<Map<String, Object>> preparations = new ArrayList<>();
       List<Map<String, Object>> admissionPhases = new ArrayList<>();
       Map<String, Long> samples = new TreeMap<>();
-      try {
-        recording.dump(phases);
-        for (var event : jdk.jfr.consumer.RecordingFile.readAllEvents(phases)) {
-          if (event.getEventType().getName().equals("jdk.ExecutionSample")
-              && event.getStackTrace() != null) {
-            for (var frame : event.getStackTrace().getFrames()) {
-              String type = frame.getMethod().getType().getName();
-              if (type.startsWith("blue.") || type.startsWith("myos.better.")) {
-                samples.merge(type + "." + frame.getMethod().getName(), 1L, Long::sum);
-                break;
+      if (recording != null) {
+        recording.stop();
+        Path phases = Files.createTempFile("owner-phases-", ".jfr");
+        try {
+          recording.dump(phases);
+          for (var event : jdk.jfr.consumer.RecordingFile.readAllEvents(phases)) {
+            if (event.getEventType().getName().equals("jdk.ExecutionSample")
+                && event.getStackTrace() != null) {
+              for (var frame : event.getStackTrace().getFrames()) {
+                String type = frame.getMethod().getType().getName();
+                if (type.startsWith("blue.") || type.startsWith("myos.better.")) {
+                  samples.merge(type + "." + frame.getMethod().getName(), 1L, Long::sum);
+                  break;
+                }
               }
             }
+            if (event.getEventType().getName().equals("myos.HostPhase")
+                && event.getString("phase").startsWith("admission.")) {
+              admissionPhases.add(
+                  Map.of(
+                      "phase",
+                      event.getString("phase"),
+                      "owner",
+                      event.getString("subject"),
+                      "millis",
+                      event.getDuration().toNanos() / 1e6));
+            }
+            if (event.getEventType().getName().equals("myos.OwnerPreparation")) {
+              preparations.add(
+                  Map.of(
+                      "owner",
+                      Objects.toString(event.getString("owner"), ""),
+                      "stage",
+                      event.getString("stage"),
+                      "millis",
+                      event.getDuration().toNanos() / 1e6,
+                      "recordsEncoded",
+                      event.getLong("recordsEncoded"),
+                      "encodedBytes",
+                      event.getLong("encodedBytes")));
+            }
+            if (!event.getEventType().getName().equals("myos.OwnerExecution")) {
+              continue;
+            }
+            Map<String, Object> row = new LinkedHashMap<>();
+            row.put("owner", event.getString("owner"));
+            row.put("entry", event.getString("entry"));
+            row.put("status", event.getString("status"));
+            row.put("mode", event.getString("mode"));
+            row.put("fallback", event.getString("fallback"));
+            row.put("totalMillis", event.getDuration().toNanos() / 1e6);
+            for (String name :
+                List.of("restore", "admission", "execution", "preparation", "commit")) {
+              row.put(name + "Millis", event.getLong(name + "Nanos") / 1e6);
+            }
+            attempts.add(row);
           }
-          if (event.getEventType().getName().equals("myos.HostPhase")
-              && event.getString("phase").startsWith("admission.")) {
-            admissionPhases.add(
-                Map.of(
-                    "phase",
-                    event.getString("phase"),
-                    "owner",
-                    event.getString("subject"),
-                    "millis",
-                    event.getDuration().toNanos() / 1e6));
-          }
-          if (event.getEventType().getName().equals("myos.OwnerPreparation")) {
-            preparations.add(
-                Map.of(
-                    "owner",
-                    Objects.toString(event.getString("owner"), ""),
-                    "stage",
-                    event.getString("stage"),
-                    "millis",
-                    event.getDuration().toNanos() / 1e6,
-                    "recordsEncoded",
-                    event.getLong("recordsEncoded"),
-                    "encodedBytes",
-                    event.getLong("encodedBytes")));
-          }
-          if (!event.getEventType().getName().equals("myos.OwnerExecution")) {
-            continue;
-          }
-          Map<String, Object> row = new LinkedHashMap<>();
-          row.put("owner", event.getString("owner"));
-          row.put("entry", event.getString("entry"));
-          row.put("status", event.getString("status"));
-          row.put("mode", event.getString("mode"));
-          row.put("fallback", event.getString("fallback"));
-          row.put("totalMillis", event.getDuration().toNanos() / 1e6);
-          for (String name :
-              List.of("restore", "admission", "execution", "preparation", "commit")) {
-            row.put(name + "Millis", event.getLong(name + "Nanos") / 1e6);
-          }
-          attempts.add(row);
+        } finally {
+          Files.deleteIfExists(phases);
         }
-      } finally {
-        Files.deleteIfExists(phases);
       }
       Map<String, Long> io = new TreeMap<>();
       store

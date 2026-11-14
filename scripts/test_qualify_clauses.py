@@ -1,6 +1,7 @@
 """Published-clause qualification must identify its actual catalogue and source."""
 import contextlib
 import io
+import itertools
 import json
 from pathlib import Path
 import shlex
@@ -15,8 +16,8 @@ import qualify_clauses
 
 class ClauseQualificationTest(unittest.TestCase):
     def test_current_and_explicit_historical_profiles_reach_worker_and_evidence(self):
-        for historical in (False, True):
-            with self.subTest(historical=historical), tempfile.TemporaryDirectory() as directory:
+        for historical, profile in itertools.product((False, True), repeat=2):
+            with self.subTest(historical=historical, profile=profile), tempfile.TemporaryDirectory() as directory:
                 root = Path(directory)
                 install = root / 'build/install/myos-core-better'
                 (install / 'lib').mkdir(parents=True)
@@ -45,14 +46,17 @@ class ClauseQualificationTest(unittest.TestCase):
                         return {'Command': {'CommandId': 'fixture-command'}}
                     self.fail('Unexpected cloud call')
 
-                arguments = ['qualify_clauses.py', '--orders', '20']
+                count = 100 if not historical and not profile else 20
+                arguments = ['qualify_clauses.py', '--orders', str(count)]
+                if profile:
+                    arguments += ['--profile']
                 if historical:
                     arguments += ['--historical-clauses', '--private-definitions']
                 with patch.object(qualify_clauses, '__file__', str(root / 'scripts/qualify_clauses.py')), \
                         patch.object(qualify_clauses, 'aws', side_effect=aws), \
                         patch.object(qualify_clauses, 'verify'), \
                         patch.object(qualify_clauses, 'worker', return_value=contextlib.nullcontext('dedicated')), \
-                        patch.object(qualify_clauses, 'wait', return_value={}), \
+                        patch.object(qualify_clauses, 'wait', return_value={}) as waiter, \
                         patch('sys.argv', arguments), contextlib.redirect_stdout(io.StringIO()):
                     qualify_clauses.main()
                 commands = request['Parameters']['commands']
@@ -69,7 +73,12 @@ class ClauseQualificationTest(unittest.TestCase):
                 self.assertEqual(source, metadata['agreementSource'])
                 self.assertEqual(not historical, metadata['publicDefinitions'])
                 self.assertEqual('G1', metadata['garbageCollector'])
-                self.assertTrue(metadata['profiled'])
+                self.assertEqual(profile, metadata['profiled'])
+                self.assertIn('-Dblue.probe.clauseProfile=' + str(profile).lower(), workload)
+                timeout = 2700 if count > 20 else 900
+                self.assertEqual(timeout, metadata['timeoutSeconds'])
+                self.assertEqual([str(timeout)], request['Parameters']['executionTimeout'])
+                self.assertEqual(timeout + 45, waiter.call_args.kwargs['timeout'])
                 self.assertEqual(3, len(metadata['artifacts']))
                 self.assertEqual(64, len(metadata['runtimeSha256']))
                 self.assertEqual(64, len(metadata['sourceSha256']))
@@ -100,7 +109,7 @@ class ClauseQualificationTest(unittest.TestCase):
                           'Orders', 'Coordination'}, aliases)
 
     def test_invalid_inputs_fail_before_credentials_or_cloud_access(self):
-        for arguments in (['--orders', '0'], ['--orders', '21'], ['--reader-prefix', 'wrong'],
+        for arguments in (['--orders', '0'], ['--orders', '101'], ['--reader-prefix', 'wrong'],
                           ['--audit', 'real-account', 'root']):
             with self.subTest(arguments=arguments), patch('sys.argv', ['qualify_clauses.py', *arguments]), \
                     patch.object(qualify_clauses, 'verify') as verify, \

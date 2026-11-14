@@ -100,7 +100,7 @@ can share storage with another package already retained by the loader.
 
 ```sh
 ./gradlew installDist qualificationJar
-python3 scripts/qualify_clauses.py --orders 20
+python3 scripts/qualify_clauses.py --orders 100
 ```
 
 This bounded qualification creates a temporary worker in the configured test AWS stack, then
@@ -112,9 +112,12 @@ All embedded documents reuse the two participant Timelines. Independent whole-ro
 all submitted inputs after the journey. Shared immutable definitions and G1 are explicit defaults.
 The report records source/catalogue hashes, runtime artifacts and resource settings.
 
-Per-operation JFR is enabled for diagnosis. This focused catalogue excludes unrelated deployed packages and server Timeline/timer configuration.
-These timings exclude HTTP and include profiler cost;
-they are not a throughput benchmark. Use `--historical-clauses` only for the retained older catalogue
+Use `--profile` for per-operation JFR diagnosis; it is off by default. This focused catalogue
+excludes unrelated deployed packages and server Timeline/timer configuration.
+Timings exclude HTTP and report submission, first observed state and exact parent-receipt completion
+separately. Profiled runs also include profiler overhead. Counts are bounded to 1–100 Orders;
+runs above 20 have a 45-minute execution limit and always use a dedicated worker.
+These are application-API observations, not a throughput benchmark. Use `--historical-clauses` only for the retained older catalogue
 and IncrementalDocuments fixture, and `--private-definitions` to disable shared definitions.
 `--audit ACCOUNT ROOT` replays an existing isolated `clause-qa-` history using the selected catalogue.
 The native `OwnerScaleProbe` exercises owner execution with Contracts workflow fixtures; it does
