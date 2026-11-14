@@ -171,6 +171,14 @@ A subscription takes effect at a committed source generation. An event transacti
 
 ## In-process publication
 
+Shutdown attempts each cancellation stage even when an earlier stage fails. Timer discovery,
+gas recovery, acquisition, receivers and transport must all receive cancellation before the runner
+reports failure. The first failure is retained; later failures are suppressed, and an interrupted
+caller keeps its interrupt status. A failed join still prevents the service from proceeding to
+close storage used by those workers. This is cancellation completeness, not a claim that an
+uncooperative storage operation can always be stopped. [Shutdown regression](../src/test/java/myos/better/TimelineRunnerShutdownTest.java)
+
+
 Each byte-backed JSON read owns its field-name symbol table. The immutable `ObjectReader`, typed
 deserializers and recyclable buffers remain shared. Storage pages contain many distinct content
 identities as field names; retaining them in one parser factory made later small reads copy a much

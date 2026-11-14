@@ -127,12 +127,17 @@ final class TimelineService implements AutoCloseable {
   }
 
   void stopTime() {
-    if (timeWork != null) {
-      timeWork.close();
-    }
-    if (gasWork != null) {
-      gasWork.close();
-    }
+    CloseActions.run(
+        () -> {
+          if (timeWork != null) {
+            timeWork.close();
+          }
+        },
+        () -> {
+          if (gasWork != null) {
+            gasWork.close();
+          }
+        });
   }
 
   OwnerTime time() {

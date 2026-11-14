@@ -191,28 +191,17 @@ final class TimelineRunner implements AutoCloseable {
       return;
     }
     closed = true;
-    if (directory != null) {
-      directory.close();
-    }
-    service.stopTime();
-    acquisition.shutdownNow();
-    receivers.shutdownNow();
-    Throwable failure = null;
-    try {
-      transport.close();
-    } catch (RuntimeException | Error closing) {
-      failure = closing;
-      throw closing;
-    } finally {
-      try {
-        joinWorkers();
-      } catch (RuntimeException | Error stopping) {
-        if (failure == null) {
-          throw stopping;
-        }
-        failure.addSuppressed(stopping);
-      }
-    }
+    CloseActions.run(
+        () -> {
+          if (directory != null) {
+            directory.close();
+          }
+        },
+        service::stopTime,
+        acquisition::shutdownNow,
+        receivers::shutdownNow,
+        transport::close,
+        this::joinWorkers);
   }
 
   /** Close I/O before joining: a transport can require explicit close to release a blocked read. */
