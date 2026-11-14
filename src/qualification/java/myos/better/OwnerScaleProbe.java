@@ -511,6 +511,8 @@ public final class OwnerScaleProbe {
       return null;
     }
     var recording = new Recording(Configuration.getConfiguration("profile"));
+    recording.enable("jdk.ObjectAllocationInNewTLAB").withStackTrace();
+    recording.enable("jdk.ObjectAllocationOutsideTLAB").withStackTrace();
     recording.start();
     return recording;
   }
