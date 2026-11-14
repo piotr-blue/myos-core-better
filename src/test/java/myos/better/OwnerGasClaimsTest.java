@@ -26,6 +26,9 @@ final class OwnerGasClaimsTest {
       assertEquals(claim, f.frontiers.find(f.frontiers.metadata.begin(), "a").claim());
       assertEquals(MAX, f.amount("reserved"));
       f.complete(claim, 19);
+      assertNull(
+          f.frontiers.metadata.begin().get(OwnerRecords.key("gas-native-claim", claim.token())),
+          "Settled claims must not retain an active authorization record");
       assertEquals(0, f.amount("reserved"));
       assertEquals(19, f.amount("spent"));
       assertEquals("after", f.frontiers.find(f.frontiers.metadata.begin(), "a").snapshot());
@@ -84,6 +87,9 @@ final class OwnerGasClaimsTest {
       f.owner("a");
       var claim = f.claim("a", 0).orElseThrow();
       f.frontiers.release(claim, tx -> f.admission.release(tx, claim));
+      assertNull(
+          f.frontiers.metadata.begin().get(OwnerRecords.key("gas-native-claim", claim.token())),
+          "Released claims must not retain an active authorization record");
       f.frontiers.release(claim, tx -> fail("Already released claim must not invoke publication"));
       assertEquals(0, f.amount("spent"));
       assertEquals(0, f.amount("reserved"));

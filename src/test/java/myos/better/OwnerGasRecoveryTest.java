@@ -7,7 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
 import java.util.ArrayList;
+import java.util.List;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 class OwnerGasRecoveryTest {
   private static final long MAX = OwnerGas.MAX_INVOCATION;
@@ -132,6 +136,50 @@ class OwnerGasRecoveryTest {
       assertEquals(
           0, (int) f.frontiers.change(tx -> recovery.pulse(tx, 1, (cut, owners) -> fail())));
       assertEquals("HOST_ATTEMPTS_EXHAUSTED", f.frontiers.deferred("a").diagnostic());
+    }
+  }
+
+  @ParameterizedTest
+  @NullSource
+  @ValueSource(
+      strings = {"HOST_ATTEMPTS_EXHAUSTED", "{}", "{\"code\":\"HOST_ATTEMPTS_EXHAUSTED\"}"})
+  void pausedWaiterCannotKeepItsPlaceAheadOfFundedRunnableWork(String diagnostic) {
+    try (var store = new JsonBoundaryStore()) {
+      var f = new OwnerGasClaimsTest.Fixture(store, 0);
+      for (String owner : List.of("paused", "runnable")) {
+        f.owner(owner);
+        assertTrue(f.claim(owner, 0).isEmpty());
+      }
+      f.frontiers.change(
+          tx -> {
+            f.ledger.credit(tx, "fund", MAX, "test", "proof");
+            OwnerRecords.put(
+                tx,
+                OwnerRecords.key("deferred", "paused"),
+                new OwnerFrontiers.Deferred(Long.MAX_VALUE, diagnostic));
+            return null;
+          });
+      var recovery = new OwnerGasRecovery("alice", f.frontiers);
+      assertEquals(
+          0,
+          (int)
+              f.frontiers.change(
+                  tx ->
+                      recovery.pulse(
+                          tx, 1, (cut, owners) -> fail("Paused owner must stay deferred"))));
+      assertEquals(diagnostic, f.frontiers.deferred("paused").diagnostic());
+      assertEquals(List.of("runnable"), f.ledger.runnableWaiters(f.frontiers.metadata.begin(), 64));
+      var woken = new ArrayList<String>();
+      assertEquals(
+          1,
+          (int)
+              f.frontiers.change(
+                  tx -> recovery.pulse(tx, 2, (cut, owners) -> woken.addAll(owners))));
+      assertEquals(List.of("runnable"), woken);
+      f.complete(f.claim("runnable", 3).orElseThrow(), 17);
+      assertEquals(17, f.amount("spent"));
+      assertEquals(0, f.amount("reserved"));
+      assertTrue(f.ledger.runnableWaiters(f.frontiers.metadata.begin(), 64).isEmpty());
     }
   }
 }

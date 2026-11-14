@@ -6,8 +6,11 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 class OwnerGasWorkTest {
   private static final long MAX = OwnerGas.MAX_INVOCATION;
@@ -88,6 +91,55 @@ class OwnerGasWorkTest {
       assertEquals(1, f.amount("spent"));
       assertEquals(0, f.amount("reserved"));
       assertThrows(IllegalStateException.class, () -> f.complete(expired, 2));
+    }
+  }
+
+  @ParameterizedTest
+  @EnumSource(
+      value = TimelineIngress.Status.class,
+      names = {"IDLE", "WAITING", "PENDING_ACCESS", "FAILED", "RETRY", "LEASED"})
+  void retryAlarmIsDurableAndSuppressesAnotherWorkerUntilItsDueTime(TimelineIngress.Status status) {
+    try (var store = new JsonBoundaryStore()) {
+      var f = new OwnerGasClaimsTest.Fixture(store, 0);
+      f.owner("a");
+      assertTrue(f.claim("a", System.currentTimeMillis()).isEmpty());
+      f.frontiers.change(
+          tx -> {
+            f.ledger.credit(tx, "fund", MAX, "test", "proof");
+            return null;
+          });
+      var clock = new AtomicLong(System.currentTimeMillis() + 10000);
+      var calls = new AtomicInteger();
+      try (var peer =
+              new OwnerGasWork(
+                  store,
+                  clock::get,
+                  (account, owner) -> {
+                    throw new AssertionError("A peer must honor the committed next-pulse alarm");
+                  });
+          var worker =
+              new OwnerGasWork(
+                  store,
+                  clock::get,
+                  (account, owner) -> {
+                    calls.incrementAndGet();
+                    assertEquals(0, peer.process(account));
+                    return new TimelineIngress.Outcome(status, "selected outcome");
+                  })) {
+        assertEquals(0, worker.process("alice"));
+        assertEquals(1, calls.get());
+        long due = clock.get() + (status == TimelineIngress.Status.IDLE ? 100 : 1000);
+        assertEquals(
+            due, Repository.number(store.get(OwnerGasWork.key("alice")).value().get("due")));
+        clock.set(due - 1);
+        assertEquals(0, worker.process("alice"));
+        assertEquals(1, calls.get());
+        clock.set(due);
+        assertEquals(0, worker.process("alice"));
+        assertEquals(2, calls.get());
+      }
+      assertEquals(0, f.amount("spent"));
+      assertEquals(0, f.amount("reserved"));
     }
   }
 
