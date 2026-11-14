@@ -23,7 +23,9 @@ final class OwnerReplay {
     }
     var configured =
         RuntimeConfiguration.loadCatalog(
-            java.nio.file.Path.of("examples/clause-tutorial/runtime.json"));
+            java.nio.file.Path.of(
+                System.getProperty(
+                    "blue.probe.clauseRuntime", "examples/clause-tutorial/runtime.json")));
     try (var store =
             new DynamoStore(args[0], System.getenv().getOrDefault("AWS_REGION", "eu-west-1"));
         var custody = Objects.requireNonNull(ReaderCustody.configured(System.getenv()));

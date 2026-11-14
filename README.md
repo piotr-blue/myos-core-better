@@ -83,6 +83,30 @@ Reproducible commands and measurement boundaries are in the preview guide. Earli
 experiments remain explicitly historical: [previous host guide](docs/HISTORICAL-HOST-README.md),
 [earlier AWS report](docs/owner-aws-report-2026-11-08.md).
 
+## Current published-clause AWS journey
+
+```sh
+./gradlew installDist qualificationJar
+python3 scripts/qualify_clauses.py --orders 20
+```
+
+This bounded qualification creates a temporary worker in the configured test AWS stack, then
+terminates it. The default uses a focused catalogue with the exact deployed Documents, Payment, ManualPayments,
+Activation and Orders package identities, and
+[the clause-only current Documents fixture](examples/clause-current/agreement.blue).
+Each Order creates a Payment Instruction; an acknowledged receipt updates the Order and Agreement.
+All embedded documents reuse the two participant Timelines. Independent whole-root replay checks
+all submitted inputs after the journey. Shared immutable definitions and G1 are explicit defaults.
+The report records source/catalogue hashes, runtime artifacts and resource settings.
+
+Per-operation JFR is enabled for diagnosis. This focused catalogue excludes unrelated deployed packages and server Timeline/timer configuration.
+These timings exclude HTTP and include profiler cost;
+they are not a throughput benchmark. Use `--historical-clauses` only for the retained older catalogue
+and IncrementalDocuments fixture, and `--private-definitions` to disable shared definitions.
+`--audit ACCOUNT ROOT` replays an existing isolated `clause-qa-` history using the selected catalogue.
+The native `OwnerScaleProbe` exercises owner execution with Contracts workflow fixtures; it does
+not by itself qualify the published Documents clause at the same document count.
+
 ## Local published-clause growth check
 
 ```sh

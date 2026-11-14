@@ -18,16 +18,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 
 /** Clause-only payment-to-order-to-agreement business reactions on independent owners. */
 class ClausePaymentReactionTest {
-  @Test
-  void acknowledgedReceiptsCreditTheirOrderAndAgreementExactlyOnce() throws Exception {
+  @ParameterizedTest
+  @ValueSource(booleans = {false, true})
+  void acknowledgedReceiptsCreditTheirOrderAndAgreementExactlyOnce(boolean current)
+      throws Exception {
     System.setProperty("myos.owners.fast", "true");
     try {
       RuntimeCatalog configured =
-          RuntimeConfiguration.loadCatalog(Path.of("examples/clause-tutorial/runtime.json"));
+          RuntimeConfiguration.loadCatalog(
+              Path.of(
+                  "examples/clause-tutorial/"
+                      + (current ? "runtime-current-clauses.json" : "runtime.json")));
       Language language = configured.creation().language();
       try (ConsoleInputFixture f =
           new ConsoleInputFixture(
@@ -44,7 +50,11 @@ class ClausePaymentReactionTest {
             new CoreContents(
                 f.store, language, runtime.packages(), new CorePackages(f.store, runtime));
         String source =
-            Files.readString(Path.of("examples/clause-payment-reaction/agreement.blue"));
+            Files.readString(
+                Path.of(
+                    "examples/"
+                        + (current ? "clause-current" : "clause-payment-reaction")
+                        + "/agreement.blue"));
         assertFalse(source.contains("contracts:"));
         Map<String, Object> started =
             new CoreBootstrap(documents, contents, runtime)
@@ -154,7 +164,10 @@ class ClausePaymentReactionTest {
         var replay = OwnerReplay.verify(f.store, "alice", agreement, language, f.service);
         assertTrue(((Number) replay.get("exactWholeRootComparisons")).intValue() >= 10);
         Files.writeString(
-            Path.of("build/clause-payment-reaction-result.json"),
+            Path.of(
+                "build/clause-payment-reaction-"
+                    + (current ? "current" : "historical")
+                    + "-result.json"),
             JsonText.of(
                 Map.of(
                     "agreement",

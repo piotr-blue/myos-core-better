@@ -1,0 +1,78 @@
+{
+  "format": "myos.runtime/1",
+  "editions": [
+    "AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup"
+  ],
+  "creationEdition": "AYqefXDffJR23qq1exeZN33bNVxT6ZiraXtJg9bk4Vup",
+  "features": [
+    "document-dispatch"
+  ],
+  "packages": [
+    {
+      "archive": "migrated-packages/clause-activation.bluepkg",
+      "blueId": "4jsSnzpfSjT7MNhJkUaSjr6j1Pv7pzqFaMfBRgpW66Yk",
+      "mounts": {
+        "Activation": [],
+        "Parties": [
+          "Parties"
+        ],
+        "Contracts": [
+          "Contracts"
+        ]
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-documents.bluepkg",
+      "blueId": "EFG9z8oYB2jhyb4Htb4apjiNur2gNN1b33CgpFCeqmdr",
+      "mounts": {
+        "Documents": [],
+        "Agreements": [
+          "Connections",
+          "Agreements"
+        ],
+        "Connections": [
+          "Connections"
+        ]
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-payment.bluepkg",
+      "blueId": "ExF7K79zPRWFbnDVGdftMoT1s6XcwtdfaPRvyz2GT2jj",
+      "mounts": {
+        "Payment": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/manual-payments.bluepkg",
+      "blueId": "BSQ4CjU2Qh4dw3bqxANzohXmY5b2cHSUdecKdoH5fvF6",
+      "mounts": {
+        "ManualPayments": [],
+        "PaymentInstruction": [
+          "PaymentInstruction"
+        ]
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/blue-orders.bluepkg",
+      "blueId": "jdYoDcS4q8oWs6Ma9NfysBX3mVg7moenTwLVTKzP428",
+      "mounts": {
+        "Orders": []
+      },
+      "purpose": "execution"
+    },
+    {
+      "archive": "migrated-packages/clause-activation.bluepkg",
+      "blueId": "4jsSnzpfSjT7MNhJkUaSjr6j1Pv7pzqFaMfBRgpW66Yk",
+      "mounts": {
+        "Coordination": [
+          "Coordination"
+        ]
+      },
+      "purpose": "definitions"
+    }
+  ]
+}
