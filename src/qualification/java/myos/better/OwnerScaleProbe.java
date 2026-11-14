@@ -262,7 +262,7 @@ public final class OwnerScaleProbe {
               if (Boolean.getBoolean("blue.probe.cold")) {
                 engine = new OwnerGraphs(store, contracts, service, ingress);
               }
-              Recording recording = n == 3 ? recording() : null;
+              Recording recording = n == sampleCount - 1 ? recording() : null;
               long gcBefore = gcMillis(), heapBefore = usedHeap();
               var threadBean = java.lang.management.ManagementFactory.getThreadMXBean();
               var allocationBean =
