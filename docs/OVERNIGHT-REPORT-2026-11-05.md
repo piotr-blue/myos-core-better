@@ -1,3 +1,8 @@
+> Historical November qualification report. Release numbers and performance claims below apply
+> to the recorded experiments, not the current service. Start with the maintained
+> [architecture](ARCHITECTURE.md) and [test strategy](TESTING.md). Referenced external run artifacts
+> are identified explicitly when they are not part of this repository.
+
 # Implementation report — 2026-11-05
 
 The alternative library and durable host work, including an AWS agreement tree containing 80,513
@@ -109,7 +114,7 @@ hit 128 distinct orders/payments. Small runs hit 82 orders / 109 payments. Targe
 were outside timing. Enumeration itself is size-dependent and warms index pages. These are samples,
 not operations on every document. A larger graph being faster is cloud variation, not a benefit of size.
 
-Evidence: [comparison, counters and provenance](../reports/overnight-2026-11-05/ack-comparison-78.json).
+Evidence: comparison, counters and provenance (`../reports/overnight-2026-11-05/ack-comparison-78.json`, historical external artifact; not bundled).
 Raw sample arrays and command statuses are retained alongside it. No sustained-throughput or latency
 SLA follows; authored scans and contention on a shared parent still cost work.
 
@@ -150,7 +155,7 @@ This bounded contention run took 6.814 seconds, with a 487.674 ms median submitt
 It includes duplicate races, cold JVMs, storage and contention on shared CPU/documents. It is not a
 steady-state throughput benchmark, and its latency is not interchangeable with the sequential table.
 Command `bac0dca6-3370-495f-bf4d-122639960504` succeeded. See the
-[compact report](../reports/overnight-2026-11-05/ack-multi-process-80-result.jsonl).
+compact report (`../reports/overnight-2026-11-05/ack-multi-process-80-result.jsonl`, historical external artifact; not bundled).
 
 Earlier two-machine qualification demonstrated another machine recovering a committed leaf after
 its producer stopped. That used an older release; it is not evidence that the current release has
@@ -266,9 +271,9 @@ Timing definitions: `localPaymentMillis` starts after session acquisition and ex
 including reads and execution, not just a DynamoDB transaction. `endToEndMillis` includes parent
 propagation and verification of the root total. None of these is interchangeable with pure CPU time.
 
-Evidence: [release81 manifest](../reports/overnight-2026-11-05/manifest-81.json),
-[Hello assertions](../reports/overnight-2026-11-05/hello-summary-81.json), and
-[isolated payment comparison](../reports/overnight-2026-11-05/admission-leaf-summary-81.json).
+Evidence: release81 manifest (`../reports/overnight-2026-11-05/manifest-81.json`, historical external artifact; not bundled),
+Hello assertions (`../reports/overnight-2026-11-05/hello-summary-81.json`, historical external artifact; not bundled), and
+isolated payment comparison (`../reports/overnight-2026-11-05/admission-leaf-summary-81.json`, historical external artifact; not bundled).
 
 
 ## 82. Scoped durable native ingress and command ownership — keep locally
@@ -1227,7 +1232,7 @@ full native services, HA, retention/garbage collection and production qualificat
 Cognito QA credentials stay in a protected local file and are excluded from promoted reports. The
 new identity pool is retained on stack deletion; review date2026-11-12 does not trigger cleanup.
 
-Evidence: [iteration104 manifest](../reports/overnight-2026-11-05/manifest-104.json), HTTP/browser
+Evidence: iteration104 manifest (`../reports/overnight-2026-11-05/manifest-104.json`, historical external artifact; not bundled), HTTP/browser
 results and screenshots beside it. [Console guide](CONSOLE.md) describes signup and both examples.
 
 
