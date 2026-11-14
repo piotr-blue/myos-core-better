@@ -150,6 +150,130 @@ class PrivateTimelinePullTest {
   @Nested
   class ReferencedContent {
     @Test
+    void coldControlHistoryChunksBeforeExhaustingContentFetchesAndSurvivesRestart()
+        throws Exception {
+      var f = new PrivateTimelineTransportFixture();
+      for (int i = 0; i < 300; i++) {
+        f.publisher.clock.incrementAndGet();
+        var source = f.publisher.host.create("alice", "source-" + i, "Source " + i);
+        f.access.create(
+            "alice",
+            "grant-" + i,
+            new HostedAccess.Permissions(List.of(source.id()), List.of(f.key)));
+      }
+      f.publisher.clock.incrementAndGet();
+      var closed = new java.util.HashSet<String>();
+      var pageSizes = new java.util.HashSet<Long>();
+      TimelineTransport measured =
+          (target, request, maximum, timeout) -> {
+            if (target.getPath().endsWith("/timelines/read")) {
+              pageSizes.add(
+                  f.publisher
+                      .signing
+                      .language()
+                      .prepare(Language.Input.exactJson(request))
+                      .at("/limit")
+                      .integer());
+            }
+            return f.exchange(target, request, maximum, timeout);
+          };
+      boolean complete = false;
+      for (int attempt = 0; attempt < 20 && !complete; attempt++) {
+        var pull = new TimelinePull(f.controlArchive(), measured);
+        var acquired = pull.acquire();
+        assertFalse(acquired.entries().isEmpty());
+        for (var entry : acquired.entries()) {
+          assertTrue(closed.add(entry.blueId()), "An occurrence cannot be published twice");
+        }
+        complete = pull.caughtUp();
+      }
+      assertTrue(complete, "Cold control history must make bounded durable progress");
+      assertEquals(300, closed.size());
+      assertTrue(pageSizes.stream().allMatch(size -> size <= 128));
+      assertTrue(f.contentRequests > 256, "The history exceeds one content-fetch allowance");
+      assertTrue(new TimelinePull(f.controlArchive(), f).acquire().duplicate());
+    }
+
+    @Test
+    void anOversizedPageRetriesFromTheDurableCutWithASmallerPage() throws Exception {
+      var f = new PrivateTimelineTransportFixture();
+      f.grant();
+      for (int entry = 0; entry < 100; entry++) {
+        var language = Language.newBuilder();
+        var fields = new java.util.LinkedHashMap<String, Object>();
+        for (int field = 0; field < 3; field++) {
+          var leaf = f.publisher.message(entry * 3 + field);
+          language.content(leaf);
+          fields.put("item" + field, ref(leaf.blueId()));
+        }
+        var message = language.build().prepare(Language.Input.json(JsonText.of(fields)));
+        f.publisher.clock.incrementAndGet();
+        f.publisher.host.append("alice", f.source.id(), "entry-" + entry, message);
+      }
+      f.publisher.clock.incrementAndGet();
+      var now = new java.util.concurrent.atomic.AtomicLong();
+      var reads = new java.util.concurrent.atomic.AtomicInteger();
+      TimelineTransport expiring =
+          (target, request, maximum, timeout) -> {
+            if (target.getPath().endsWith("/timelines/read") && reads.incrementAndGet() == 2) {
+              now.set(Duration.ofSeconds(30).toNanos());
+            }
+            return f.exchange(target, request, maximum, timeout);
+          };
+      var uncommitted = f.archive();
+      var expired =
+          assertThrows(
+              TimelinePull.ResourceLimit.class,
+              () ->
+                  new TimelinePull(
+                          uncommitted, expiring, TimelinePull.Limits.STANDARD, now::get, f.signing)
+                      .acquire());
+      assertTrue(expired.getMessage().contains("deadline"));
+      assertEquals(0, uncommitted.view().version(), "A smaller page does not get a fresh deadline");
+      f.contentRequests = 0;
+      var closed = new java.util.HashSet<String>();
+      var pull = new TimelinePull(f.archive(), f, f.signing);
+      for (int attempt = 0; attempt < 10; attempt++) {
+        var acquired = pull.acquire();
+        for (var entry : acquired.entries()) {
+          assertTrue(closed.add(entry.blueId()));
+        }
+        if (pull.caughtUp()) break;
+      }
+      assertTrue(pull.caughtUp());
+      assertEquals(100, closed.size());
+      assertTrue(f.contentRequests > 300, "An oversized first page must be retried, not published");
+      assertTrue(new TimelinePull(f.archive(), f, f.signing).acquire().duplicate());
+    }
+
+    @Test
+    void aSingleOversizedClosureIsBoundedAndDoesNotBecomeAnIntegrityFailure() {
+      var f = new PrivateTimelineTransportFixture();
+      f.grant();
+      var language = Language.newBuilder();
+      var fields = new java.util.LinkedHashMap<String, Object>();
+      for (int i = 0; i < 300; i++) {
+        var leaf = f.publisher.message(i);
+        language.content(leaf);
+        fields.put("item" + i, ref(leaf.blueId()));
+      }
+      var message = language.build().prepare(Language.Input.json(JsonText.of(fields)));
+      f.publisher.clock.incrementAndGet();
+      f.publisher.host.append("alice", f.source.id(), "large-message", message);
+      f.publisher.clock.incrementAndGet();
+      var archive = f.archive();
+      var limits =
+          new TimelinePull.Limits(1, 8, 1000, 100_000, 16 * 1024 * 1024, Duration.ofSeconds(30));
+      var failed =
+          assertThrows(
+              TimelinePull.ResourceLimit.class,
+              () -> new TimelinePull(archive, f, limits, System::nanoTime, f.signing).acquire());
+      assertEquals("AVAILABILITY", TimelineFailure.from(failed).category());
+      assertEquals(256, f.contentRequests);
+      assertEquals(0, archive.view().version());
+    }
+
+    @Test
     void privatePayloadClosureIsFetchedWithTheSameReaderAndSurvivesRestart() throws Exception {
       PrivateTimelineTransportFixture f = new PrivateTimelineTransportFixture();
       f.grant();
@@ -222,7 +346,7 @@ class PrivateTimelinePullTest {
           };
       TimelinePull pull = new TimelinePull(control, slow, TimelinePull.Limits.STANDARD, clock::get);
       assertEquals(
-          "Timeline acquisition deadline exceeded",
+          "Timeline acquisition deadline limit exceeded",
           assertThrows(IllegalStateException.class, pull::acquire).getMessage());
       assertTrue(control.prefix().headId().isEmpty());
       assertEquals(1, f.contentRequests);

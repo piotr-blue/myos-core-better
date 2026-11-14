@@ -42,3 +42,24 @@ edition decisions. File length, map counts and branch percentages are review sig
 automatic proof of good or bad architecture. Existing immutable storage, ownership and
 transaction invariants remain the design anchors. Changes here target a demonstrated cause
 and observable release gates; they do not constitute a Caffeine-equivalent maturity claim.
+
+## Cold control-history finding
+
+The first real fresh-account test found a second cause of stalled approval. The provider's
+public control history exceeded `TimelinePull`'s 256 content-fetch allowance before its
+normal eight-page checkpoint. The generic exception was classified as invalid evidence,
+which stopped automatic acquisition after three failures. Existing accounts had already
+retained that history and did not reproduce the problem.
+
+Acquisition now closes a verified chunk when its fetch allowance is half consumed. An
+oversized page retries from the same durable cut with a smaller page, sharing the original
+wire allowance and deadline. No incomplete page becomes a checkpoint. Resource exhaustion
+has an explicit availability classification; signature and continuity failures retain their
+integrity classification. A single entry that cannot fit still fails within the bound and
+requires an operator to resolve the resource constraint. Existing stopped imports require
+an explicit retry through the supported timeline API after upgrading.
+
+Timeline archives also reuse the immutable installed package maps rather than copying the
+whole catalogue into every source. Source-specific records remain separate. This addresses
+allocation observed while the live polling worker rebuilt evicted archive objects; it does
+not introduce a new authority cache or change the retained record identities.

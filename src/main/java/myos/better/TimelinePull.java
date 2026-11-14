@@ -66,6 +66,29 @@ final class TimelinePull {
   private final boolean demandDriven;
   private Discovery discovery;
   private boolean caughtUp;
+  private int pageSize;
+
+  /** Resource exhaustion is not evidence that a provider's signed history is invalid. */
+  static class ResourceLimit extends IllegalStateException {
+    private static final long serialVersionUID = 1L;
+
+    ResourceLimit(String resource) {
+      super("Timeline acquisition " + resource + " limit exceeded");
+    }
+  }
+
+  private static final class ContentFetchLimit extends ResourceLimit {
+    private static final long serialVersionUID = 1L;
+
+    ContentFetchLimit() {
+      super("content-fetch");
+    }
+  }
+
+  private final class Budget {
+    final long started = clock.getAsLong();
+    long wireBytes;
+  }
 
   private record Discovery(TimelineReader reader, long verifiedAt) {}
 
@@ -108,6 +131,7 @@ final class TimelinePull {
     this.archive = Objects.requireNonNull(archive);
     this.transport = Objects.requireNonNull(transport);
     this.limits = Objects.requireNonNull(limits);
+    pageSize = limits.pageSize();
     this.clock = Objects.requireNonNull(clock);
     this.signing = signing;
     if (signing != null) {
@@ -130,21 +154,30 @@ final class TimelinePull {
       throw new IllegalStateException("Private Timeline acquisition requires reader authorization");
     }
     caughtUp = false;
+    var budget = new Budget();
     try {
-      try {
-        return new Attempt(requestCoverage).execute();
-      } catch (HostedTimelines.BoundUnavailable unavailable) {
-        if (!requestCoverage) {
-          throw unavailable;
+      while (true) {
+        try {
+          return new Attempt(requestCoverage, budget).execute();
+        } catch (ContentFetchLimit exhausted) {
+          if (pageSize == 1) {
+            throw exhausted;
+          }
+          // Restart from the same durable cut, never from an incompletely verified page.
+          // Halving bounds the retries; their wire allowance and deadline remain shared.
+          pageSize = Math.max(1, pageSize / 2);
+        } catch (HostedTimelines.BoundUnavailable unavailable) {
+          if (!requestCoverage) {
+            throw unavailable;
+          }
+          requestCoverage = false;
+        } catch (TimelineReader.Failure unavailable) {
+          if (!requestCoverage || !"BOUND_UNAVAILABLE".equals(unavailable.code())) {
+            throw unavailable;
+          }
+          // A future demand cannot prevent acquisition of already available coverage.
+          requestCoverage = false;
         }
-        return new Attempt(false).execute();
-      } catch (TimelineReader.Failure unavailable) {
-        if (!requestCoverage || !"BOUND_UNAVAILABLE".equals(unavailable.code())) {
-          throw unavailable;
-        }
-        // One future demand must not prevent acquisition of coverage already available to
-        // earlier inputs. The lower verified prefix never satisfies the outstanding demand.
-        return new Attempt(false).execute();
       }
     } catch (IOException | InterruptedException | RuntimeException failure) {
       // A changed page limit, outage or invalid response requires fresh discovery next time.
@@ -160,7 +193,7 @@ final class TimelinePull {
 
   /** All temporary records, counters and timing belong to this invocation, never another source. */
   private final class Attempt {
-    final long started = clock.getAsLong();
+    final Budget budget;
     final Map<BlueId, LanguageRecord> records = new LinkedHashMap<>();
     final Map<BlueId, Boolean> established = new HashMap<>();
     final Set<BlueId> fetched = new HashSet<>();
@@ -177,8 +210,9 @@ final class TimelinePull {
     BlueId deferredHead;
     final boolean requestedCoverage;
 
-    Attempt(boolean requestedCoverage) {
+    Attempt(boolean requestedCoverage, Budget budget) {
       this.requestedCoverage = requestedCoverage;
+      this.budget = budget;
       if (local.validation() != null) {
         local.validation().shareValidationWith(context.verifier());
       }
@@ -206,7 +240,7 @@ final class TimelinePull {
       }
       try {
         if (++contentDepth > 16) {
-          throw new IllegalStateException("Timeline acquisition content nesting limit exceeded");
+          throw new ResourceLimit("content nesting");
         }
         fetchMissing(contentReader, target);
         return Optional.ofNullable(records.get(target));
@@ -262,9 +296,8 @@ final class TimelinePull {
       TimelineReader reader = reader();
       contentReader = reader;
       BigInteger size =
-          reader
-              .maximumPageSize()
-              .min(BigInteger.valueOf(Math.min(limits.pageSize(), limits.entries())));
+          reader.maximumPageSize().min(BigInteger.valueOf(Math.min(pageSize, limits.entries())));
+      pageSize = size.intValueExact();
       Map<String, Object> fields = new LinkedHashMap<>();
       fields.put("limit", size);
       if (requestedCoverage) {
@@ -296,7 +329,7 @@ final class TimelinePull {
           throw new IOException("Timeline read HTTP " + reply.status());
         }
         if (page.entries().size() > limits.entries() - entries.size()) {
-          throw new IllegalStateException("Timeline acquisition entry limit exceeded");
+          throw new ResourceLimit("entry");
         }
         // The checkpoint may name an unread entry. Only the chosen range or successor proof is
         // published; ordinary archive verification must resolve its required content.
@@ -337,7 +370,7 @@ final class TimelinePull {
                             .getBytes(StandardCharsets.UTF_8))));
         read = page.continueWith(request);
       }
-      throw new IllegalStateException("Timeline acquisition page limit exceeded");
+      throw new ResourceLimit("page");
     }
 
     private boolean chunkFull(int pages, int entries, int pageSize) {
@@ -346,7 +379,8 @@ final class TimelinePull {
           || wireBytes >= limits.bytes() / 2L
           || recordBytes >= limits.bytes() / 2L
           || records.size() >= limits.records() / 2
-          || clock.getAsLong() - started >= limits.duration().toNanos() / 2;
+          || fetched.size() >= CONTENT_FETCHES / 2
+          || clock.getAsLong() - budget.started >= limits.duration().toNanos() / 2;
     }
 
     @SuppressWarnings("try")
@@ -416,7 +450,7 @@ final class TimelinePull {
         throw new IllegalStateException("Timeline acquisition repeated unresolved content");
       }
       if (fetched.size() > CONTENT_FETCHES) {
-        throw new IllegalStateException("Timeline acquisition content-fetch limit exceeded");
+        throw new ContentFetchLimit();
       }
       fetch(reader, target);
     }
@@ -485,11 +519,13 @@ final class TimelinePull {
             signing.sign(operation, language.prepare(Language.Input.exactJson(request))).toJson();
       }
       if (request != null) {
-        wireBytes = Math.addExact(wireBytes, request.getBytes(StandardCharsets.UTF_8).length);
+        int bytes = request.getBytes(StandardCharsets.UTF_8).length;
+        wireBytes += bytes;
+        budget.wireBytes += bytes;
       }
-      long available = limits.bytes() - wireBytes;
+      long available = limits.bytes() - budget.wireBytes;
       if (available < 1) {
-        throw new IllegalStateException("Timeline acquisition wire limit exceeded");
+        throw new ResourceLimit("wire");
       }
       int maximum = (int) Math.min(available, 4 * 1024 * 1024);
       TimelineTransport.Reply reply =
@@ -498,6 +534,7 @@ final class TimelinePull {
         throw new IOException("Timeline response exceeds requested bound");
       }
       wireBytes += reply.byteSize();
+      budget.wireBytes += reply.byteSize();
       remaining();
       return reply;
     }
@@ -530,7 +567,7 @@ final class TimelinePull {
                       || local.records().contains(id)
                       || established.computeIfAbsent(id, context.available()::test));
       if (additions.size() > limits.records() - records.size()) {
-        throw new IllegalStateException("Timeline acquisition record limit exceeded");
+        throw new ResourceLimit("record");
       }
       for (var entry : additions.entrySet()) {
         add(entry.getKey(), entry.getValue());
@@ -542,11 +579,11 @@ final class TimelinePull {
         return;
       }
       if (records.size() >= limits.records()) {
-        throw new IllegalStateException("Timeline acquisition record limit exceeded");
+        throw new ResourceLimit("record");
       }
       recordBytes += record.toJson().getBytes(StandardCharsets.UTF_8).length;
       if (recordBytes > limits.bytes()) {
-        throw new IllegalStateException("Timeline acquisition content limit exceeded");
+        throw new ResourceLimit("content");
       }
       records.put(id, record);
     }
@@ -555,9 +592,9 @@ final class TimelinePull {
       if (Thread.currentThread().isInterrupted()) {
         throw new InterruptedException("Timeline acquisition interrupted");
       }
-      long nanos = limits.duration().toNanos() - (clock.getAsLong() - started);
+      long nanos = limits.duration().toNanos() - (clock.getAsLong() - budget.started);
       if (nanos <= 0) {
-        throw new IllegalStateException("Timeline acquisition deadline exceeded");
+        throw new ResourceLimit("deadline");
       }
       return Duration.ofNanos(nanos);
     }

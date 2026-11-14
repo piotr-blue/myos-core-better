@@ -22,6 +22,9 @@ record TimelineFailure(String code, String category, boolean recoverable) {
   }
 
   static TimelineFailure from(Throwable failure) {
+    if (failure instanceof TimelinePull.ResourceLimit) {
+      return new TimelineFailure("ACQUISITION_LIMIT", "AVAILABILITY", false);
+    }
     if (failure instanceof TimelineReader.Failure provider) {
       boolean recoverable =
           Set.of("ACCESS_DENIED", "CONTENT_UNAVAILABLE", "BOUND_UNAVAILABLE")

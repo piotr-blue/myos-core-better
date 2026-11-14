@@ -57,8 +57,7 @@ final class TimelineArchive {
 
   private final Recovery recovery;
   private final Source source;
-  private final Set<BlueId> shared;
-  private final Map<BlueId, LanguageRecord> common;
+  private final Map<BlueId, LanguageRecord> coordinationRecords;
   private final Map<BlueId, LanguageRecord> sourceDefinitions;
   private final PublicPackages packages;
   private String retainedDefinitions;
@@ -337,7 +336,7 @@ final class TimelineArchive {
     }
 
     private Optional<LanguageRecord> record(String root, BlueId id) {
-      LanguageRecord adopted = common.get(id);
+      LanguageRecord adopted = common(id);
       if (adopted != null) {
         return Optional.of(adopted);
       }
@@ -512,7 +511,7 @@ final class TimelineArchive {
         verifier,
         prefix,
         language(root, records, blocks, collected),
-        id -> shared.contains(id) || records.get(root, id.value()) != null,
+        id -> common(id) != null || records.get(root, id.value()) != null,
         provider.at("/endpoint").text());
   }
 
@@ -580,16 +579,14 @@ final class TimelineArchive {
             timeline.at("/url").text(),
             timeline.at("/publicRead").bool());
     partition = "A#" + this.account + "#T#" + timeline.blueId();
-    Map<BlueId, LanguageRecord> content = new HashMap<>(coordination.records());
-    content.putAll(packages.records());
+    coordinationRecords = coordination.records();
     // The verified package closure is already present. Export only source-specific records,
-    // without allocating another encoded copy of the shared package for every timeline.
+    // without copying the whole catalogue (including its map entries) for every timeline.
     Map<BlueId, LanguageRecord> sourceRecords =
-        new HashMap<>(provider.records(content::containsKey));
-    content.putAll(sourceRecords);
-    var timelineRecords = timeline.records(content::containsKey);
+        new HashMap<>(provider.records(this::publicDefinition));
+    var timelineRecords =
+        timeline.records(id -> sourceRecords.containsKey(id) || publicDefinition(id));
     sourceRecords.putAll(timelineRecords);
-    content.putAll(timelineRecords);
     sourceDefinitions = Map.copyOf(sourceRecords);
     definitions =
         Language.newBuilder()
@@ -597,8 +594,18 @@ final class TimelineArchive {
             .content(provider)
             .content(timeline)
             .build();
-    common = Map.copyOf(content);
-    shared = common.keySet();
+  }
+
+  private boolean publicDefinition(BlueId id) {
+    return packages.contains(id) || coordinationRecords.containsKey(id);
+  }
+
+  private LanguageRecord common(BlueId id) {
+    LanguageRecord record = sourceDefinitions.get(id);
+    if (record == null) {
+      record = packages.records().get(id);
+    }
+    return record == null ? coordinationRecords.get(id) : record;
   }
 
   @SuppressWarnings("try")
@@ -650,7 +657,7 @@ final class TimelineArchive {
       return acquired(batch(head, blocks), true);
     }
     Map<BlueId, LanguageRecord> additions =
-        evidence.records(id -> shared.contains(id) || records.get(before, id.value()) != null);
+        evidence.records(id -> common(id) != null || records.get(before, id.value()) != null);
     if (additions.size() > 100_000) {
       throw new IllegalArgumentException("Acquisition exceeds record count bound");
     }
@@ -1174,7 +1181,7 @@ final class TimelineArchive {
       ContentBlocks blocks,
       Map<BlueId, LanguageRecord> offered) {
     return id -> {
-      LanguageRecord adopted = common.get(id);
+      LanguageRecord adopted = common(id);
       if (adopted != null) {
         return Optional.of(adopted);
       }
