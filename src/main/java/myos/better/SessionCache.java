@@ -1,7 +1,9 @@
 package myos.better;
 
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -38,7 +40,9 @@ final class SessionCache implements AutoCloseable {
   }
 
   private final Map<String, Entry> entries = new LinkedHashMap<>(64, .75f, true);
-  private int loading;
+  // Reserve each key before sizing/loading outside the lock. A pending child handoff must
+  // not populate a key while its receiver is already rebuilding the committed session.
+  private final Set<String> loading = new HashSet<>();
   private boolean closed;
   private long bytes;
   private long hits, loads, loadNanos, versionMisses, capacityEvictions, historyRenewals, abandoned;
@@ -130,7 +134,7 @@ final class SessionCache implements AutoCloseable {
         for (Entry entry : prepared.values()) {
           // A peer or a receiver can load the committed version before this local handoff.
           // Never replace its engine, including an actively leased one.
-          if (closed || entries.containsKey(entry.key)) {
+          if (closed || loading.contains(entry.key) || entries.containsKey(entry.key)) {
             entry.session.close();
           } else {
             entries.put(entry.key, entry);
@@ -176,6 +180,9 @@ final class SessionCache implements AutoCloseable {
       if (closed) {
         throw new IllegalStateException("Document session cache is closed");
       }
+      if (loading.contains(key)) {
+        throw new IllegalStateException("Document lease requires the document lock");
+      }
       Entry entry = entries.get(key);
       if (entry != null) {
         if (entry.pinned) {
@@ -190,13 +197,13 @@ final class SessionCache implements AutoCloseable {
         discard(entry);
       }
       loads++;
-      loading++;
+      loading.add(key);
     }
     try {
       return load(key, version, checkpointBytes, loader);
     } finally {
       synchronized (this) {
-        loading--;
+        loading.remove(key);
       }
     }
   }
@@ -286,7 +293,7 @@ final class SessionCache implements AutoCloseable {
 
   @Override
   public synchronized void close() {
-    if (loading != 0) {
+    if (!loading.isEmpty()) {
       throw new IllegalStateException("Cannot close while loading document sessions");
     }
     for (Entry entry : entries.values()) {

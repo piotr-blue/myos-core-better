@@ -72,6 +72,14 @@ The canonical result reports `graphExecutionMillis`, `graphCommitMillis` and `en
 
 An acquiring document holds its document lock while the host measures and opens its checkpoint outside the cache lock. The cache records that load before releasing its metadata lock. Shutdown refuses while a load or a pinned execution is active, so a failed shutdown leaves the existing sessions usable. Once close succeeds, a new acquisition fails before it opens resources. Closing a lease drops its entry reference. The released lease can no longer hand out an execution or publish a version after another caller has acquired the entry. Child sessions prepared before shutdown are disposed if their handoff arrives after close. [Session cache](../src/main/java/myos/better/SessionCache.java) · [Deterministic shutdown regression](../src/test/java/myos/better/SessionCacheTest.java)
 
+The loading reservation identifies the document key, not just the number of outstanding loads.
+After a parent commits, its freshly initialized child may be handed to the cache while a receiver
+is already restoring that child from storage. The receiver owns the reserved key; the handoff
+closes its redundant session. This applies before the receiver has finished loading as well as
+after it has pinned a cached entry. A failed size calculation or load releases the reservation in
+`finally`, and unrelated documents can load concurrently. The regression coordinates the two
+participants with latches rather than relying on timing or thread sleeps.
+
 ## Pinned embedded views and admission records
 
 A historical document view follows its retained link root and loads the stored child version. The view shares a read budget across descendants. Under contention, a read falls back to the immutable checkpoint without waiting for a second document lock. The active Contracts runtime handles workflow reads inside native execution. Verified native admission uses a content provider that looks up the attempt’s retained evidence before consulting the selected timeline. The host supplies neither a virtual-document callback nor a second interpreter for an ordinary operation. [Historical view implementation](../src/main/java/myos/better/EmbeddedDocumentViews.java) · [Canonical runtime](../src/main/java/myos/better/CanonicalRuntime.java)

@@ -139,6 +139,67 @@ class SessionCacheTest {
   }
 
   @Test
+  void publishingAChildWhileAReceiverLoadsKeepsTheReceiversSession() throws Exception {
+    var loading = new CountDownLatch(1);
+    var finish = new CountDownLatch(1);
+    try (var cache = new SessionCache();
+        var pending = cache.pending();
+        var pool = Executors.newVirtualThreadPerTaskExecutor()) {
+      var child = runtime.openYaml("counter: 7");
+      var receiver = runtime.openYaml("counter: 7");
+      pending.retain("child", 1, child, 0);
+      var acquired =
+          pool.submit(
+              () ->
+                  cache.acquire(
+                      "child",
+                      1,
+                      () -> 0,
+                      () -> {
+                        loading.countDown();
+                        try {
+                          if (!finish.await(10, TimeUnit.SECONDS)) {
+                            throw new AssertionError("Receiver load timed out");
+                          }
+                        } catch (InterruptedException e) {
+                          throw new AssertionError(e);
+                        }
+                        return receiver;
+                      }));
+      try {
+        org.junit.jupiter.api.Assertions.assertTrue(loading.await(10, TimeUnit.SECONDS));
+        assertThrows(
+            IllegalStateException.class,
+            () ->
+                cache.acquire(
+                    "child",
+                    1,
+                    () -> {
+                      throw new AssertionError("Duplicate load must not size the checkpoint");
+                    },
+                    () -> {
+                      throw new AssertionError("Duplicate load must not open another session");
+                    }));
+        try (var independent =
+            cache.acquire("other", 1, () -> 0, () -> runtime.openYaml("counter: 3"))) {
+          assertEquals(BigInteger.valueOf(3), independent.session().read("/counter"));
+          independent.unchanged();
+        }
+        pending.published();
+      } finally {
+        finish.countDown();
+      }
+      try (var lease = acquired.get(10, TimeUnit.SECONDS)) {
+        assertSame(receiver, lease.session());
+        assertEquals(BigInteger.valueOf(7), lease.session().read("/counter"));
+        assertThrows(IllegalStateException.class, () -> child.read("/counter"));
+        lease.unchanged();
+      }
+      assertEquals(2L, cache.statistics().get("residentEntries"));
+    }
+  }
+
+  @Test
   void refusingShutdownWithAnActiveLeasePreservesEveryPreviouslyRetainedSession() {
     try (var cache = new SessionCache()) {
       var prior = runtime.openYaml("counter: 13");
@@ -235,6 +296,21 @@ class SessionCacheTest {
                   loader));
       assertEquals(0, opened.get());
       assertEquals(0L, cache.statistics().get("residentEntries"));
+      assertThrows(
+          IllegalStateException.class,
+          () ->
+              cache.acquire(
+                  "a",
+                  1,
+                  () -> 0,
+                  () -> {
+                    throw new IllegalStateException("Load failed after sizing");
+                  }));
+      try (var recovered = cache.acquire("a", 1, () -> 0, loader)) {
+        assertEquals(BigInteger.ONE, recovered.session().read("/counter"));
+        recovered.unchanged();
+      }
+      assertEquals(1, opened.get(), "A failed load must release its key reservation");
     }
   }
 
