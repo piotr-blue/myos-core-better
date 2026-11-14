@@ -263,6 +263,13 @@ and document helpers do this automatically. Stopping a wait does not cancel an
 accepted server command. Apart from the initial admission projection absence
 described above, HTTP and other read errors propagate without retries.
 
+`submitReviewedOperation` applies one `timeoutMs` budget to the initial submission,
+admission polling and native input polling together. Invalid timer options and an
+already-aborted signal fail before submitting the write. A timeout after submission
+can leave a committed command even if its response was lost. Recover by submitting
+the identical reviewed version, route, request and idempotency key; the helper never
+retries or substitutes a newer document version automatically.
+
 Helpers use standard timers and AbortSignal APIs, without Node-specific imports,
 environment variables, logging, or process handlers. Application code owns login,
 context selection, token handling and any explicit transport retry policy.
