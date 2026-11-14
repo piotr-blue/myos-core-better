@@ -14,6 +14,7 @@ import java.util.Objects;
 import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.BooleanSupplier;
+import java.util.function.Function;
 
 /** Explicit AWS acceptance journey through the console's published-clause and signed-input APIs. */
 public final class ClauseWorkflowProbe {
@@ -465,12 +466,21 @@ public final class ClauseWorkflowProbe {
   }
 
   private static String child(TimelineService service, String account, String id, String path) {
-    for (Object raw : (List<?>) service.graphs().children(account, id, null).get("items")) {
-      Map<String, Object> row = object(raw);
-      if (path.equals(row.get("path"))) {
-        return (String) row.get("document");
+    return child(cursor -> service.graphs().children(account, id, cursor), path);
+  }
+
+  static String child(Function<String, Map<String, Object>> pages, String path) {
+    String cursor = null;
+    do {
+      Map<String, Object> page = pages.apply(cursor);
+      for (Object raw : (List<?>) page.get("items")) {
+        Map<String, Object> row = object(raw);
+        if (path.equals(row.get("path"))) {
+          return (String) row.get("document");
+        }
       }
-    }
+      cursor = (String) page.get("nextCursor");
+    } while (cursor != null);
     return null;
   }
 
