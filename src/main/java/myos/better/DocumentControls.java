@@ -99,7 +99,7 @@ final class DocumentControls {
       // A newly installed subscription must not race a no-job control observation.
       var checks =
           job == null ? List.of(new AtomicStore.Check(work, 0)) : List.<AtomicStore.Check>of();
-      if (OwnerGraphs.handles(owner)) {
+      if (GraphMemberIds.isOwnerAddress(owner)) {
         var frontiers = new OwnerFrontiers(new Repository(store), account);
         var tx = frontiers.metadata.begin();
         var initializations = new OwnerInitializations(account);

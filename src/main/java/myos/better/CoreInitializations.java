@@ -13,7 +13,7 @@ final class CoreInitializations {
   }
 
   OwnerInitializations.State pending(String account, String instance) {
-    if (!OwnerGraphs.handles(instance)) {
+    if (!GraphMemberIds.isOwnerAddress(instance)) {
       return null;
     }
     var state =

@@ -88,7 +88,7 @@ class OwnerSubmissionPrefetchTest {
               Map.of("representative", "cycle"));
           frontiers.register(
               tx,
-              OwnerGraphs.address("cycle"),
+              GraphMemberIds.address("cycle"),
               "initial",
               List.of(timeline("input", "cycle-input")));
           return null;

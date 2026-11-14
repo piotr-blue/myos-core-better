@@ -67,7 +67,7 @@ final class CorePublicationEvents {
     var reference = RuntimeConfiguration.object(event.get("publication"), "publication");
     long version = Repository.number(reference.get("version"));
     var retained =
-        OwnerGraphs.handles(graph)
+        GraphMemberIds.isOwnerAddress(graph)
             ? new AtomicStore.Row(
                 new AtomicStore.Key("owner", "history"),
                 1,

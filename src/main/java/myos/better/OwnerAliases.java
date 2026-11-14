@@ -18,7 +18,7 @@ final class OwnerAliases {
       members.forEach(
           (member, owner) -> {
             put(tx, "owner-alias", member, owner);
-            put(tx, "owner-address", OwnerGraphs.address(member), OwnerGraphs.address(owner));
+            put(tx, "owner-address", GraphMemberIds.address(member), GraphMemberIds.address(owner));
           });
       births.forEach((identity, owner) -> put(tx, "owner-birth", identity, owner));
     }

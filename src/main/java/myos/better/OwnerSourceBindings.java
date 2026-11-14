@@ -1,6 +1,6 @@
 package myos.better;
 
-import static myos.better.OwnerGraphs.address;
+import static myos.better.GraphMemberIds.address;
 
 import blue.Contracts;
 import java.util.ArrayList;

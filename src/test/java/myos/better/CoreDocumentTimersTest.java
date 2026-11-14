@@ -118,7 +118,7 @@ class CoreDocumentTimersTest {
                 .getFirst()
                 .target();
       }
-      String child = OwnerGraphs.address(member);
+      String child = GraphMemberIds.address(member);
       assertEquals(
           1, api.page(ACCOUNT, "documents/" + child + "/timers", child, Map.of()).get("total"));
     }

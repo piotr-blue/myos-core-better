@@ -78,6 +78,12 @@ membership checks to avoid resending retained content. Membership hints never pr
 content exists. `OwnerGraphs` keeps the claim, source bindings, completion and conditional
 publication together. Snapshot recovery, native parity and clause-growth tests protect this boundary.
 
+Host member addresses are encoded by `GraphMemberIds`. The independent-owner prefix and
+JSON/UTF-8 hash encoding are persisted compatibility rules, not scheduler decisions or BlueIds.
+Address-only readers therefore depend on that small identity boundary rather than the owner
+coordinator. Golden vectors retain the existing owner and whole-graph addresses, including
+non-ASCII and escaped member keys.
+
 ## Preparing source bindings
 
 `OwnerSourceBindings` groups the required sources, observed Timelines and operation targets for a

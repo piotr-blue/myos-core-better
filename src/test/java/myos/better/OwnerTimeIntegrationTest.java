@@ -159,7 +159,7 @@ class OwnerTimeIntegrationTest {
       f.activate(10);
       f.drain(2);
       assertEquals(1, f.value("/received"));
-      assertEquals(2, f.records().head(OwnerGraphs.address(member)).version());
+      assertEquals(2, f.records().head(GraphMemberIds.address(member)).version());
       assertEquals(2, f.records().head(ROOT).version());
       assertTrue(OwnerTimers.pending(f.records().read, member).isEmpty());
       assertTrue(OwnerTimers.pending(f.records().read, ROOT).isEmpty());

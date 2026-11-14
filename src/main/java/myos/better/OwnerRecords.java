@@ -106,7 +106,7 @@ final class OwnerRecords {
     var view = view(owner(key), id.value());
     if (view != null) {
       var history =
-          history(OwnerGraphs.address(owner(key)), Repository.number(view.get("version")));
+          history(GraphMemberIds.address(owner(key)), Repository.number(view.get("version")));
       if (history.get("local") instanceof Map<?, ?> local && row.equals(local.get("member"))) {
         return RuntimeConfiguration.object(local, "owner record");
       }

@@ -101,7 +101,7 @@ final class GraphDocuments implements AutoCloseable {
 
   TimelineIngress.Outcome step(
       GraphTimelineIngress ingress, String account, String id, TimelineIngress.Sources sources) {
-    if (OwnerGraphs.handles(id)) {
+    if (GraphMemberIds.isOwnerAddress(id)) {
       return owners.step(account, id);
     }
     return ingress.step(graphs, account, graph(id), sources);
@@ -124,7 +124,7 @@ final class GraphDocuments implements AutoCloseable {
 
   Map<String, Object> create(String account, String id, String command, LanguageDocument document) {
     var result =
-        OwnerGraphs.handles(id)
+        GraphMemberIds.isOwnerAddress(id)
             ? owners.create(account, id, command, document)
             : graphs.create(account, id, command, document);
     timelines.published(account, id);
@@ -327,7 +327,9 @@ final class GraphDocuments implements AutoCloseable {
         "localBlueId",
         identity,
         "edition",
-        OwnerGraphs.handles(id) ? OwnerRecords.EDITION : "blue.canonical-graph/1-preview");
+        GraphMemberIds.isOwnerAddress(id)
+            ? OwnerRecords.EDITION
+            : "blue.canonical-graph/1-preview");
   }
 
   Map<String, Object> read(String account, String id, Map<String, String> query) {
@@ -389,7 +391,9 @@ final class GraphDocuments implements AutoCloseable {
         "localBlueId",
         identity,
         "edition",
-        OwnerGraphs.handles(id) ? OwnerRecords.EDITION : "blue.canonical-graph/1-preview");
+        GraphMemberIds.isOwnerAddress(id)
+            ? OwnerRecords.EDITION
+            : "blue.canonical-graph/1-preview");
   }
 
   Object readValue(String account, String id, String pointer) {
@@ -463,7 +467,7 @@ final class GraphDocuments implements AutoCloseable {
   LanguageContent operationMessage(
       String account, String id, String target, Map<String, Object> message) {
     var head = graphs.head(account, graph(id));
-    if (OwnerGraphs.handles(graph(id))) {
+    if (GraphMemberIds.isOwnerAddress(graph(id))) {
       OwnerGraphs.configurationFor(contracts, head.value());
     }
     String member = member(account, id, head.value());
@@ -661,10 +665,10 @@ final class GraphDocuments implements AutoCloseable {
 
   Map<String, Object> processing(String account, String id) {
     head(account, id);
-    if (OwnerGraphs.handles(id)) {
+    if (GraphMemberIds.isOwnerAddress(id)) {
       var records = ownerStorage.records(account);
       var publication = records.head(id).value();
-      String owner = OwnerGraphs.address((String) publication.get("representative"));
+      String owner = GraphMemberIds.address((String) publication.get("representative"));
       var frontier = records.frontiers;
       var value = frontier.head(owner);
       Map<String, Object> progress = new LinkedHashMap<>();

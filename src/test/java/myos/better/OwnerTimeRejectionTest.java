@@ -127,7 +127,7 @@ class OwnerTimeRejectionTest {
       }
       assertEquals(0, f.count());
       assertEquals(1, f.records().head(ROOT).version());
-      assertEquals(1, f.records().head(OwnerGraphs.address(child)).version());
+      assertEquals(1, f.records().head(GraphMemberIds.address(child)).version());
       var rejection = f.records().get("input-rejection-latest", ROOT);
       assertEquals("TIME_INVALID_CHANNEL", rejection.get("reason"));
       assertNotNull(rejection.get("source"));
@@ -135,7 +135,7 @@ class OwnerTimeRejectionTest {
       f.drain(2);
       assertEquals(1, f.count());
       assertEquals(2, f.records().head(ROOT).version());
-      assertEquals(2, f.records().head(OwnerGraphs.address(child)).version());
+      assertEquals(2, f.records().head(GraphMemberIds.address(child)).version());
     }
   }
 

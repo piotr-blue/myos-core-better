@@ -345,7 +345,7 @@ public final class OwnerScaleProbe {
                         .snapshots
                         .embedding(account, durable, root, "/orders/fresh-" + n)
                         .target();
-                var registered = inspection.records(account).head(OwnerGraphs.address(fresh));
+                var registered = inspection.records(account).head(GraphMemberIds.address(fresh));
                 if (!Objects.equals(
                     registered.value().get("blueId"),
                     inspection.snapshots.memberIdentity(account, durable, fresh).value())) {

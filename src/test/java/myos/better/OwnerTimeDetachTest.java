@@ -52,7 +52,7 @@ class OwnerTimeDetachTest {
           OwnerTimers.registration(after.read, registration.id()).status());
       assertTrue(OwnerTimers.pending(after.read, child).isEmpty());
       try (var processor = after.processor(f.contracts)) {
-        var head = after.head(OwnerGraphs.address(child));
+        var head = after.head(GraphMemberIds.address(child));
         var graph = after.restore(processor, (String) head.value().get("page"));
         assertEquals(1, ((Number) graph.rooted(child).read("/count")).intValue());
       }

@@ -151,7 +151,7 @@ class OwnerTimeCycleTest {
             for (var member : expected.members()) {
               assertEquals(
                   member.blueId().value(),
-                  current.head(OwnerGraphs.address(member.key())).value().get("blueId"));
+                  current.head(GraphMemberIds.address(member.key())).value().get("blueId"));
             }
             assertEquals(
                 OwnerTimers.Status.FIRED,

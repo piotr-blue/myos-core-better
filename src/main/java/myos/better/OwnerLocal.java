@@ -172,7 +172,10 @@ final class OwnerLocal {
                   created == null
                       ? Map.of(member, owner)
                       : Map.of(
-                          member, owner, created.target(), OwnerGraphs.address(created.target())),
+                          member,
+                          owner,
+                          created.target(),
+                          GraphMemberIds.address(created.target())),
                   claim.order());
       timing.preparationNanos = System.nanoTime() - preparing;
       long committing = System.nanoTime();
@@ -224,7 +227,7 @@ final class OwnerLocal {
     var child = after.rooted(created.target());
     var leaf = child.localCheckpoint();
     if (leaf.isEmpty()
-        || records.get("publication", OwnerGraphs.address(created.target())) != null
+        || records.get("publication", GraphMemberIds.address(created.target())) != null
         || !records.owner(created.target()).equals(created.target())) {
       return null;
     }
@@ -461,7 +464,7 @@ final class OwnerLocal {
                 new OwnerFrontiers.Source(
                     "embedding:" + member + ":" + created.path() + ":" + created.generation(),
                     OwnerFrontiers.Kind.OWNER,
-                    OwnerGraphs.address(created.target()),
+                    GraphMemberIds.address(created.target()),
                     created.generation(),
                     0));
     records.frontiers.complete(

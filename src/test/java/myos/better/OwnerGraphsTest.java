@@ -217,7 +217,7 @@ class OwnerGraphsTest {
           var children =
               whole.embeddings().stream().filter(e -> e.source().equals(root)).limit(2).toList();
           for (int n = 0; n < 2; n++) {
-            String owner = OwnerGraphs.address(children.get(n).target());
+            String owner = GraphMemberIds.address(children.get(n).target());
             String page = (String) published.head(owner).value().get("page");
             var retained = published.snapshots.retained("alice", page);
             assertTrue(retained.test(whole.member(children.get(n).target()).blueId()));
@@ -323,7 +323,7 @@ class OwnerGraphsTest {
           if (accountGas) {
             var owners = new TreeSet<String>();
             owners.add(root);
-            whole.embeddings().forEach(edge -> owners.add(OwnerGraphs.address(edge.target())));
+            whole.embeddings().forEach(edge -> owners.add(GraphMemberIds.address(edge.target())));
             long expectedGas = 0;
             for (String owner : owners) {
               for (long version = 2; version <= records.head(owner).version(); version++) {
@@ -403,7 +403,7 @@ class OwnerGraphsTest {
               Json.object(Json.bytes(OwnerReplay.semantic(expected.transition().observations()))),
               OwnerReplay.semantic(retained.observations()));
           assertEquals(
-              count == 1 ? step + 1 : 2, records.head(OwnerGraphs.address(member)).version());
+              count == 1 ? step + 1 : 2, records.head(GraphMemberIds.address(member)).version());
           previous = entry.blueId();
         }
       }

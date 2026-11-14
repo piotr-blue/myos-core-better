@@ -1,5 +1,7 @@
 package myos.better;
 
+import static myos.better.GraphMemberIds.address;
+
 import blue.BlueId;
 import blue.Contracts;
 import blue.GasSchedule;
@@ -23,16 +25,6 @@ final class OwnerGraphs {
     return Boolean.parseBoolean(
         System.getProperty(
             "myos.owners.fast", System.getenv().getOrDefault("MYOS_OWNERS_FAST", "false")));
-  }
-
-  static boolean handles(String id) {
-    return id.startsWith("graph-fast-");
-  }
-
-  static String address(String member) {
-    return handles(member)
-        ? member
-        : "graph-fast-" + Json.hash(Json.bytes(member)).substring(0, 48);
   }
 
   private final AtomicStore store;

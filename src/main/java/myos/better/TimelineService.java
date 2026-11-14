@@ -554,7 +554,7 @@ final class TimelineService implements AutoCloseable {
   /** Prefetch the declared sources in parallel with acquisition of a newly published input. */
   void submitted(String account, String document, long timestamp) {
     List<TimelineInputs.Cut> cuts = new ArrayList<>();
-    if (OwnerGraphs.enabled() && OwnerGraphs.handles(document)) {
+    if (OwnerGraphs.enabled() && GraphMemberIds.isOwnerAddress(document)) {
       // Independent children have their own stable address, not the root's TIMELINE_WORK row.
       // Read only this owner's persisted direct dependencies, including access-control sources.
       // The representative handles members of an indivisible cycle without walking ancestors.
@@ -563,7 +563,7 @@ final class TimelineService implements AutoCloseable {
       if (publication == null) {
         return;
       }
-      String owner = OwnerGraphs.address((String) publication.get("representative"));
+      String owner = GraphMemberIds.address((String) publication.get("representative"));
       records.frontiers.sources(records.read, owner).stream()
           .filter(source -> source.kind() == OwnerFrontiers.Kind.TIMELINE)
           .map(OwnerFrontiers.Source::source)
@@ -815,11 +815,11 @@ final class TimelineService implements AutoCloseable {
   Map<String, Object> workStatus(String account, String document) {
     Map<String, Object> result =
         work.status(Repository.identifier(account), Repository.identifier(document));
-    if (OwnerGraphs.handles(document) && ownerStorage != null) {
+    if (GraphMemberIds.isOwnerAddress(document) && ownerStorage != null) {
       var records = ownerStorage.records(account);
       var publication = records.get("publication", document);
       if (publication != null) {
-        String owner = OwnerGraphs.address((String) publication.get("representative"));
+        String owner = GraphMemberIds.address((String) publication.get("representative"));
         var failure = records.frontiers.blockingFailure(records.read, owner);
         if (failure != null && OwnerSourceFailures.DIAGNOSTIC.equals(failure.diagnostic())) {
           result = new LinkedHashMap<>(result);

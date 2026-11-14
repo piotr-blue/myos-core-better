@@ -576,7 +576,7 @@ final class CanonicalGraphs implements AutoCloseable {
     if (version < 1) {
       throw new IllegalArgumentException("Positive graph version required");
     }
-    if (OwnerGraphs.handles(graph)) {
+    if (GraphMemberIds.isOwnerAddress(graph)) {
       return portable(account, (String) history(account, graph, version).get("page"));
     }
     AtomicStore.Row row =
@@ -612,7 +612,7 @@ final class CanonicalGraphs implements AutoCloseable {
   }
 
   Map<String, Object> history(String account, String graph, long version) {
-    if (OwnerGraphs.handles(graph)) {
+    if (GraphMemberIds.isOwnerAddress(graph)) {
       return ownerStorage.records(account).history(graph, version);
     }
     requireHead(partition(account, graph));
@@ -724,7 +724,7 @@ final class CanonicalGraphs implements AutoCloseable {
 
   long observedVersion(
       String account, String graph, String member, blue.BlueId identity, long version) {
-    return OwnerGraphs.handles(graph)
+    return GraphMemberIds.isOwnerAddress(graph)
         ? ownerStorage.records(account).observedVersion(member, identity.value())
         : version;
   }
@@ -861,7 +861,7 @@ final class CanonicalGraphs implements AutoCloseable {
   private AtomicStore.Row requireHead(String partition) {
     int split = partition.indexOf("#G#");
     String graph = partition.substring(split + 3);
-    if (OwnerGraphs.handles(graph)) {
+    if (GraphMemberIds.isOwnerAddress(graph)) {
       return ownerStorage.records(partition.substring(2, split)).head(graph);
     }
     AtomicStore.Row row = store.get(new AtomicStore.Key(partition, "HEAD"));

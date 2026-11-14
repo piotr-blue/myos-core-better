@@ -97,7 +97,7 @@ class OwnerInitializationTest {
         var records = new OwnerRecords(store, "account");
         long totalBytes = 0;
         for (var member : expected.after().members()) {
-          var publication = records.head(OwnerGraphs.address(member.key())).value();
+          var publication = records.head(GraphMemberIds.address(member.key())).value();
           int events = member.key().equals(root) ? 0 : 1;
           assertEquals(events, ((List<?>) publication.get("events")).size());
           assertEquals(events, ((List<?>) publication.get("emissions")).size());

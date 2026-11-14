@@ -25,7 +25,7 @@ final class CoreDocumentTimers {
     selection.put("limit", Integer.toString(limit));
     var cursor = tokens.decode(account, resource, selection);
     String after = cursor.isEmpty() ? null : (String) cursor.get("after");
-    if (!OwnerGraphs.handles(nativeId)) {
+    if (!GraphMemberIds.isOwnerAddress(nativeId)) {
       return result(List.of(), null, 0);
     }
     var records = new OwnerRecords(store, account);

@@ -35,7 +35,7 @@ final class CoreInputStatus {
       String document,
       String entry) {
     String owner = DocumentControls.owner(documents.nativeId(account, document));
-    if (OwnerGraphs.handles(owner)) {
+    if (GraphMemberIds.isOwnerAddress(owner)) {
       var records = new OwnerRecords(store, account);
       long version = records.inputVersion(owner, entry);
       if (version == 0) {

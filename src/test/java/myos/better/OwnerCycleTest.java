@@ -153,7 +153,7 @@ class OwnerCycleTest {
             long number = source.at("/number").integer();
             memberNumbers.add(number);
             assertEquals(total * rates[Math.toIntExact(number)], source.at("/count").integer());
-            var memberHead = records.head(OwnerGraphs.address(member.key()));
+            var memberHead = records.head(GraphMemberIds.address(member.key()));
             assertEquals(step + 1, memberHead.version());
             assertEquals(member.blueId().value(), memberHead.value().get("blueId"));
           }

@@ -370,7 +370,7 @@ final class TimelineInputs {
     }
 
     Order checkpoint(blue.NativeChannel.Checkpoint checkpoint) {
-      if (OwnerGraphs.handles(document)) {
+      if (GraphMemberIds.isOwnerAddress(document)) {
         for (var view : views.values()) {
           var found = view.find(checkpoint.eventId());
           if (found.isPresent()) {
