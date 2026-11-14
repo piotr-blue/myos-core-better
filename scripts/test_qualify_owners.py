@@ -78,7 +78,9 @@ class OwnerQualificationTest(unittest.TestCase):
 
     def test_invalid_workloads_fail_before_credentials_or_cloud_calls(self):
         for arguments in (['--samples', '0'], ['--samples', '21'], ['--orders', '0'],
-                          ['--orders', '10001'], ['--separate-timelines', '--rotate-targets']):
+                          ['--orders', '10001'], ['--orders', ''], ['--orders', '1,,1000'],
+                          ['--orders', 'abc'], ['--orders', '1,1'],
+                          ['--separate-timelines', '--rotate-targets']):
             with self.subTest(arguments=arguments), \
                     patch('sys.argv', ['qualify_owners.py', *arguments]), \
                     patch.object(qualify_owners, 'verify') as verify, \
@@ -88,6 +90,44 @@ class OwnerQualificationTest(unittest.TestCase):
                     qualify_owners.main()
                 verify.assert_not_called()
                 aws.assert_not_called()
+
+
+    def test_existing_evidence_is_preserved_before_cloud_access(self):
+        for name in ('owner-qualification.tar.gz', 'owners-qualification-command.json',
+                     'owners-qualification-request.json', 'owners-qualification-current-result.json',
+                     'qualification-host.json', 'qualification-host-terminated.json'):
+            with self.subTest(name=name), tempfile.TemporaryDirectory() as directory:
+                reports = Path(directory)
+                evidence = reports / name
+                evidence.write_bytes(b'previous audit evidence')
+                with patch('sys.argv', ['qualify_owners.py', '--report-dir', directory]), \
+                        patch.object(qualify_owners, 'verify') as verify, \
+                        patch.object(qualify_owners, 'aws') as aws, \
+                        contextlib.redirect_stderr(io.StringIO()):
+                    with self.assertRaises(SystemExit) as failure:
+                        qualify_owners.main()
+                    self.assertEqual(2, failure.exception.code)
+                self.assertEqual(b'previous audit evidence', evidence.read_bytes())
+                verify.assert_not_called()
+                aws.assert_not_called()
+
+
+    def test_archive_creation_cannot_overwrite_a_concurrent_runs_evidence(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            libraries = root / 'build/install/myos-core-better/lib'
+            libraries.mkdir(parents=True)
+            (libraries / 'myos-core-better-test.jar').write_bytes(b'fixture')
+            probes = root / 'build/libs'
+            probes.mkdir()
+            (probes / 'test-qualification.jar').write_bytes(b'probe')
+            reports = root / 'reports'
+            reports.mkdir()
+            archive = reports / 'owner-qualification.tar.gz'
+            archive.write_bytes(b'other invocation owns this file')
+            with self.assertRaises(FileExistsError):
+                qualify_owners.package(root, reports)
+            self.assertEqual(b'other invocation owns this file', archive.read_bytes())
 
 
 if __name__ == '__main__':

@@ -131,3 +131,28 @@ To exercise metered owner initialization, add `--scenario owner-init` to the pro
 ### Signed inputs through cycles
 
 Run `./gradlew cycleReplay -PfirstSeed=930000 -PseedCount=16`. Each seed constructs two to eight distinct members in a ring, with an additional reference per member that can return to itself or another member. One public source supplies four signed amounts. After each amount, a fresh owner host must reach idle, publish each member once and match the root receipt, gas and member BlueIds from direct native execution. A separate arithmetic expectation checks each member’s own rate multiplied by the running sum.
+
+
+### Isolated AWS owner qualification
+
+After `./gradlew installDist qualificationJar`, run the launcher with a new report directory:
+
+```bash
+python3 scripts/qualify_owners.py --orders 1,1000,10000 --samples 20 \
+  --public-definitions --report-dir reports/owners-20261114-run1
+```
+
+The launcher validates distinct Order counts (1–10,000), builds an exclusive archive and hashes
+its libraries before contacting AWS. Existing qualification output requires a new directory;
+an unrelated file in that directory is permitted. A failed local attempt can leave a partial
+archive, which is retained for inspection rather than overwritten by a retry. Counts above
+1,024 use four CPUs and an 8 GiB JVM heap for **every** size in that run. Smaller campaigns use
+two CPUs and a 1 GiB heap. Compare runs with the same selected resources, catalogue, operation
+schedule and cache mode. The command report records all of those choices and the executable
+hashes. `--instance` accepts a dedicated worker; the launcher creates and terminates its own
+worker otherwise. It refuses the stack's live application instance.
+
+Useful variants include `--cold`, `--rotate-targets`, `--observable-root`,
+`--separate-timelines` and `--direct-creation`. Separate timelines reserve quiet prefixes and
+cannot be combined with rotating targets. Initialization and signed acquisition are reported
+separately from owner processing through idle. This boundary excludes browser and HTTP latency.
