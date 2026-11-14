@@ -122,7 +122,7 @@ def worker_commands(args, resources, outputs, digest, key, account):
     }
     if args.profile:
         properties['profile'] = profile
-    java = ['java', f'-Xmx{resources.heap_gib}g', f'-XX:ActiveProcessorCount={resources.cpu}']
+    java = ['java', '-XX:+UseG1GC', f'-Xmx{resources.heap_gib}g', f'-XX:ActiveProcessorCount={resources.cpu}']
     java += [f'-Dblue.probe.{name}={str(value).lower() if isinstance(value, bool) else value}'
              for name, value in properties.items()]
     java += ['-cp', remote + '/lib/*:' + remote + '/qualification.jar',
@@ -177,7 +177,7 @@ def main():
             'gasSchedule': 'STANDARD', 'rotateTargets': args.rotate_targets,
             'separateTimelines': args.separate_timelines, 'observableRoot': args.observable_root,
             'directCreation': args.direct_creation, 'heapGiB': resources.heap_gib, 'cpu': resources.cpu,
-            'publicDefinitions': args.public_definitions, 'artifacts': artifacts,
+            'publicDefinitions': args.public_definitions, 'garbageCollector': 'G1', 'artifacts': artifacts,
         }
         (reports / 'owners-qualification-command.json').write_text(json.dumps(result, indent=2) + '\n')
         print(json.dumps(result), flush=True)

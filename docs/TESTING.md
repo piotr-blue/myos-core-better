@@ -147,7 +147,8 @@ its libraries before contacting AWS. Existing qualification output requires a ne
 an unrelated file in that directory is permitted. A failed local attempt can leave a partial
 archive, which is retained for inspection rather than overwritten by a retry. Counts above
 1,024 use four CPUs and an 8 GiB JVM heap for **every** size in that run. Smaller campaigns use
-two CPUs and a 1 GiB heap. Compare runs with the same selected resources, catalogue, operation
+two CPUs and a 1 GiB heap. Both pin G1 explicitly: small container limits can otherwise select
+a different collector whose usable heap differs from the requested maximum. Compare runs with the same selected resources, catalogue, operation
 schedule and cache mode. The command report records all of those choices and the executable
 hashes. `--instance` accepts a dedicated worker; the launcher creates and terminates its own
 worker otherwise. It refuses the stack's live application instance.
