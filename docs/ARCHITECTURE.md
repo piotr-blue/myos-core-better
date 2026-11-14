@@ -79,6 +79,14 @@ discovery to restart at the front of the index. Workers still re-read durable st
 ordinary publication fences before processing. [Bounded account discovery](../src/main/java/myos/better/OwnerWorkRunner.java)
 · [Multi-page fairness and retry tests](../src/test/java/myos/better/OwnerWorkRunnerTest.java)
 
+## Callback shutdown
+
+Callback dispatch owns its transport and sender pool. Closing stops discovery, closes the transport,
+then interrupts and joins all senders before returning. A transport-close failure still runs the
+worker cleanup; secondary cleanup failures are suppressed on the original exception. An interrupted
+send remains in durable retry state and is never reported as delivered merely because shutdown
+started. `CoreWebhooksTest` checks this ordering with a blocked sender and failing transport close.
+
 ## Session shutdown
 
 An acquiring document holds its document lock while the host measures and opens its checkpoint outside the cache lock. The cache records that load before releasing its metadata lock. Shutdown refuses while a load or a pinned execution is active, so a failed shutdown leaves the existing sessions usable. Once close succeeds, a new acquisition fails before it opens resources. Closing a lease drops its entry reference. The released lease can no longer hand out an execution or publish a version after another caller has acquired the entry. Child sessions prepared before shutdown are disposed if their handoff arrives after close. [Session cache](../src/main/java/myos/better/SessionCache.java) · [Deterministic shutdown regression](../src/test/java/myos/better/SessionCacheTest.java)

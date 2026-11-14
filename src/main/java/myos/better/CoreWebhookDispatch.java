@@ -142,7 +142,26 @@ final class CoreWebhookDispatch implements AutoCloseable {
       closed = true;
       coordinator.shutdownNow();
     }
-    transport.close();
+    Throwable failure = null;
+    try {
+      transport.close();
+    } catch (RuntimeException | Error closing) {
+      failure = closing;
+      throw closing;
+    } finally {
+      try {
+        stopWorkers();
+      } catch (RuntimeException | Error stopping) {
+        if (failure == null) {
+          throw stopping;
+        }
+        failure.addSuppressed(stopping);
+      }
+    }
+  }
+
+  /** A failed transport close must not leave senders using storage after shutdown returns. */
+  private void stopWorkers() {
     senders.shutdownNow();
     long end = System.nanoTime() + TimeUnit.SECONDS.toNanos(25);
     try {

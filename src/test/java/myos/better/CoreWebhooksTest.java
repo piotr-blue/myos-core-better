@@ -403,6 +403,49 @@ class CoreWebhooksTest {
     }
 
     @Test
+    void transportCloseFailureStillStopsAndJoinsAnActiveSender() throws Exception {
+      var fixture = new Fixture();
+      String hook = fixture.create("hook");
+      fixture.event("one", "session");
+      var entered = new java.util.concurrent.CountDownLatch(1);
+      var finished = new java.util.concurrent.CountDownLatch(1);
+      var release = new java.util.concurrent.CountDownLatch(1);
+      var failure = new IllegalStateException("transport cleanup failed");
+      WebhookTransport transport =
+          new WebhookTransport() {
+            @Override
+            public int send(String target, Map<String, String> headers, byte[] body)
+                throws InterruptedException {
+              entered.countDown();
+              try {
+                release.await();
+                return 200;
+              } finally {
+                finished.countDown();
+              }
+            }
+
+            @Override
+            public void close() {
+              throw failure;
+            }
+          };
+      var dispatcher = new CoreWebhookDispatch(fixture.hooks, fixture.deliveries, transport);
+      try {
+        dispatcher.start();
+        assertTrue(entered.await(5, java.util.concurrent.TimeUnit.SECONDS));
+        assertEquals(failure, assertThrows(IllegalStateException.class, dispatcher::close));
+        assertEquals(
+            0, finished.getCount(), "close must join the interrupted sender before returning");
+        assertEquals(1, number(fixture.deliveries.health(fixture.alice, hook).get("queued")));
+      } finally {
+        release.countDown();
+        assertTrue(finished.await(5, java.util.concurrent.TimeUnit.SECONDS));
+        dispatcher.close();
+      }
+    }
+
+    @Test
     void allSubscriptionsBeyondWorkerCapacityAreDiscoveredAndShutdownWaitsForCallbacks()
         throws Exception {
       var fixture = new Fixture();
