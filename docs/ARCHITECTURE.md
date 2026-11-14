@@ -68,6 +68,16 @@ The local `benchmark` command creates Orders by calling the root Agreement. Its 
 
 The canonical result reports `graphExecutionMillis`, `graphCommitMillis` and `endToEndMillis`. The first measures the interpreter, the second includes the durable call, and the third ends after verifying the root aggregate. The timings include different amounts of work and are all measured per operation. The owner scheduler has a separate oracle-checked `ownerScaleProbe`. [Benchmark source](../src/main/java/myos/better/Scenario.java) · [Multi-payment restart test](../src/test/java/myos/better/ScenarioTest.java)
 
+## Checkpoint preparation before publication
+
+`OwnerCheckpointPreparation` stages immutable content and native preparation; it does not publish
+an owner head or consume a source position. A new owner can share a committed content catalogue.
+An existing owner uses an appended checkpoint only after the host verifies that the selected page
+restored the exact predecessor. Otherwise it exports a full checkpoint, using batched exact
+membership checks to avoid resending retained content. Membership hints never prove that missing
+content exists. `OwnerGraphs` keeps the claim, source bindings, completion and conditional
+publication together. Snapshot recovery, native parity and clause-growth tests protect this boundary.
+
 ## Account work discovery
 
 Account timer and gas-recovery discovery retains at most one 32-row index page. Its cursor and

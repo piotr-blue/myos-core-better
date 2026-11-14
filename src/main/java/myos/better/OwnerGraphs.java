@@ -926,101 +926,12 @@ final class OwnerGraphs {
       String id = address(member);
       var previous = records.get("publication", id);
       long version = previous == null ? 1 : Repository.number(previous.get("version")) + 1;
-      String previousPage = previous == null ? null : (String) previous.get("page");
       var beforeState = previous == null ? null : outcome.before().rooted(member);
-      var previousPreparation =
-          previous == null ? null : records.get("preparation", (String) previous.get("identity"));
-      var preparation =
-          OwnerPreparationEvent.measure(
-              member,
-              "native-preparation-export",
-              () -> {
-                var delta =
-                    beforeState == null
-                            || previousPreparation == null
-                            || !"myos.native-preparation-pages/1"
-                                .equals(previousPreparation.get("format"))
-                        ? Map.<String, Object>of()
-                        : state.preparationDelta(beforeState, ignored -> true);
-                return delta.isEmpty() ? state.preparation(ignored -> true) : delta;
-              });
-      String page;
-      if (previousPage == null) {
-        String inherited = contentBase;
-        var retained =
-            inherited == null ? null : records.snapshots.retained(records.account, inherited);
-        var checkpoint =
-            OwnerPreparationEvent.measure(
-                member,
-                "checkpoint-export",
-                () ->
-                    retained == null
-                        ? state.checkpoint()
-                        : state.checkpoint(identity -> retained.test(new BlueId(identity))));
-        page =
-            OwnerPreparationEvent.measure(
-                member,
-                "checkpoint-pages",
-                () ->
-                    records.snapshots.savePrepared(
-                        records.account, null, inherited, checkpoint, state::member, preparation));
-      } else {
-        page = null;
-        if (beforeState != null && records.restored(previousPage, beforeState.identity())) {
-          var retainedBase = records.snapshots.retained(records.account, previousPage);
-          var delta =
-              OwnerPreparationEvent.measure(
-                  member,
-                  "checkpoint-append-export",
-                  () ->
-                      state.appendedCheckpoint(
-                          beforeState, contentId -> retainedBase.test(new BlueId(contentId))));
-          if (!delta.isEmpty()) {
-            page =
-                OwnerPreparationEvent.measure(
-                    member,
-                    "checkpoint-append-pages",
-                    () ->
-                        records.snapshots.saveAppend(
-                            records.account,
-                            previousPage,
-                            beforeState.identity(),
-                            delta,
-                            state::member,
-                            preparation));
-          }
-        }
-        if (page == null) {
-          // Export checks each current member against the retained catalogue. Batch those
-          // exact membership reads; hints never establish retention for a missing identity.
-          var retained =
-              OwnerPreparationEvent.measure(
-                  member,
-                  "retained-membership",
-                  () ->
-                      records.snapshots.retained(
-                          records.account,
-                          previousPage,
-                          state.members().stream().map(Contracts.Member::blueId).toList()));
-          var checkpoint =
-              OwnerPreparationEvent.measure(
-                  member,
-                  "checkpoint-export",
-                  () -> state.checkpoint(identity -> retained.test(new BlueId(identity))));
-          page =
-              OwnerPreparationEvent.measure(
-                  member,
-                  "checkpoint-pages",
-                  () ->
-                      records.snapshots.savePrepared(
-                          records.account,
-                          previousPage,
-                          null,
-                          checkpoint,
-                          state::member,
-                          preparation));
-        }
-      }
+      var checkpoint =
+          OwnerCheckpointPreparation.save(records, state, beforeState, previous, contentBase);
+      String page = checkpoint.page();
+      var preparation = checkpoint.preparation();
+      var previousPreparation = checkpoint.previousPreparation();
       var reception = OwnerPreparationEvent.measure(member, "reception-after", state::reception);
       var previousReception =
           beforeState == null
