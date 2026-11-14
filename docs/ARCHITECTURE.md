@@ -140,6 +140,14 @@ participants with latches rather than relying on timing or thread sleeps.
 
 ## Pinned embedded views and admission records
 
+Owner-local processing retains the state returned by `restoreLocal` while it establishes native
+source admission. It passes that same handle to `processRestoredLocal`; a second decode and
+checkpoint validation are unnecessary. The handle belongs to the current open Blue execution,
+and publication is still conditional on the original durable claim and predecessor. No session
+or mutable state is shared across claims. This removes duplicate restoration without changing
+the persisted checkpoint format or weakening source-completion checks.
+
+
 A historical document view follows its retained link root and loads the stored child version. The view shares a read budget across descendants. Under contention, a read falls back to the immutable checkpoint without waiting for a second document lock. The active Contracts runtime handles workflow reads inside native execution. Verified native admission uses a content provider that looks up the attempt’s retained evidence before consulting the selected timeline. The host supplies neither a virtual-document callback nor a second interpreter for an ordinary operation. [Historical view implementation](../src/main/java/myos/better/EmbeddedDocumentViews.java) · [Canonical runtime](../src/main/java/myos/better/CanonicalRuntime.java)
 
 ### How a duplicate create receives the original reply

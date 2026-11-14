@@ -125,8 +125,8 @@ final class OwnerLocal {
       Contracts.Execution.Outcome outcome;
       try {
         outcome =
-            processor.processLocal(
-                checkpoint,
+            processor.processRestoredLocal(
+                before,
                 delta.attachments,
                 (LanguageContent) scope.request().event(),
                 scope.request().timestamp(),
