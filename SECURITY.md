@@ -11,6 +11,12 @@ only validated operator-installed package definitions. Its reserved storage scop
 valid tenant ID. Public byte availability never grants timeline access or permission to
 perform an operation. See [the catalogue design](docs/PUBLIC-DEFINITIONS.md).
 
+Public HTTP DNS resolution validates the actual addresses passed to the connection manager.
+Its four workers and 16 queued requests are bounded. Interrupted or timed-out callers remove
+their cancelled queued task; shutdown cancels both active and queued futures so callers do not
+wait for native DNS to finish. A native resolver that ignores interruption may still occupy one
+of the bounded daemon workers until it returns. This does not relax public-address validation.
+
 Durable heads publish only after referenced immutable content exists. Conditional claims
 and versions reject superseded attempts. A failed input cannot justify dropping signed
 history or guessing that a missing predecessor never existed. Preserve the distinction
