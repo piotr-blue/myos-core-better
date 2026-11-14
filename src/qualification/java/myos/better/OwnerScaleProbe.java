@@ -37,6 +37,12 @@ public final class OwnerScaleProbe {
     if (args.length < 2) {
       throw new IllegalArgumentException("Expected memory/table and isolated account");
     }
+    int sampleCount = Integer.parseInt(System.getProperty("blue.probe.samples", "5"));
+    long pauseMillis = Long.parseLong(System.getProperty("blue.probe.pauseMillis", "0"));
+    if (sampleCount < 1 || sampleCount > 10000 || pauseMillis < 0 || pauseMillis > 60000) {
+      throw new IllegalArgumentException("Use 1..10000 samples and 0..60000 pause milliseconds");
+    }
+    long campaignStarted = System.nanoTime();
     long maximumHeap = Runtime.getRuntime().maxMemory();
     long expectedHeap = Long.getLong("blue.probe.expectedHeapBytes", 0L);
     if (expectedHeap > 0 && Math.abs(maximumHeap - expectedHeap) > expectedHeap / 50) {
@@ -154,7 +160,10 @@ public final class OwnerScaleProbe {
           boolean seedSource = directAppend() && Boolean.getBoolean("blue.probe.seedSource");
           {
             BlueId previous = null;
-            for (int n = 0; n < Integer.getInteger("blue.probe.samples", 5); n++) {
+            for (int n = 0; n < sampleCount; n++) {
+              if (n > 0 && pauseMillis > 0) {
+                Thread.sleep(pauseMillis);
+              }
               var publication = inspection.records(account).head(root).value();
               String page = (String) publication.get("page");
               boolean append = directAppend();
@@ -400,6 +409,7 @@ public final class OwnerScaleProbe {
               row.put("gcMillis", gcElapsed);
               row.put("heapBeforeBytes", heapBefore);
               row.put("heapAfterBytes", heapAfter);
+              row.put("campaignElapsedMillis", (System.nanoTime() - campaignStarted) / 1e6);
               row.put("profiled", recording != null);
               row.put(
                   "processingThreadAllocatedBytes",
@@ -466,6 +476,8 @@ public final class OwnerScaleProbe {
                 Boolean.getBoolean("blue.probe.cold"),
                 "transportCachesDisabled",
                 Boolean.getBoolean("blue.probe.cold"),
+                "pauseMillis",
+                pauseMillis,
                 "results",
                 results)));
   }

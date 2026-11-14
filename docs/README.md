@@ -41,7 +41,7 @@ skipping an unproven predecessor.
 | Find the suite responsible for an invariant | [Testing](TESTING.md) |
 | Check API compatibility | [API baseline and checker](../api/README.md) |
 | Interpret distributed tests and their limits | [Distributed qualification](DISTRIBUTED-QUALIFICATION.md) |
-| Run a reproducible owner workload | [Owner reproduction](owner-reproduction.md) |
+| Run a published clause workflow or sustained owner workload | [Canonical preview](canonical-preview.md), [sustained qualification](OWNER-SOAK.md) |
 
 Ordinary checks use local fixtures. Explicit live qualification commands create work and require
 the intended AWS environment. Report initialization, engine/storage processing and client-observed
@@ -53,6 +53,7 @@ completion separately; none is an interchangeable latency number.
   [semantic release report](semantic-release-2026-11-10/REPORT.md)
 - [Earlier host guide](HISTORICAL-HOST-README.md) and [earlier console guide](CONSOLE.md)
 - [8 November AWS owner measurements](owner-aws-report-2026-11-08.md)
+- [Earlier owner reproduction](owner-reproduction.md)
 
 Historical snapshots may describe removed APIs, earlier package editions or a different console
 URL. Keep them as evidence; use the maintained guides above for new work. A passing qualification

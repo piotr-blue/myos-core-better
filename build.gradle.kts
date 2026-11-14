@@ -188,6 +188,7 @@ tasks.register<JavaExec>("ownerScaleProbe") {
     maxHeapSize = providers.gradleProperty("ownerHeap").getOrElse("2g")
     systemProperty("blue.probe.expectedHeapBytes", providers.gradleProperty("ownerExpectedHeapBytes").getOrElse("0"))
     systemProperty("blue.probe.samples", providers.gradleProperty("ownerSamples").getOrElse("5"))
+    systemProperty("blue.probe.pauseMillis", providers.gradleProperty("ownerPauseMillis").getOrElse("0"))
     systemProperty("blue.probe.rotateTargets", providers.gradleProperty("ownerRotate").getOrElse("false"))
     systemProperty("blue.probe.observableRoot", providers.gradleProperty("ownerObservable").getOrElse("false"))
     systemProperty("blue.probe.orders", providers.gradleProperty("ownerCounts").getOrElse("1,128"))
