@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: piotr-blue/blue-java-better
-          ref: ab97dceb4573b45c6cc4615b8eae08da7f5583cd
+          ref: e07601e65bcb45dc8e56841338d18e48ba378e14
           path: blue-java-better
       - uses: actions/setup-java@v4
         with:
