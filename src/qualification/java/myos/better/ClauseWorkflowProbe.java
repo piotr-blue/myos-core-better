@@ -236,7 +236,7 @@ public final class ClauseWorkflowProbe {
           report.put(
               "measurementBoundary",
               "console application API submission through exact submitted-entry Agreement receipt"
-                  + " and expected state; no HTTP; per-operation JFR profiling enabled");
+                  + " and expected state; no HTTP");
           try {
             report.put(
                 "nativeParity", OwnerReplay.verify(store, account, agreement, language, service));
