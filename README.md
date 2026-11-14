@@ -1,6 +1,6 @@
 # MyOS Core Better
 
-[Architecture and design decisions](docs/ARCHITECTURE.md) · [Documentation map](docs/README.md) · [10 November qualification report](docs/polish-2026-11-10/REPORT.md)
+[Architecture and design decisions](docs/ARCHITECTURE.md) · [Documentation map](docs/README.md) · [14 November quality and API notes](docs/QUALITY-2026-11-14.md)
 
 A MyOS-compatible console and API backed by `blue-java-better` and DynamoDB. Authored documents
 use the published Blue Language, BEX, Contracts and Coordination packages. The host adds durable
