@@ -115,6 +115,12 @@ started. `CoreWebhooksTest` checks this ordering with a blocked sender and faili
 
 ## Session shutdown
 
+Timeline acquisition cancels its owned transport before joining acquisition and receiver workers.
+An interrupt alone need not release a blocked transport read. Transport-close failure still joins
+the workers and remains the primary failure; a timeout or interruption during joining is reported
+instead of claiming shutdown completed. The service must stop its workers before releasing their
+storage. [Transport shutdown regression](../src/test/java/myos/better/TimelineRunnerShutdownTest.java)
+
 An acquiring document holds its document lock while the host measures and opens its checkpoint outside the cache lock. The cache records that load before releasing its metadata lock. Shutdown refuses while a load or a pinned execution is active, so a failed shutdown leaves the existing sessions usable. Once close succeeds, a new acquisition fails before it opens resources. Closing a lease drops its entry reference. The released lease can no longer hand out an execution or publish a version after another caller has acquired the entry. Child sessions prepared before shutdown are disposed if their handoff arrives after close. [Session cache](../src/main/java/myos/better/SessionCache.java) · [Deterministic shutdown regression](../src/test/java/myos/better/SessionCacheTest.java)
 
 The loading reservation identifies the document key, not just the number of outstanding loads.
@@ -132,6 +138,19 @@ A historical document view follows its retained link root and loads the stored c
 ### How a duplicate create receives the original reply
 
 A writer conditionally publishes the new head and the command receipt together. A second host may read the receipt before that transaction and the head after it. When it sees the existing head, it reopens the receipt and compares the caller’s command identity and exact input. An identical request receives the winner’s stored version, gas and execution duration. A different body cannot claim the same key. The owner initializer also discards a speculative result if another writer wins the metadata commit. [Ordinary document races](../src/test/java/myos/better/CoreConcurrencyTest.java) · [Whole-graph races](../src/test/java/myos/better/CanonicalGraphsTest.java) · [Owner initialization](../src/test/java/myos/better/OwnerInitializationTest.java)
+
+`AtomicStore.commit` distinguishes a definite non-commit (`false`) from an exceptional, potentially
+unknown result. Retrying a speculative transaction must re-read authority and discard tentative
+working state. A timeout alone does not prove that the previous transaction failed. Recovery first
+checks the durable command or claim identity and its exact fingerprint. Process termination tests
+exercise both sides of that publication boundary.
+
+Random credentials and invitation tokens may be generated while preparing a transaction because
+neither the secret nor a delivery becomes visible until its receipt, authority and encrypted outbox
+publish together. A repeated command returns that retained result instead of creating another
+effect. Do not send mail, callbacks or other external effects from a transaction retry loop. This
+matches the general retry discipline described in the [FoundationDB developer guide](https://apple.github.io/foundationdb/developer-guide.html);
+our storage implementation and guarantees remain those of `AtomicStore` and DynamoDB, not FoundationDB.
 
 Whole-graph creation, restoration, inspection and processing own a shared lifetime lease while using a working session. Closing the host requires the exclusive side. This includes a fresh session before it enters the cache and an overflow session when every resident is pinned. The per-document lock still serializes operations on one graph. A separate instance can reopen the durable publication after shutdown. [Working-session ownership](../src/main/java/myos/better/CanonicalGraphs.java) · [Shutdown and recovery examples](../src/test/java/myos/better/CanonicalSessionCacheTest.java)
 

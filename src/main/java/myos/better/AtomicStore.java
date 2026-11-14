@@ -69,7 +69,13 @@ interface AtomicStore extends AutoCloseable {
     return work(shard, null, limit).rows();
   }
 
-  /** Checks 1..100 distinct items atomically; a check-only transaction publishes no records. */
+  /**
+   * Checks 1..100 distinct items atomically; a check-only transaction publishes no records. Returns
+   * true after successful publication, or false when the transaction definitely did not commit
+   * (including a conditional conflict or retryable cancellation). An exception can mean that the
+   * response was lost after commit. Callers must recover through retained command or claim identity
+   * rather than treating every exception as a rolled-back transaction.
+   */
   boolean commit(List<Write> writes, List<Check> checks);
 
   /**

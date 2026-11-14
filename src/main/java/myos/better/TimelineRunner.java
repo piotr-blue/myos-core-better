@@ -197,13 +197,37 @@ final class TimelineRunner implements AutoCloseable {
     service.stopTime();
     acquisition.shutdownNow();
     receivers.shutdownNow();
+    Throwable failure = null;
     try {
-      acquisition.awaitTermination(10, TimeUnit.SECONDS);
-      receivers.awaitTermination(10, TimeUnit.SECONDS);
+      transport.close();
+    } catch (RuntimeException | Error closing) {
+      failure = closing;
+      throw closing;
+    } finally {
+      try {
+        joinWorkers();
+      } catch (RuntimeException | Error stopping) {
+        if (failure == null) {
+          throw stopping;
+        }
+        failure.addSuppressed(stopping);
+      }
+    }
+  }
+
+  /** Close I/O before joining: a transport can require explicit close to release a blocked read. */
+  private void joinWorkers() {
+    long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(20);
+    try {
+      for (var worker : List.of(acquisition, receivers)) {
+        if (!worker.awaitTermination(
+            Math.max(0, deadline - System.nanoTime()), TimeUnit.NANOSECONDS)) {
+          throw new IllegalStateException("Timeline workers did not stop before store shutdown");
+        }
+      }
     } catch (InterruptedException interrupted) {
       Thread.currentThread().interrupt();
-    } finally {
-      transport.close();
+      throw new IllegalStateException("Interrupted while stopping Timeline workers", interrupted);
     }
   }
 }
