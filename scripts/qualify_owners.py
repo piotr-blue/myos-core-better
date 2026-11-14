@@ -13,6 +13,8 @@ def main():
     parser.add_argument('--orders',default='1,128')
     parser.add_argument('--instance',help='Existing dedicated worker; by default use a temporary worker sized for the requested graph')
     parser.add_argument('--profile',action='store_true',help='Capture a bounded JFR of the final payment per size')
+    parser.add_argument('--public-definitions', action='store_true',
+                        help='Use the shared public catalogue, matching deployments with MYOS_PUBLIC_DEFINITIONS=true')
     parser.add_argument('--observable-root',action='store_true',help='Emit two equal-valued public Agreement events and verify both ordered occurrences')
     parser.add_argument('--separate-timelines',action='store_true',help='One external timeline per Order; quiet providers certify a prefix beyond the active inputs')
     parser.add_argument('--rotate-targets',action='store_true',help='Select a different Order by a deterministic stride on every input')
@@ -52,7 +54,9 @@ def main():
         shlex.join(['install','-d','-m','750','-o','myos-better',profile]),
         shlex.join(['systemd-run','--quiet','--wait','--pipe','--collect','--unit='+account,
             '--uid=myos-better','--property=MemoryMax='+memory_limit,'--property=MemorySwapMax=0',
-            f'--property=CPUQuota={cpu*100}%','--setenv=AWS_REGION=eu-west-1','java',f'-Xmx{heap_gib}g',f'-XX:ActiveProcessorCount={cpu}',
+            f'--property=CPUQuota={cpu*100}%','--setenv=AWS_REGION=eu-west-1',
+            '--setenv=MYOS_PUBLIC_DEFINITIONS='+str(args.public_definitions).lower(),
+            'java',f'-Xmx{heap_gib}g',f'-XX:ActiveProcessorCount={cpu}',
             f'-Dblue.probe.expectedHeapBytes={heap_gib * 1024**3}',
             '-Dblue.probe.directAppend='+str(args.direct_creation).lower(), '-Dblue.probe.seedSource='+str(args.direct_creation).lower(),
             '-Dblue.probe.cold='+str(args.cold).lower(),'-Dblue.probe.observableRoot='+str(args.observable_root).lower(),'-Dblue.probe.rotateTargets='+str(args.rotate_targets).lower(),'-Dblue.probe.separateTimelines='+str(args.separate_timelines).lower(),*profiling,
@@ -66,7 +70,7 @@ def main():
             'Comment':'Isolated independent owner DynamoDB parity and bounded latency qualification'}
         request_file=reports/'owners-qualification-request.json';request_file.write_text(json.dumps(request))
         command=aws('ssm','send-command','--cli-input-json','file://'+str(request_file))['Command']['CommandId']
-        result={'commandId':command,'instance':identity,'table':outputs['Table'],'account':account,'digest':digest,'counts':counts,'cold':args.cold,'profileSummaries':args.profile,'gasSchedule':'STANDARD','rotateTargets':args.rotate_targets,'separateTimelines':args.separate_timelines,'observableRoot':args.observable_root,'directCreation':args.direct_creation,'heapGiB':heap_gib,'cpu':cpu}
+        result={'commandId':command,'instance':identity,'table':outputs['Table'],'account':account,'digest':digest,'counts':counts,'cold':args.cold,'profileSummaries':args.profile,'gasSchedule':'STANDARD','rotateTargets':args.rotate_targets,'separateTimelines':args.separate_timelines,'observableRoot':args.observable_root,'directCreation':args.direct_creation,'heapGiB':heap_gib,'cpu':cpu,'publicDefinitions':args.public_definitions}
         selected_jars = [jars[0], *[p for p in (root/'build/install/myos-core-better/lib').glob('*.jar') if p.name.startswith(('blue-java-better-', 'myos-core-better-'))]]
         result['artifacts'] = {p.name: hashlib.sha256(p.read_bytes()).hexdigest() for p in selected_jars}
         (reports/'owners-qualification-command.json').write_text(json.dumps(result,indent=2)+'\n')

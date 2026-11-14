@@ -27,3 +27,16 @@ observations without forcing collection; these are not exact retained-heap or le
 Keep all raw samples, the final parity result, the JVM bound, the isolated account and artifact
 hashes. A successful short campaign does not establish long-term production reliability.
 
+For a shorter AWS size comparison, the maintained launcher provisions and terminates an isolated
+worker. Select the public catalogue explicitly when matching the deployed preview:
+
+```sh
+python3 scripts/qualify_owners.py --orders 1,1000,10000 --samples 20 \
+  --public-definitions --report-dir reports/owner-scale-unique-run
+```
+
+If any selected size exceeds 1,024 Orders, every size in that invocation uses the same larger
+worker, 8 GiB JVM heap, 12 GiB process-memory limit and four-CPU quota. Smaller invocations use
+1 GiB heap and two CPUs. Compare within a recorded environment; do not combine these timings
+with a separate two-CPU run. The launcher records the catalogue mode and executable hashes.
+Initialization, signed source acquisition and durable owner processing remain separate metrics.
