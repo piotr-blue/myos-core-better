@@ -438,6 +438,9 @@ class CoreWebhooksTest {
         assertEquals(
             0, finished.getCount(), "close must join the interrupted sender before returning");
         assertEquals(1, number(fixture.deliveries.health(fixture.alice, hook).get("queued")));
+        assertEquals(
+            "RETRYING",
+            items(fixture.deliveries.list(fixture.alice, hook, Map.of())).getFirst().get("status"));
       } finally {
         release.countDown();
         assertTrue(finished.await(5, java.util.concurrent.TimeUnit.SECONDS));
