@@ -24,7 +24,8 @@ export async function submitReviewedOperation(
   review: ReviewedOperation,
   options: WaitOptions = {},
 ) {
-  if (!review.sessionId || !review.documentVersion || !review.route.timeline || !review.route.channel || !review.operation || !review.idempotencyKey) {
+  const { sessionId, documentVersion, operation, route, request, idempotencyKey, authority } = review;
+  if (!sessionId || !documentVersion || !route.timeline || !route.channel || !operation || !idempotencyKey) {
     throw new Error('A session, exact document version, operation, native route and idempotency key are required');
   }
   // Validate before the first side effect. Every stage inherits this original deadline.
@@ -33,21 +34,21 @@ export async function submitReviewedOperation(
   try {
     signal.throwIfAborted();
     const accepted = await documents.invokeOperation({
-      sessionId: review.sessionId,
-      idempotencyKey: review.idempotencyKey,
+      sessionId,
+      idempotencyKey,
       xMyOSClient: 'console',
       invokeOperation: {
-        inputMode: 'source', timeline: { blueId: review.route.timeline }, actor: review.route.actor,
-        ...(review.authority ? { authority: review.authority } : {}),
-        message: { type: 'Contracts/Operation Request', document: { blueId: review.documentVersion },
-          channel: review.route.channel, operation: review.operation, request: review.request,
+        inputMode: 'source', timeline: { blueId: route.timeline }, actor: route.actor,
+        ...(authority ? { authority } : {}),
+        message: { type: 'Contracts/Operation Request', document: { blueId: documentVersion },
+          channel: route.channel, operation, request,
           requireExactDocumentVersion: true },
       },
     }, { signal });
     signal.throwIfAborted();
     const stored = await waitForAdmission(admissions, accepted, waiting);
     if (!stored.details?.entryRef?.blueId) throw new Error('Stored operation has no timeline entry reference');
-    return await waitForNativeInput(documents, review.sessionId, stored.details.entryRef.blueId, waiting);
+    return await waitForNativeInput(documents, sessionId, stored.details.entryRef.blueId, waiting);
   } catch (error) {
     if (signal.aborted) {
       throw new Error('Stopped waiting for the operation. The server command was not canceled. Recover with the identical review and idempotency key.', { cause: error });

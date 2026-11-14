@@ -139,3 +139,18 @@ test('rejects unknown statuses and invalid timing', async () => {
     await assert.rejects(waitForAdmission({}, pending, options), /must be positive/);
   }
 });
+test('caller changes during a wait cannot replace the accepted receipt identity', async () => {
+  const accepted = { admissionId: 'original', kind: 'OPERATION', status: 'PENDING' };
+  const complete = { admissionId: 'original', kind: 'OPERATION', status: 'SUCCEEDED' };
+  const api = { async getAdmission(input) {
+    assert.deepEqual(input, { admissionId: 'original' });
+    return complete;
+  } };
+  assert.equal(await waitForAdmission(api, accepted, {
+    pollIntervalMs: 1,
+    onUpdate() {
+      accepted.admissionId = 'replacement';
+      accepted.kind = 'BOOTSTRAP';
+    },
+  }), complete);
+});

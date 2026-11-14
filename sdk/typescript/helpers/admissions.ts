@@ -16,6 +16,8 @@ export async function waitForAdmission<T extends Admission>(
 ): Promise<T> {
 
   const { signal, interval } = createWait(options);
+  // The caller and onUpdate callback can retain mutable DTOs. Pin the accepted identity once.
+  const { admissionId, kind } = accepted;
   let current: Admission = accepted;
   let previousStatus: string | undefined;
   let projected = false;
@@ -23,7 +25,7 @@ export async function waitForAdmission<T extends Admission>(
   try {
     while (true) {
       signal.throwIfAborted();
-      if (current.admissionId !== accepted.admissionId || current.kind !== accepted.kind) {
+      if (current.admissionId !== admissionId || current.kind !== kind) {
         throw new Error('Admission observation does not match the accepted receipt');
       }
       if (current.status !== previousStatus) options.onUpdate?.(current);
@@ -33,7 +35,7 @@ export async function waitForAdmission<T extends Admission>(
       if (current.status !== 'PENDING') throw new Error(`Unknown admission status: ${current.status}`);
       await sleep(interval, signal);
       try {
-        current = await api.getAdmission({ admissionId: accepted.admissionId }, { signal });
+        current = await api.getAdmission({ admissionId }, { signal });
         projected = true;
       } catch (error) {
         // Acceptance precedes asynchronous projection; disappearance after observation is not lag.
@@ -42,7 +44,7 @@ export async function waitForAdmission<T extends Admission>(
     }
   } catch (error) {
     if (signal.aborted) {
-      throw new Error(`Stopped waiting for admission ${accepted.admissionId}; last status ${current.status}. The server command was not canceled.`, { cause: error });
+      throw new Error(`Stopped waiting for admission ${admissionId}; last status ${current.status}. The server command was not canceled.`, { cause: error });
     }
     throw error;
   }

@@ -241,6 +241,11 @@ and kind, and throws `AdmissionFailed` on `FAILED`. Its `admission` property kee
 the complete failed receipt and problem details. An optional `onUpdate` callback
 receives the first observation and subsequent status transitions.
 
+The helper pins the accepted receipt ID and kind before waiting. Later changes to
+the caller's DTO cannot redirect polling. `submitReviewedOperation` likewise keeps
+the original document session through admission and native-input observation. Treat
+request payloads and returned observations as immutable application values.
+
 Acceptance can precede a backend's asynchronous read projection. For an already accepted
 `PENDING` receipt, `waitForAdmission` tolerates initial HTTP 404 responses only
 when the problem code is `ADMISSION_NOT_FOUND`, within the same local deadline.

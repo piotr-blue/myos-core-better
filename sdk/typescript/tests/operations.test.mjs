@@ -7,6 +7,25 @@ const exactReview = { sessionId: 's', documentVersion: 'reviewed#2', operation: 
   route: { timeline: 't', actor: 'agent', channel: 'buyer' }, request: { amountMinor: 200 },
   idempotencyKey: 'recover-this-command' };
 
+test('later edits to the caller review cannot redirect observation to another session', async () => {
+  const review = structuredClone(exactReview);
+  const observed = { sessionId: 's', entryBlueId: 'entry', assessment: { outcome: 'REJECTED' },
+    disposition: null, localHistory: [], processing: { state: 'READY' } };
+  const documents = {
+    async invokeOperation(input) {
+      assert.equal(input.sessionId, 's');
+      review.sessionId = 'different-session';
+      return { admissionId: 'a', status: 'SUCCEEDED', kind: 'OPERATION',
+        details: { entryRef: { blueId: 'entry' } } };
+    },
+    async getDocumentInputsEntryblueid(input) {
+      assert.deepEqual(input, { sessionId: 's', entryBlueId: 'entry' });
+      return observed;
+    },
+  };
+  assert.equal(await submitReviewedOperation(documents, {}, review), observed);
+});
+
 test('invalid wait options and pre-cancellation fail before submitting a write', async () => {
   let submissions = 0;
   const documents = { async invokeOperation() {
