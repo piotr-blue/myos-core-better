@@ -152,6 +152,15 @@ tasks.register<JavaExec>("jsonReadAllocationProbe") {
     maxHeapSize = "128m"
 }
 
+tasks.register<JavaExec>("catalogueRetentionProbe") {
+    group = "verification"
+    description = "Load all deployed package archives within one GiB and bound retained evidence."
+    classpath = qualification.runtimeClasspath
+    mainClass.set("myos.better.CatalogueRetentionProbe")
+    maxHeapSize = "1g"
+    jvmArgs("-XX:+UseG1GC", "-XX:ActiveProcessorCount=2")
+}
+
 tasks.register<JavaExec>("canonicalGraphProbe") {
     group = "verification"
     description = "Bounded inline-versus-durable canonical graph qualification."

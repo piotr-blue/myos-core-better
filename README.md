@@ -83,6 +83,19 @@ Reproducible commands and measurement boundaries are in the preview guide. Earli
 experiments remain explicitly historical: [previous host guide](docs/HISTORICAL-HOST-README.md),
 [earlier AWS report](docs/owner-aws-report-2026-11-08.md).
 
+## Catalogue retention
+
+```sh
+./gradlew catalogueRetentionProbe
+```
+
+This read-only probe loads and mounts every archive from the deployed catalogue in a fresh
+one GiB G1 JVM, without starting server workers or using credentials. It checks a 512 MiB
+post-collection retained-heap ceiling while keeping the configured Language and public package
+records reachable. This is a startup-memory regression guard, separate from document processing.
+Every changed archive still receives independent verification before equal immutable evidence
+can share storage with another package already retained by the loader.
+
 ## Current published-clause AWS journey
 
 ```sh

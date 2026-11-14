@@ -24,7 +24,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           repository: piotr-blue/blue-java-better
-          ref: 9cf6b1967b7ddf3353cdaddb43a20d4673cced02
+          ref: ab97dceb4573b45c6cc4615b8eae08da7f5583cd
           path: blue-java-better
       - uses: actions/setup-java@v4
         with:
@@ -44,6 +44,9 @@ jobs:
       - name: Bound allocation after unrelated JSON names
         working-directory: myos-core-better
         run: ./gradlew jsonReadAllocationProbe
+      - name: Bound deployed package evidence retention
+        working-directory: myos-core-better
+        run: ./gradlew catalogueRetentionProbe
       - name: Upload test report
         if: failure()
         uses: actions/upload-artifact@v4
