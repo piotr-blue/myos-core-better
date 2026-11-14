@@ -1,6 +1,7 @@
 package myos.better;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -21,6 +22,11 @@ final class OwnerWorkRunner implements AutoCloseable {
   private final ScheduledExecutorService discovery;
   private final ExecutorService workers;
   private final Set<String> inFlight = new HashSet<>();
+  // Owned by the single discovery worker. Preserve the unconsumed part of one bounded page
+  // while both processing slots are busy; a hot first page must not starve later accounts.
+  private List<AtomicStore.Row> pending = List.of();
+  private int next;
+  private String cursor;
   private boolean started, closed;
   private final WorkerHealth health = new WorkerHealth();
 
@@ -51,13 +57,26 @@ final class OwnerWorkRunner implements AutoCloseable {
 
   private void discover() {
     try {
+      synchronized (this) {
+        if (closed || inFlight.size() >= 2) {
+          return;
+        }
+      }
       long now = clock.getAsLong();
-      for (var row : store.work(shard, 32)) {
-        String account = (String) row.value().get("account");
+      if (next == pending.size()) {
+        AtomicStore.Page page = store.work(shard, cursor, 32);
+        pending = page.rows();
+        next = 0;
+        cursor = page.after();
+      }
+      while (next < pending.size()) {
+        String account;
         synchronized (this) {
           if (closed || inFlight.size() >= 2) {
             return;
           }
+          var row = pending.get(next++);
+          account = (String) row.value().get("account");
           if (Repository.number(row.value().get("due")) > now || !inFlight.add(account)) {
             continue;
           }
